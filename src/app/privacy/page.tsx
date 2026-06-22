@@ -49,8 +49,8 @@ export default function PrivacyPage() {
           <h2 className="text-xl font-medium">Contact</h2>
           <p className="mt-2">
             Questions about this policy can be sent to{" "}
-            <a className="underline" href="mailto:contact@calecutech.com">
-              contact@calecutech.com
+            <a className="underline" href="mailto:vivek@calecutech.com">
+              vivek@calecutech.com
             </a>
             .
           </p>
