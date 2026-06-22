@@ -12,9 +12,10 @@ export default function PrivacyPage() {
 
       <div className="mt-8 space-y-6 text-black/80 dark:text-white/80">
         <p>
-          Calecutech (&ldquo;we&rdquo;, &ldquo;us&rdquo;) operates calecutech.com.
-          This page explains what information we collect, how we use it, and
-          how you can request its deletion.
+          Calecute Technologies Private Limited (&ldquo;we&rdquo;,
+          &ldquo;us&rdquo;) operates calecutech.com. This page explains what
+          information we collect, how we use it, and how you can request its
+          deletion.
         </p>
 
         <section>
