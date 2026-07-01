@@ -3,6 +3,22 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="mx-auto max-w-5xl px-6 py-20">
+      {/* DailyDo floating bubble */}
+      <div className="fixed bottom-6 right-6 z-50 group">
+        <Link
+          href="/products/dailydo"
+          className="flex items-center gap-3 rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:bg-blue-700 transition-all hover:scale-105 active:scale-95"
+        >
+          <span className="text-base">✓</span>
+          Try DailyDo
+        </Link>
+        <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block">
+          <div className="rounded-xl bg-white dark:bg-zinc-900 border border-black/10 dark:border-white/10 shadow-xl p-3 w-52 text-xs text-black/70 dark:text-white/70">
+            Task management for teams — plan, assign, and track daily work.
+          </div>
+        </div>
+      </div>
+
       <section className="text-center">
         <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
           Calecutech
