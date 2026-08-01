@@ -5,8 +5,8 @@ export default function Footer() {
     <footer className="border-t border-black/10 dark:border-white/10">
       <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-2 px-6 py-6 text-sm text-black/60 dark:text-white/60 sm:flex-row">
         <p>
-          &copy; {new Date().getFullYear()} Calecute Technologies Private
-          Limited. All rights reserved.
+          &copy; {new Date().getFullYear()} Calecute Technologies LLC. All
+          rights reserved.
         </p>
         <div className="flex gap-4">
           <Link href="/privacy" className="hover:underline">

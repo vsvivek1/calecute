@@ -13,7 +13,7 @@ export default function TermsPage() {
       <div className="mt-8 space-y-6 text-black/80 dark:text-white/80">
         <p>
           These Terms of Service govern your use of DailyDo and other services
-          operated by Calecute Technologies Private Limited (&ldquo;we&rdquo;,
+          operated by Calecute Technologies LLC (&ldquo;we&rdquo;,
           &ldquo;us&rdquo;). By using our services, you agree to these terms.
         </p>
 
@@ -68,17 +68,17 @@ export default function TermsPage() {
         <section>
           <h2 className="text-xl font-medium">Limitation of liability</h2>
           <p className="mt-2">
-            To the extent permitted by law, Calecute Technologies Private
-            Limited is not liable for indirect, incidental, or consequential
-            damages arising from your use of the service.
+            To the extent permitted by law, Calecute Technologies LLC is not
+            liable for indirect, incidental, or consequential damages arising
+            from your use of the service.
           </p>
         </section>
 
         <section>
           <h2 className="text-xl font-medium">Governing law</h2>
           <p className="mt-2">
-            These terms are governed by the laws of India. Any disputes shall
-            be subject to the exclusive jurisdiction of courts in India.
+            These terms are governed by the laws of the State of Wyoming,
+            USA, without regard to its conflict of laws principles.
           </p>
         </section>
 
