@@ -15,8 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Calecutech",
-  description: "Calecutech - Products, Services & Locations",
+  title: "Calecutech — Software Development & SaaS Solutions",
+  description:
+    "Calecute Technologies LLC builds web applications, mobile apps, and scalable SaaS platforms for international clients.",
   icons: {
     icon: [
       { url: "/icon.svg", type: "image/svg+xml" },

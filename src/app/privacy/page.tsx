@@ -49,11 +49,13 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-xl font-medium">Contact</h2>
           <p className="mt-2">
-            Questions about this policy can be sent to{" "}
-            <a className="underline" href="mailto:vivek@calecutech.com">
-              vivek@calecutech.com
+            Calecute Technologies LLC
+            <br />
+            Operations office: Kozhikode (Calicut), Kerala, India
+            <br />
+            <a className="underline" href="mailto:info@calecutech.com">
+              info@calecutech.com
             </a>
-            .
           </p>
         </section>
       </div>

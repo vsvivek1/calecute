@@ -1,6 +1,10 @@
-const locations = [
-  { city: "Calicut (Kozhikode)", address: "Add address here", phone: "Add phone here" },
-];
+import { company, officeLines } from "@/lib/company";
+
+export const metadata = {
+  title: "Locations | Calecutech",
+  description:
+    "Calecutech operations office in Kozhikode, Kerala, India, and registered entity Calecute Technologies LLC.",
+};
 
 export default function LocationsPage() {
   return (
@@ -9,15 +13,45 @@ export default function LocationsPage() {
       <p className="mt-2 text-black/60 dark:text-white/60">
         Where to find us.
       </p>
+
       <div className="mt-10 grid gap-6 sm:grid-cols-2">
-        {locations.map((l) => (
-          <div key={l.city} className="rounded-xl border border-black/10 p-6 dark:border-white/15">
-            <h2 className="text-lg font-medium">{l.city}</h2>
-            <p className="mt-2 text-sm text-black/60 dark:text-white/60">{l.address}</p>
-            <p className="mt-1 text-sm text-black/60 dark:text-white/60">{l.phone}</p>
-          </div>
-        ))}
+        <div className="rounded-xl border border-black/10 p-6 dark:border-white/15">
+          <h2 className="text-lg font-medium">Operations office</h2>
+          <address className="mt-2 text-sm not-italic text-black/70 dark:text-white/70">
+            {officeLines.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
+          </address>
+          <p className="mt-3 text-sm text-black/60 dark:text-white/60">
+            Our development and support team works from here.
+          </p>
+        </div>
+
+        <div className="rounded-xl border border-black/10 p-6 dark:border-white/15">
+          <h2 className="text-lg font-medium">Registered entity</h2>
+          <p className="mt-2 text-sm text-black/70 dark:text-white/70">
+            {company.legalName}
+            <br />
+            {company.jurisdiction}
+          </p>
+          <p className="mt-3 text-sm text-black/60 dark:text-white/60">
+            The legal entity behind {company.brand} and {company.domain}.
+          </p>
+        </div>
       </div>
+
+      <p className="mt-8 text-sm text-black/60 dark:text-white/60">
+        Reach either location by email at{" "}
+        <a
+          className="underline underline-offset-2"
+          href={`mailto:${company.email}`}
+        >
+          {company.email}
+        </a>
+        .
+      </p>
     </div>
   );
 }

@@ -12,10 +12,23 @@ export default function TermsPage() {
 
       <div className="mt-8 space-y-6 text-black/80 dark:text-white/80">
         <p>
-          These Terms of Service govern your use of DailyDo and other services
+          These Terms of Service govern your use of the software development
+          services, subscription products (including DailyDo), and websites
           operated by Calecute Technologies LLC (&ldquo;we&rdquo;,
           &ldquo;us&rdquo;). By using our services, you agree to these terms.
         </p>
+
+        <section>
+          <h2 className="text-xl font-medium">What we provide</h2>
+          <p className="mt-2">
+            We provide custom web development, mobile app development, SaaS
+            product development, and backend and API systems on a contract
+            basis, and we operate our own subscription products. Client
+            engagements are additionally governed by the written scope and quote
+            agreed for that project, which prevails over these terms where the
+            two conflict.
+          </p>
+        </section>
 
         <section>
           <h2 className="text-xl font-medium">Use of the service</h2>
@@ -50,10 +63,20 @@ export default function TermsPage() {
         <section>
           <h2 className="text-xl font-medium">Billing</h2>
           <p className="mt-2">
+            We charge under one of three models, agreed in writing before work
+            begins: fixed-price projects invoiced at milestones, monthly SaaS
+            subscriptions, and hourly development contracts invoiced monthly in
+            arrears.
+          </p>
+          <p className="mt-2">
             Paid plans (Family, Office) are billed as described at the time of
-            purchase. Subscriptions renew automatically unless cancelled. Refunds
-            are handled on a case-by-case basis — contact us within 7 days of
-            a charge if you believe it was made in error.
+            purchase. Subscriptions renew automatically unless cancelled.
+            Invoices for project work are due within 14 days of issue. Full
+            cancellation and refund terms are set out in our{" "}
+            <a className="underline" href="/refund-policy">
+              Refund &amp; Cancellation Policy
+            </a>
+            .
           </p>
         </section>
 
@@ -85,11 +108,13 @@ export default function TermsPage() {
         <section>
           <h2 className="text-xl font-medium">Contact</h2>
           <p className="mt-2">
-            Questions about these terms can be sent to{" "}
-            <a className="underline" href="mailto:vivek@calecutech.com">
-              vivek@calecutech.com
+            Calecute Technologies LLC
+            <br />
+            Operations office: Kozhikode (Calicut), Kerala, India
+            <br />
+            <a className="underline" href="mailto:info@calecutech.com">
+              info@calecutech.com
             </a>
-            .
           </p>
         </section>
       </div>

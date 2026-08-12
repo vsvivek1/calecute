@@ -20,8 +20,8 @@ export default function DataDeletionPage() {
           <h2 className="text-xl font-medium">How to request deletion</h2>
           <p className="mt-2">
             Email{" "}
-            <a className="underline" href="mailto:vivek@calecutech.com?subject=Data%20Deletion%20Request">
-              vivek@calecutech.com
+            <a className="underline" href="mailto:info@calecutech.com?subject=Data%20Deletion%20Request">
+              info@calecutech.com
             </a>{" "}
             from the email address associated with your account, with the
             subject line &ldquo;Data Deletion Request&rdquo;. Include your
