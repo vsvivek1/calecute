@@ -2,6 +2,7 @@ import Link from "next/link";
 import { company, officeLines } from "@/lib/company";
 
 const legalLinks = [
+  { href: "/apps", label: "Mobile Apps" },
   { href: "/privacy", label: "Privacy Policy" },
   { href: "/terms", label: "Terms of Service" },
   { href: "/refund-policy", label: "Refund & Cancellation Policy" },
