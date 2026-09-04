@@ -29,6 +29,8 @@ export type AppEntry = {
   collects: DataCategory[];
   permissions: { name: string; why: string }[];
   sharedWith: string[];
+  /** Keys into PROCESSORS. */
+  processors: string[];
   retention: string;
   /** Personal data about people who are not the app's user. */
   thirdPartyData?: string;
@@ -37,18 +39,46 @@ export type AppEntry = {
 const SUPPORT_EMAIL = "info@calecutech.com";
 const COMPANY = "Calecute Technologies LLC";
 
-export const CONTACT = { email: SUPPORT_EMAIL, company: COMPANY };
+export const CONTACT = {
+  email: SUPPORT_EMAIL,
+  company: COMPANY,
+  address: "Kozhikode (Calicut), Kerala, India",
+  /** Named contact for grievances, as India's DPDP Act 2023 expects. */
+  grievanceOfficer: "The Grievance Officer",
+};
 
-export const APPS: AppEntry[] = [
+/** Named services that receive data, which Google asks to see disclosed. */
+export type Processor = { name: string; role: string; policy: string };
+
+export const PROCESSORS: Record<string, Processor[]> = {
+  google: [
+    {
+      name: "Google Sign-In",
+      role: "Authenticates you and tells us your name, email address and profile picture. We never see your Google password.",
+      policy: "https://policies.google.com/privacy",
+    },
+  ],
+  razorpay: [
+    {
+      name: "Razorpay Software Private Limited",
+      role: "Processes deposit payments. Card, UPI and netbanking details are entered on Razorpay's own screen and are never sent to or stored on our servers.",
+      policy: "https://razorpay.com/privacy/",
+    },
+  ],
+  hosting: [
+    {
+      name: "Vercel Inc. and Neon Inc.",
+      role: "Host the application and its database. They store data on our behalf and do not use it for their own purposes.",
+      policy: "https://vercel.com/legal/privacy-policy",
+    },
+  ],
+};
+
+const BASE: Omit<AppEntry, 'slug'|'name'|'androidPackage'|'iosBundleId'|'isDemo'>[] = [
   {
-    slug: "sarfez-field-demo",
-    name: "Sarfez Field (Demo)",
     tagline: "Field officer asset capture for SARFAESI possession",
-    androidPackage: "com.calecutech.sarfez.demo.field",
-    iosBundleId: "com.calecutech.sarfez.demo.field",
     audience:
       "Authorised officers and field officers of a lending institution. Access requires credentials issued by that institution.",
-    isDemo: true,
     summary:
       "Sarfez Field is used by a bank's authorised officers to record a site visit under the SARFAESI Act — the schedule of property, a GPS pin, the statutory photograph set, the movable inventory, and a panchnama signed by two witnesses.",
     collects: [
@@ -107,19 +137,15 @@ export const APPS: AppEntry[] = [
     sharedWith: [
       "The lending institution that employs the officer and assigned the visit. The data is captured on that institution's behalf and is visible to its reviewing officers.",
     ],
+    processors: ["hosting"],
     retention:
       "Captured reports are retained by the lending institution under its own record-retention policy, because possession records are statutory documents. We do not retain them independently of that institution.",
     thirdPartyData:
       "This app records personal data about people who are not its users — principally the two panchnama witnesses, and the borrower named on the case. That data is collected by the officer, on behalf of the lending institution, for a statutory purpose under the SARFAESI Act. The institution is the data fiduciary for it; we process it on their instructions. Requests about that data should be directed to the institution, and we will assist them in responding.",
   },
   {
-    slug: "sarfez-auctions-demo",
-    name: "Sarfez Auctions (Demo)",
     tagline: "Discover and act on bank auction properties",
-    androidPackage: "com.calecutech.sarfez.demo.buyer",
-    iosBundleId: "com.calecutech.sarfez.demo.buyer",
     audience: "Members of the public interested in bank auction properties.",
-    isDemo: true,
     summary:
       "Sarfez Auctions lets a prospective buyer search properties a bank has put up for auction, save and track them, register interest, and complete the earnest money deposit required to bid.",
     collects: [
@@ -175,8 +201,56 @@ export const APPS: AppEntry[] = [
       "The lending institution running an auction you register for, so it can verify your eligibility to bid.",
       "Our payment provider, which processes the deposit. Card and UPI details are handled entirely by that provider.",
     ],
+    processors: ["google", "razorpay", "hosting"],
     retention:
       "Account data is kept while your account exists. Deposit and refund records are kept for as long as tax and financial-record rules require, which is longer than the account itself, and is why deleting an account does not delete those records.",
+  },
+];
+
+/**
+ * Demo and production are separate published apps, not one app promoted.
+ *
+ * The demonstration builds are shown to banks and used for staff training
+ * indefinitely, so they must install alongside production rather than replace
+ * it. That means separate package ids, separate store listings, and separate
+ * OAuth clients — and therefore separate policy pages, since Google matches
+ * the app name on the consent screen against the one on this page.
+ */
+const FIELD = 0;
+const BUYER = 1;
+
+export const APPS: AppEntry[] = [
+  {
+    ...BASE[FIELD],
+    slug: "sarfez-field-demo",
+    name: "Sarfez Field Demo",
+    androidPackage: "com.calecutech.sarfez.demo.field",
+    iosBundleId: "com.calecutech.sarfez.demo.field",
+    isDemo: true,
+  },
+  {
+    ...BASE[FIELD],
+    slug: "sarfez-field",
+    name: "Sarfez Field",
+    androidPackage: "com.calecutech.sarfez.live.field",
+    iosBundleId: "com.calecutech.sarfez.live.field",
+    isDemo: false,
+  },
+  {
+    ...BASE[BUYER],
+    slug: "sarfez-auctions-demo",
+    name: "Sarfez Auctions Demo",
+    androidPackage: "com.calecutech.sarfez.demo.buyer",
+    iosBundleId: "com.calecutech.sarfez.demo.buyer",
+    isDemo: true,
+  },
+  {
+    ...BASE[BUYER],
+    slug: "sarfez-auctions",
+    name: "Sarfez Auctions",
+    androidPackage: "com.calecutech.sarfez.live.buyer",
+    iosBundleId: "com.calecutech.sarfez.live.buyer",
+    isDemo: false,
   },
 ];
 

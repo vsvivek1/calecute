@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { APPS, CONTACT, appBySlug } from "@/lib/apps";
+import { APPS, CONTACT, PROCESSORS, appBySlug } from "@/lib/apps";
 
 export function generateStaticParams() {
   return APPS.map((a) => ({ slug: a.slug }));
@@ -43,9 +43,15 @@ export default async function AppPrivacyPage({
         )}
 
         <p>
-          {CONTACT.company} (&ldquo;we&rdquo;, &ldquo;us&rdquo;) publishes{" "}
-          {app.name}. {app.summary}
+          This policy describes how <strong>{app.name}</strong>, a mobile
+          application published by {CONTACT.company}, handles personal data.
+          It applies to the Android application{" "}
+          <code className="rounded bg-black/5 px-1.5 py-0.5 text-xs dark:bg-white/10">
+            {app.androidPackage}
+          </code>{" "}
+          and its iOS equivalent, and to the Sarfez service they connect to.
         </p>
+        <p>{app.summary}</p>
         <p className="text-sm text-black/60 dark:text-white/60">
           Who it is for: {app.audience}
         </p>
@@ -125,6 +131,68 @@ export default async function AppPrivacyPage({
         </section>
 
         <section>
+          <h2 className="text-xl font-medium">What we do not collect</h2>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
+            <li>We do not collect your contacts, calendar, call logs or SMS.</li>
+            <li>We do not track you across other apps or websites.</li>
+            <li>We do not use advertising identifiers and show no advertising.</li>
+            <li>
+              We do not record audio or use the camera except at the moment you
+              tap to capture something.
+            </li>
+            <li>
+              We never receive your Google password, and — where the app takes
+              payments — never your card, UPI or netbanking credentials.
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-medium">Services that process data for us</h2>
+          <p className="mt-2 text-sm">
+            We use the following providers. They act on our instructions and may
+            not use your data for their own purposes.
+          </p>
+          <div className="mt-3 space-y-3">
+            {app.processors
+              .flatMap((key) => PROCESSORS[key] ?? [])
+              .map((proc) => (
+                <div key={proc.name} className="text-sm">
+                  <h3 className="font-medium">{proc.name}</h3>
+                  <p className="text-black/60 dark:text-white/60">{proc.role}</p>
+                  <a
+                    className="text-xs underline"
+                    href={proc.policy}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    Their privacy policy
+                  </a>
+                </div>
+              ))}
+          </div>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-medium">Where your data is held</h2>
+          <p className="mt-2 text-sm">
+            Data is stored on servers operated by our hosting providers. Some of
+            those servers are outside India, and the providers named above may
+            process data in other countries under their own contractual
+            safeguards. By using the app you consent to that transfer.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-medium">Why we are allowed to hold it</h2>
+          <p className="mt-2 text-sm">
+            {app.slug.includes("field")
+              ? "We process this data on the instructions of the lending institution that assigned the visit, so that it can discharge obligations placed on it by the SARFAESI Act, 2002. That institution is the data fiduciary; we are its processor."
+              : "We process your data to provide the service you asked for — searching listings, registering interest, and completing a deposit — and, for deposit and refund records, to meet obligations under Indian financial and tax law. You give consent when you create an account, and you may withdraw it by deleting the account."}
+          </p>
+        </section>
+
+        <section>
           <h2 className="text-xl font-medium">Your rights</h2>
           <p className="mt-2 text-sm">
             You may ask us what personal data we hold about you, ask us to correct
@@ -139,6 +207,20 @@ export default async function AppPrivacyPage({
             . Under India&rsquo;s Digital Personal Data Protection Act, 2023 you
             may also raise a grievance with us at the same address; we respond
             within 30 days.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-medium">Raising a grievance</h2>
+          <p className="mt-2 text-sm">
+            If you are unhappy with how we have handled your data, write to{" "}
+            {CONTACT.grievanceOfficer} at{" "}
+            <a className="underline" href={`mailto:${CONTACT.email}`}>
+              {CONTACT.email}
+            </a>
+            , {CONTACT.company}, {CONTACT.address}. We acknowledge within 7 days
+            and respond within 30. If you remain dissatisfied you may complain
+            to the Data Protection Board of India.
           </p>
         </section>
 
