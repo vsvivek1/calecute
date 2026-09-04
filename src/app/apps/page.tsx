@@ -37,6 +37,9 @@ export default function AppsPage() {
             </p>
 
             <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+              <a className="underline" href={`/apps/${app.slug}`}>
+                Overview
+              </a>
               <a className="underline" href={`/apps/${app.slug}/privacy`}>
                 Privacy policy
               </a>
