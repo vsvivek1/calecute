@@ -52,11 +52,7 @@ export default async function AppSupportPage({
 
         <section>
           <h2 className="text-xl font-medium">Signing in</h2>
-          <p className="mt-2 text-sm">
-            {app.slug.includes("field")
-              ? "Credentials are issued by the bank you work for, not by us. If you cannot sign in, contact your branch IT helpdesk first — we cannot create or reset officer accounts."
-              : "Sign in with your mobile number or a Google account. If a one-time code does not arrive, check the number and try again after a minute."}
-          </p>
+          <p className="mt-2 text-sm">{app.signInHelp}</p>
         </section>
 
         <section>

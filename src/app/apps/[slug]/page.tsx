@@ -67,8 +67,8 @@ export default async function AppHomePage({
         <section>
           <h2 className="text-xl font-medium">What it does</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
-            {app.collects.map((c) => (
-              <li key={c.category}>{c.purpose}</li>
+            {(app.features ?? app.collects.map((c) => c.purpose)).map((line) => (
+              <li key={line}>{line}</li>
             ))}
           </ul>
         </section>
@@ -96,7 +96,7 @@ export default async function AppHomePage({
             <a className="underline" href={`/apps/${app.slug}/delete-account`}>
               Delete your account
             </a>
-            <a className="underline" href="/terms">
+            <a className="underline" href={app.terms ? `/apps/${app.slug}/terms` : "/terms"}>
               Terms of service
             </a>
             <a className="underline" href="/refund-policy">

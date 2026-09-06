@@ -1,6 +1,13 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { APPS, CONTACT, PROCESSORS, appBySlug } from "@/lib/apps";
+import {
+  APPS,
+  CONTACT,
+  DEFAULT_NOT_COLLECTED,
+  PROCESSORS,
+  appBySlug,
+} from "@/lib/apps";
+import { rich } from "@/lib/rich";
 
 export function generateStaticParams() {
   return APPS.map((a) => ({ slug: a.slug }));
@@ -28,7 +35,7 @@ export default async function AppPrivacyPage({
       <p className="text-sm text-black/50 dark:text-white/50">{app.name}</p>
       <h1 className="mt-1 text-3xl font-semibold">Privacy Policy</h1>
       <p className="mt-2 text-sm text-black/50 dark:text-white/50">
-        Last updated: September 4, 2026 · Android {app.androidPackage}
+        Last updated: {app.policyUpdated} · Android {app.androidPackage}
       </p>
 
       <div className="mt-8 space-y-8 text-black/80 dark:text-white/80">
@@ -49,7 +56,7 @@ export default async function AppPrivacyPage({
           <code className="rounded bg-black/5 px-1.5 py-0.5 text-xs dark:bg-white/10">
             {app.androidPackage}
           </code>{" "}
-          and its iOS equivalent, and to the Sarfez service they connect to.
+          and its iOS equivalent, and to {app.serviceName} they connect to.
         </p>
         <p>{app.summary}</p>
         <p className="text-sm text-black/60 dark:text-white/60">
@@ -125,25 +132,17 @@ export default async function AppPrivacyPage({
           <h2 className="text-xl font-medium">Security</h2>
           <p className="mt-2 text-sm">
             Data is transmitted over TLS and stored on access-controlled servers.
-            Passwords are stored only as salted hashes, never in a readable form.
-            An officer or buyer can only reach records belonging to them.
+            Passwords are stored only as salted hashes, never in a readable form.{" "}
+            {app.securityNote}
           </p>
         </section>
 
         <section>
           <h2 className="text-xl font-medium">What we do not collect</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
-            <li>We do not collect your contacts, calendar, call logs or SMS.</li>
-            <li>We do not track you across other apps or websites.</li>
-            <li>We do not use advertising identifiers and show no advertising.</li>
-            <li>
-              We do not record audio or use the camera except at the moment you
-              tap to capture something.
-            </li>
-            <li>
-              We never receive your Google password, and — where the app takes
-              payments — never your card, UPI or netbanking credentials.
-            </li>
+            {(app.notCollected ?? DEFAULT_NOT_COLLECTED).map((line) => (
+              <li key={line}>{line}</li>
+            ))}
           </ul>
         </section>
 
@@ -185,11 +184,7 @@ export default async function AppPrivacyPage({
 
         <section>
           <h2 className="text-xl font-medium">Why we are allowed to hold it</h2>
-          <p className="mt-2 text-sm">
-            {app.slug.includes("field")
-              ? "We process this data on the instructions of the lending institution that assigned the visit, so that it can discharge obligations placed on it by the SARFAESI Act, 2002. That institution is the data fiduciary; we are its processor."
-              : "We process your data to provide the service you asked for — searching listings, registering interest, and completing a deposit — and, for deposit and refund records, to meet obligations under Indian financial and tax law. You give consent when you create an account, and you may withdraw it by deleting the account."}
-          </p>
+          <p className="mt-2 text-sm">{rich(app.lawfulBasis)}</p>
         </section>
 
         <section>
