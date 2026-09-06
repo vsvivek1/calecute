@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { APPS, CONTACT, appBySlug } from "@/lib/apps";
@@ -34,17 +35,31 @@ export default async function AppHomePage({
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
-      <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-3xl font-semibold">{app.name}</h1>
-        {app.isDemo && (
-          <span className="rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-1 text-xs">
-            Demo build
-          </span>
+      <div className="flex items-start gap-5">
+        {app.iconSrc && (
+          <Image
+            src={app.iconSrc}
+            alt=""
+            width={76}
+            height={76}
+            priority
+            className="shrink-0 rounded-2xl"
+          />
         )}
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-3xl font-semibold">{app.name}</h1>
+            {app.isDemo && (
+              <span className="rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-1 text-xs">
+                Demo build
+              </span>
+            )}
+          </div>
+          <p className="mt-2 text-lg text-black/60 dark:text-white/60">
+            {app.tagline}
+          </p>
+        </div>
       </div>
-      <p className="mt-2 text-lg text-black/60 dark:text-white/60">
-        {app.tagline}
-      </p>
 
       <div className="mt-10 space-y-8 text-black/80 dark:text-white/80">
         <p>{app.summary}</p>
@@ -73,6 +88,56 @@ export default async function AppHomePage({
           </ul>
         </section>
 
+        {app.qr && (
+          <section className="rounded-xl border border-black/10 p-6 dark:border-white/15">
+            <h2 className="text-xl font-medium">Get {app.name}</h2>
+            <p className="mt-2 text-sm text-black/60 dark:text-white/60">
+              Point a phone camera at the code — it opens this page. Print it for
+              a branch noticeboard, or send it to a colleague.
+            </p>
+
+            <div className="mt-5 flex flex-col gap-5 sm:flex-row sm:items-start">
+              {/* Deliberately white in both themes: a scanner needs dark
+                  modules on a light ground, and inverting the code in dark
+                  mode is a good way to make it unreadable. */}
+              <div className="self-start rounded-xl bg-white p-3 ring-1 ring-black/10">
+                <Image
+                  src={app.qr.png}
+                  alt={`QR code linking to ${app.qr.target}`}
+                  width={150}
+                  height={150}
+                  className="block h-[150px] w-[150px]"
+                />
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <p className="break-all font-mono text-xs text-black/50 dark:text-white/50">
+                  {app.qr.target}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <a
+                    download
+                    href={app.qr.png}
+                    className="rounded-lg border border-black/10 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-black/[.03] dark:border-white/15 dark:hover:bg-white/[.06]"
+                  >
+                    Download PNG
+                  </a>
+                  <a
+                    download
+                    href={app.qr.svg}
+                    className="rounded-lg border border-black/10 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-black/[.03] dark:border-white/15 dark:hover:bg-white/[.06]"
+                  >
+                    Download SVG
+                  </a>
+                </div>
+                <p className="mt-3 text-xs text-black/50 dark:text-white/50">
+                  PNG for WhatsApp and printing. SVG stays sharp at poster size.
+                </p>
+              </div>
+            </div>
+          </section>
+        )}
+
         <section>
           <h2 className="text-xl font-medium">Availability</h2>
           <p className="mt-2 text-sm">
@@ -82,6 +147,11 @@ export default async function AppHomePage({
             </code>
             .
           </p>
+          {app.availabilityNote && (
+            <p className="mt-2 text-sm text-black/60 dark:text-white/60">
+              {app.availabilityNote}
+            </p>
+          )}
         </section>
 
         <section className="rounded-xl border border-black/10 p-5 dark:border-white/15">

@@ -2,12 +2,25 @@ import Link from "next/link";
 
 const featuredProducts = [
   {
+    title: "BankMates",
+    desc:
+      "An app for Indian bank staff — staff loan, SIP, FD/RD, EMI and SARFAESI calculators that run offline on the phone, JAIIB and CAIIB study material, and a doubts-and-tips space visible only to colleagues at the same bank.",
+    emoji: "\u2615",
+    color: "bg-amber-100 dark:bg-amber-900/30",
+    href: "/apps/bankmates",
+    badge: "New",
+    badgeClass:
+      "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
+  },
+  {
     title: "DailyDo",
     desc: "Smart task management for individuals and teams — create offices, manage projects, assign tasks, and stay organised in real time.",
     emoji: "✅",
     color: "bg-blue-100 dark:bg-blue-900/30",
     href: "/products/dailydo",
     badge: "Live",
+    badgeClass:
+      "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400",
   },
 ];
 
@@ -73,7 +86,9 @@ export default function ProductsPage() {
                 {p.emoji}
               </div>
               {p.badge && (
-                <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/40 dark:text-green-400">
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${p.badgeClass}`}
+                >
                   {p.badge}
                 </span>
               )}
