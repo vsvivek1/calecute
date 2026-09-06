@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { APPS, CONTACT, appBySlug } from "@/lib/apps";
+import { rich } from "@/lib/rich";
 
 export function generateStaticParams() {
   return APPS.map((a) => ({ slug: a.slug }));
@@ -29,7 +30,6 @@ export default async function DeleteAccountPage({
 }) {
   const app = appBySlug((await params).slug);
   if (!app) notFound();
-  const isField = app.slug.includes("field");
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
@@ -48,8 +48,8 @@ export default async function DeleteAccountPage({
               {CONTACT.email}
             </a>{" "}
             from the address registered on the account, with the subject
-            &ldquo;Delete my {app.name} account&rdquo;. Include the mobile number
-            or employee ID you sign in with, so we can identify the account.
+            &ldquo;Delete my {app.name} account&rdquo;. Include{" "}
+            {app.deleteIdentifier}, so we can identify the account.
           </p>
           <p className="mt-2 text-sm">
             You do not need the app installed to make this request.
@@ -67,44 +67,15 @@ export default async function DeleteAccountPage({
         <section>
           <h2 className="text-xl font-medium">What is deleted</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
-            {isField ? (
-              <>
-                <li>Your officer profile, contact details, and preferences</li>
-                <li>Your sign-in credentials and any active sessions</li>
-                <li>Your push notification token</li>
-              </>
-            ) : (
-              <>
-                <li>Your name, phone number, email, and Google profile data</li>
-                <li>Your PAN and refund account details</li>
-                <li>Saved listings, saved searches, and alerts</li>
-                <li>Site visit requests and expressions of interest</li>
-                <li>Your push notification token and any active sessions</li>
-              </>
-            )}
+            {app.deletes.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
           </ul>
         </section>
 
         <section>
           <h2 className="text-xl font-medium">What is kept, and why</h2>
-          {isField ? (
-            <p className="mt-2 text-sm">
-              Possession reports you submitted are <strong>not</strong> deleted.
-              They are statutory records belonging to the lending institution
-              that assigned the visit, not to us — a possession panchnama cannot
-              be withdrawn because the officer who recorded it left. Your name
-              stays attached to them as the recording officer. Requests about
-              those records go to that institution.
-            </p>
-          ) : (
-            <p className="mt-2 text-sm">
-              Records of any earnest money deposit you paid or had refunded are{" "}
-              <strong>not</strong> deleted. Financial and tax law requires them
-              to be retained, and the bank running the auction needs them to
-              show who was eligible to bid. They are kept for the period the law
-              requires and then removed.
-            </p>
-          )}
+          <p className="mt-2 text-sm">{rich(app.retainsOnDelete)}</p>
         </section>
 
         <section>
