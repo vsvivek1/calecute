@@ -46,6 +46,11 @@ export default function AppsPage() {
               <a className="underline" href={`/apps/${app.slug}/support`}>
                 Support
               </a>
+              {app.terms && (
+                <a className="underline" href={`/apps/${app.slug}/terms`}>
+                  Terms
+                </a>
+              )}
               <a className="underline" href={`/apps/${app.slug}/delete-account`}>
                 Delete your account
               </a>
