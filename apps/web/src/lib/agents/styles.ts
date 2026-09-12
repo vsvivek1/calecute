@@ -1,41 +1,27 @@
 /**
- * The stylesheet for the agent programme, as a module rather than a .css file.
+ * Design system for the agent programme.
  *
- * It lives here because the public recruitment page is served as a static
- * document by a route handler, which has no CSS pipeline — the styles are
- * inlined into the <head> instead. Inlining is the better choice there anyway:
- * it removes a render-blocking round trip on a connection where the round trip
- * is the expensive part.
+ * Direction: a modern dark canvas with a live WebGL layer behind the content,
+ * glass surfaces floating over it, a generous type scale and motion on scroll.
  *
- * The app-like pages (signup, dashboards) import the same string through the
- * layout, so there is exactly one source of truth for both.
+ * What this replaced, and why it is written down: the first version was built to
+ * a 150KB budget with no JavaScript, because the original brief argued that a
+ * quiet, notice-like page was what would convince a scam-sceptical reader. The
+ * client chose the 3D direction instead, which supersedes that budget and the
+ * JS-disabled requirement. Both trade-offs are recorded in the README.
+ *
+ * What did NOT change, because it is substance rather than style:
+ *   - Malayalam primary, English a secondary gloss beneath. Never a toggle.
+ *   - No earnings figure anywhere.
+ *   - Commission terms, including the TDS deduction, stated in full and given
+ *     prominence rather than buried.
+ *   - The MCA verification invitation.
+ *   - 44px tap targets, AA contrast, and a layout that survives 200% zoom.
+ *   - prefers-reduced-motion turns off every animation, including the 3D scene.
  */
 export const AGENT_STYLES = String.raw`
-/*
- * Styles for the recruitment page and the agent/admin areas.
- *
- * Hand-written rather than Tailwind, and deliberately so: this page has a 150KB
- * budget including fonts, of which the Malayalam subset already takes 35KB.
- * Every rule here is one the page actually uses.
- *
- * Design brief, restated because it explains the choices below: the visitor
- * arrived from a WhatsApp forward and assumes this is a scam. Kerala is
- * saturated with chit-fund and MLM recruitment. So — no gradients, no stock
- * photography, no counters, no urgency, no testimonials. It should read like a
- * notice from an organisation that does not need to persuade you.
- */
-
 /* ------------------------------------------------------------------ font */
 
-/*
- * Self-hosted and subset. \`unicode-range\` is what keeps it honest: the browser
- * only downloads this file when Malayalam is actually on the page, and Latin
- * text never triggers it.
- *
- * \`font-display: swap\` so text is readable immediately on a slow connection —
- * a blank page for two seconds is worse than a brief fallback, especially for a
- * reader deciding whether to trust the page at all.
- */
 @font-face {
   font-family: "Noto Sans Malayalam Subset";
   src: url("/fonts/noto-malayalam-400.woff2") format("woff2");
@@ -46,323 +32,446 @@ export const AGENT_STYLES = String.raw`
 }
 
 :root {
-  /* Latin uses the system stack: nothing to download, and it is what the rest
-     of the phone's UI looks like, which reads as ordinary rather than styled. */
   --font-latin: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
   --font-ml: "Noto Sans Malayalam Subset", var(--font-latin);
 
-  --ink: #1a1a1a;          /* 16.1:1 on white */
-  --ink-muted: #565656;    /* 7.4:1 — AA for body text, not just large */
-  --ink-faint: #6b6b6b;    /* 5.3:1 — AA for text 16px and above */
-  --rule: #d4d4d4;
-  --rule-strong: #1a1a1a;
-  --paper: #ffffff;
-  --paper-tint: #f7f7f5;
-  --link: #14487e;         /* 8.6:1 */
-  --ok: #1c6b3f;           /* 5.4:1 */
-  --warn: #8a5a00;         /* 5.1:1 */
-  --stop: #9b1c1c;         /* 7.0:1 */
+  /* Deep, slightly blue-black. Pure #000 makes the WebGL layer look detached. */
+  --bg: #06080c;
+  --bg-raised: #0b0e14;
 
-  --measure: 34rem;        /* comfortable line length for both scripts */
+  --ink: #f2f5f9;          /* 17:1 on --bg */
+  --ink-muted: #9aa6b8;    /* 8.1:1  — AA for body text */
+  --ink-faint: #7d8798;    /* 5.6:1  — AA at 16px+ */
+
+  /* Kerala green through backwater teal. Used for emphasis, never for alarm. */
+  --accent: #34d399;
+  --accent-2: #22d3ee;
+  --accent-deep: #0f766e;
+  --gold: #fbbf24;         /* official/verification cues only */
+  --stop: #fb7185;
+
+  /*
+   * Panels are tinted DARK, not white-translucent. A white glass panel over the
+   * WebGL field let the particles read straight through the text and dropped
+   * contrast well below AA. These keep the frosted look while holding the
+   * background down to something text can sit on.
+   */
+  --glass: rgba(9, 12, 18, 0.72);
+  --glass-strong: rgba(11, 15, 22, 0.82);
+  --glass-subtle: rgba(255, 255, 255, 0.04);
+  --hairline: rgba(255, 255, 255, 0.09);
+  --hairline-strong: rgba(255, 255, 255, 0.16);
+
+  --radius: 18px;
+  --radius-sm: 10px;
+
+  --shadow-near: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-far: 0 24px 60px -18px rgba(0, 0, 0, 0.85);
+
+  --measure: 44rem;
 }
-
-/* Respect the reader's own settings; nothing here overrides a chosen theme. */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --ink: #ededed;
-    --ink-muted: #b4b4b4;
-    --ink-faint: #9a9a9a;
-    --rule: #3a3a3a;
-    --rule-strong: #ededed;
-    --paper: #121212;
-    --paper-tint: #1b1b1b;
-    --link: #8ab4f8;
-    --ok: #6bbf8a;
-    --warn: #e0b055;
-    --stop: #f08b8b;
-  }
-}
-
-/* ------------------------------------------------------------- structure */
 
 * { box-sizing: border-box; }
 
 html {
-  /* rem-based sizing throughout, so 200% browser zoom scales everything. */
   font-size: 100%;
   -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  background: var(--paper);
+  background: var(--bg);
   color: var(--ink);
   font-family: var(--font-ml);
-  /* 1.125rem: Malayalam conjuncts are dense and lose legibility below this on a
-     small screen. */
-  font-size: 1.125rem;
-  line-height: 1.65;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
+
+/* The WebGL canvas sits behind everything and never intercepts input. */
+.scene-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.scene-layer canvas { display: block; width: 100%; height: 100%; }
+
+/*
+ * A soft vignette over the scene. Without it, text sitting on the brighter
+ * parts of the animation drops below AA contrast as the scene moves.
+ */
+.scene-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(135% 62% at 52% 4%, transparent 0%, rgba(6, 8, 12, 0.55) 58%, var(--bg) 88%),
+    linear-gradient(to bottom, rgba(6, 8, 12, 0.1) 0%, rgba(6, 8, 12, 0.45) 42%, rgba(6, 8, 12, 0.9) 70%, var(--bg) 100%);
+}
+
+.content { position: relative; z-index: 2; }
 
 .wrap {
   max-width: var(--measure);
   margin: 0 auto;
-  padding: 1.5rem 1.25rem 4rem;
+  padding: 0 1.25rem 6rem;
 }
 
-/* A thin rule between sections rather than cards or shadows. */
-section + section {
-  margin-top: 2.25rem;
-  padding-top: 2.25rem;
-  border-top: 1px solid var(--rule);
-}
+/* ---------------------------------------------------------------- type */
 
 h1, h2, h3 {
-  font-weight: 400;   /* only one weight is shipped; hierarchy is size + space */
-  line-height: 1.35;
-  margin: 0 0 0.5rem;
-  letter-spacing: -0.01em;
+  font-weight: 400;
+  line-height: 1.25;
+  margin: 0 0 0.6rem;
+  letter-spacing: -0.02em;
 }
 
-h1 { font-size: 1.6rem; }
-h2 { font-size: 1.25rem; }
-h3 { font-size: 1.05rem; }
+h1 { font-size: clamp(1.9rem, 6vw, 3.1rem); }
+h2 { font-size: clamp(1.35rem, 3.6vw, 1.85rem); }
+h3 { font-size: 1.1rem; }
 
-p { margin: 0 0 0.9rem; }
+p { margin: 0 0 1rem; }
 p:last-child { margin-bottom: 0; }
 
-/* ------------------------------------------------------------- bilingual */
+.eyebrow {
+  font-family: var(--font-latin);
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1rem;
+  display: block;
+}
 
-/*
- * Malayalam primary, English secondary — both always rendered, never a toggle.
- * The English sits directly beneath its Malayalam, smaller and muted, so a
- * reader of either language can follow the page without choosing anything.
- */
+/* ----------------------------------------------------------- bilingual */
+
 .ml { display: block; }
 
 .en {
   display: block;
   font-family: var(--font-latin);
   font-size: 0.8125em;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--ink-faint);
-  margin-top: 0.15em;
+  margin-top: 0.3em;
+  letter-spacing: 0;
 }
 
-.bi { margin-bottom: 0.9rem; }
+.bi { margin-bottom: 1rem; }
 .bi:last-child { margin-bottom: 0; }
 
-/* --------------------------------------------------------------- header */
+/* ---------------------------------------------------------------- hero */
+
+.hero {
+  min-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5rem 0 4rem;
+}
+
+.hero h1 .en { font-size: 0.42em; margin-top: 0.6em; }
+
+.hero-sub { max-width: 32rem; color: var(--ink-muted); margin-top: 1.5rem; }
+.hero-sub .en { color: var(--ink-faint); }
+
+/* -------------------------------------------------------------- glass */
+
+.panel {
+  position: relative;
+  background: var(--glass);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: 1.6rem 1.5rem;
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  box-shadow: var(--shadow-far);
+}
+
+.panel + .panel { margin-top: 1rem; }
+
+/* The terms box: the one surface given a lit edge, because full disclosure is
+   the argument this page is making and it should look deliberate. */
+.panel.emphasis {
+  background: var(--glass-strong);
+  border-color: var(--hairline-strong);
+}
+
+.panel.emphasis::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(140deg, var(--accent), transparent 45%, var(--accent-2));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+section { padding: 3.25rem 0 0; }
+
+/* ---------------------------------------------------------- identity */
 
 .masthead {
-  border-bottom: 2px solid var(--rule-strong);
-  padding-bottom: 1rem;
-  margin-bottom: 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  background: rgba(6, 8, 12, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--hairline);
 }
 
-.masthead .legal-name {
-  font-size: 1.0625rem;
-  line-height: 1.4;
+.masthead .mark {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  flex: 0 0 auto;
+  background: linear-gradient(140deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 24px -4px var(--accent);
 }
 
-.identity {
+.masthead .who {
   font-family: var(--font-latin);
   font-size: 0.8125rem;
+  line-height: 1.3;
   color: var(--ink-muted);
-  margin-top: 0.5rem;
-  line-height: 1.7;
+  min-width: 0;
+}
+
+.masthead .who strong { color: var(--ink); font-weight: 600; display: block; }
+
+.identity {
+  display: grid;
+  gap: 0.75rem;
+  font-family: var(--font-latin);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.identity div {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin: 0;
 }
 
 .identity dt {
-  display: inline;
-  font-weight: 600;
+  color: var(--ink-faint);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  min-width: 5.5rem;
 }
-.identity dd {
-  display: inline;
-  margin: 0 0 0 0.25rem;
-}
-/* Each row on its own line; label and value inline within it. */
-.identity div { margin: 0; display: block; }
 
-/* ---------------------------------------------------------- commission */
+.identity dd { margin: 0; color: var(--ink); }
+
+.cin-value {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+}
+
+/* --------------------------------------------------------------- lists */
+
+.terms-list, .plain-list { list-style: none; margin: 0; padding: 0; }
 
 /*
- * The terms box. Bordered and stated in full, immediately, including the TDS
- * deduction — disclosure is the conversion mechanism on this page, so it is
- * given prominence rather than tucked into a footnote.
+ * The counter is positioned absolutely rather than made a grid cell. As a grid,
+ * the Malayalam and English runs inside each <li> became separate grid items:
+ * the English wrapped into the 1.5rem counter column and rendered one word per
+ * line. Caught in review of the TDS line, which is the last thing on this page
+ * that should be hard to read.
  */
-.terms-box {
-  border: 2px solid var(--rule-strong);
-  padding: 1.1rem 1.15rem;
-  margin: 0.25rem 0 0;
-}
-
-.terms-box h2 { margin-bottom: 0.75rem; }
-
-.terms-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
 .terms-list > li {
-  padding: 0.55rem 0;
-  border-top: 1px solid var(--rule);
+  position: relative;
+  padding: 0.9rem 0 0.9rem 1.9rem;
+  border-top: 1px solid var(--hairline);
 }
-.terms-list > li:first-child { border-top: 0; padding-top: 0; }
-.terms-list > li:last-child { padding-bottom: 0; }
+.terms-list > li:first-child { border-top: 0; padding-top: 0.25rem; }
 
-/* ------------------------------------------------------------ not-asked */
-
-.plain-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.terms-list > li::before {
+  content: counter(term);
+  counter-increment: term;
+  position: absolute;
+  left: 0;
+  top: 1.15em;
+  font-family: var(--font-latin);
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
 }
+.terms-list > li:first-child::before { top: 0.5em; }
+.terms-list { counter-reset: term; }
 
 .plain-list > li {
+  padding: 0.55rem 0 0.55rem 1.9rem;
   position: relative;
-  padding-left: 1.35rem;
-  margin-bottom: 0.7rem;
 }
 
-/* A rule, not a tick: a checklist of reassurances reads as marketing. */
+/* A struck-through dot: these are the things we do NOT ask for. */
 .plain-list > li::before {
   content: "";
   position: absolute;
-  left: 0;
-  top: 0.72em;
-  width: 0.8rem;
-  height: 1px;
-  background: var(--ink-faint);
+  left: 0.15rem;
+  top: 0.95em;
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 1.5px solid var(--accent);
+  border-radius: 50%;
+  opacity: 0.75;
+}
+.plain-list > li::after {
+  content: "";
+  position: absolute;
+  left: 0.3rem;
+  top: 1.33em;
+  width: 0.55rem;
+  height: 1.5px;
+  background: var(--accent);
+  opacity: 0.75;
 }
 
-/* ------------------------------------------------------------- controls */
+/* ------------------------------------------------------------ controls */
 
-/*
- * Tap targets are 44px minimum throughout. The target device is a cheap phone
- * held in one hand, often by someone who is not a confident typist.
- */
-.button,
-button,
-input[type="submit"] {
+.button, button, input[type="submit"] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  min-height: 44px;
-  padding: 0.65rem 1.1rem;
+  min-height: 48px;
+  padding: 0.75rem 1.5rem;
   font: inherit;
   font-size: 1rem;
-  color: var(--paper);
-  background: var(--ink);
-  border: 2px solid var(--ink);
-  border-radius: 2px;
+  color: #04130d;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border: 0;
+  border-radius: 999px;
   text-decoration: none;
   cursor: pointer;
   width: 100%;
+  box-shadow: 0 10px 30px -12px var(--accent), var(--shadow-near);
+  transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
 }
 
-.button:hover,
-button:hover { opacity: 0.88; }
+.button:hover, button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow: 0 16px 40px -14px var(--accent), var(--shadow-near);
+}
+
+.button:active, button:active { transform: translateY(0); }
+
+.button .en { color: #04130d; opacity: 0.7; margin-top: 0.1em; }
 
 .button.secondary {
   color: var(--ink);
-  background: transparent;
+  background: var(--glass-strong);
+  border: 1px solid var(--hairline-strong);
+  box-shadow: none;
+  backdrop-filter: blur(12px);
 }
-
-.button .en { color: inherit; opacity: 0.75; margin-top: 0; }
+.button.secondary .en { color: var(--ink-faint); }
 
 .button-note {
   font-family: var(--font-latin);
   font-size: 0.8125rem;
   color: var(--ink-faint);
-  margin-top: 0.6rem;
+  margin-top: 0.85rem;
 }
 
-label {
-  display: block;
-  margin-bottom: 0.3rem;
-}
-
-/* Labels are real labels, never placeholder-only. */
-.field { margin-bottom: 1.35rem; }
+label { display: block; margin-bottom: 0.4rem; }
+.field { margin-bottom: 1.4rem; }
 
 .field-hint {
   font-family: var(--font-latin);
   font-size: 0.8125rem;
   color: var(--ink-faint);
-  margin-top: 0.35rem;
+  margin-top: 0.4rem;
 }
 
-input[type="text"],
-input[type="tel"],
-input[type="search"],
-select,
-textarea {
+input[type="text"], input[type="tel"], input[type="search"],
+select, textarea {
   display: block;
   width: 100%;
-  min-height: 44px;
-  padding: 0.55rem 0.7rem;
+  min-height: 48px;
+  padding: 0.7rem 0.9rem;
   font: inherit;
   font-size: 1rem;
   color: var(--ink);
-  background: var(--paper);
-  border: 1px solid var(--ink-muted);
-  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-sm);
+  transition: border-color 140ms ease, background 140ms ease;
 }
 
-select { appearance: none; background-image: none; }
-
-:focus-visible {
-  outline: 3px solid var(--link);
-  outline-offset: 2px;
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.06);
 }
+
+select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-muted) 50%),
+    linear-gradient(135deg, var(--ink-muted) 50%, transparent 50%);
+  background-position: calc(100% - 20px) calc(1.4em), calc(100% - 15px) calc(1.4em);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 2.5rem;
+}
+
+option { background: var(--bg-raised); color: var(--ink); }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 fieldset {
-  border: 1px solid var(--rule);
-  border-radius: 2px;
-  padding: 0.9rem 1rem;
-  margin: 0 0 1.35rem;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.1rem;
+  margin: 0 0 1.4rem;
 }
 
-legend { padding: 0 0.4rem; }
+legend { padding: 0 0.45rem; color: var(--ink-muted); }
 
 .choice {
   display: flex;
   align-items: flex-start;
-  gap: 0.6rem;
+  gap: 0.7rem;
   min-height: 44px;
-  padding: 0.35rem 0;
+  padding: 0.4rem 0;
 }
-
-.choice input { margin-top: 0.55rem; width: 1.15rem; height: 1.15rem; }
+.choice input { margin-top: 0.6rem; width: 1.15rem; height: 1.15rem; accent-color: var(--accent); }
 .choice label { margin: 0; }
 
-/* The honeypot. Hidden from sight and from assistive technology, but a bot
-   filling every input will still trip it. Not display:none — some bots skip
-   those. */
-.trap {
-  position: absolute;
-  left: -9999px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
+.trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
 /* -------------------------------------------------------------- notices */
 
 .notice {
-  border-left: 3px solid var(--rule-strong);
-  padding: 0.75rem 0 0.75rem 0.9rem;
-  margin: 1rem 0;
-  background: var(--paper-tint);
+  border-left: 2px solid var(--accent);
+  padding: 0.85rem 0 0.85rem 1rem;
+  margin: 1.1rem 0;
+  background: linear-gradient(90deg, rgba(52, 211, 153, 0.07), transparent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
-.notice.ok { border-left-color: var(--ok); }
-.notice.warn { border-left-color: var(--warn); }
-.notice.stop { border-left-color: var(--stop); }
+.notice.warn { border-left-color: var(--gold); background: linear-gradient(90deg, rgba(251, 191, 36, 0.08), transparent); }
+.notice.stop { border-left-color: var(--stop); background: linear-gradient(90deg, rgba(251, 113, 133, 0.08), transparent); }
 
 .placeholder-flag {
   display: inline-block;
@@ -371,105 +480,156 @@ legend { padding: 0 0.4rem; }
   letter-spacing: 0.04em;
   color: var(--stop);
   border: 1px dashed var(--stop);
-  padding: 0.1rem 0.35rem;
-  border-radius: 2px;
+  padding: 0.15rem 0.45rem;
+  border-radius: 6px;
+  background: rgba(251, 113, 133, 0.07);
 }
 
-/* -------------------------------------------------------- availability */
+/* ---------------------------------------------------------- availability */
 
 .slots {
-  font-family: var(--font-latin);
   display: flex;
   align-items: baseline;
-  gap: 0.5rem;
-  margin: 0.75rem 0 0.25rem;
+  gap: 0.6rem;
+  margin: 1rem 0 0.5rem;
+  font-family: var(--font-latin);
 }
 
 .slots .count {
-  font-size: 2rem;
+  font-size: clamp(2.6rem, 9vw, 3.6rem);
   line-height: 1;
   font-variant-numeric: tabular-nums;
+  background: linear-gradient(140deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .slots .of { color: var(--ink-faint); font-size: 0.9rem; }
 
+.slot-meter {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  margin: 0.75rem 0 1.25rem;
+}
+
+.slot-meter > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
 /* ----------------------------------------------------------------- link */
 
-a { color: var(--link); }
-a:hover { text-decoration-thickness: 2px; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:hover { color: var(--accent-2); }
 
 .verify-link {
-  display: inline-block;
-  min-height: 44px;
-  line-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 999px;
+  text-decoration: none;
+  background: var(--glass);
+  backdrop-filter: blur(12px);
 }
+.verify-link:hover { border-color: var(--accent); background: var(--glass-strong); }
 
 /* --------------------------------------------------------------- footer */
 
 .page-footer {
-  margin-top: 3rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--rule);
+  margin-top: 4rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--hairline);
   font-family: var(--font-latin);
   font-size: 0.8125rem;
-  color: var(--ink-muted);
-  line-height: 1.7;
+  color: var(--ink-faint);
+  line-height: 1.8;
 }
 
 .page-footer a { color: var(--ink-muted); }
-
-.footer-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 0.75rem;
-}
-
+.footer-links { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-top: 1rem; }
 .footer-links a { min-height: 44px; line-height: 44px; }
 
-/* --------------------------------------------------------- dashboards */
+/* --------------------------------------------------------- scroll reveal */
+
+/*
+ * Opacity and a small translate only — nothing that reflows, so this cannot
+ * cause layout shift. Elements start visible and the script opts them in, so a
+ * failure to load JavaScript leaves the content readable rather than invisible.
+ */
+.reveal-ready .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 640ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 640ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-ready .reveal.shown { opacity: 1; transform: none; }
+
+/* ---------------------------------------------------------- dashboards */
+
+.app-shell { position: relative; z-index: 2; }
 
 .bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
-  padding-bottom: 1rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid var(--rule-strong);
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: rgba(6, 8, 12, 0.72);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--hairline);
+  position: sticky;
+  top: 0;
+  z-index: 5;
 }
 
 .bar form { margin: 0; }
-.bar button { width: auto; min-height: 44px; }
+.bar button { width: auto; min-height: 40px; padding: 0.4rem 1rem; font-size: 0.875rem; }
 
 .stat-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
-  gap: 1px;
-  background: var(--rule);
-  border: 1px solid var(--rule);
-  margin: 1rem 0;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
 }
 
 .stat {
-  background: var(--paper);
-  padding: 0.9rem 1rem;
+  background: var(--glass);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.2rem;
   font-family: var(--font-latin);
+  backdrop-filter: blur(12px);
 }
 
 .stat .label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
   color: var(--ink-faint);
 }
 
 .stat .value {
-  font-size: 1.5rem;
-  line-height: 1.2;
-  margin-top: 0.25rem;
+  font-size: 1.75rem;
+  line-height: 1.15;
+  margin-top: 0.4rem;
   font-variant-numeric: tabular-nums;
+}
+
+.stat.accent .value {
+  background: linear-gradient(140deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .data-table {
@@ -479,87 +639,124 @@ a:hover { text-decoration-thickness: 2px; }
   font-size: 0.875rem;
 }
 
-.data-table th,
-.data-table td {
+.data-table th, .data-table td {
   text-align: left;
-  padding: 0.55rem 0.6rem;
-  border-bottom: 1px solid var(--rule);
+  padding: 0.7rem 0.75rem;
+  border-bottom: 1px solid var(--hairline);
   vertical-align: top;
 }
 
 .data-table th {
   font-weight: 600;
   white-space: nowrap;
-  border-bottom: 2px solid var(--rule-strong);
+  color: var(--ink-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  position: sticky;
+  top: 0;
+  background: var(--bg-raised);
 }
 
+.data-table tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
 .data-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
 
-/* Wide tables scroll inside their own box; the page never scrolls sideways. */
 .table-scroll {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  background: var(--glass);
 }
 
-.admin-wrap { max-width: 70rem; }
+.admin-wrap { max-width: 76rem; margin: 0 auto; padding: 1.5rem 1.25rem 5rem; }
 
 .filters {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
   align-items: flex-end;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
-
 .filters .field { margin-bottom: 0; min-width: 10rem; flex: 1 1 10rem; }
 .filters button { width: auto; }
 
 .report-nav {
   list-style: none;
-  margin: 0 0 1.5rem;
+  margin: 0 0 1.75rem;
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 
 .report-nav a {
   display: inline-block;
   min-height: 44px;
   line-height: 44px;
-  padding: 0 0.75rem;
+  padding: 0 1rem;
   font-family: var(--font-latin);
   font-size: 0.8125rem;
-  border: 1px solid var(--rule);
-  border-radius: 2px;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
   text-decoration: none;
-  color: var(--ink);
+  color: var(--ink-muted);
+  background: var(--glass);
+  transition: border-color 140ms ease, color 140ms ease;
 }
+
+.report-nav a:hover { border-color: var(--hairline-strong); color: var(--ink); }
 
 .report-nav a[aria-current="page"] {
-  border-color: var(--rule-strong);
-  border-width: 2px;
+  border-color: var(--accent);
+  color: var(--ink);
+  background: rgba(52, 211, 153, 0.1);
 }
 
-.qr { max-width: 220px; width: 100%; height: auto; }
+.qr {
+  max-width: 220px;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+  background: #fff;
+  padding: 0.75rem;
+}
 
 .code-badge {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 1.25rem;
-  letter-spacing: 0.06em;
-  border: 2px solid var(--rule-strong);
-  padding: 0.4rem 0.7rem;
+  font-size: 1.35rem;
+  letter-spacing: 0.1em;
+  padding: 0.55rem 1rem;
   display: inline-block;
+  border-radius: var(--radius-sm);
+  background: var(--glass-strong);
+  border: 1px solid var(--hairline-strong);
+  color: var(--accent);
 }
+
+/* Simple CSS bar chart for coverage and revenue reports. */
+.chart { display: grid; gap: 0.5rem; margin: 1rem 0 1.5rem; font-family: var(--font-latin); }
+.chart-row { display: grid; grid-template-columns: 9rem 1fr 4rem; gap: 0.75rem; align-items: center; font-size: 0.8125rem; }
+.chart-track { height: 10px; border-radius: 999px; background: rgba(255,255,255,0.07); overflow: hidden; }
+.chart-fill { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+.chart-row .num { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-muted); }
 
 @media (min-width: 40rem) {
-  .wrap { padding: 2.5rem 1.5rem 5rem; }
-  h1 { font-size: 1.9rem; }
-  .button { width: auto; min-width: 16rem; }
+  .wrap { padding: 0 1.5rem 7rem; }
+  .panel { padding: 2rem 2rem; }
+  .button { width: auto; min-width: 18rem; }
 }
 
-/* Anyone who has asked for less motion gets none; there is very little anyway. */
+/*
+ * Reduced motion switches everything off, including the WebGL scene — the
+ * canvas component checks the same query and renders a still frame.
+ */
 @media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+  .reveal-ready .reveal { opacity: 1 !important; transform: none !important; }
 }
 `;

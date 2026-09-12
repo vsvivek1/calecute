@@ -17,5 +17,8 @@
     "geo:fetch": "npm run geo:fetch --workspace=apps/api",
     "openapi": "npm run openapi --workspace=apps/api",
     "api:types": "npm run api:types --workspace=apps/web"
+  },
+  "devDependencies": {
+    "xlsx": "^0.18.5"
   }
 }
