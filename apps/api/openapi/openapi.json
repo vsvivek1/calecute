@@ -381,6 +381,622 @@
           }
         }
       },
+      "AgentSummary": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "agentCode": {
+            "type": "string",
+            "examples": [
+              "CA-KKD-000123"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING_REVIEW",
+              "APPROVED",
+              "REJECTED",
+              "SUSPENDED",
+              "WAITLISTED",
+              "WITHDRAWN"
+            ]
+          },
+          "districtId": {
+            "type": "integer"
+          },
+          "districtNameEn": {
+            "type": "string"
+          },
+          "districtNameMl": {
+            "type": "string"
+          },
+          "localBodyId": {
+            "type": "integer"
+          },
+          "localBodyNameEn": {
+            "type": "string"
+          },
+          "localBodyNameMl": {
+            "type": "string"
+          },
+          "mobileVerifiedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "MeResponse": {
+        "type": "object",
+        "required": [
+          "user",
+          "agent",
+          "districtScope",
+          "landing"
+        ],
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/SessionUser"
+          },
+          "agent": {
+            "$ref": "#/components/schemas/AgentSummary"
+          },
+          "districtScope": {
+            "description": "\"ALL\" for a super admin, otherwise the assigned district ids.",
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "ALL"
+                ]
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            ]
+          },
+          "districtScopeDetail": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "districtId": {
+                  "type": "integer"
+                },
+                "nameEn": {
+                  "type": "string"
+                },
+                "nameMl": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "landing": {
+            "type": "string",
+            "description": "Where this client should navigate after sign-in. Follow it rather than deciding from the role.",
+            "examples": [
+              "/agents/dashboard",
+              "/agents/signup",
+              "/admin"
+            ]
+          }
+        }
+      },
+      "Ward": {
+        "type": "object",
+        "required": [
+          "id",
+          "number",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "number": {
+            "type": "integer"
+          },
+          "nameEn": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "nameMl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "COMPLETE",
+              "PARTIAL",
+              "PENDING"
+            ],
+            "description": "PENDING means the ward exists but no official name has been loaded."
+          }
+        }
+      },
+      "WardList": {
+        "type": "object",
+        "required": [
+          "data",
+          "wardData"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Ward"
+            }
+          },
+          "wardData": {
+            "type": "string",
+            "enum": [
+              "COMPLETE",
+              "PARTIAL",
+              "PENDING"
+            ]
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Present when the list is empty, explaining why."
+          }
+        }
+      },
+      "SignupResponse": {
+        "type": "object",
+        "required": [
+          "agent",
+          "slotsRemainingAfter"
+        ],
+        "properties": {
+          "agent": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "agentCode": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "districtId": {
+                "type": "integer"
+              },
+              "localBodyId": {
+                "type": "integer"
+              },
+              "wardId": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            }
+          },
+          "slotsRemainingAfter": {
+            "type": "integer"
+          },
+          "nextStep": {
+            "type": "string"
+          }
+        }
+      },
+      "Eligibility": {
+        "type": "object",
+        "required": [
+          "canApply"
+        ],
+        "properties": {
+          "canApply": {
+            "type": "boolean"
+          },
+          "existingApplication": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "agentCode": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              }
+            }
+          },
+          "currentTerms": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "version": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              }
+            }
+          },
+          "availability": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Availability"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "EarningsSummary": {
+        "type": "object",
+        "required": [
+          "pendingPaise",
+          "paidPaise",
+          "lifetimePaise",
+          "currency"
+        ],
+        "properties": {
+          "pendingPaise": {
+            "type": "integer",
+            "description": "Accrued and approved, not yet paid."
+          },
+          "paidPaise": {
+            "type": "integer"
+          },
+          "lifetimePaise": {
+            "type": "integer"
+          },
+          "tdsWithheldPaise": {
+            "type": "integer"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "INR"
+            ]
+          }
+        }
+      },
+      "PayoutState": {
+        "type": "object",
+        "properties": {
+          "panStatus": {
+            "type": "string",
+            "enum": [
+              "NOT_SUBMITTED",
+              "PENDING_VERIFICATION",
+              "VERIFIED",
+              "REJECTED",
+              "DUPLICATE_CANCELLED"
+            ]
+          },
+          "pan": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Masked, e.g. XXXXX1234F. Never the real value."
+          },
+          "bankConfigured": {
+            "type": "boolean"
+          },
+          "withdrawalBlocked": {
+            "type": "boolean"
+          },
+          "blockedReason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "PayoutProfile": {
+        "type": "object",
+        "properties": {
+          "pan": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "panStatus": {
+            "type": "string"
+          },
+          "panVerifiedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "bankAccount": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "bankIfsc": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "bankHolderName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "upiId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "mobileVerified": {
+            "type": "boolean"
+          },
+          "withdrawal": {
+            "type": "object",
+            "properties": {
+              "blocked": {
+                "type": "boolean"
+              },
+              "reasons": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "pendingBalancePaise": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "AgentDashboard": {
+        "type": "object",
+        "required": [
+          "agent",
+          "referral",
+          "earnings",
+          "payout",
+          "customers",
+          "products"
+        ],
+        "properties": {
+          "agent": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "agentCode": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "mobileVerified": {
+                "type": "boolean"
+              }
+            }
+          },
+          "referral": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "link": {
+                "type": "string"
+              },
+              "qrUrl": {
+                "type": "string"
+              },
+              "whatsappShareUrl": {
+                "type": "string"
+              }
+            }
+          },
+          "earnings": {
+            "$ref": "#/components/schemas/EarningsSummary"
+          },
+          "payout": {
+            "$ref": "#/components/schemas/PayoutState"
+          },
+          "customers": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "recent": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "customerId": {
+                      "type": "integer"
+                    },
+                    "displayName": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "lockedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "nameEn": {
+                  "type": "string"
+                },
+                "nameMl": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ReportCatalogue": {
+        "type": "object",
+        "required": [
+          "defaultReport",
+          "data"
+        ],
+        "properties": {
+          "defaultReport": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "slug": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "columns": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "type": "string"
+                      },
+                      "header": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "formats": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "filters": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ReportResult": {
+        "type": "object",
+        "required": [
+          "report",
+          "columns",
+          "rowCount",
+          "data"
+        ],
+        "properties": {
+          "report": {
+            "type": "object",
+            "properties": {
+              "slug": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          },
+          "filter": {
+            "type": "object"
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "header": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "rowCount": {
+            "type": "integer"
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when the row cap was hit."
+          },
+          "data": {
+            "type": "array",
+            "description": "Row shape varies by report; use `columns` to render generically.",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      },
       "GoogleAuthRequest": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "anyOf": [
@@ -1314,41 +1930,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "user": {
-                      "$ref": "#/components/schemas/SessionUser"
-                    },
-                    "agent": {
-                      "type": [
-                        "object",
-                        "null"
-                      ]
-                    },
-                    "districtScope": {
-                      "oneOf": [
-                        {
-                          "type": "string",
-                          "enum": [
-                            "ALL"
-                          ]
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "type": "integer"
-                          }
-                        }
-                      ]
-                    },
-                    "landing": {
-                      "type": "string",
-                      "examples": [
-                        "/agents/dashboard",
-                        "/admin"
-                      ]
-                    }
-                  }
+                  "$ref": "#/components/schemas/MeResponse"
                 }
               }
             }
@@ -2054,7 +2636,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/WardList"
                 }
               }
             }
@@ -2220,7 +2802,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Eligibility"
                 }
               }
             }
@@ -2321,7 +2903,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/SignupResponse"
                 }
               }
             }
@@ -2640,7 +3222,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/AgentDashboard"
                 }
               }
             }
@@ -3562,7 +4144,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/PayoutProfile"
                 }
               }
             }
@@ -4064,7 +4646,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/ReportCatalogue"
                 }
               }
             }
@@ -4249,7 +4831,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/ReportResult"
                 }
               },
               "text/csv": {

@@ -1,6 +1,21 @@
 /**
- * Single source of truth for company identity shown across the site.
- * Keep this in sync with the LLC filing and the India office registration.
+ * Company identity for the INTERNATIONAL-facing site.
+ *
+ * Two legal entities exist and they are not interchangeable:
+ *
+ *   - Calecute Technologies LLC (Wyoming) — this file. Used everywhere the
+ *     audience is international: the marketing site, the app pages, services.
+ *   - Calecute Technologies (OPC) Private Limited (Kozhikode) — see
+ *     src/lib/agents/content.ts. Used for India-facing surfaces, which today
+ *     means the commission agent programme under /agents.
+ *
+ * The difference is deliberate, not drift. Do not unify them: the agent
+ * programme is an Indian commercial arrangement with an Indian CIN, TDS under
+ * Section 194H, and an MCA record a recruit is invited to verify. Presenting a
+ * Wyoming LLC there would be both wrong and, on a page whose entire purpose is
+ * proving the company is real, actively harmful.
+ *
+ * Keep this in sync with the LLC filing.
  */
 export const company = {
   brand: "Calecutech",

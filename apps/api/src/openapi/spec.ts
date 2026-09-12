@@ -345,6 +345,293 @@ const commissionTermsSchema: Json = {
   },
 };
 
+
+/* ------------------------------------------------- response body schemas */
+// The frontend generates its types from these, so the endpoints it actually
+// calls describe their responses properly rather than as a bare object.
+
+const agentSummarySchema: Json = {
+  type: ["object", "null"],
+  properties: {
+    id: { type: "integer" },
+    agentCode: { type: "string", examples: ["CA-KKD-000123"] },
+    status: {
+      type: "string",
+      enum: ["PENDING_REVIEW", "APPROVED", "REJECTED", "SUSPENDED", "WAITLISTED", "WITHDRAWN"],
+    },
+    districtId: { type: "integer" },
+    districtNameEn: { type: "string" },
+    districtNameMl: { type: "string" },
+    localBodyId: { type: "integer" },
+    localBodyNameEn: { type: "string" },
+    localBodyNameMl: { type: "string" },
+    mobileVerifiedAt: { type: ["string", "null"], format: "date-time" },
+  },
+};
+
+const meResponseSchema: Json = {
+  type: "object",
+  required: ["user", "agent", "districtScope", "landing"],
+  properties: {
+    user: ref("SessionUser"),
+    agent: ref("AgentSummary"),
+    districtScope: {
+      description: '"ALL" for a super admin, otherwise the assigned district ids.',
+      oneOf: [
+        { type: "string", enum: ["ALL"] },
+        { type: "array", items: { type: "integer" } },
+      ],
+    },
+    districtScopeDetail: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          districtId: { type: "integer" },
+          nameEn: { type: "string" },
+          nameMl: { type: "string" },
+        },
+      },
+    },
+    landing: {
+      type: "string",
+      description:
+        "Where this client should navigate after sign-in. Follow it rather than deciding from the role.",
+      examples: ["/agents/dashboard", "/agents/signup", "/admin"],
+    },
+  },
+};
+
+const wardSchema: Json = {
+  type: "object",
+  required: ["id", "number", "status"],
+  properties: {
+    id: { type: "integer" },
+    number: { type: "integer" },
+    nameEn: { type: ["string", "null"] },
+    nameMl: { type: ["string", "null"] },
+    status: {
+      type: "string",
+      enum: ["COMPLETE", "PARTIAL", "PENDING"],
+      description: "PENDING means the ward exists but no official name has been loaded.",
+    },
+  },
+};
+
+const wardListSchema: Json = {
+  type: "object",
+  required: ["data", "wardData"],
+  properties: {
+    data: { type: "array", items: ref("Ward") },
+    wardData: { type: "string", enum: ["COMPLETE", "PARTIAL", "PENDING"] },
+    note: {
+      type: ["string", "null"],
+      description: "Present when the list is empty, explaining why.",
+    },
+  },
+};
+
+const signupResponseSchema: Json = {
+  type: "object",
+  required: ["agent", "slotsRemainingAfter"],
+  properties: {
+    agent: {
+      type: "object",
+      properties: {
+        id: { type: "integer" },
+        agentCode: { type: "string" },
+        status: { type: "string" },
+        districtId: { type: "integer" },
+        localBodyId: { type: "integer" },
+        wardId: { type: ["integer", "null"] },
+      },
+    },
+    slotsRemainingAfter: { type: "integer" },
+    nextStep: { type: "string" },
+  },
+};
+
+const eligibilitySchema: Json = {
+  type: "object",
+  required: ["canApply"],
+  properties: {
+    canApply: { type: "boolean" },
+    existingApplication: {
+      type: ["object", "null"],
+      properties: {
+        id: { type: "integer" },
+        agentCode: { type: "string" },
+        status: { type: "string" },
+      },
+    },
+    currentTerms: {
+      type: ["object", "null"],
+      properties: { version: { type: "string" }, url: { type: "string" } },
+    },
+    availability: { oneOf: [ref("Availability"), { type: "null" }] },
+  },
+};
+
+const earningsSummarySchema: Json = {
+  type: "object",
+  required: ["pendingPaise", "paidPaise", "lifetimePaise", "currency"],
+  properties: {
+    pendingPaise: { type: "integer", description: "Accrued and approved, not yet paid." },
+    paidPaise: { type: "integer" },
+    lifetimePaise: { type: "integer" },
+    tdsWithheldPaise: { type: "integer" },
+    currency: { type: "string", enum: ["INR"] },
+  },
+};
+
+const payoutStateSchema: Json = {
+  type: "object",
+  properties: {
+    panStatus: {
+      type: "string",
+      enum: ["NOT_SUBMITTED", "PENDING_VERIFICATION", "VERIFIED", "REJECTED", "DUPLICATE_CANCELLED"],
+    },
+    pan: { type: ["string", "null"], description: "Masked, e.g. XXXXX1234F. Never the real value." },
+    bankConfigured: { type: "boolean" },
+    withdrawalBlocked: { type: "boolean" },
+    blockedReason: { type: ["string", "null"] },
+  },
+};
+
+const agentDashboardSchema: Json = {
+  type: "object",
+  required: ["agent", "referral", "earnings", "payout", "customers", "products"],
+  properties: {
+    agent: {
+      type: "object",
+      properties: {
+        id: { type: "integer" },
+        agentCode: { type: "string" },
+        status: { type: "string" },
+        mobileVerified: { type: "boolean" },
+      },
+    },
+    referral: {
+      type: "object",
+      properties: {
+        code: { type: "string" },
+        link: { type: "string" },
+        qrUrl: { type: "string" },
+        whatsappShareUrl: { type: "string" },
+      },
+    },
+    earnings: ref("EarningsSummary"),
+    payout: ref("PayoutState"),
+    customers: {
+      type: "object",
+      properties: {
+        total: { type: "integer" },
+        recent: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              customerId: { type: "integer" },
+              displayName: { type: "string" },
+              status: { type: "string" },
+              lockedAt: { type: "string", format: "date-time" },
+            },
+          },
+        },
+      },
+    },
+    products: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: { type: "integer" },
+          slug: { type: "string" },
+          nameEn: { type: "string" },
+          nameMl: { type: "string" },
+        },
+      },
+    },
+  },
+};
+
+const reportCatalogueSchema: Json = {
+  type: "object",
+  required: ["defaultReport", "data"],
+  properties: {
+    defaultReport: { type: "string" },
+    data: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          slug: { type: "string" },
+          title: { type: "string" },
+          description: { type: "string" },
+          columns: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: { key: { type: "string" }, header: { type: "string" } },
+            },
+          },
+          formats: { type: "array", items: { type: "string" } },
+          filters: { type: "array", items: { type: "string" } },
+        },
+      },
+    },
+  },
+};
+
+const reportResultSchema: Json = {
+  type: "object",
+  required: ["report", "columns", "rowCount", "data"],
+  properties: {
+    report: {
+      type: "object",
+      properties: {
+        slug: { type: "string" },
+        title: { type: "string" },
+        description: { type: "string" },
+      },
+    },
+    filter: { type: "object" },
+    columns: {
+      type: "array",
+      items: { type: "object", properties: { key: { type: "string" }, header: { type: "string" } } },
+    },
+    rowCount: { type: "integer" },
+    truncated: { type: "boolean", description: "True when the row cap was hit." },
+    data: {
+      type: "array",
+      description: "Row shape varies by report; use `columns` to render generically.",
+      items: { type: "object", additionalProperties: true },
+    },
+  },
+};
+
+const payoutProfileSchema: Json = {
+  type: "object",
+  properties: {
+    pan: { type: ["string", "null"] },
+    panStatus: { type: "string" },
+    panVerifiedAt: { type: ["string", "null"], format: "date-time" },
+    bankAccount: { type: ["string", "null"] },
+    bankIfsc: { type: ["string", "null"] },
+    bankHolderName: { type: ["string", "null"] },
+    upiId: { type: ["string", "null"] },
+    mobileVerified: { type: "boolean" },
+    withdrawal: {
+      type: "object",
+      properties: {
+        blocked: { type: "boolean" },
+        reasons: { type: "array", items: { type: "string" } },
+        pendingBalancePaise: { type: "integer" },
+      },
+    },
+  },
+};
+
 /* ------------------------------------------------------------------ paths */
 
 const ok200 = (schema: Json, description = "Success."): Json => ({
@@ -476,6 +763,18 @@ export function buildSpec(serverUrl: string): Json {
         Session: sessionSchema,
         SessionUser: sessionUserSchema,
         CommissionTerms: commissionTermsSchema,
+        AgentSummary: agentSummarySchema,
+        MeResponse: meResponseSchema,
+        Ward: wardSchema,
+        WardList: wardListSchema,
+        SignupResponse: signupResponseSchema,
+        Eligibility: eligibilitySchema,
+        EarningsSummary: earningsSummarySchema,
+        PayoutState: payoutStateSchema,
+        PayoutProfile: payoutProfileSchema,
+        AgentDashboard: agentDashboardSchema,
+        ReportCatalogue: reportCatalogueSchema,
+        ReportResult: reportResultSchema,
         GoogleAuthRequest: json(googleAuthBody) as Json,
         SignupRequest: json(signupBody) as Json,
         QualificationsRequest: json(qualificationsBody) as Json,
@@ -579,22 +878,7 @@ export function buildSpec(serverUrl: string): Json {
           summary: "Current user, role, agent summary and where to land",
           description:
             "The endpoint the frontend renders its navigation from. `landing` says where this client should go after sign-in, so routing by role is a server decision.",
-          responses: {
-            "200": ok200({
-              type: "object",
-              properties: {
-                user: ref("SessionUser"),
-                agent: { type: ["object", "null"] },
-                districtScope: {
-                  oneOf: [
-                    { type: "string", enum: ["ALL"] },
-                    { type: "array", items: { type: "integer" } },
-                  ],
-                },
-                landing: { type: "string", examples: ["/agents/dashboard", "/admin"] },
-              },
-            }),
-          },
+          responses: { "200": ok200(ref("MeResponse")) },
         }),
         patch: operation({
           tag: "me",
@@ -686,7 +970,7 @@ export function buildSpec(serverUrl: string): Json {
             "Wards with `status: PENDING` exist because the official count is known but no name has been loaded. They are returned with a null name rather than omitted, so the picker can still offer 'Ward 7' and our data gap does not block an applicant. An empty list carries an explanatory `note`.",
           security: false,
           parameters: [pathParam("id", "Local body id.")],
-          responses: { "200": ok200({ type: "object" }) },
+          responses: { "200": ok200(ref("WardList")) },
         }),
       },
       "/geography/local-bodies/{id}/availability": {
@@ -708,7 +992,7 @@ export function buildSpec(serverUrl: string): Json {
           summary: "Can this account apply, and is the panchayat open",
           description: "Answered server-side so the 'you already applied' case never reaches the form.",
           parameters: [queryParam("localBodyId", { type: "integer" }, "Check availability for this body too.")],
-          responses: { "200": ok200({ type: "object" }) },
+          responses: { "200": ok200(ref("Eligibility")) },
         }),
       },
       "/signup": {
@@ -729,7 +1013,7 @@ export function buildSpec(serverUrl: string): Json {
           roles: "AGENT (any signed-in user without an existing application)",
           requestBody: body(ref("SignupRequest")),
           responses: {
-            "201": ok200({ type: "object" }, "Application created; agent code issued."),
+            "201": ok200(ref("SignupResponse"), "Application created; agent code issued."),
             "409": errorResponse(
               "ALREADY_REGISTERED, MOBILE_ALREADY_USED, SLOT_UNAVAILABLE or PANCHAYAT_CLOSED.",
             ),
@@ -773,7 +1057,7 @@ export function buildSpec(serverUrl: string): Json {
           description:
             "One request on purpose. The target device is a budget Android phone on one bar of 4G, where four sequential round trips is the difference between usable and not.",
           roles: "AGENT",
-          responses: { "200": ok200({ type: "object" }) },
+          responses: { "200": ok200(ref("AgentDashboard")) },
         }),
       },
       "/agent/referral": {
@@ -873,7 +1157,7 @@ export function buildSpec(serverUrl: string): Json {
           description:
             "PAN is returned only as `XXXXX1234F`. `withdrawal.reasons` lists what is outstanding, and `withdrawal.pendingBalancePaise` is the prompt to complete it.",
           roles: "AGENT",
-          responses: { "200": ok200({ type: "object" }) },
+          responses: { "200": ok200(ref("PayoutProfile")) },
         }),
         put: operation({
           tag: "payouts",
@@ -946,7 +1230,7 @@ export function buildSpec(serverUrl: string): Json {
           description:
             "Lets a client discover the available reports and their columns instead of hardcoding a list. `defaultReport` names the admin landing view.",
           roles: "DISTRICT_ADMIN or SUPER_ADMIN",
-          responses: { "200": ok200({ type: "object" }) },
+          responses: { "200": ok200(ref("ReportCatalogue")) },
         }),
       },
       "/admin/reports/{slug}": {
@@ -992,7 +1276,7 @@ export function buildSpec(serverUrl: string): Json {
               description: "The report.",
               headers: RATE_LIMIT_HEADERS,
               content: {
-                "application/json": { schema: { type: "object" } },
+                "application/json": { schema: ref("ReportResult") },
                 "text/csv": { schema: { type: "string" } },
                 "application/pdf": { schema: { type: "string", format: "binary" } },
               },
