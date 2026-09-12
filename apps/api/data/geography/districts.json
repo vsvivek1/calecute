@@ -1,0 +1,36 @@
+{
+  "_comment": [
+    "The 14 revenue districts of Kerala. This is the only geography tier seeded",
+    "from repository data; every tier below it is loaded from an official",
+    "export (see docs/GEOGRAPHY.md).",
+    "",
+    "`lgdCode` is deliberately null. LGD assigns numeric codes to districts and",
+    "those codes belong in this file, but they are not guessed here — the",
+    "loader fills them in when the official export lands, matching on nameEn.",
+    "",
+    "`codeSlug` is ours, not an official identifier. It is the district segment",
+    "of the agent code (CA-KKD-000123) and must never change once codes are",
+    "issued to real agents."
+  ],
+  "state": {
+    "nameEn": "Kerala",
+    "nameMl": "കേരളം",
+    "lgdCode": 32
+  },
+  "districts": [
+    { "nameEn": "Thiruvananthapuram", "nameMl": "തിരുവനന്തപുരം", "codeSlug": "TVM", "lgdCode": null },
+    { "nameEn": "Kollam",             "nameMl": "കൊല്ലം",         "codeSlug": "KLM", "lgdCode": null },
+    { "nameEn": "Pathanamthitta",     "nameMl": "പത്തനംതിട്ട",     "codeSlug": "PTA", "lgdCode": null },
+    { "nameEn": "Alappuzha",          "nameMl": "ആലപ്പുഴ",        "codeSlug": "ALP", "lgdCode": null },
+    { "nameEn": "Kottayam",           "nameMl": "കോട്ടയം",         "codeSlug": "KTM", "lgdCode": null },
+    { "nameEn": "Idukki",             "nameMl": "ഇടുക്കി",         "codeSlug": "IDK", "lgdCode": null },
+    { "nameEn": "Ernakulam",          "nameMl": "എറണാകുളം",       "codeSlug": "EKM", "lgdCode": null },
+    { "nameEn": "Thrissur",           "nameMl": "തൃശ്ശൂർ",         "codeSlug": "TSR", "lgdCode": null },
+    { "nameEn": "Palakkad",           "nameMl": "പാലക്കാട്",       "codeSlug": "PKD", "lgdCode": null },
+    { "nameEn": "Malappuram",         "nameMl": "മലപ്പുറം",        "codeSlug": "MLP", "lgdCode": null },
+    { "nameEn": "Kozhikode",          "nameMl": "കോഴിക്കോട്",      "codeSlug": "KKD", "lgdCode": null },
+    { "nameEn": "Wayanad",            "nameMl": "വയനാട്",          "codeSlug": "WYD", "lgdCode": null },
+    { "nameEn": "Kannur",             "nameMl": "കണ്ണൂർ",          "codeSlug": "KNR", "lgdCode": null },
+    { "nameEn": "Kasaragod",          "nameMl": "കാസർകോട്",       "codeSlug": "KSD", "lgdCode": null }
+  ]
+}
