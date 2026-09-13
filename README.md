@@ -69,6 +69,21 @@ Authorised redirect URI: `https://<your-domain>/auth/callback`
 (and `http://localhost:3000/auth/callback` for development).
 Scopes: `openid email profile`. Nothing else is requested.
 
+The consent screen needs these three URLs, which exist:
+
+| Field | URL |
+|---|---|
+| Application home page | `/agents` |
+| Privacy policy | `/agents/privacy` |
+| Terms of service | `/agents/terms` |
+
+These are the programme's own pages, under the OPC entity — not the LLC pages
+at `/privacy` and `/terms`, which cover the international site.
+
+**The consent screen is part of the pitch.** It is the first thing a suspicious
+recruit sees with the company name on it, so the app name and logo matter as
+much as anything on the recruitment page.
+
 ### 4. Migrate and seed — blocking
 
 ```bash
@@ -98,6 +113,7 @@ unnoticed. Both live in `apps/web/src/lib/agents/content.ts`:
 
 - `company.whatWeDo` — one sentence, Malayalam and English
 - `company.registeredOffice` — the address as filed
+- The retention period in `/agents/privacy` clause 5
 
 Already supplied: CIN `U62013KL2026OPC105471`, WhatsApp contact 8547985289,
 WhatsApp channel link.

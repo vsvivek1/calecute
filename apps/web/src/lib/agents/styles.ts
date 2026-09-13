@@ -575,6 +575,31 @@ a:hover { color: var(--accent-2); }
 
 .district-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 0 1rem; }
 
+/* ---------------------------------------------------------------- legal */
+
+.legal { max-width: 42rem; }
+.legal .clause { padding-top: 2rem; }
+
+.legal h2 {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 0.5rem;
+  align-items: baseline;
+  font-size: 1.15rem;
+}
+
+.clause-n {
+  font-family: var(--font-latin);
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.legal .clause > p,
+.legal .clause > ul { margin-left: 2.5rem; }
+.legal .clause > ul { padding-left: 1.1rem; }
+.legal .clause li { margin-bottom: 0.5rem; }
+
 /* --------------------------------------------------------------- footer */
 
 .page-footer {

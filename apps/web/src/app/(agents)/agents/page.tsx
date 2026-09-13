@@ -353,7 +353,7 @@ export default async function AgentsPage({
               <a href="/agents/terms">
                 <Ml>{copy.footer.terms.ml}</Ml>
               </a>
-              <a href="/privacy">
+              <a href="/agents/privacy">
                 <Ml>{copy.footer.privacy.ml}</Ml>
               </a>
               <a href="/contact">

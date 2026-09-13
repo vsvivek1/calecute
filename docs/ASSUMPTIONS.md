@@ -19,6 +19,7 @@ These will bite. Nothing else in this document will.
 | Product catalogue | Empty. Assignment works; there is nothing to assign. |
 | SMS provider | Not configured. Mobile verification **throws in production**. |
 | Analytics tool | None chosen. Events are recorded in our own table. |
+| Retention period for unapproved applicants | Placeholder in the privacy policy — someone must decide the number |
 | Email / notifications | None. Admin messages are in-app only. |
 
 The two geography gaps are one download away: LGD → Download Directory →
