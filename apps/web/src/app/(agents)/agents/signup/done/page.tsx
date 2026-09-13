@@ -26,7 +26,7 @@ export default async function SignupDonePage() {
       <header className="masthead">
         <span className="mark" aria-hidden="true" />
         <span className="who">
-          <strong lang="en">Calecute Technologies (OPC) Pvt Ltd</strong>
+          <strong>Calecute Technologies (OPC) Pvt Ltd</strong>
         </span>
       </header>
 

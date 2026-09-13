@@ -40,8 +40,11 @@ export const company = {
   city: "Kozhikode, Kerala",
   /** PLACEHOLDER — one sentence, what the company actually does. */
   whatWeDo: "<<<ONE SENTENCE — what the company does>>>",
-  /** PLACEHOLDER — registered office address as filed. */
-  registeredOffice: "<<<REGISTERED OFFICE ADDRESS>>>",
+  /** Registered office as filed, supplied 2026-09-13. */
+  registeredOffice:
+    "11/698A, Poolakadavu, Marikkunnu (PO), Kozhikode 673012, Kerala, India",
+  postalCode: "673012",
+  locality: "Marikkunnu",
   email: "info@calecutech.com",
   /** WhatsApp is the only contact channel, at the client's instruction. */
   contactWhatsapp: "8547985289",
@@ -63,8 +66,8 @@ export function formattedContactNumber(): string {
 /* --------------------------------------------------------------- page */
 
 export const page = {
-  title: "Commission agents wanted",
-  eyebrow: "Kerala · Commission agent programme",
+  title: "Commission agent programme",
+  eyebrow: "Calecute Technologies · Kerala",
 
   role: {
     body: "We are appointing commission agents to sell our software products. Ten agents in each panchayat.",

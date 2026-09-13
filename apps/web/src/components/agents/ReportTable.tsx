@@ -58,7 +58,6 @@ export function ReportTable({
             {columns.map((column, index) => (
               <th
                 key={column.key ?? index}
-                lang="en"
                 className={NUMERIC.test(column.header ?? "") ? "num" : undefined}
               >
                 {column.header ?? ""}

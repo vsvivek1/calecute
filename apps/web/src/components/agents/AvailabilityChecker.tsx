@@ -80,7 +80,7 @@ export function AvailabilityChecker({
           <>
             <p className="slots">
               <span className="count">{availability.remaining}</span>
-              <span className="of" lang="en">
+              <span className="of">
                 of {availability.slotCapacity} places left
               </span>
             </p>
@@ -103,7 +103,7 @@ export function AvailabilityChecker({
             <p className="notice warn">{copy.availability.full}
             </p>
             {(availability.waitlisted ?? 0) > 0 && (
-              <p className="button-note" lang="en">
+              <p className="button-note">
                 {availability.waitlisted} already waiting
               </p>
             )}

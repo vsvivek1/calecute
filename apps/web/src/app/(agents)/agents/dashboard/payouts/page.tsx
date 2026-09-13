@@ -60,7 +60,7 @@ export default async function PayoutsPage({
           {profile.withdrawal?.blocked && (
             <div className="panel" style={{ marginTop: "1.5rem" }}>
               <div className="stat accent" style={{ border: 0, padding: 0 }}>
-                <div className="label" lang="en">
+                <div className="label">
                   Waiting to be paid
                 </div>
                 <div className="value">

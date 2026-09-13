@@ -59,7 +59,7 @@ export default async function AdminAgentsPage() {
                   <span className="code-badge" style={{ fontSize: "0.95rem" }}>
                     {String(row.code ?? "")}
                   </span>
-                  <span className="chips-note" lang="en">
+                  <span className="chips-note">
                     waiting {String(row.days ?? "?")} day
                     {String(row.days) === "1" ? "" : "s"}
                   </span>
@@ -67,14 +67,14 @@ export default async function AdminAgentsPage() {
 
                 <dl className="review-facts">
                   <div>
-                    <dt lang="en">Name</dt>
+                    <dt>Name</dt>
                     <dd>{String(row.name ?? "—")}</dd>
                   </div>
                   <div>
-                    <dt lang="en">Where</dt>
+                    <dt>Where</dt>
                     <dd>
                       {String(row.bodyMl ?? row.body ?? "—")}
-                      <span lang="en" style={{ color: "var(--ink-faint)" }}>
+                      <span style={{ color: "var(--ink-faint)" }}>
                         {" "}
                         · {String(row.district ?? "")}
                         {row.ward && row.ward !== "—" ? ` · ward ${row.ward}` : ""}
@@ -82,12 +82,12 @@ export default async function AdminAgentsPage() {
                     </dd>
                   </div>
                   <div>
-                    <dt lang="en">Occupation</dt>
+                    <dt>Occupation</dt>
                     <dd>{String(row.occupation ?? "—")}</dd>
                   </div>
                   <div>
-                    <dt lang="en">Background</dt>
-                    <dd lang="en">
+                    <dt>Background</dt>
+                    <dd>
                       {String(row.education ?? "—")} · {String(row.hours ?? "—")} per day
                     </dd>
                   </div>

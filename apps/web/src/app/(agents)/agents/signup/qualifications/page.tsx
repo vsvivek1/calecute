@@ -30,13 +30,13 @@ export default async function QualificationsPage({
       <header className="masthead">
         <span className="mark" aria-hidden="true" />
         <span className="who">
-          <strong lang="en">Calecute Technologies (OPC) Pvt Ltd</strong>
+          <strong>Calecute Technologies (OPC) Pvt Ltd</strong>
         </span>
       </header>
 
       <div className="content">
         <main className="wrap" style={{ paddingTop: "2.5rem" }}>
-          <span className="eyebrow" lang="en">
+          <span className="eyebrow">
             Step 3 of 3 · optional
           </span>
 

@@ -60,23 +60,23 @@ export default async function AdminUsersPage() {
             <table className="data-table">
               <thead>
                 <tr>
-                  <th lang="en">Email</th>
-                  <th lang="en">Role</th>
-                  <th lang="en">Districts</th>
-                  <th lang="en">Last signed in</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Districts</th>
+                  <th>Last signed in</th>
                 </tr>
               </thead>
               <tbody>
                 {(users.data ?? []).map((user) => (
                   <tr key={user.id}>
-                    <td lang="en">{user.email}</td>
-                    <td lang="en">{user.role}</td>
-                    <td lang="en">
+                    <td>{user.email}</td>
+                    <td>{user.role}</td>
+                    <td>
                       {user.districts === "ALL"
                         ? "all"
                         : user.districts.map((d) => d.nameEn).join(", ") || "none"}
                     </td>
-                    <td lang="en">
+                    <td>
                       {user.lastLoginAt
                         ? new Date(user.lastLoginAt).toLocaleDateString("en-IN")
                         : "never"}

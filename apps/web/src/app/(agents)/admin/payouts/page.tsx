@@ -83,7 +83,7 @@ export default async function AdminPayoutsPage() {
                     <span className="code-badge" style={{ fontSize: "0.95rem" }}>
                       {String(row.code ?? "")}
                     </span>
-                    <span className="chips-note" lang="en">
+                    <span className="chips-note">
                       {String(row.name ?? "")} · {String(row.district ?? "")} · owed ₹
                       {String(row.outstanding ?? "0")} · PAN {String(row.pan ?? "")}
                     </span>
@@ -169,7 +169,7 @@ export default async function AdminPayoutsPage() {
                     <span className="code-badge" style={{ fontSize: "0.95rem" }}>
                       {batch.period}
                     </span>
-                    <span className="chips-note" lang="en">
+                    <span className="chips-note">
                       {batch.status}
                       {batch.markedPaidAt
                         ? ` · paid ${new Date(batch.markedPaidAt).toLocaleDateString("en-IN")}`

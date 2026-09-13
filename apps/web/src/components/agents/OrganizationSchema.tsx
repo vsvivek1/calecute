@@ -24,12 +24,11 @@ export function OrganizationSchema() {
     email: company.email,
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Kozhikode",
+      streetAddress: "11/698A, Poolakadavu",
+      addressLocality: company.locality,
       addressRegion: "Kerala",
+      postalCode: company.postalCode,
       addressCountry: "IN",
-      ...(isPlaceholder(company.registeredOffice)
-        ? {}
-        : { streetAddress: company.registeredOffice }),
     },
   };
 

@@ -49,8 +49,8 @@ function esc(text) {
 
 const content = {
   eyebrow: "CALECUTE TECHNOLOGIES",
-  headline: ["Commission agents", "wanted in Kerala"],
-  sub: "Ten agents in every panchayat",
+  headline: ["Commission agent", "programme"],
+  sub: "Ten agents in every panchayat in Kerala",
   // Phrased as a statement, not a row of badges. Reassurance that is given
   // emphasis reads as protesting; the same words in a sentence just read as
   // how the arrangement works.

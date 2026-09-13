@@ -72,14 +72,14 @@ export default async function SignupPage({
       <header className="masthead">
         <span className="mark" aria-hidden="true" />
         <span className="who">
-          <strong lang="en">Calecute Technologies (OPC) Pvt Ltd</strong>
-          <span lang="en">{session.me.user?.email}</span>
+          <strong>Calecute Technologies (OPC) Pvt Ltd</strong>
+          <span>{session.me.user?.email}</span>
         </span>
       </header>
 
       <div className="content">
         <main className="wrap" style={{ paddingTop: "2.5rem" }}>
-          <span className="eyebrow" lang="en">
+          <span className="eyebrow">
             Step 2 of 3
           </span>
           <h1>{copy.step2Heading}

@@ -112,7 +112,7 @@ export default async function PanchayatsPage({
                       {body.nameEn} · {body.type?.replace(/_/g, " ").toLowerCase()}
                     
                   </span>
-                  <span className="chips-note" lang="en">
+                  <span className="chips-note">
                     {body.filled}/{body.slotCapacity} filled
                     {(body.waitlisted ?? 0) > 0 ? ` · ${body.waitlisted} waiting` : ""}
                     {body.signupsOpen ? "" : " · closed"}

@@ -29,8 +29,8 @@ export function AdminNav({
     <>
       <header className="bar">
         <span className="who">
-          <strong lang="en">Calecute · Admin</strong>
-          <span lang="en">
+          <strong>Calecute · Admin</strong>
+          <span>
             {email} · {role} · {scope}
           </span>
         </span>

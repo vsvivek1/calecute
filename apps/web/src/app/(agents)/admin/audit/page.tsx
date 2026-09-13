@@ -65,29 +65,29 @@ export default async function AuditPage() {
           <table className="data-table">
             <thead>
               <tr>
-                <th lang="en">When</th>
-                <th lang="en">Who</th>
-                <th lang="en">Action</th>
-                <th lang="en">Entity</th>
-                <th lang="en">Change</th>
+                <th>When</th>
+                <th>Who</th>
+                <th>Action</th>
+                <th>Entity</th>
+                <th>Change</th>
               </tr>
             </thead>
             <tbody>
               {(log.data ?? []).map((row) => (
                 <tr key={row.id}>
-                  <td lang="en">
+                  <td>
                     {new Date(row.createdAt).toLocaleString("en-IN", {
                       dateStyle: "short",
                       timeStyle: "short",
                     })}
                   </td>
-                  <td lang="en">{row.actorEmail ?? "—"}</td>
-                  <td lang="en">{row.action}</td>
-                  <td lang="en">
+                  <td>{row.actorEmail ?? "—"}</td>
+                  <td>{row.action}</td>
+                  <td>
                     {row.entityType}
                     {row.entityId ? ` #${row.entityId}` : ""}
                   </td>
-                  <td lang="en">
+                  <td>
                     {/* Values are scrubbed server-side; no PAN or mobile
                         reaches an audit row. */}
                     <code style={{ fontSize: "0.75rem", color: "var(--ink-faint)" }}>

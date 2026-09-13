@@ -50,19 +50,19 @@ export default async function CustomersPage() {
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th lang="en">Customer</th>
-                    <th lang="en">Status</th>
-                    <th lang="en">Since</th>
-                    <th lang="en" className="num">They paid</th>
-                    <th lang="en" className="num">You earned</th>
+                    <th>Customer</th>
+                    <th>Status</th>
+                    <th>Since</th>
+                    <th className="num">They paid</th>
+                    <th className="num">You earned</th>
                   </tr>
                 </thead>
                 <tbody>
                   {rows.map((row) => (
                     <tr key={row.id}>
                       <td>{row.displayName}</td>
-                      <td lang="en">{row.status}</td>
-                      <td lang="en">
+                      <td>{row.status}</td>
+                      <td>
                         {new Date(row.lockedAt).toLocaleDateString("en-IN")}
                       </td>
                       <td className="num">

@@ -91,19 +91,19 @@ export default async function AdminHome() {
         <main className="admin-wrap">
           <div className="stat-row">
             <div className="stat accent">
-              <div className="label" lang="en">
+              <div className="label">
                 Panchayats with zero agents
               </div>
               <div className="value">{zeroAgents.rowCount ?? 0}</div>
             </div>
             <div className="stat">
-              <div className="label" lang="en">
+              <div className="label">
                 Below threshold (1–2)
               </div>
               <div className="value">{belowThreshold.rowCount ?? 0}</div>
             </div>
             <div className="stat">
-              <div className="label" lang="en">
+              <div className="label">
                 Covered
               </div>
               <div className="value">
@@ -115,7 +115,7 @@ export default async function AdminHome() {
               </div>
             </div>
             <div className="stat">
-              <div className="label" lang="en">
+              <div className="label">
                 Slots filled
               </div>
               <div className="value">
@@ -127,7 +127,7 @@ export default async function AdminHome() {
               </div>
             </div>
             <div className="stat">
-              <div className="label" lang="en">
+              <div className="label">
                 On waitlists
               </div>
               <div className="value">{waitlisted}</div>
@@ -145,11 +145,11 @@ export default async function AdminHome() {
                   : 0;
                 return (
                   <div className="chart-row" key={district}>
-                    <span lang="en">{district}</span>
+                    <span>{district}</span>
                     <span className="chart-track">
                       <span className="chart-fill" style={{ width: `${percent}%` }} />
                     </span>
-                    <span className="num" lang="en">
+                    <span className="num">
                       {counts.covered}/{counts.total}
                     </span>
                   </div>

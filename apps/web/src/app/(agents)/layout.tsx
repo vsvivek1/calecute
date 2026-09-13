@@ -40,7 +40,7 @@ export default function AgentsRootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html>
       <head>
         {/* Inlined rather than linked: one fewer render-blocking request, and
             the same stylesheet the static /agents document uses. */}

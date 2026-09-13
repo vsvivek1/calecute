@@ -50,7 +50,7 @@ export function PayoutForm({
             <span className="code-badge" style={{ fontSize: "1rem" }}>
               {currentPan}
             </span>{" "}
-            <span lang="en">({panStatus})</span>
+            <span>({panStatus})</span>
           </p>
         ) : null}
         <input
@@ -79,7 +79,7 @@ export function PayoutForm({
           <label htmlFor="bankAccountNumber">Account number
           </label>
           {currentAccount && (
-            <p className="chips-note" lang="en">
+            <p className="chips-note">
               Currently {currentAccount}
             </p>
           )}

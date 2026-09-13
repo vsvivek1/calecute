@@ -22,8 +22,8 @@ export function AgentNav({
     <>
       <header className="bar">
         <span className="who">
-          <strong lang="en">Calecute Technologies</strong>
-          <span lang="en">{email}</span>
+          <strong>Calecute Technologies</strong>
+          <span>{email}</span>
         </span>
         <form action="/auth/signout" method="post">
           <button type="submit" className="button secondary">

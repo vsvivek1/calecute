@@ -111,12 +111,11 @@ not**, so nobody in a town can apply. One download fixes it — see
 Two placeholders render as visible red-dashed tokens so they cannot ship
 unnoticed. Both live in `apps/web/src/lib/agents/content.ts`:
 
-- `company.whatWeDo` — one sentence, Malayalam and English
-- `company.registeredOffice` — the address as filed
-- The retention period in `/agents/privacy` clause 5
+- `company.whatWeDo` — one sentence describing what the company does
+- The retention period in `/agents/privacy` section 5
 
-Already supplied: CIN `U62013KL2026OPC105471`, WhatsApp contact 8547985289,
-WhatsApp channel link.
+Already supplied: CIN `U62013KL2026OPC105471`, registered office, WhatsApp
+contact 8547985289, WhatsApp channel link.
 
 ### 7. Wire an SMS provider
 

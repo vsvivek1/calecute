@@ -74,7 +74,7 @@ export function Field({
       <label htmlFor={htmlFor}>{label}
       </label>
       {children}
-      {hint && <p className="field-hint" lang="en">{hint}</p>}
+      {hint && <p className="field-hint">{hint}</p>}
     </div>
   );
 }

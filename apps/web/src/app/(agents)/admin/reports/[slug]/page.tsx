@@ -125,7 +125,7 @@ export default async function ReportPage({
 
           {/* Plain spans, not : that renders a block and would stack the
               count and the two export links onto separate lines. */}
-          <p className="chips-note" lang="en">
+          <p className="chips-note">
             {report.rowCount} row{report.rowCount === 1 ? "" : "s"}
             {" · "}
             <a href={`${exportBase}&format=csv`}>Export CSV</a>

@@ -56,7 +56,7 @@ import type { AvailabilityData } from "@/components/agents/AvailabilityChecker";
 
 export const dynamic = "force-dynamic";
 
-const TITLE = "Commission agents wanted in Kerala";
+const TITLE = "Commission agent programme";
 const DESCRIPTION =
   "Calecute Technologies is appointing commission agents in every panchayat in Kerala to sell its software products. No registration fee, no deposit. 10% commission on every payment a referred customer makes.";
 
@@ -77,7 +77,7 @@ export const metadata: Metadata = {
         url: "/og/agents.png",
         width: 1200,
         height: 630,
-        alt: "Commission agents wanted — Calecute Technologies",
+        alt: "Commission agent programme — Calecute Technologies",
       },
     ],
   },
@@ -178,8 +178,8 @@ export default async function AgentsPage({
       <header className="masthead">
         <span className="mark" aria-hidden="true" />
         <span className="who">
-          <strong lang="en">Calecute Technologies (OPC) Pvt Ltd</strong>
-          <span lang="ml">{company.city}</span>
+          <strong>Calecute Technologies (OPC) Pvt Ltd</strong>
+          <span>{company.city}</span>
         </span>
       </header>
 
@@ -187,11 +187,8 @@ export default async function AgentsPage({
         <main className="wrap">
           {/* ------------------------------------------------------ hero */}
           <section className="hero">
-            <span className="eyebrow" lang="en">
-              Kerala · Commission agent programme
-            </span>
-            <h1>{copy.title}
-            </h1>
+            <span className="eyebrow">{copy.eyebrow}</span>
+            <h1>{copy.title}</h1>
             <div className="hero-sub">
               <p>{copy.role.body}</p>
               <p>{copy.role.note}</p>
@@ -310,16 +307,16 @@ export default async function AgentsPage({
 
           {/* ------------------------------------------------- footer */}
           <footer className="page-footer">
-            <p lang="en">{company.legalName}</p>
+            <p>{company.legalName}</p>
             <p>
               {isPlaceholder(company.registeredOffice) ? (
                 <Placeholder value={company.registeredOffice} />
               ) : (
-                <span lang="en">{company.registeredOffice}</span>
+                <span>{company.registeredOffice}</span>
               )}
             </p>
             {company.cin && (
-              <p lang="en">
+              <p>
                 CIN {company.cin} ·{" "}
                 <a href={MCA_VERIFY_URL} target="_blank" rel="noopener noreferrer">
                   verify on MCA

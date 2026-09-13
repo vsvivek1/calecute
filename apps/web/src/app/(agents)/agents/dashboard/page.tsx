@@ -65,7 +65,7 @@ export default async function AgentDashboard() {
         <main className="wrap" style={{ paddingTop: "2rem" }}>
           {/* Agent code and sharing — the thing they came for. */}
           <section>
-            <span className="eyebrow" lang="en">
+            <span className="eyebrow">
               Agent code
             </span>
             <p>
@@ -108,7 +108,7 @@ export default async function AgentDashboard() {
             </h2>
             <div className="stat-row">
               <div className="stat accent">
-                <div className="label" lang="en">
+                <div className="label">
                   Pending
                 </div>
                 <div className="value">
@@ -116,7 +116,7 @@ export default async function AgentDashboard() {
                 </div>
               </div>
               <div className="stat">
-                <div className="label" lang="en">
+                <div className="label">
                   Paid
                 </div>
                 <div className="value">
@@ -124,7 +124,7 @@ export default async function AgentDashboard() {
                 </div>
               </div>
               <div className="stat">
-                <div className="label" lang="en">
+                <div className="label">
                   Lifetime
                 </div>
                 <div className="value">
@@ -132,7 +132,7 @@ export default async function AgentDashboard() {
                 </div>
               </div>
               <div className="stat">
-                <div className="label" lang="en">
+                <div className="label">
                   TDS withheld
                 </div>
                 <div className="value">
@@ -165,17 +165,17 @@ export default async function AgentDashboard() {
                 <table className="data-table">
                   <thead>
                     <tr>
-                      <th lang="en">Customer</th>
-                      <th lang="en">Status</th>
-                      <th lang="en">Since</th>
+                      <th>Customer</th>
+                      <th>Status</th>
+                      <th>Since</th>
                     </tr>
                   </thead>
                   <tbody>
                     {(dashboard.customers?.recent ?? []).map((customer) => (
                       <tr key={customer.customerId}>
                         <td>{customer.displayName}</td>
-                        <td lang="en">{customer.status}</td>
-                        <td lang="en">
+                        <td>{customer.status}</td>
+                        <td>
                           {customer.lockedAt
                             ? new Date(customer.lockedAt).toLocaleDateString("en-IN")
                             : "—"}

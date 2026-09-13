@@ -16,5 +16,5 @@ export function formatRupees(paise: number | null | undefined): string {
 }
 
 export function Rupees({ paise }: { paise: number | null | undefined }) {
-  return <span lang="en">{formatRupees(paise)}</span>;
+  return <span>{formatRupees(paise)}</span>;
 }
