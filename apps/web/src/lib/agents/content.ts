@@ -169,22 +169,19 @@ export const page = {
   },
 
   /**
-   * Four short chips, not a section.
+   * One sentence, in the flow of the page.
    *
-   * These were a heading, four bullets and an explanatory note. Reassurance at
-   * that length reads as protesting, which is itself a scam signal — the useful
-   * version is to state it once, flatly, and move on.
+   * This has been cut down twice. It began as a heading with four bullets and
+   * an explanatory note, then became a row of bordered chips. Both were wrong
+   * in the same way: reassurance given visual emphasis reads as protesting, and
+   * a page that announces "NO FEE" in a badge is doing what a chit-fund
+   * recruiter does. Said plainly, mid-paragraph, it is just a fact about how
+   * the arrangement works.
    */
   notAsked: {
-    points: [
-      { ml: "ഫീസില്ല", en: "No fee" },
-      { ml: "നിക്ഷേപമില്ല", en: "No deposit" },
-      { ml: "സാധനം വാങ്ങേണ്ട", en: "Nothing to buy" },
-      { ml: "ഇപ്പോൾ പാൻ വേണ്ട", en: "No PAN yet" },
-    ] as Bilingual[],
-    panNote: {
-      ml: "പണം പിൻവലിക്കുമ്പോൾ മാത്രം പാൻ.",
-      en: "PAN only when you withdraw.",
+    body: {
+      ml: "രജിസ്ട്രേഷന് ഫീസോ നിക്ഷേപമോ ഇല്ല, ഒന്നും വാങ്ങേണ്ടതുമില്ല. പണം പിൻവലിക്കുമ്പോൾ മാത്രമേ പാൻ വേണ്ടിവരൂ.",
+      en: "There is no registration fee or deposit, and nothing to buy. PAN is needed only when you withdraw.",
     },
   },
 

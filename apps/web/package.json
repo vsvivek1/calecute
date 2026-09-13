@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "build:qr": "node scripts/build-qr.mjs",
     "build:font": "node scripts/subset-malayalam.mjs",
-    "api:types": "node scripts/generate-api-types.mjs"
+    "api:types": "node scripts/generate-api-types.mjs",
+    "build:og": "node scripts/build-og.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",

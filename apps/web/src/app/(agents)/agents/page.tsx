@@ -70,8 +70,21 @@ export const metadata: Metadata = {
     locale: "ml_IN",
     type: "website",
     url: "/agents",
+    // A committed file, not a generated route. next/og cannot shape Malayalam;
+    // see scripts/build-og.mjs for the whole story.
+    images: [
+      {
+        url: "/og/agents.png",
+        width: 1200,
+        height: 630,
+        alt: "കമ്മീഷൻ ഏജന്റുമാരെ ആവശ്യമുണ്ട് — Calecute Technologies",
+      },
+    ],
   },
-  twitter: { card: "summary_large_image" },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og/agents.png"],
+  },
 };
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
@@ -252,21 +265,9 @@ export default async function AgentsPage({
             </div>
           </section>
 
-          {/* Four chips and one line. Previously a heading, four bullets and a
-              note — reassurance at that length reads as protesting. */}
+          {/* Stated in passing, not badged. See the note in content.ts. */}
           <section className="reveal">
-            <ul className="chips">
-              {copy.notAsked.points.map((point) => (
-                <li key={point.en}>
-                  <Ml>{point.ml}</Ml>
-                  <En>{point.en}</En>
-                </li>
-              ))}
-            </ul>
-            <p className="chips-note">
-              <Ml>{copy.notAsked.panNote.ml}</Ml>
-              <En>{copy.notAsked.panNote.en}</En>
-            </p>
+            <Bi text={copy.notAsked.body} />
           </section>
 
           {/* ------------------------------------------ live availability */}
