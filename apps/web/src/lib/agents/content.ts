@@ -159,7 +159,7 @@ export const signup = {
     mobile: "Mobile number",
     district: "District",
     localBody: "Panchayat or municipality",
-    ward: "Ward",
+    ward: "Ward number",
     occupation: "Occupation",
     education: "Education",
     experience: "Previous experience",
@@ -172,8 +172,9 @@ export const signup = {
   hints: {
     mobileNotVerified:
       "No OTP is sent now. The number is verified later, when you set up payouts.",
-    wardOptional: "Ward is optional.",
-    searchLocalBody: "Search by name. Malayalam spellings work too.",
+    ward: "Your ward number in the panchayat or municipality. It is on your voter slip and your ration card.",
+    searchLocalBody:
+      "Start typing your panchayat or municipality. Malayalam spellings work too.",
     notListed: "Municipality or corporation not in the list? Type the name here.",
     notListedNote:
       "We are still loading the list of municipalities and corporations. Your application is accepted and we will place it correctly.",

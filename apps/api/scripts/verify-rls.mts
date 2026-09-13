@@ -64,6 +64,10 @@ async function main() {
         INSERT INTO local_bodies (district_id, block_panchayat_id, type, name_en, name_ml)
         VALUES (${d2.id}, ${b2.id}, 'GRAM_PANCHAYAT', 'TEST-GP-TVM', 'TEST-GP-TVM')
         RETURNING id`;
+      const [w1] = await tx<{ id: number }[]>`
+        INSERT INTO wards (local_body_id, number) VALUES (${lb1.id}, 1) RETURNING id`;
+      const [w2] = await tx<{ id: number }[]>`
+        INSERT INTO wards (local_body_id, number) VALUES (${lb2.id}, 1) RETURNING id`;
 
       const mkUser = async (email: string, role: string) => {
         const [u] = await tx<{ id: number }[]>`
@@ -89,21 +93,22 @@ async function main() {
         userId: number,
         districtId: number,
         localBodyId: number,
+        wardId: number,
         code: string,
         mobile: string,
       ) => {
         const [a] = await tx<{ id: number }[]>`
           INSERT INTO agents
-            (user_id, agent_code, district_id, local_body_id, mobile, occupation,
-             status, terms_version, terms_accepted_at, privacy_consent_at)
-          VALUES (${userId}, ${code}, ${districtId}, ${localBodyId}, ${mobile},
+            (user_id, agent_code, district_id, local_body_id, ward_id, mobile,
+             occupation, status, terms_version, terms_accepted_at, privacy_consent_at)
+          VALUES (${userId}, ${code}, ${districtId}, ${localBodyId}, ${wardId}, ${mobile},
                   'tester', 'APPROVED', '2026-09-01', now(), now())
           RETURNING id`;
         return a.id;
       };
 
-      const agent1 = await mkAgent(agentUser1, d1.id, lb1.id, "CA-KKD-TEST01", "9000000001");
-      const agent2 = await mkAgent(agentUser2, d2.id, lb2.id, "CA-TVM-TEST01", "9000000002");
+      const agent1 = await mkAgent(agentUser1, d1.id, lb1.id, w1.id, "CA-KKD-TEST01", "9000000001");
+      const agent2 = await mkAgent(agentUser2, d2.id, lb2.id, w2.id, "CA-TVM-TEST01", "9000000002");
 
       // PAN-bearing payout profiles, to test the strictest table.
       await tx`
@@ -360,6 +365,23 @@ async function main() {
         mobileCheckHeld = true;
       }
       check("one account per mobile number is enforced", mobileCheckHeld, true);
+
+      // A placed agent must carry a ward; the number-only column is for
+      // unplaced applicants and the two must not mix. See 0007.
+      let wardCheckHeld = false;
+      try {
+        await tx.savepoint(async (sp) => {
+          await sp`
+            INSERT INTO agents
+              (user_id, agent_code, district_id, local_body_id, mobile, occupation,
+               status, terms_version, terms_accepted_at, privacy_consent_at)
+            VALUES (${superAdmin}, 'CA-KKD-TEST98', ${d1.id}, ${lb1.id},
+                    '9000000098', 'tester', 'APPROVED', '2026-09-01', now(), now())`;
+        });
+      } catch {
+        wardCheckHeld = true;
+      }
+      check("a placed agent cannot be filed without a ward", wardCheckHeld, true);
 
       let panCheckHeld = false;
       try {

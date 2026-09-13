@@ -269,6 +269,32 @@ export async function assertNotAlreadyRegistered(
   }
 }
 
+/**
+ * Turn the ward number an applicant typed into a ward id.
+ *
+ * Delegated to app.ward_for() rather than done here, because the application
+ * role has no INSERT on public.wards and must not get one. The function creates
+ * a numbered PENDING row the first time anyone in that ward applies, so the
+ * official ward export can later fill in names against rows that are already
+ * correctly numbered.
+ */
+export async function resolveWard(
+  tx: ScopedDb,
+  localBodyId: number,
+  wardNumber: number,
+): Promise<number> {
+  const rows = await tx.execute<{ id: number }>(
+    sql`SELECT app.ward_for(${localBodyId}::bigint, ${wardNumber}::smallint) AS id`,
+  );
+  const id = Number(rows[0]?.id);
+  if (!Number.isInteger(id) || id <= 0) {
+    throw new ApiError("VALIDATION_FAILED", "That ward number is not valid", {
+      details: { field: "wardNumber" },
+    });
+  }
+  return id;
+}
+
 /** Districts with a code sequence, used by the seed sanity check. */
 export async function districtsReady(tx: ScopedDb): Promise<number> {
   const rows = await tx

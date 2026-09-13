@@ -28,6 +28,7 @@ import {
   issueAgentCode,
   recordSignupSignals,
   recordApplication,
+  resolveWard,
 } from "@/lib/signup";
 
 export const dynamic = "force-dynamic";
@@ -43,7 +44,13 @@ const bodySchema = z.object({
    */
   localBodyId: geoIdSchema.nullish(),
   pendingLocalBodyName: z.string().trim().min(2).max(120).nullish(),
-  wardId: geoIdSchema.nullish(),
+  /**
+   * The applicant's ward NUMBER, not an id. Ward names are not loaded for any
+   * local body, so there is no list to pick from — but a resident knows their
+   * own ward number, and it is the unit the coverage model works in. The row is
+   * created on demand; see app.ward_for() in 0007_required_ward.sql.
+   */
+  wardNumber: z.number().int().min(1).max(100),
   occupation: z.string().trim().min(2).max(120),
 
   // Consent, recorded with the version of the terms actually shown.
@@ -70,11 +77,6 @@ const bodySchema = z.object({
     message:
       "Give either localBodyId or pendingLocalBodyName, not both and not neither",
     path: ["localBodyId"],
-  })
-  // A ward belongs to a local body, so it makes no sense without one.
-  .refine((v) => !(v.wardId && !v.localBodyId), {
-    message: "A ward cannot be given without a local body",
-    path: ["wardId"],
   });
 
 export const POST = handler(
@@ -107,12 +109,14 @@ export const POST = handler(
     // belong together. A modified client cannot file an agent into a ward in
     // another district.
     let slots: Awaited<ReturnType<typeof recordApplication>> | null = null;
+    let wardId: number | null = null;
     if (body.localBodyId) {
       await validateGeographySelection(ctx.tx, {
         districtId: body.districtId,
         localBodyId: body.localBodyId,
-        wardId: body.wardId ?? null,
+        wardId: null,
       });
+      wardId = await resolveWard(ctx.tx, body.localBodyId, body.wardNumber);
       slots = await recordApplication(ctx.tx, body.localBodyId);
     } else {
       // Unplaced: the district still has to exist, and no slot is taken because
@@ -135,7 +139,10 @@ export const POST = handler(
           districtId: body.districtId,
           localBodyId: body.localBodyId ?? null,
           pendingLocalBodyName: body.pendingLocalBodyName ?? null,
-          wardId: body.wardId ?? null,
+          wardId,
+          // Parked, not lost: an unplaced applicant has no local body to hang a
+          // ward row off, so the number waits here until an admin places them.
+          pendingWardNumber: wardId === null ? body.wardNumber : null,
           mobile: body.mobile,
           occupation: body.occupation,
           status: "PENDING_REVIEW",

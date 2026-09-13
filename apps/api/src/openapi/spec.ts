@@ -161,7 +161,14 @@ const signupBody = z.object({
     .describe(
       "TEMPORARY. Free text, for an applicant whose municipality or corporation is not seeded yet — the urban local bodies are not loaded. Such an application is accepted but holds no slot, appears in no coverage report, and cannot be approved until an administrator assigns a real local body.",
     ),
-  wardId: z.number().int().positive().nullish().describe("Optional: ward data is incomplete for some local bodies. Cannot be given without a local body."),
+  wardNumber: z
+    .number()
+    .int()
+    .min(1)
+    .max(100)
+    .describe(
+      "Required. The applicant's ward NUMBER within their local body, not a ward id — ward names are not loaded, so there is no list to choose from. The ward row is created on demand the first time someone in that ward applies. For an applicant using pendingLocalBodyName the number is held until an administrator places them.",
+    ),
   occupation: z.string().min(2).max(120),
   termsVersion: z.string().describe("Version of the terms actually shown to the applicant."),
   acceptedTerms: z.literal(true),

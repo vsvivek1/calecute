@@ -21,12 +21,6 @@
 import type { Availability, District, LocalBody } from "@/lib/api/client";
 import { page as copy, signup as signupCopy } from "@/lib/agents/content";
 
-function toId(value: string | undefined): number | undefined {
-  if (!value) return undefined;
-  const parsed = Number(value);
-  return Number.isInteger(parsed) && parsed > 0 ? parsed : undefined;
-}
-
 /**
  * Everything this component needs, fetched by the caller.
  *
@@ -49,13 +43,13 @@ export function AvailabilityChecker({
   query,
   data,
 }: {
-  districtId?: string;
-  localBodyId?: string;
+  districtId?: number;
+  localBodyId?: number;
   query?: string;
   data: AvailabilityData;
 }) {
-  const district = toId(districtId);
-  const localBody = toId(localBodyId);
+  const district = districtId;
+  const localBody = localBodyId;
   const { districts } = data;
 
   if (data.unavailable) {
@@ -113,8 +107,18 @@ export function AvailabilityChecker({
 
   /* --------------------------------------- step 2: choose a panchayat */
   if (district) {
-    const bodies = data.bodies;
     const districtName = districts.find((d) => d.id === district);
+
+    /*
+     * One box, not a search box and a dropdown. The datalist carries every
+     * local body in the district so the browser filters as the visitor types,
+     * and the list below narrows on submit for anyone whose browser ignores
+     * the datalist or who has JavaScript off entirely.
+     */
+    const typed = (query ?? "").trim().toLowerCase();
+    const matches = typed
+      ? data.bodies.filter((row) => row.nameEn.toLowerCase().includes(typed))
+      : data.bodies;
 
     return (
       <form method="get" action="/agents#availability">
@@ -124,47 +128,52 @@ export function AvailabilityChecker({
         </p>
 
         <div className="field">
-          <label htmlFor="q">{signupCopy.hints.searchLocalBody}
+          <label htmlFor="q">{signupCopy.fields.localBody}
           </label>
-          <input
-            type="search"
-            id="q"
-            name="q"
-            defaultValue={query ?? ""}
-            autoComplete="off"
-            enterKeyHint="search"
-          />
+          <div className="search-row">
+            <input
+              type="text"
+              id="q"
+              name="q"
+              list="availabilityBodies"
+              defaultValue={query ?? ""}
+              autoComplete="off"
+              enterKeyHint="search"
+              placeholder="Start typing"
+            />
+            <button type="submit">
+              <span>Check</span>
+            </button>
+          </div>
+          <datalist id="availabilityBodies">
+            {data.bodies.map((row) => (
+              <option key={row.id} value={row.nameEn} />
+            ))}
+          </datalist>
         </div>
 
-        {bodies.length === 0 ? (
+        {matches.length === 0 ? (
           <p className="notice warn">
-              {query
-                ? "No panchayat matched that search."
-                : copy.availability.noData}
-            
+            {typed
+              ? "No panchayat matched that."
+              : copy.availability.noData}
           </p>
         ) : (
-          <div className="field">
-            <label htmlFor="panchayat">{signupCopy.fields.localBody}
-            </label>
-            <select id="panchayat" name="panchayat">
-              <option value="" disabled selected>
-                — Select —
-              </option>
-              {bodies.map((row) => (
-                <option key={row.id} value={row.id}>
+          /*
+            Names as links, not a second dropdown. A link goes straight to the
+            count in one tap, and works with JavaScript off.
+          */
+          <ul className="pick-list">
+            {matches.map((row) => (
+              <li key={row.id}>
+                <a href={`/agents?district=${district}&panchayat=${row.id}#availability`}>
                   {row.nameEn}
                   {row.signupsOpen ? "" : " (closed)"}
-                </option>
-              ))}
-            </select>
-          </div>
+                </a>
+              </li>
+            ))}
+          </ul>
         )}
-
-        <button type="submit">
-          <span>Check
-          </span>
-        </button>
       </form>
     );
   }

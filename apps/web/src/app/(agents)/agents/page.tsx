@@ -104,11 +104,15 @@ function toId(value: string | undefined): number | undefined {
  *
  * The common case is a first-time visitor who has chosen nothing, and that case
  * costs one request.
+ *
+ * Once a district is chosen, ALL of its local bodies are fetched rather than
+ * the ones matching the search. That is the same request for every visitor to
+ * that district, so the edge caches it, and it lets the picker filter in the
+ * browser instead of round-tripping each search.
  */
 async function loadAvailability(
   district: number | undefined,
   panchayat: number | undefined,
-  query: string | undefined,
 ): Promise<AvailabilityData> {
   try {
     const districts = (await getDistricts()).data ?? [];
@@ -117,8 +121,7 @@ async function loadAvailability(
     }
 
     const bodies =
-      (await searchLocalBodies({ districtId: district, q: query, limit: 200 }))
-        .data ?? [];
+      (await searchLocalBodies({ districtId: district, limit: 200 })).data ?? [];
 
     if (!panchayat) {
       return { districts, bodies, availability: null, unavailable: false };
@@ -137,6 +140,23 @@ async function loadAvailability(
   }
 }
 
+/**
+ * A name typed into the picker, resolved to an id.
+ *
+ * The picker is one text box with a datalist, so a visitor who takes the
+ * browser's suggestion submits the exact name and should land straight on the
+ * count — without this they would submit a name and be shown a list of one.
+ */
+function resolveTypedName(
+  bodies: { id: number; nameEn: string }[],
+  query: string | undefined,
+): number | undefined {
+  if (!query) return undefined;
+  const typed = query.trim().toLowerCase();
+  if (!typed) return undefined;
+  return bodies.find((b) => b.nameEn.trim().toLowerCase() === typed)?.id;
+}
+
 export default async function AgentsPage({
   searchParams,
 }: {
@@ -149,11 +169,17 @@ export default async function AgentsPage({
   const authState = first(params.auth);
   const signedOut = first(params.signedout);
 
-  const availability = await loadAvailability(
-    toId(district),
-    toId(panchayat),
-    query,
-  );
+  const districtId = toId(district);
+  let panchayatId = toId(panchayat);
+  let availability = await loadAvailability(districtId, panchayatId);
+
+  // The visitor typed a full name rather than clicking one: same destination.
+  if (districtId && !panchayatId) {
+    panchayatId = resolveTypedName(availability.bodies, query);
+    if (panchayatId) {
+      availability = await loadAvailability(districtId, panchayatId);
+    }
+  }
 
   const authMessage =
     authState === "cancelled"
@@ -264,8 +290,8 @@ export default async function AgentsPage({
             <p>{copy.availability.prompt}</p>
             <div className="panel">
               <AvailabilityChecker
-                districtId={district}
-                localBodyId={panchayat}
+                districtId={districtId}
+                localBodyId={panchayatId}
                 query={query}
                 data={availability}
               />

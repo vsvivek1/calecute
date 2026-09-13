@@ -362,7 +362,14 @@ export const agents = pgTable(
     ),
     /** What the applicant typed, when their town is not in the picker yet. */
     pendingLocalBodyName: text("pending_local_body_name"),
+    /**
+     * Required for a placed agent. The row is created on demand from the ward
+     * number the applicant gives — see app.ward_for() in
+     * drizzle/0007_required_ward.sql.
+     */
     wardId: bigint("ward_id", { mode: "number" }).references(() => wards.id),
+    /** The ward number typed by an applicant whose town is not seeded yet. */
+    pendingWardNumber: smallint("pending_ward_number"),
     /** Not verified at signup by design; verified later at payout setup. */
     mobile: text("mobile").notNull(),
     mobileVerifiedAt: timestamp("mobile_verified_at", { withTimezone: true }),

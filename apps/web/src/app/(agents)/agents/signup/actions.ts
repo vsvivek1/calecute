@@ -45,7 +45,7 @@ export async function submitSignup(
     districtId: text(data, "districtId"),
     localBodyId: text(data, "localBodyId"),
     pendingLocalBodyName: text(data, "pendingLocalBodyName"),
-    wardId: text(data, "wardId"),
+    wardNumber: text(data, "wardNumber"),
     occupation: text(data, "occupation"),
   };
 
@@ -62,9 +62,9 @@ export async function submitSignup(
           ? null
           : optionalNumber(data, "localBodyId"),
         pendingLocalBodyName: values.pendingLocalBodyName || null,
-        wardId: values.pendingLocalBodyName
-          ? null
-          : optionalNumber(data, "wardId") ?? null,
+        // Required in both branches: an applicant in an unseeded municipality
+        // still has a ward, the API just cannot resolve it to a row yet.
+        wardNumber: optionalNumber(data, "wardNumber"),
         occupation: values.occupation,
         termsVersion: text(data, "termsVersion"),
         acceptedTerms: data.get("acceptedTerms") === "on",

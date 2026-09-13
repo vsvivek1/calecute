@@ -97,7 +97,6 @@ export default async function SignupPage({
               termsVersion={termsVersion}
               apiBase={apiBase}
               initialDistrictId={toId(first(params.district))}
-              initialLocalBodyId={toId(first(params.panchayat))}
               defaultName={session.me.user?.name ?? ""}
               // Issued and signed by the API. The timing check is measured
               // against its clock, not one this frontend or the browser holds.

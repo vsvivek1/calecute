@@ -371,6 +371,41 @@ section { padding: 2.25rem 0 0; }
 label { display: block; margin-bottom: 0.4rem; }
 .field { margin-bottom: 1.4rem; }
 
+/*
+ * Search box and its button on one line. The button carries the same height as
+ * the input so the pair reads as a single control rather than two stacked
+ * things — which is what the old search-box-plus-dropdown looked like.
+ */
+.search-row { display: flex; gap: 0.5rem; align-items: stretch; }
+.search-row input { flex: 1 1 auto; }
+.search-row button { flex: 0 0 auto; min-height: 48px; white-space: nowrap; }
+
+/*
+ * The names themselves, tappable. Each row clears the 44px target with room to
+ * spare, because this list is scrolled with a thumb on a phone.
+ */
+.pick-list {
+  list-style: none;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  max-height: 17rem;
+  overflow-y: auto;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+}
+.pick-list li + li { border-top: 1px solid var(--hairline); }
+.pick-list a {
+  display: block;
+  padding: 0.75rem 0.9rem;
+  min-height: 44px;
+  text-decoration: none;
+  color: var(--ink);
+}
+.pick-list a:hover, .pick-list a:focus-visible {
+  background: rgba(255, 255, 255, 0.05);
+  text-decoration: underline;
+}
+
 .field-hint {
   font-family: var(--font-latin);
   font-size: 0.8125rem;

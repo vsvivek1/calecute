@@ -186,7 +186,7 @@ async function main() {
     INSERT INTO wards (local_body_id, number, name_en, name_ml, status)
     VALUES (${gp.id}, 1, 'TEST-Ward One', 'TEST-വാർഡ് ഒന്ന്', 'COMPLETE'),
            (${gp.id}, 2, NULL, NULL, 'PENDING')`;
-  const [ward1] = await sql`SELECT id FROM wards WHERE local_body_id = ${gp.id} AND number = 1`;
+  const [ward1] = await sql`SELECT id, number FROM wards WHERE local_body_id = ${gp.id} AND number = 1`;
 
   const mkUser = async (address, role) => {
     const [u] = await sql`
@@ -276,7 +276,7 @@ async function main() {
     mobile: "9876500001",
     districtId: kkd.id,
     localBodyId: gp.id,
-    wardId: ward1.id,
+    wardNumber: ward1.number,
     occupation: "Akshaya centre operator",
     termsVersion: terms.version,
     acceptedTerms: true,
@@ -465,7 +465,6 @@ async function main() {
       ...signupBody,
       mobile: "9876500055",
       localBodyId: undefined,
-      wardId: undefined,
       pendingLocalBodyName: "TEST-Some Municipality",
       formToken: await agedFormToken(unplacedUser),
     },
@@ -477,6 +476,78 @@ async function main() {
       unplaced.body.agent?.pendingLocalBodyName === "TEST-Some Municipality",
     unplaced.body,
   );
+
+  {
+    const [row] = await sql`
+      SELECT pending_ward_number FROM agents WHERE agent_code = ${unplaced.body.agent?.agentCode ?? ""}`;
+    check(
+      "an unplaced applicant's ward number is kept for the admin who places them",
+      row?.pending_ward_number === ward1.number,
+      row,
+    );
+  }
+
+  // A ward number nobody has used before: the row is created on demand rather
+  // than the application being refused for geography we have not loaded.
+  //
+  // Filed against the Thiruvananthapuram municipality rather than the Kozhikode
+  // panchayat on purpose — the coverage assertions further down count
+  // applications in that panchayat, and a test should not move another one's
+  // numbers.
+  {
+    const newWardUser = await mkUser(email("newward"), "AGENT");
+    const newWardToken = await token(newWardUser, "AGENT");
+    const created = await call("POST", "/signup", {
+      auth: newWardToken,
+      body: {
+        ...signupBody,
+        mobile: "9876500056",
+        districtId: tvm.id,
+        localBodyId: muni.id,
+        wardNumber: 17,
+        formToken: await agedFormToken(newWardUser),
+      },
+    });
+    const [ward] = await sql`
+      SELECT number, status FROM wards WHERE local_body_id = ${muni.id} AND number = 17`;
+    check(
+      "an unseeded ward number creates a PENDING ward row",
+      created.status === 201 && ward?.number === 17 && ward?.status === "PENDING",
+      { status: created.status, ward, body: created.body },
+    );
+
+    const badWard = await call("POST", "/signup", {
+      auth: await token(await mkUser(email("badward"), "AGENT"), "AGENT"),
+      body: {
+        ...signupBody,
+        mobile: "9876500057",
+        districtId: tvm.id,
+        localBodyId: muni.id,
+        wardNumber: 0,
+      },
+    });
+    check(
+      "ward number 0 is rejected",
+      badWard.status === 400,
+      badWard.body,
+    );
+
+    const noWard = await call("POST", "/signup", {
+      auth: await token(await mkUser(email("noward"), "AGENT"), "AGENT"),
+      body: {
+        ...signupBody,
+        mobile: "9876500058",
+        districtId: tvm.id,
+        localBodyId: muni.id,
+        wardNumber: undefined,
+      },
+    });
+    check(
+      "a missing ward number is rejected",
+      noWard.status === 400,
+      noWard.body,
+    );
+  }
 
   const bothGiven = await call("POST", "/signup", {
     auth: abuserToken,
@@ -584,11 +655,13 @@ async function main() {
   check("district admin approves an in-scope agent", approve.status === 200, approve.body);
 
   // An agent in Thiruvananthapuram is out of the Kozhikode admin's scope.
+  const [muniWard] = await sql`
+    INSERT INTO wards (local_body_id, number) VALUES (${muni.id}, 1) RETURNING id`;
   const [otherAgent] = await sql`
-    INSERT INTO agents (user_id, agent_code, district_id, local_body_id, mobile, occupation,
-                        status, terms_version, terms_accepted_at, privacy_consent_at)
-    VALUES (${outsider}, 'CA-TVM-999999', ${tvm.id}, ${muni.id}, '9876500077', 'tester',
-            'PENDING_REVIEW', ${terms.version}, now(), now())
+    INSERT INTO agents (user_id, agent_code, district_id, local_body_id, ward_id, mobile,
+                        occupation, status, terms_version, terms_accepted_at, privacy_consent_at)
+    VALUES (${outsider}, 'CA-TVM-999999', ${tvm.id}, ${muni.id}, ${muniWard.id}, '9876500077',
+            'tester', 'PENDING_REVIEW', ${terms.version}, now(), now())
     RETURNING id`;
   const outOfScope = await call("POST", `/admin/agents/${otherAgent.id}/approve`, {
     auth: kkdAdminToken,
