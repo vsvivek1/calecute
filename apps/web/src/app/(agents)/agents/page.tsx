@@ -24,8 +24,8 @@
  *    no scam invites you to check the register.
  *  - The "what we never ask you for" list, since every item on it is something
  *    a chit-fund recruiter would ask for.
- *  - Live slot availability read from the database. Never fabricated, no
- *    countdown, no "only 2 left!".
+ *  - Live availability read from the database — now one click away at
+ *    /agents/availability. Never fabricated, no countdown, no "only 2 left!".
  *
  * All content is server-rendered. The scene and the scroll reveal are the only
  * client components, both decorative: if either fails, every word is still on
@@ -42,19 +42,28 @@ import {
   whatsappContactUrl,
 } from "@/lib/agents/content";
 import { Placeholder } from "@/components/agents/Bilingual";
-import { AvailabilityChecker } from "@/components/agents/AvailabilityChecker";
+import { AuthNotice } from "@/components/agents/AuthNotice";
 import { SignInButton } from "@/components/agents/SignInButton";
 import { OrganizationSchema } from "@/components/agents/OrganizationSchema";
 import { SceneMount } from "@/components/agents/SceneMount";
 import { ScrollReveal } from "@/components/agents/ScrollReveal";
-import {
-  getAvailability,
-  getDistricts,
-  searchLocalBodies,
-} from "@/lib/api/client";
-import type { AvailabilityData } from "@/components/agents/AvailabilityChecker";
 
-export const dynamic = "force-dynamic";
+/*
+ * Static, and revalidated hourly.
+ *
+ * This is the page a WhatsApp forward opens, so it is the one page whose load
+ * time decides whether a stranger reads any of this at all. It used to be
+ * force-dynamic — a server render, an API call and sometimes a cold function
+ * start on every single visit, about 700ms before the first byte — purely
+ * because it read the URL for the availability checker and for the sign-in
+ * error message.
+ *
+ * Neither belongs here. The checker moved to /agents/availability, which is
+ * still dynamic and still works with JavaScript off; the sign-in message is
+ * read from the URL in the browser by AuthNotice. What is left never varies by
+ * reader, so it is prerendered once and served from the edge.
+ */
+export const revalidate = 3600;
 
 const TITLE = "Commission agent programme";
 const DESCRIPTION =
@@ -87,112 +96,7 @@ export const metadata: Metadata = {
   },
 };
 
-type SearchParams = Promise<Record<string, string | string[] | undefined>>;
-
-function first(value: string | string[] | undefined): string | undefined {
-  return Array.isArray(value) ? value[0] : value;
-}
-
-function toId(value: string | undefined): number | undefined {
-  if (!value) return undefined;
-  const parsed = Number(value);
-  return Number.isInteger(parsed) && parsed > 0 ? parsed : undefined;
-}
-
-/**
- * Fetch only what the current step of the availability checker needs.
- *
- * The common case is a first-time visitor who has chosen nothing, and that case
- * costs one request.
- *
- * Once a district is chosen, ALL of its local bodies are fetched rather than
- * the ones matching the search. That is the same request for every visitor to
- * that district, so the edge caches it, and it lets the picker filter in the
- * browser instead of round-tripping each search.
- */
-async function loadAvailability(
-  district: number | undefined,
-  panchayat: number | undefined,
-): Promise<AvailabilityData> {
-  try {
-    const districts = (await getDistricts()).data ?? [];
-    if (!district) {
-      return { districts, bodies: [], availability: null, unavailable: false };
-    }
-
-    const bodies =
-      (await searchLocalBodies({ districtId: district, limit: 200 })).data ?? [];
-
-    if (!panchayat) {
-      return { districts, bodies, availability: null, unavailable: false };
-    }
-
-    return {
-      districts,
-      bodies,
-      availability: await getAvailability(panchayat),
-      unavailable: false,
-    };
-  } catch {
-    // Degrades to a plain message. The terms, the CIN and the verification
-    // link — the parts that do the persuading — are unaffected.
-    return { districts: [], bodies: [], availability: null, unavailable: true };
-  }
-}
-
-/**
- * A name typed into the picker, resolved to an id.
- *
- * The picker is one text box with a datalist, so a visitor who takes the
- * browser's suggestion submits the exact name and should land straight on the
- * count — without this they would submit a name and be shown a list of one.
- */
-function resolveTypedName(
-  bodies: { id: number; nameEn: string }[],
-  query: string | undefined,
-): number | undefined {
-  if (!query) return undefined;
-  const typed = query.trim().toLowerCase();
-  if (!typed) return undefined;
-  return bodies.find((b) => b.nameEn.trim().toLowerCase() === typed)?.id;
-}
-
-export default async function AgentsPage({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
-  const params = await searchParams;
-  const district = first(params.district);
-  const panchayat = first(params.panchayat);
-  const query = first(params.q);
-  const authState = first(params.auth);
-  const signedOut = first(params.signedout);
-
-  const districtId = toId(district);
-  let panchayatId = toId(panchayat);
-  let availability = await loadAvailability(districtId, panchayatId);
-
-  // The visitor typed a full name rather than clicking one: same destination.
-  if (districtId && !panchayatId) {
-    panchayatId = resolveTypedName(availability.bodies, query);
-    if (panchayatId) {
-      availability = await loadAvailability(districtId, panchayatId);
-    }
-  }
-
-  const authMessage =
-    authState === "cancelled"
-      ? copy.signIn.cancelled
-      : authState === "suspended"
-        ? copy.signIn.suspended
-        : authState === "failed"
-          ? copy.signIn.failed
-          : signedOut
-            ? copy.signIn.signedOut
-            : null;
-
-  return (
+export default function AgentsPage() {  return (
     <>
       <SceneMount />
       <div className="scene-veil" aria-hidden="true" />
@@ -220,13 +124,7 @@ export default async function AgentsPage({
               <p>{copy.role.note}</p>
             </div>
 
-            {authMessage && (
-              <p
-                className={`notice ${authState === "suspended" ? "stop" : "warn"}`}
-                role="status"
-              >{authMessage}
-              </p>
-            )}
+            <AuthNotice />
 
             <div style={{ marginTop: "2rem" }}>
               <SignInButton />
@@ -283,19 +181,21 @@ export default async function AgentsPage({
             <p>{copy.notAsked}</p>
           </section>
 
-          {/* ------------------------------------------ live availability */}
-          <section className="reveal" id="availability" aria-labelledby="availability-h">
+          {/*
+            The count lives on its own route now, because reading it costs a
+            database round trip and this page is read far more often than the
+            count is looked up. A link keeps the invitation without making every
+            reader pay for it.
+          */}
+          <section className="reveal" aria-labelledby="availability-h">
             <h2 id="availability-h">{copy.availability.heading}
             </h2>
             <p>{copy.availability.prompt}</p>
-            <div className="panel">
-              <AvailabilityChecker
-                districtId={districtId}
-                localBodyId={panchayatId}
-                query={query}
-                data={availability}
-              />
-            </div>
+            <p>
+              <a className="button secondary" href="/agents/availability">
+                <span>Check your panchayat</span>
+              </a>
+            </p>
           </section>
 
           {/* Repeated where a convinced reader acts. */}

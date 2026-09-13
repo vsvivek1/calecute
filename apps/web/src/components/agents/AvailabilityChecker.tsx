@@ -4,9 +4,9 @@
  * Works with JavaScript disabled. The whole thing is three plain GET forms that
  * narrow the URL one step at a time:
  *
- *   /agents                          -> pick a district
- *   /agents?district=11              -> search and pick a panchayat
- *   /agents?district=11&panchayat=19 -> see the live count
+ *   /agents/availability                          -> pick a district
+ *   /agents/availability?district=11              -> pick a panchayat
+ *   /agents/availability?district=11&panchayat=19 -> see the live count
  *
  * Each step is a server render, so a reader on a ₹8,000 phone with JavaScript
  * off — or with JavaScript that has not finished parsing yet — still gets the
@@ -99,7 +99,7 @@ export function AvailabilityChecker({
         )}
 
         <p className="button-note">
-          <a href="/agents#availability">Check a different panchayat</a>
+          <a href="/agents/availability">Check a different panchayat</a>
         </p>
       </div>
     );
@@ -121,7 +121,7 @@ export function AvailabilityChecker({
       : data.bodies;
 
     return (
-      <form method="get" action="/agents#availability">
+      <form method="get" action="/agents/availability">
         <input type="hidden" name="district" value={district} />
 
         <p className="button-note">{districtName?.nameEn ?? ""}
@@ -166,7 +166,7 @@ export function AvailabilityChecker({
           <ul className="pick-list">
             {matches.map((row) => (
               <li key={row.id}>
-                <a href={`/agents?district=${district}&panchayat=${row.id}#availability`}>
+                <a href={`/agents/availability?district=${district}&panchayat=${row.id}`}>
                   {row.nameEn}
                   {row.signupsOpen ? "" : " (closed)"}
                 </a>
@@ -180,7 +180,7 @@ export function AvailabilityChecker({
 
   /* ---------------------------------------- step 1: choose a district */
   return (
-    <form method="get" action="/agents#availability">
+    <form method="get" action="/agents/availability">
       <div className="field">
         <label htmlFor="district">{signupCopy.fields.district}
         </label>
