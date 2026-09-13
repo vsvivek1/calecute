@@ -1,5 +1,5 @@
 /**
- * The Google sign-in control.
+ * The Google sign-in control, and the two WhatsApp links that belong with it.
  *
  * A plain link, not a button that calls a script. That is deliberate: this is
  * the single most important action on the page, and making it depend on
@@ -7,9 +7,18 @@
  * connection the one thing a convinced reader wants to do is the one thing that
  * does not work yet. A link works the moment the HTML arrives.
  *
- * Labelled in both languages, per the brief.
+ * The channel and the contact number sit here rather than in a section of their
+ * own further down. Someone who has read enough to act is deciding between
+ * three things at that moment — register, follow, or ask a question first — and
+ * a reader who is not ready to hand over a Google account should not have to
+ * scroll past the thing they are unsure about to find the way to ask about it.
  */
-import { page as copy } from "@/lib/agents/content";
+import {
+  company,
+  formattedContactNumber,
+  page as copy,
+  whatsappContactUrl,
+} from "@/lib/agents/content";
 
 export function SignInButton({ repeated = false }: { repeated?: boolean }) {
   return (
@@ -20,8 +29,27 @@ export function SignInButton({ repeated = false }: { repeated?: boolean }) {
         <span>{copy.signIn.label}
         </span>
       </a>
-      <p className="button-note">{copy.signIn.note}
-      </p>
+
+      <div className="link-row">
+        <a
+          className="verify-link"
+          href={company.whatsappChannel}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>Join the WhatsApp channel</span>
+        </a>
+        <a
+          className="verify-link"
+          href={whatsappContactUrl()}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>
+            {copy.contact.label} · {formattedContactNumber()}
+          </span>
+        </a>
+      </div>
     </section>
   );
 }

@@ -15,7 +15,6 @@
  *   - No earnings figure anywhere.
  *   - Commission terms, including the TDS deduction, stated in full and given
  *     prominence rather than buried.
- *   - The MCA verification invitation.
  *   - 44px tap targets, AA contrast, and a layout that survives 200% zoom.
  *   - prefers-reduced-motion turns off every animation, including the 3D scene.
  */
@@ -589,7 +588,16 @@ a:hover { color: var(--accent-2); }
 }
 .verify-link:hover { border-color: var(--accent); background: var(--glass-strong); }
 
-.link-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+/* Sits directly under the sign-in button, so it needs air above it and must
+   stack on a narrow screen rather than squeezing two links onto one line. */
+.link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.link-row > * { flex: 1 1 14rem; }
+@media (min-width: 34rem) { .link-row > * { flex: 0 0 auto; } }
 
 /* ------------------------------------------------------- admin review */
 

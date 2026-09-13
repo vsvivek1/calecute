@@ -59,9 +59,6 @@ export const company = {
   whatsappChannel: "https://whatsapp.com/channel/0029Vb8hpyh3mFY8Nd5PiB1H",
 } as const;
 
-export const MCA_VERIFY_URL =
-  "https://www.mca.gov.in/mcafoportal/viewCompanyMasterData.do";
-
 export function whatsappContactUrl(): string {
   return `https://wa.me/91${company.contactWhatsapp.replace(/\D/g, "")}`;
 }
@@ -116,8 +113,6 @@ export const page = {
   notAsked:
     "There is no registration fee or deposit, and nothing to buy. PAN is needed only when you withdraw.",
 
-  verify: { linkLabel: "Check on MCA" },
-
   availability: {
     heading: "Your panchayat",
     prompt: "Find your panchayat and register.",
@@ -134,7 +129,6 @@ export const page = {
 
   signIn: {
     label: "Continue with Google",
-    note: "No password needed.",
     cancelled: "Sign-in was cancelled. You can try again.",
     failed: "Sign-in did not complete. Please try again.",
     suspended: "This account is not active. Please contact us.",

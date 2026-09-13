@@ -20,12 +20,12 @@
  *    that tells you what it will take before it asks for anything behaves
  *    unlike a scam.
  *  - No earnings figure, ever. Not "up to", not a worked example, not a range.
- *  - The MCA verification invitation — the highest-value element here, because
- *    no scam invites you to check the register.
  *  - The "what we never ask you for" list, since every item on it is something
  *    a chit-fund recruiter would ask for.
- *  - Live availability read from the database — now one click away at
- *    /agents/availability. Never fabricated, no countdown, no "only 2 left!".
+ * The panchayat count is not offered here. It lives at /agents/availability,
+ * which still works, but nothing links to it: the client does not want readers
+ * checking a panchayat before they register. The route is kept rather than
+ * deleted because "as of now" is what was said.
  *
  * All content is server-rendered. The scene and the scroll reveal are the only
  * client components, both decorative: if either fails, every word is still on
@@ -34,7 +34,6 @@
  */
 import type { Metadata } from "next";
 import {
-  MCA_VERIFY_URL,
   company,
   formattedContactNumber,
   isPlaceholder,
@@ -181,56 +180,6 @@ export default function AgentsPage() {  return (
             <p>{copy.notAsked}</p>
           </section>
 
-          {/*
-            The count lives on its own route now, because reading it costs a
-            database round trip and this page is read far more often than the
-            count is looked up. A link keeps the invitation without making every
-            reader pay for it.
-          */}
-          <section className="reveal" aria-labelledby="availability-h">
-            <h2 id="availability-h">{copy.availability.heading}
-            </h2>
-            <p>{copy.availability.prompt}</p>
-            <p>
-              <a className="button secondary" href="/agents/availability">
-                <span>Check your panchayat</span>
-              </a>
-            </p>
-          </section>
-
-          {/* Repeated where a convinced reader acts. */}
-          <section className="reveal">
-            <SignInButton repeated />
-          </section>
-
-          {/* --------------------------------- WhatsApp channel and contact */}
-          <section className="reveal" aria-labelledby="whatsapp">
-            <h2 id="whatsapp">{copy.whatsapp.heading}
-            </h2>
-            <div className="link-row">
-              <a
-                className="verify-link"
-                href={company.whatsappChannel}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span>Join the channel
-                </span>
-              </a>
-              <a
-                className="verify-link"
-                href={whatsappContactUrl()}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span>
-                    {copy.contact.label} · {formattedContactNumber()}
-                  
-                </span>
-              </a>
-            </div>
-          </section>
-
           {/* ------------------------------------------------- footer */}
           <footer className="page-footer">
             <p>{company.legalName}</p>
@@ -241,14 +190,7 @@ export default function AgentsPage() {  return (
                 <span>{company.registeredOffice}</span>
               )}
             </p>
-            {company.cin && (
-              <p>
-                CIN {company.cin} ·{" "}
-                <a href={MCA_VERIFY_URL} target="_blank" rel="noopener noreferrer">
-                  verify on MCA
-                </a>
-              </p>
-            )}
+            {company.cin && <p>CIN {company.cin}</p>}
             <p>
               <a href={whatsappContactUrl()} target="_blank" rel="noopener noreferrer">
                 WhatsApp {formattedContactNumber()}

@@ -10,10 +10,10 @@
  *     means the commission agent programme under /agents.
  *
  * The difference is deliberate, not drift. Do not unify them: the agent
- * programme is an Indian commercial arrangement with an Indian CIN, TDS under
- * Section 194H, and an MCA record a recruit is invited to verify. Presenting a
- * Wyoming LLC there would be both wrong and, on a page whose entire purpose is
- * proving the company is real, actively harmful.
+ * programme is an Indian commercial arrangement with an Indian CIN and TDS
+ * under Section 194H. Presenting a Wyoming LLC there would be both wrong and,
+ * on a page whose entire purpose is proving the company is real, actively
+ * harmful.
  *
  * Keep this in sync with the LLC filing.
  */
