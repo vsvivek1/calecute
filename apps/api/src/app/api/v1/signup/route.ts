@@ -19,6 +19,7 @@ import { hashFingerprint, ipPrefix } from "@/lib/net";
 import { agents, termsVersions } from "@/db/schema";
 import { mapConstraintErrors } from "@/db/constraints";
 import { validateGeographySelection } from "@/lib/geography";
+import { verifyFormToken } from "@/lib/auth/form-token";
 import {
   assertMobileUnused,
   assertNotAlreadyRegistered,
@@ -51,7 +52,12 @@ const bodySchema = z.object({
   // Anti-abuse. All optional: a client that omits them is not rejected, it
   // simply provides no signal.
   honeypot: z.string().max(200).nullish(),
-  fillMs: z.number().int().min(0).max(86_400_000).nullish(),
+  /**
+   * Issued by GET /signup/eligibility and signed by us, so elapsed time is
+   * measured between our clock and our clock. Replaces a client-reported
+   * duration, which a bot could simply lie about.
+   */
+  formToken: z.string().max(2048).nullish(),
   deviceFingerprint: z.string().max(512).nullish(),
 });
 
@@ -60,7 +66,11 @@ export const POST = handler(
     const body = await parseBody(ctx.request, bodySchema);
 
     // Cheap rejections first, before anything is locked.
-    checkFormIntegrity({ honeypot: body.honeypot, fillMs: body.fillMs });
+    const timing = await verifyFormToken(body.formToken, ctx.actor.userId);
+    checkFormIntegrity({
+      honeypot: body.honeypot,
+      fillMs: timing?.elapsedMs ?? null,
+    });
     await assertNotAlreadyRegistered(ctx.tx, ctx.actor.userId);
     await assertMobileUnused(ctx.tx, body.mobile);
 
@@ -118,7 +128,7 @@ export const POST = handler(
       localBodyId: body.localBodyId,
       deviceHash: hashFingerprint(body.deviceFingerprint ?? null),
       ipPrefix: ipPrefix(ctx.request),
-      fillMs: body.fillMs ?? null,
+      fillMs: timing?.elapsedMs ?? null,
     });
 
     return ok(

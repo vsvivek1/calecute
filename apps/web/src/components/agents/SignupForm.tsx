@@ -16,10 +16,11 @@
  * more conversions on a low-end phone than it would prevent abuse:
  *   - a honeypot field, positioned off-screen and hidden from assistive
  *     technology, which a form-filling bot completes and a person cannot;
- *   - a render timestamp, stamped server-side, so the elapsed time is measured
- *     against our clock and cannot be forged by the client.
+ *   - a signed form token issued by the API, which measures elapsed time
+ *     against its own clock. A client-reported duration would just be a number
+ *     a bot could choose.
  */
-import { useActionState, useEffect, useMemo, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { submitSignup, type FormState } from "@/app/(agents)/agents/signup/actions";
 import {
   signup as copy,
@@ -63,7 +64,7 @@ export function SignupForm({
   initialDistrictId,
   initialLocalBodyId,
   defaultName,
-  renderedAt,
+  formToken,
 }: {
   districts: Option[];
   termsVersion: string;
@@ -71,7 +72,7 @@ export function SignupForm({
   initialDistrictId?: number;
   initialLocalBodyId?: number;
   defaultName: string;
-  renderedAt: number;
+  formToken: string;
 }) {
   const [state, action] = useActionState<FormState, FormData>(submitSignup, {});
 
@@ -82,16 +83,24 @@ export function SignupForm({
   const [wards, setWards] = useState<WardOption[]>([]);
   const [loadingBodies, setLoadingBodies] = useState(false);
 
-  /* Panchayats for the chosen district, debounced against the search box. */
+  /*
+   * Panchayats for the chosen district, debounced against the search box.
+   *
+   * The empty case is derived at render (see `visibleBodies` below) rather than
+   * written back into state from inside the effect — clearing state
+   * synchronously in an effect triggers a second render pass for something the
+   * component already knows.
+   */
   useEffect(() => {
-    if (!districtId) {
-      setBodies([]);
-      return;
-    }
+    if (!districtId) return;
+
     let cancelled = false;
-    setLoadingBodies(true);
 
     const timer = setTimeout(async () => {
+      // Inside the timeout, not in the effect body: a synchronous setState
+      // during an effect forces an extra render pass before the fetch even
+      // starts.
+      setLoadingBodies(true);
       try {
         const url = new URL(`${apiBase}/geography/local-bodies`);
         url.searchParams.set("districtId", String(districtId));
@@ -113,12 +122,10 @@ export function SignupForm({
     };
   }, [districtId, query, apiBase]);
 
-  /* Wards for the chosen panchayat. */
+  /* Wards for the chosen panchayat. Same derivation rule as above. */
   useEffect(() => {
-    if (!localBodyId) {
-      setWards([]);
-      return;
-    }
+    if (!localBodyId) return;
+
     let cancelled = false;
     (async () => {
       try {
@@ -137,17 +144,20 @@ export function SignupForm({
     };
   }, [localBodyId, apiBase]);
 
-  const chosenBody = useMemo(
-    () => bodies.find((b) => b.id === localBodyId),
-    [bodies, localBodyId],
-  );
+  // Derived, so a cleared district shows no stale panchayats even though the
+  // fetched list is still in state.
+  const visibleBodies = districtId ? bodies : [];
+  const visibleWards = localBodyId ? wards : [];
+
+  // A find over at most 200 rows; memoising it would cost more than it saves.
+  const chosenBody = visibleBodies.find((b) => b.id === localBodyId);
 
   const fieldError = (name: string) => state.fields?.[name];
 
   return (
     <form action={action} noValidate>
       <input type="hidden" name="termsVersion" value={termsVersion} />
-      <input type="hidden" name="renderedAt" value={renderedAt} />
+      <input type="hidden" name="formToken" value={formToken} />
 
       {/*
         The honeypot. Off-screen rather than display:none, because some bots
@@ -260,7 +270,7 @@ export function SignupForm({
               <option value="" disabled>
                 {loadingBodies ? "…" : "— തിരഞ്ഞെടുക്കുക —"}
               </option>
-              {bodies.map((body) => (
+              {visibleBodies.map((body) => (
                 <option
                   key={body.id}
                   value={body.id}
@@ -290,14 +300,14 @@ export function SignupForm({
           <Label text={copy.fields.ward} htmlFor="wardId" />
           <select id="wardId" name="wardId" defaultValue="">
             <option value="">— {copy.hints.wardOptional.ml} —</option>
-            {wards.map((ward) => (
+            {visibleWards.map((ward) => (
               <option key={ward.id} value={ward.id}>
                 {ward.number}
                 {ward.nameMl ? ` · ${ward.nameMl}` : ward.nameEn ? ` · ${ward.nameEn}` : ""}
               </option>
             ))}
           </select>
-          {wards.length === 0 && (
+          {visibleWards.length === 0 && (
             <p className="field-hint">
               <Ml>{copy.hints.wardOptional.ml}</Ml>
               <En>Ward list not available for this panchayat. It is optional.</En>

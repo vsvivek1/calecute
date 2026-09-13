@@ -80,6 +80,24 @@ async function token(userId, role, agentId) {
     .sign(secret);
 }
 
+/**
+ * A form token that looks a minute old.
+ *
+ * Signed with the same secret the API uses, so it verifies — this is testing
+ * the accepted path without making the suite sleep for the minimum fill time.
+ */
+async function agedFormToken(userId) {
+  const issued = Math.floor(Date.now() / 1000) - 60;
+  return new SignJWT({ purpose: "signup" })
+    .setProtectedHeader({ alg: "HS256", typ: "JWT" })
+    .setSubject(String(userId))
+    .setIssuer(process.env.JWT_ISSUER ?? "http://localhost:3001")
+    .setAudience("calecute-signup-form")
+    .setIssuedAt(issued)
+    .setExpirationTime(issued + 3600)
+    .sign(secret);
+}
+
 async function call(method, path, { auth, body, headers = {} } = {}) {
   const response = await fetch(`${API}${path}`, {
     method,
@@ -183,6 +201,10 @@ async function main() {
   // Separate user: applicant3 ends up with their own application, and `agents`
   // is unique per user.
   const outsider = await mkUser(email("outsider"), "AGENT");
+  // The abuse assertions get their own account: signup is rate limited to five
+  // attempts an hour per user, and piling them all onto one applicant tripped
+  // the limiter rather than the checks under test.
+  const abuser = await mkUser(email("abuser"), "AGENT");
   const kkdAdminId = await mkUser(email("kkdadmin"), "DISTRICT_ADMIN");
   const superId = await mkUser(email("super"), "SUPER_ADMIN");
   await sql`INSERT INTO admin_districts (user_id, district_id) VALUES (${kkdAdminId}, ${kkd.id})`;
@@ -190,6 +212,7 @@ async function main() {
   const applicantToken = await token(applicant, "AGENT");
   const applicant2Token = await token(applicant2, "AGENT");
   const applicant3Token = await token(applicant3, "AGENT");
+  const abuserToken = await token(abuser, "AGENT");
   const kkdAdminToken = await token(kkdAdminId, "DISTRICT_ADMIN");
   const superToken = await token(superId, "SUPER_ADMIN");
 
@@ -241,6 +264,12 @@ async function main() {
 
   const [terms] = await sql`SELECT version FROM terms_versions ORDER BY effective_from DESC LIMIT 1`;
 
+  // The form token is issued by the API and signed by it; the timing check
+  // measures against its own clock, so a submission cannot report a fake
+  // duration. Each applicant needs their own.
+  const formTokenFor = async (auth) =>
+    (await call("GET", "/signup/eligibility", { auth })).body.formToken;
+
   const signupBody = {
     name: "Test Applicant",
     mobile: "9876500001",
@@ -251,11 +280,13 @@ async function main() {
     termsVersion: terms.version,
     acceptedTerms: true,
     privacyConsent: true,
-    fillMs: 45000,
     deviceFingerprint: "test-device-alpha",
   };
 
-  const signup = await call("POST", "/signup", { auth: applicantToken, body: signupBody });
+  const signup = await call("POST", "/signup", {
+    auth: applicantToken,
+    body: { ...signupBody, formToken: await agedFormToken(applicant) },
+  });
   check(
     "signup issues an agent code shaped CA-KKD-NNNNNN",
     signup.status === 201 && /^CA-KKD-\d{6}$/.test(signup.body.agent?.agentCode ?? ""),
@@ -266,7 +297,12 @@ async function main() {
 
   const honeypot = await call("POST", "/signup", {
     auth: applicant2Token,
-    body: { ...signupBody, mobile: "9876500002", honeypot: "bot filled this" },
+    body: {
+      ...signupBody,
+      mobile: "9876500002",
+      honeypot: "bot filled this",
+      formToken: await agedFormToken(applicant2),
+    },
   });
   check(
     "honeypot value is rejected",
@@ -274,19 +310,49 @@ async function main() {
     honeypot.body,
   );
 
+  // A token fetched and submitted immediately is, by definition, under the
+  // minimum fill time — which is exactly the case the check exists for.
   const tooFast = await call("POST", "/signup", {
-    auth: applicant2Token,
-    body: { ...signupBody, mobile: "9876500002", fillMs: 400 },
+    auth: abuserToken,
+    body: {
+      ...signupBody,
+      mobile: "9876500008",
+      formToken: await formTokenFor(abuserToken),
+    },
   });
   check(
-    "a submission under 3s is rejected",
+    "a submission faster than a human can type is rejected",
     tooFast.status === 400 && tooFast.body.error?.code === "SUBMITTED_TOO_FAST",
     tooFast.body,
   );
 
+  const forgedToken = await call("POST", "/signup", {
+    auth: abuserToken,
+    body: { ...signupBody, mobile: "9876500008", formToken: "not.a.real.token" },
+  });
+  check(
+    "a forged form token is rejected",
+    forgedToken.status === 400,
+    forgedToken.body,
+  );
+
+  const othersToken = await call("POST", "/signup", {
+    auth: abuserToken,
+    body: {
+      ...signupBody,
+      mobile: "9876500008",
+      formToken: await agedFormToken(applicant3),
+    },
+  });
+  check(
+    "a form token issued to another account is rejected",
+    othersToken.status === 400,
+    othersToken.body,
+  );
+
   const dupMobile = await call("POST", "/signup", {
     auth: applicant2Token,
-    body: { ...signupBody, fillMs: 30000 },
+    body: { ...signupBody, formToken: await agedFormToken(applicant2) },
   });
   check(
     "one account per mobile number",
@@ -296,7 +362,12 @@ async function main() {
 
   const crossDistrict = await call("POST", "/signup", {
     auth: applicant2Token,
-    body: { ...signupBody, mobile: "9876500002", localBodyId: muni.id, fillMs: 30000 },
+    body: {
+      ...signupBody,
+      mobile: "9876500002",
+      localBodyId: muni.id,
+      formToken: await agedFormToken(applicant2),
+    },
   });
   check(
     "a local body from another district is rejected",
@@ -306,7 +377,11 @@ async function main() {
 
   const twice = await call("POST", "/signup", {
     auth: applicantToken,
-    body: { ...signupBody, mobile: "9876500009", fillMs: 30000 },
+    body: {
+      ...signupBody,
+      mobile: "9876500009",
+      formToken: await agedFormToken(applicant),
+    },
   });
   check(
     "the same account cannot apply twice",
@@ -315,15 +390,24 @@ async function main() {
   );
 
   // Fill the second of two slots, then prove the third is refused.
+  // Backdated so it clears the minimum fill time without a real wait.
   const second = await call("POST", "/signup", {
     auth: applicant2Token,
-    body: { ...signupBody, mobile: "9876500002", fillMs: 30000 },
+    body: {
+      ...signupBody,
+      mobile: "9876500002",
+      formToken: await agedFormToken(applicant2),
+    },
   });
   check("second applicant takes the last slot", second.status === 201, second.body);
 
   const third = await call("POST", "/signup", {
     auth: applicant3Token,
-    body: { ...signupBody, mobile: "9876500003", fillMs: 30000 },
+    body: {
+      ...signupBody,
+      mobile: "9876500003",
+      formToken: await agedFormToken(applicant3),
+    },
   });
   check(
     "a full panchayat refuses a third applicant with SLOT_UNAVAILABLE",

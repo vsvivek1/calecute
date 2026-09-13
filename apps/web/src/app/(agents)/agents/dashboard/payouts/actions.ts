@@ -71,9 +71,13 @@ export async function savePayoutProfile(
  * form can surface a delivery failure — no SMS provider is configured yet, and
  * that must show as an error rather than as a silent no-op.
  */
+export async function startMobileVerification(): Promise<FormState>;
 export async function startMobileVerification(
-  _previous: FormState,
-  _data: FormData,
+  previous: FormState,
+  data: FormData,
+): Promise<FormState>;
+export async function startMobileVerification(
+  ..._args: unknown[]
 ): Promise<FormState> {
   const token = await currentAccessToken();
   if (!token) redirect("/auth/google/start?returnTo=/agents/dashboard/payouts");

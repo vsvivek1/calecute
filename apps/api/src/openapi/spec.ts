@@ -154,7 +154,12 @@ const signupBody = z.object({
   acceptedTerms: z.literal(true),
   privacyConsent: z.literal(true),
   honeypot: z.string().nullish().describe("Hidden field. Must be empty; a value rejects the request."),
-  fillMs: z.number().int().nullish().describe("Milliseconds between form render and submit. Under 3000 is rejected."),
+  formToken: z
+    .string()
+    .nullish()
+    .describe(
+      "The signed token from GET /signup/eligibility. The server measures elapsed time from its own issue timestamp, so a submission cannot report a fake duration. Omitting it is allowed and simply provides no timing evidence.",
+    ),
   deviceFingerprint: z.string().nullish().describe("Hashed server-side; the raw value is never stored."),
 });
 
@@ -456,6 +461,11 @@ const eligibilitySchema: Json = {
   required: ["canApply"],
   properties: {
     canApply: { type: "boolean" },
+    formToken: {
+      type: ["string", "null"],
+      description:
+        "Pass back as `formToken` when submitting the signup. Signed and short-lived; it is how the timing check is measured server-side.",
+    },
     existingApplication: {
       type: ["object", "null"],
       properties: {

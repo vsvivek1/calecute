@@ -13,6 +13,7 @@ import { authedRoute, ok } from "@/lib/route";
 import { parseQuery, geoIdSchema } from "@/lib/validation";
 import { agents, termsVersions } from "@/db/schema";
 import { availabilityFor } from "@/lib/geography";
+import { issueFormToken } from "@/lib/auth/form-token";
 import { desc } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
@@ -45,6 +46,12 @@ export const GET = handler(
 
     return ok(ctx, {
       canApply: !existing,
+      /*
+       * The form token. Returned here because this is the call a client makes
+       * before rendering the form, and it is what the timing check measures
+       * against — see lib/auth/form-token.ts.
+       */
+      formToken: existing ? null : await issueFormToken(ctx.actor.userId),
       existingApplication: existing ?? null,
       currentTerms: currentTerms ?? null,
       availability,

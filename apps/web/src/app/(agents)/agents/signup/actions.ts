@@ -48,14 +48,6 @@ export async function submitSignup(
     occupation: text(data, "occupation"),
   };
 
-  /*
-   * The timing check. `renderedAt` is stamped into the form server-side, so the
-   * elapsed time is measured against our clock rather than the client's — a
-   * client-supplied duration would be trivially forged.
-   */
-  const renderedAt = Number(text(data, "renderedAt"));
-  const fillMs = Number.isFinite(renderedAt) ? Date.now() - renderedAt : undefined;
-
   try {
     const result = await api.post<{ agent: { agentCode: string } }>(
       "/signup",
@@ -71,7 +63,8 @@ export async function submitSignup(
         privacyConsent: data.get("acceptedTerms") === "on",
         // The honeypot: a field no human sees. Any value trips it.
         honeypot: text(data, "website"),
-        fillMs,
+        // Signed by the API when it issued the form; it does the timing itself.
+        formToken: text(data, "formToken") || null,
         deviceFingerprint: text(data, "fingerprint") || null,
       },
       { token },

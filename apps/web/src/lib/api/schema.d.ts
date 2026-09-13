@@ -5188,6 +5188,8 @@ export interface components {
                 id?: number;
                 status?: string;
             } | null;
+            /** @description Pass back as `formToken` when submitting the signup. Signed and short-lived; it is how the timing check is measured server-side. */
+            formToken?: string | null;
         };
         Error: {
             error: {
@@ -5341,7 +5343,7 @@ export interface components {
                 header?: string;
                 key?: string;
             }[];
-            /** @description Row shape varies by report; use `columns` to render generically. */
+            /** @description One object per row, keyed by the `key` of each entry in `columns`. Values are formatted exactly as the CSV and PDF exports render them, so a client can build a table from `columns` alone without knowing the report. Rows that describe a single entity also carry an `id` field, which is deliberately NOT in `columns` — it is there so a row can be linked back to its panchayat, agent or ward, not displayed. */
             data: {
                 [key: string]: unknown;
             }[];
@@ -5385,8 +5387,8 @@ export interface components {
             /** @description Hashed server-side; the raw value is never stored. */
             deviceFingerprint?: string | null;
             districtId: number;
-            /** @description Milliseconds between form render and submit. Under 3000 is rejected. */
-            fillMs?: number | null;
+            /** @description The signed token from GET /signup/eligibility. The server measures elapsed time from its own issue timestamp, so a submission cannot report a fake duration. Omitting it is allowed and simply provides no timing evidence. */
+            formToken?: string | null;
             /** @description Hidden field. Must be empty; a value rejects the request. */
             honeypot?: string | null;
             localBodyId: number;
