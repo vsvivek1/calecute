@@ -201,51 +201,19 @@ export default async function AgentsPage({
             </div>
           </section>
 
-          {/*
-            Registration details as a fact, not an argument.
-
-            This was a "Who we are" panel followed by an "Is this a real
-            company?" section. Both are gone: asking the question out loud
-            plants the doubt, and the reader who wants proof wants the CIN and
-            a link, not two paragraphs about why they should trust us.
-          */}
-          <section className="reveal" aria-labelledby="registration">
-            <h2 id="registration" className="sr-only">
-              <En>Registration</En>
+          {/* What the company does. The registration details live in the
+              footer, stated the way a letterhead states them. */}
+          <section className="reveal" aria-labelledby="what-we-do">
+            <h2 id="what-we-do" className="sr-only">
+              <En>What we do</En>
             </h2>
-            {/* Shown only when a CIN is published; see lib/agents/content.ts. */}
-            {company.cin && (
-              <div className="reg-strip">
-                <div>
-                  <span className="reg-label" lang="en">
-                    CIN
-                  </span>
-                  <span className="cin-value" lang="en">
-                    {company.cin}
-                  </span>
-                </div>
-                <a
-                  className="reg-verify"
-                  href={MCA_VERIFY_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span>
-                    <Ml>{copy.verify.linkLabel.ml}</Ml>
-                    <En>{copy.verify.linkLabel.en} ↗</En>
-                  </span>
-                </a>
-              </div>
+            {isPlaceholder(company.whatWeDo.ml) ? (
+              <p>
+                <Placeholder value={company.whatWeDo.en} />
+              </p>
+            ) : (
+              <Bi text={company.whatWeDo} />
             )}
-            <div style={{ marginTop: company.cin ? "1.25rem" : 0 }}>
-              {isPlaceholder(company.whatWeDo.ml) ? (
-                <p>
-                  <Placeholder value={company.whatWeDo.en} />
-                </p>
-              ) : (
-                <Bi text={company.whatWeDo} />
-              )}
-            </div>
           </section>
 
           {/* -------------------------------------------- commission terms */}
@@ -367,7 +335,14 @@ export default async function AgentsPage({
                 <span lang="en">{company.registeredOffice.en}</span>
               )}
             </p>
-            {company.cin && <p lang="en">CIN {company.cin}</p>}
+            {company.cin && (
+              <p lang="en">
+                CIN {company.cin} ·{" "}
+                <a href={MCA_VERIFY_URL} target="_blank" rel="noopener noreferrer">
+                  verify on MCA
+                </a>
+              </p>
+            )}
             <p>
               <a href={whatsappContactUrl()} target="_blank" rel="noopener noreferrer">
                 WhatsApp {formattedContactNumber()}

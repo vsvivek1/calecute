@@ -51,15 +51,15 @@ export const company = {
     en: "Calecute Technologies (OPC) Private Limited",
   },
   /**
-   * Not shown. The client asked for the CIN to be left off the page
-   * (2026-09-13).
+   * The registered CIN, supplied 2026-09-13.
    *
-   * Worth knowing what that costs: inviting a reader to verify the company on
-   * the MCA register was the strongest trust signal available, because no scam
-   * does it. Set this to the real CIN and the registration strip and the MCA
-   * link come back automatically — the page already handles both.
+   * Presented as a small footer detail, not as a feature. That is deliberate: a
+   * registration number given prominence starts to look like an argument, and a
+   * page that argues for its own legitimacy invites the doubt it is answering.
+   * A real company states its number the way a letterhead does — quietly, where
+   * anyone who wants it can find it.
    */
-  cin: null as string | null,
+  cin: "U62013KL2026OPC105471" as string | null,
   city: { ml: "കോഴിക്കോട്, കേരളം", en: "Kozhikode, Kerala" },
   /** PLACEHOLDER — one sentence, what the company actually does. */
   whatWeDo: {

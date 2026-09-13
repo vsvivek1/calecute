@@ -269,12 +269,6 @@ section { padding: 3.25rem 0 0; }
 
 .identity dd { margin: 0; color: var(--ink); }
 
-.cin-value {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  letter-spacing: 0.08em;
-  color: var(--gold);
-}
-
 /* --------------------------------------------------------------- lists */
 
 .terms-list, .plain-list { list-style: none; margin: 0; padding: 0; }
@@ -544,41 +538,6 @@ a:hover { color: var(--accent-2); }
 .page-footer a { color: var(--ink-muted); }
 .footer-links { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-top: 1rem; }
 .footer-links a { min-height: 44px; line-height: 44px; }
-
-/* ------------------------------------------------- registration strip */
-
-/* The CIN and its verification link, presented as a fact rather than a case. */
-.reg-strip {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.9rem 1.5rem;
-  padding: 0.9rem 1.15rem;
-  border: 1px solid var(--hairline);
-  border-radius: var(--radius-sm);
-  background: var(--glass);
-  backdrop-filter: blur(14px);
-}
-
-.reg-strip > div { display: flex; align-items: baseline; gap: 0.6rem; }
-
-.reg-label {
-  font-family: var(--font-latin);
-  font-size: 0.7rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-
-.reg-verify {
-  margin-left: auto;
-  font-size: 0.9rem;
-  text-decoration: none;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-}
-.reg-verify .en { color: var(--ink-faint); }
 
 /* -------------------------------------------------------------- chips */
 
