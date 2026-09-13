@@ -50,8 +50,8 @@ const products = [
     color: "bg-indigo-100 dark:bg-indigo-900/30",
   },
   {
-    title: "Sparex App",
-    desc: "Spare parts sourcing and inventory app connecting dealers, workshops, and suppliers.",
+    title: "Sparex",
+    desc: "Vehicle services app — service booking, job cards, and workshop records for owners and garages.",
     emoji: "🔧",
     color: "bg-slate-100 dark:bg-slate-800/50",
   },

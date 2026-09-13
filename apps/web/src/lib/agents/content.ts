@@ -47,7 +47,7 @@ export const company = {
    * than from a list of eleven product names they have never heard of.
    */
   whatWeDo:
-    "We build software used across Kerala: exam preparation apps for LSS, USS, PSC and UPSC, management systems for schools and coaching institutes, tools for banking and RD agents, planning and ERP software for small businesses, and trade apps for farmer producer organisations.",
+    "We build software used across Kerala: exam preparation apps for LSS, USS, PSC and UPSC, management systems for schools and coaching institutes, apps for bankers and vehicle services, planning and ERP software for small businesses, and trade apps for farmer producer organisations.",
   /** Registered office as filed, supplied 2026-09-13. */
   registeredOffice:
     "11/698A, Poolakadavu, Marikkunnu (PO), Kozhikode 673012, Kerala, India",
