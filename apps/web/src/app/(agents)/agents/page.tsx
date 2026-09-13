@@ -54,7 +54,7 @@ import type { AvailabilityData } from "@/components/agents/AvailabilityChecker";
 
 export const dynamic = "force-dynamic";
 
-const TITLE = "കേരളത്തിലുടനീളം കമ്മീഷൻ ഏജന്റുമാരെ ആവശ്യമുണ്ട്";
+const TITLE = "കമ്മീഷൻ ഏജന്റുമാരെ ആവശ്യമുണ്ട്";
 const DESCRIPTION =
   "കാലിക്യൂട്ട് ടെക്നോളജീസിന്റെ സോഫ്റ്റ്‌വെയർ ഉൽപ്പന്നങ്ങൾ വിൽക്കാൻ കേരളത്തിലെ ഓരോ പഞ്ചായത്തിലും കമ്മീഷൻ ഏജന്റുമാർ. രജിസ്ട്രേഷൻ ഫീസില്ല, നിക്ഷേപമില്ല. കമ്മീഷൻ 10%.";
 
@@ -181,6 +181,7 @@ export default async function AgentsPage({
             </h1>
             <div className="hero-sub">
               <Bi text={copy.role.body} />
+              <Bi text={copy.role.note} />
             </div>
 
             {authMessage && (
@@ -198,63 +199,52 @@ export default async function AgentsPage({
             </div>
           </section>
 
-          {/* --------------------------------------- who we are, verifiably */}
-          <section className="reveal" aria-labelledby="identity">
-            <div className="panel">
-              <h2 id="identity">
-                <Ml>ഞങ്ങൾ ആരാണ്</Ml>
-                <En>Who we are</En>
-              </h2>
-              <dl className="identity">
-                <div>
-                  <dt lang="en">Company</dt>
-                  <dd>
-                    <span lang="ml">{company.legalName.ml}</span>
-                    <br />
-                    <span lang="en" style={{ color: "var(--ink-muted)" }}>
-                      {company.legalName.en}
-                    </span>
-                  </dd>
-                </div>
-                <div>
-                  <dt lang="en">CIN</dt>
-                  <dd>
-                    {isPlaceholder(company.cin) ? (
-                      <Placeholder value={company.cin} />
-                    ) : (
-                      <span className="cin-value" lang="en">
-                        {company.cin}
-                      </span>
-                    )}
-                  </dd>
-                </div>
-                <div>
-                  <dt lang="en">Office</dt>
-                  <dd>
-                    <span lang="ml">{company.city.ml}</span>{" "}
-                    <span lang="en" style={{ color: "var(--ink-faint)" }}>
-                      ({company.city.en})
-                    </span>
-                  </dd>
-                </div>
-              </dl>
-            </div>
-          </section>
+          {/*
+            Registration details as a fact, not an argument.
 
-          {/* ----------------------------------------- what the company does */}
-          <section className="reveal" aria-labelledby="what-we-do">
-            <h2 id="what-we-do">
-              <Ml>ഞങ്ങൾ എന്ത് ചെയ്യുന്നു</Ml>
-              <En>What we do</En>
+            This was a "Who we are" panel followed by an "Is this a real
+            company?" section. Both are gone: asking the question out loud
+            plants the doubt, and the reader who wants proof wants the CIN and
+            a link, not two paragraphs about why they should trust us.
+          */}
+          <section className="reveal" aria-labelledby="registration">
+            <h2 id="registration" className="sr-only">
+              <En>Registration</En>
             </h2>
+            <div className="reg-strip">
+              <div>
+                <span className="reg-label" lang="en">
+                  CIN
+                </span>
+                {isPlaceholder(company.cin) ? (
+                  <Placeholder value={company.cin} />
+                ) : (
+                  <span className="cin-value" lang="en">
+                    {company.cin}
+                  </span>
+                )}
+              </div>
+              <a
+                className="reg-verify"
+                href={MCA_VERIFY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>
+                  <Ml>{copy.verify.linkLabel.ml}</Ml>
+                  <En>{copy.verify.linkLabel.en} ↗</En>
+                </span>
+              </a>
+            </div>
             {isPlaceholder(company.whatWeDo.ml) ? (
-              <p>
+              <p style={{ marginTop: "1.25rem" }}>
                 <Placeholder value={company.whatWeDo.en} />
               </p>
             ) : (
-              <Bi text={company.whatWeDo} />
+              <div style={{ marginTop: "1.25rem" }}>
+                <Bi text={company.whatWeDo} />
+              </div>
             )}
-            <Bi text={copy.role.note} />
           </section>
 
           {/* -------------------------------------------- commission terms */}
@@ -272,44 +262,42 @@ export default async function AgentsPage({
             </div>
           </section>
 
-          {/* -------------------------------------------- expectations */}
-          <section className="reveal" aria-labelledby="expectations">
-            <h2 id="expectations">
-              <Ml>{copy.expectations.heading.ml}</Ml>
-              <En>{copy.expectations.heading.en}</En>
-            </h2>
-            {/* No figure appears here or anywhere on this page. */}
-            <Bi text={copy.expectations.body} />
-            <Bi text={copy.expectations.detail} />
-          </section>
-
-          {/* ----------------------------------------------- who it suits */}
-          <section className="reveal" aria-labelledby="background">
-            <h2 id="background">
-              <Ml>{copy.background.heading.ml}</Ml>
-              <En>{copy.background.heading.en}</En>
-            </h2>
-            <Bi text={copy.background.body} />
-            <Bi text={copy.background.note} />
-          </section>
-
-          {/* ------------------------------------ what we never ask you for */}
-          <section className="reveal" aria-labelledby="not-asked">
-            <div className="panel">
-              <h2 id="not-asked">
-                <Ml>{copy.notAsked.heading.ml}</Ml>
-                <En>{copy.notAsked.heading.en}</En>
-              </h2>
-              <ul className="plain-list">
-                {copy.notAsked.points.map((point) => (
-                  <Bi key={point.en} text={point} as="li" />
-                ))}
-              </ul>
-              <p className="notice">
-                <Ml>{copy.notAsked.panNote.ml}</Ml>
-                <En>{copy.notAsked.panNote.en}</En>
-              </p>
+          {/* Earnings and audience, side by side. Two short answers, not two
+              sections of prose. No figure appears here or anywhere. */}
+          <section className="reveal">
+            <div className="pair">
+              <div>
+                <h2>
+                  <Ml>{copy.expectations.heading.ml}</Ml>
+                  <En>{copy.expectations.heading.en}</En>
+                </h2>
+                <Bi text={copy.expectations.body} />
+              </div>
+              <div>
+                <h2>
+                  <Ml>{copy.background.heading.ml}</Ml>
+                  <En>{copy.background.heading.en}</En>
+                </h2>
+                <Bi text={copy.background.body} />
+              </div>
             </div>
+          </section>
+
+          {/* Four chips and one line. Previously a heading, four bullets and a
+              note — reassurance at that length reads as protesting. */}
+          <section className="reveal">
+            <ul className="chips">
+              {copy.notAsked.points.map((point) => (
+                <li key={point.en}>
+                  <Ml>{point.ml}</Ml>
+                  <En>{point.en}</En>
+                </li>
+              ))}
+            </ul>
+            <p className="chips-note">
+              <Ml>{copy.notAsked.panNote.ml}</Ml>
+              <En>{copy.notAsked.panNote.en}</En>
+            </p>
           </section>
 
           {/* ------------------------------------------ live availability */}
@@ -329,28 +317,6 @@ export default async function AgentsPage({
             </div>
           </section>
 
-          {/* ------------------------------------------ verify us yourself */}
-          <section className="reveal" aria-labelledby="verify">
-            <h2 id="verify">
-              <Ml>{copy.verify.heading.ml}</Ml>
-              <En>{copy.verify.heading.en}</En>
-            </h2>
-            <Bi text={copy.verify.body} />
-            <p>
-              <a
-                className="verify-link"
-                href={MCA_VERIFY_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span>
-                  <Ml>{copy.verify.linkLabel.ml}</Ml>
-                  <En>{copy.verify.linkLabel.en} ↗</En>
-                </span>
-              </a>
-            </p>
-          </section>
-
           {/* Repeated where a convinced reader acts. */}
           <section className="reveal">
             <SignInButton repeated />
@@ -362,7 +328,6 @@ export default async function AgentsPage({
               <Ml>{copy.whatsapp.heading.ml}</Ml>
               <En>{copy.whatsapp.heading.en}</En>
             </h2>
-            <Bi text={copy.whatsapp.body} />
             <p>
               {isPlaceholder(company.whatsappChannel) ? (
                 <Placeholder value={company.whatsappChannel} />

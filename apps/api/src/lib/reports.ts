@@ -37,7 +37,15 @@ export const reportFilterSchema = z.object({
   from: z.coerce.date().optional(),
   to: z.coerce.date().optional(),
   format: z.enum(["json", "csv", "pdf"]).default("json"),
-  limit: z.coerce.number().int().min(1).max(5000).default(500),
+  /**
+   * Default sized to the domain, not to a round number.
+   *
+   * Kerala has 941 gram panchayats plus 93 urban bodies, so a coverage report
+   * with the old 500 default silently returned half the state and set
+   * `truncated`. An admin looking for panchayats with no agents needs all of
+   * them; that is the entire purpose of the report.
+   */
+  limit: z.coerce.number().int().min(1).max(5000).default(2000),
 });
 
 export type ReportFilter = z.infer<typeof reportFilterSchema>;

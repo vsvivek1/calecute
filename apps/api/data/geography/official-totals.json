@@ -9,8 +9,8 @@
     "the date you checked. The report prints the `verified` field next to every",
     "count so nobody mistakes an unverified baseline for an official one."
   ],
-  "verified": null,
-  "source": null,
+  "verified": "2026-09-13",
+  "source": "LGD (lgdirectory.gov.in) exports: Pri_Lb_Specific_State and All_Pricovered_Villages, Kerala (state code 32), downloaded 2026-09-13",
   "totals": {
     "districts": 14,
     "blockPanchayats": 152,

@@ -84,19 +84,19 @@ export const MCA_VERIFY_URL =
 
 export const page = {
   title: {
-    ml: "കേരളത്തിലുടനീളം കമ്മീഷൻ ഏജന്റുമാരെ ആവശ്യമുണ്ട്",
-    en: "Commission agents wanted across Kerala",
+    ml: "കമ്മീഷൻ ഏജന്റുമാരെ ആവശ്യമുണ്ട്",
+    en: "Commission agents wanted",
   },
 
   role: {
     heading: { ml: "എന്താണ് ഈ ജോലി", en: "What the role is" },
     body: {
-      ml: "ഞങ്ങളുടെ സോഫ്റ്റ്‌വെയർ ഉൽപ്പന്നങ്ങൾ വിൽക്കാൻ കേരളത്തിലുടനീളം കമ്മീഷൻ ഏജന്റുമാരെ ആവശ്യമുണ്ട്. ഓരോ പഞ്ചായത്തിലും പത്ത് ഏജന്റുമാർ.",
-      en: "We are appointing commission agents across Kerala to sell our software products. Ten agents in each panchayat.",
+      ml: "ഞങ്ങളുടെ സോഫ്റ്റ്‌വെയർ ഉൽപ്പന്നങ്ങൾ വിൽക്കാൻ കമ്മീഷൻ ഏജന്റുമാരെ ആവശ്യമുണ്ട്. ഓരോ പഞ്ചായത്തിലും പത്ത് ഏജന്റുമാർ.",
+      en: "We are appointing commission agents to sell our software products. Ten agents in each panchayat.",
     },
     note: {
-      ml: "ഇത് ശമ്പളമുള്ള ജോലിയല്ല. നിങ്ങൾ കൊണ്ടുവരുന്ന ഉപഭോക്താക്കൾ പണം അടയ്ക്കുമ്പോൾ മാത്രമാണ് വരുമാനം.",
-      en: "This is not a salaried job. You earn only when the customers you bring pay us.",
+      ml: "ശമ്പളമില്ല. നിങ്ങൾ കൊണ്ടുവരുന്നവർ പണം അടയ്ക്കുമ്പോൾ കമ്മീഷൻ.",
+      en: "No salary. You earn when the customers you bring pay.",
     },
   },
 
@@ -130,70 +130,63 @@ export const page = {
   },
 
   expectations: {
-    heading: { ml: "എത്ര വരുമാനം കിട്ടും", en: "What you can expect to earn" },
+    heading: { ml: "വരുമാനം", en: "Earnings" },
     /**
      * The one place a reader looks for a number, and the one place we refuse to
-     * give one. Saying so plainly is more credible than a figure would be.
+     * give one. Saying so in a single line is more credible than a figure, and
+     * more credible than a paragraph explaining why there is no figure.
      */
     body: {
-      ml: "എത്ര രൂപ കിട്ടുമെന്ന് ഞങ്ങൾ പറയില്ല. അത് നിങ്ങൾ എത്ര ഉപഭോക്താക്കളെ കൊണ്ടുവരുന്നു, അവർ എത്ര കാലം തുടരുന്നു എന്നതിനെ ആശ്രയിച്ചിരിക്കും.",
-      en: "We will not quote a figure. It depends on how many customers you bring and how long they keep paying.",
-    },
-    detail: {
-      ml: "തുടക്കത്തിൽ വരുമാനം ചെറുതും പതുക്കെയുമായിരിക്കും. ഉപഭോക്താക്കൾ കൂടിവരുന്നതിനനുസരിച്ച് അത് സ്ഥിരമായ വരുമാനമായി മാറും. പെട്ടെന്ന് പണമുണ്ടാക്കാനുള്ള വഴിയല്ല ഇത്.",
-      en: "In the beginning the income is small and slow. As customers accumulate it becomes steady. This is not a way to make money quickly.",
+      ml: "തുടക്കത്തിൽ ചെറുത്. ഉപഭോക്താക്കൾ കൂടുമ്പോൾ സ്ഥിരം. കണക്കുകൾ ഞങ്ങൾ പറയില്ല.",
+      en: "Small at first. Steady as customers add up. We do not quote figures.",
     },
   },
 
   background: {
-    heading: { ml: "ആർക്കാണ് ഇത് ചേരുക", en: "Who this suits" },
+    heading: { ml: "ആർക്ക്", en: "Who it suits" },
     body: {
-      ml: "അക്ഷയ കേന്ദ്രം നടത്തുന്നവർ, ഏജൻസി പ്രവൃത്തിപരിചയമുള്ളവർ, ദിവസവും ആളുകളുമായി ഇടപഴകുന്ന ജോലി ചെയ്യുന്നവർ.",
-      en: "Akshaya centre operators, people with agency experience, and anyone whose work brings them into contact with the public every day.",
-    },
-    note: {
-      ml: "ഇത് നിർബന്ധമായ യോഗ്യതയല്ല. ആർക്കും അപേക്ഷിക്കാം.",
-      en: "These are preferences, not requirements. Anyone may apply.",
+      ml: "അക്ഷയ കേന്ദ്രങ്ങൾ, ഏജൻസി പരിചയമുള്ളവർ, ദിവസവും ആളുകളെ കാണുന്നവർ. ആർക്കും അപേക്ഷിക്കാം.",
+      en: "Akshaya centres, agency experience, anyone who meets people daily. Open to all.",
     },
   },
 
+  /**
+   * Four short chips, not a section.
+   *
+   * These were a heading, four bullets and an explanatory note. Reassurance at
+   * that length reads as protesting, which is itself a scam signal — the useful
+   * version is to state it once, flatly, and move on.
+   */
   notAsked: {
-    heading: { ml: "ഞങ്ങൾ ചോദിക്കാത്തത്", en: "What we never ask you for" },
     points: [
-      { ml: "രജിസ്ട്രേഷൻ ഫീസ് ഇല്ല", en: "No registration fee" },
-      { ml: "നിക്ഷേപമോ ഡെപ്പോസിറ്റോ ഇല്ല", en: "No deposit" },
-      {
-        ml: "ഉൽപ്പന്നം വാങ്ങേണ്ടതില്ല",
-        en: "No product purchase",
-      },
-      {
-        ml: "രജിസ്റ്റർ ചെയ്യുമ്പോൾ പാൻ കാർഡോ ബാങ്ക് വിവരങ്ങളോ വേണ്ട",
-        en: "No PAN card or bank details at signup",
-      },
+      { ml: "ഫീസില്ല", en: "No fee" },
+      { ml: "നിക്ഷേപമില്ല", en: "No deposit" },
+      { ml: "സാധനം വാങ്ങേണ്ട", en: "Nothing to buy" },
+      { ml: "ഇപ്പോൾ പാൻ വേണ്ട", en: "No PAN yet" },
     ] as Bilingual[],
     panNote: {
-      ml: "കമ്മീഷൻ പിൻവലിക്കാൻ സമയമാകുമ്പോൾ മാത്രമേ പാൻ ചോദിക്കൂ. അതുവരെ വേണ്ട.",
-      en: "PAN is collected later, only when there is commission to withdraw. Not before.",
+      ml: "പണം പിൻവലിക്കുമ്പോൾ മാത്രം പാൻ.",
+      en: "PAN only when you withdraw.",
     },
   },
 
+  /**
+   * No heading, no paragraph.
+   *
+   * This was a section titled "Is this a real company?" with an explanation
+   * underneath. Asking the question out loud plants the doubt. The CIN sitting
+   * in the identity block with a link next to it makes the same point without
+   * making the argument.
+   */
   verify: {
-    heading: { ml: "ഞങ്ങൾ യഥാർത്ഥ കമ്പനിയാണോ?", en: "Is this a real company?" },
-    body: {
-      ml: "സ്വയം പരിശോധിക്കുക. ഞങ്ങളുടെ സിഐഎൻ താഴെ കൊടുത്തിട്ടുണ്ട്. കേന്ദ്ര സർക്കാരിന്റെ എംസിഎ വെബ്‌സൈറ്റിൽ അത് തിരഞ്ഞാൽ കമ്പനിയുടെ രജിസ്ട്രേഷൻ വിവരങ്ങൾ കാണാം.",
-      en: "Check for yourself. Our CIN is below. Search it on the Government of India's MCA portal and you will see the company's registration details.",
-    },
-    linkLabel: {
-      ml: "എംസിഎ വെബ്‌സൈറ്റിൽ സിഐഎൻ പരിശോധിക്കുക",
-      en: "Verify the CIN on the MCA portal",
-    },
+    linkLabel: { ml: "എംസിഎയിൽ പരിശോധിക്കുക", en: "Check on MCA" },
   },
 
   availability: {
     heading: { ml: "ഒഴിവുള്ള സ്ഥാനങ്ങൾ", en: "Places available" },
     prompt: {
-      ml: "ജില്ലയും പഞ്ചായത്തും തിരഞ്ഞെടുത്ത് എത്ര സ്ഥാനം ബാക്കിയുണ്ടെന്ന് നോക്കുക.",
-      en: "Choose a district and panchayat to see how many places are left.",
+      ml: "നിങ്ങളുടെ പഞ്ചായത്തിൽ എത്ര ഒഴിവുണ്ടെന്ന് നോക്കുക.",
+      en: "See how many places are left in your panchayat.",
     },
     full: {
       ml: "ഈ പഞ്ചായത്തിൽ സ്ഥാനങ്ങൾ നിറഞ്ഞു. വെയിറ്റിംഗ് ലിസ്റ്റിൽ ചേരാം.",
@@ -212,8 +205,8 @@ export const page = {
   signIn: {
     label: { ml: "ഗൂഗിൾ ഉപയോഗിച്ച് തുടരുക", en: "Continue with Google" },
     note: {
-      ml: "നിങ്ങളുടെ ഗൂഗിൾ അക്കൗണ്ട് ഉപയോഗിച്ചാണ് രജിസ്റ്റർ ചെയ്യുന്നത്. പാസ്‌വേഡ് ഉണ്ടാക്കേണ്ടതില്ല.",
-      en: "You register using your Google account. There is no password to create.",
+      ml: "പാസ്‌വേഡ് വേണ്ട.",
+      en: "No password needed.",
     },
     cancelled: {
       ml: "സൈൻ ഇൻ റദ്ദാക്കി. വീണ്ടും ശ്രമിക്കാം.",
@@ -232,10 +225,6 @@ export const page = {
 
   whatsapp: {
     heading: { ml: "വാട്‌സ്ആപ്പ് ചാനൽ", en: "WhatsApp channel" },
-    body: {
-      ml: "പുതിയ അറിയിപ്പുകൾ ഞങ്ങളുടെ വാട്‌സ്ആപ്പ് ചാനലിൽ ലഭിക്കും.",
-      en: "Announcements are posted on our WhatsApp channel.",
-    },
   },
 
   footer: {

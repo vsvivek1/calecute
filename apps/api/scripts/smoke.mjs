@@ -661,9 +661,24 @@ async function main() {
     scoped.body.data?.map((r) => r.localBodyNameEn),
   );
 
-  const superSeesBoth = await call("GET", "/admin/reports/panchayat-coverage", {
-    auth: superToken,
-  });
+  // Filtered to the two fixture districts: the unfiltered report now covers
+  // every real panchayat in Kerala, and this assertion is about scope, not
+  // pagination.
+  const superSeesKkd = await call(
+    `GET`,
+    `/admin/reports/panchayat-coverage?districtId=${kkd.id}`,
+    { auth: superToken },
+  );
+  const superSeesTvm = await call(
+    `GET`,
+    `/admin/reports/panchayat-coverage?districtId=${tvm.id}`,
+    { auth: superToken },
+  );
+  const superSeesBoth = {
+    body: {
+      data: [...(superSeesKkd.body.data ?? []), ...(superSeesTvm.body.data ?? [])],
+    },
+  };
   check(
     "a super admin sees local bodies in both districts",
     superSeesBoth.body.data?.some((r) => r.localBodyId === gp.id) &&

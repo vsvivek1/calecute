@@ -1,0 +1,4 @@
+# The full-India export is 42MB and is not needed once converted — the Kerala
+# subset and the local-body export are what scripts/convert-lgd.mjs reads.
+All_Pricovered_Villages_2*.xlsx
+.DS_Store

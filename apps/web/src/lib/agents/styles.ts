@@ -557,6 +557,93 @@ a:hover { color: var(--accent-2); }
 .footer-links { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-top: 1rem; }
 .footer-links a { min-height: 44px; line-height: 44px; }
 
+/* ------------------------------------------------- registration strip */
+
+/* The CIN and its verification link, presented as a fact rather than a case. */
+.reg-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.9rem 1.5rem;
+  padding: 0.9rem 1.15rem;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+}
+
+.reg-strip > div { display: flex; align-items: baseline; gap: 0.6rem; }
+
+.reg-label {
+  font-family: var(--font-latin);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.reg-verify {
+  margin-left: auto;
+  font-size: 0.9rem;
+  text-decoration: none;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.reg-verify .en { color: var(--ink-faint); }
+
+/* -------------------------------------------------------------- chips */
+
+/* "No fee / No deposit / Nothing to buy / No PAN yet" — four facts on a line. */
+.chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.chips > li {
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 999px;
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  font-size: 0.95rem;
+}
+
+.chips > li .en { font-size: 0.75em; }
+
+.chips-note {
+  font-family: var(--font-latin);
+  font-size: 0.8125rem;
+  color: var(--ink-faint);
+  margin-top: 0.9rem;
+}
+.chips-note .ml { font-family: var(--font-ml); font-size: 0.95rem; color: var(--ink-muted); }
+
+/* --------------------------------------------------------------- pair */
+
+.pair { display: grid; gap: 2rem; }
+
+@media (min-width: 46rem) {
+  .pair { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+}
+
+/* Visually hidden but available to assistive technology. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* --------------------------------------------------------- scroll reveal */
 
 /*
