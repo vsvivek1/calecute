@@ -18,8 +18,8 @@ export function OrganizationSchema() {
   const schema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: company.legalName.en,
-    alternateName: company.legalName.ml,
+    name: company.legalName,
+    alternateName: company.legalName,
     url: origin,
     email: company.email,
     address: {
@@ -27,9 +27,9 @@ export function OrganizationSchema() {
       addressLocality: "Kozhikode",
       addressRegion: "Kerala",
       addressCountry: "IN",
-      ...(isPlaceholder(company.registeredOffice.en)
+      ...(isPlaceholder(company.registeredOffice)
         ? {}
-        : { streetAddress: company.registeredOffice.en }),
+        : { streetAddress: company.registeredOffice }),
     },
   };
 
@@ -44,7 +44,7 @@ export function OrganizationSchema() {
       description:
         "Corporate Identity Number, Ministry of Corporate Affairs, Government of India",
     };
-    schema.legalName = company.legalName.en;
+    schema.legalName = company.legalName;
   }
 
   // WhatsApp is the only contact channel, so it is what gets published.

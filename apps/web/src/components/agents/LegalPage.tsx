@@ -1,26 +1,29 @@
 /**
  * Shell for the agent programme's legal pages.
  *
- * These are the pages Google's OAuth consent screen links to, and the pages an
- * applicant ticks a box against at signup, so they are part of the product
- * rather than boilerplate. Same dark treatment as the rest of the programme,
- * no WebGL — nobody reads terms over a moving background.
+ * These are what Google's OAuth consent screen links to and what an applicant
+ * ticks a box against at signup, so they are part of the product rather than
+ * boilerplate. No WebGL behind them — nobody reads terms over a moving
+ * background.
  */
 import type { ReactNode } from "react";
-import { En, Ml } from "./Bilingual";
-import { company, whatsappContactUrl, formattedContactNumber } from "@/lib/agents/content";
+import {
+  company,
+  formattedContactNumber,
+  whatsappContactUrl,
+} from "@/lib/agents/content";
 
 export function LegalPage({
-  titleMl,
-  titleEn,
+  title,
   version,
   updated,
+  intro,
   children,
 }: {
-  titleMl: string;
-  titleEn: string;
+  title: string;
   version?: string;
   updated: string;
+  intro: ReactNode;
   children: ReactNode;
 }) {
   return (
@@ -28,26 +31,24 @@ export function LegalPage({
       <header className="masthead">
         <span className="mark" aria-hidden="true" />
         <span className="who">
-          <strong lang="en">Calecute Technologies (OPC) Pvt Ltd</strong>
-          <span lang="ml">{company.city.ml}</span>
+          <strong>{company.legalName}</strong>
+          <span>{company.city}</span>
         </span>
       </header>
 
-      <main className="wrap legal" style={{ paddingTop: "2.5rem" }}>
-        <h1>
-          <Ml>{titleMl}</Ml>
-          <En>{titleEn}</En>
-        </h1>
-
-        <p className="chips-note" lang="en">
+      <main className="wrap legal">
+        <h1>{title}</h1>
+        <p className="chips-note">
           {version ? `Version ${version} · ` : ""}Last updated {updated}
         </p>
+
+        <div className="legal-intro">{intro}</div>
 
         {children}
 
         <footer className="page-footer">
-          <p lang="en">{company.legalName.en}</p>
-          {company.cin && <p lang="en">CIN {company.cin}</p>}
+          <p>{company.legalName}</p>
+          {company.cin && <p>CIN {company.cin}</p>}
           <p>
             <a href={whatsappContactUrl()} target="_blank" rel="noopener noreferrer">
               WhatsApp {formattedContactNumber()}
@@ -56,15 +57,9 @@ export function LegalPage({
             <a href={`mailto:${company.email}`}>{company.email}</a>
           </p>
           <nav className="footer-links" aria-label="Legal">
-            <a href="/agents">
-              <Ml>പ്രധാന പേജ്</Ml>
-            </a>
-            <a href="/agents/terms">
-              <Ml>നിബന്ധനകൾ</Ml>
-            </a>
-            <a href="/agents/privacy">
-              <Ml>സ്വകാര്യതാ നയം</Ml>
-            </a>
+            <a href="/agents">Home</a>
+            <a href="/agents/terms">Terms</a>
+            <a href="/agents/privacy">Privacy policy</a>
           </nav>
         </footer>
       </main>
@@ -72,28 +67,21 @@ export function LegalPage({
   );
 }
 
-/** A numbered clause: Malayalam statement, English beneath. */
+/** A numbered section. */
 export function Clause({
   n,
-  headingMl,
-  headingEn,
+  heading,
   children,
 }: {
   n: number;
-  headingMl: string;
-  headingEn: string;
+  heading: string;
   children: ReactNode;
 }) {
   return (
     <section className="clause">
       <h2>
-        <span className="clause-n" lang="en">
-          {n}
-        </span>
-        <span>
-          <Ml>{headingMl}</Ml>
-          <En>{headingEn}</En>
-        </span>
+        <span className="clause-n">{n}</span>
+        <span>{heading}</span>
       </h2>
       {children}
     </section>

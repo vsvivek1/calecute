@@ -6,7 +6,7 @@
  * the recruitment page cannot afford either — it has 150KB for everything and
  * the Malayalam subset already takes 35KB of it.
  *
- * `lang="ml"` because Malayalam is the primary language of these pages. English
+ * `lang="en"` because Malayalam is the primary language of these pages. English
  * passages carry `lang="en"` individually, so a screen reader switches voice
  * correctly rather than reading English with Malayalam phonetics.
  */
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_ORIGIN ?? "https://calecutech.com",
   ),
   title: {
-    default: "കമ്മീഷൻ ഏജന്റ് | Calecute Technologies",
+    default: "Commission agent programme | Calecute Technologies",
     template: "%s | Calecute Technologies",
   },
   robots: {
@@ -40,20 +40,8 @@ export default function AgentsRootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ml">
+    <html lang="en">
       <head>
-        {/*
-          Preloaded because it is on the critical path: the first paint of this
-          page is Malayalam, and the subset is small enough that fetching it
-          early is cheaper than a visible swap.
-        */}
-        <link
-          rel="preload"
-          href="/fonts/noto-malayalam-400.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
         {/* Inlined rather than linked: one fewer render-blocking request, and
             the same stylesheet the static /agents document uses. */}
         <style dangerouslySetInnerHTML={{ __html: AGENT_STYLES }} />

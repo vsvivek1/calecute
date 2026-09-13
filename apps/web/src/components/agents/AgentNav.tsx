@@ -4,12 +4,11 @@
  * Sign-out is a real form POST, not a link: it changes state, and a link would
  * let a prefetcher or an image tag sign someone out.
  */
-import { En, Ml } from "./Bilingual";
 
 const TABS = [
-  { key: "dashboard", href: "/agents/dashboard", ml: "ഡാഷ്ബോർഡ്", en: "Dashboard" },
-  { key: "customers", href: "/agents/dashboard/customers", ml: "ഉപഭോക്താക്കൾ", en: "Customers" },
-  { key: "payouts", href: "/agents/dashboard/payouts", ml: "പണം", en: "Payouts" },
+  { key: "dashboard", href: "/agents/dashboard", label: "Dashboard" },
+  { key: "customers", href: "/agents/dashboard/customers", label: "Customers" },
+  { key: "payouts", href: "/agents/dashboard/payouts", label: "Payouts" },
 ] as const;
 
 export function AgentNav({
@@ -28,9 +27,7 @@ export function AgentNav({
         </span>
         <form action="/auth/signout" method="post">
           <button type="submit" className="button secondary">
-            <span>
-              <Ml>സൈൻ ഔട്ട്</Ml>
-              <En>Sign out</En>
+            <span>Sign out
             </span>
           </button>
         </form>
@@ -43,7 +40,7 @@ export function AgentNav({
                 href={tab.href}
                 aria-current={tab.key === current ? "page" : undefined}
               >
-                {tab.ml} · {tab.en}
+                {tab.label}
               </a>
             </li>
           ))}

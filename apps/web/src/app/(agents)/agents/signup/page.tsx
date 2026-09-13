@@ -10,13 +10,12 @@ import { redirect } from "next/navigation";
 import { requireSession } from "@/lib/auth-guard";
 import { getDistricts, getEligibility } from "@/lib/api/client";
 import { signup as copy } from "@/lib/agents/content";
-import { En, Ml } from "@/components/agents/Bilingual";
 import { SignupForm } from "@/components/agents/SignupForm";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "രജിസ്ട്രേഷൻ",
+  title: "Register",
   // An application form has no business in a search index.
   robots: { index: false, follow: false },
 };
@@ -56,11 +55,9 @@ export default async function SignupPage({
     return (
       <main className="wrap" style={{ paddingTop: "6rem" }}>
         <p className="notice stop">
-          <Ml>രജിസ്ട്രേഷൻ ഇപ്പോൾ ലഭ്യമല്ല. പിന്നീട് ശ്രമിക്കുക.</Ml>
-          <En>
             Registration is unavailable: no terms version is published. Run the
             seed script.
-          </En>
+          
         </p>
       </main>
     );
@@ -85,14 +82,18 @@ export default async function SignupPage({
           <span className="eyebrow" lang="en">
             Step 2 of 3
           </span>
-          <h1>
-            <Ml>{copy.step2Heading.ml}</Ml>
-            <En>{copy.step2Heading.en}</En>
+          <h1>{copy.step2Heading}
           </h1>
 
           <div className="panel" style={{ marginTop: "1.75rem" }}>
             <SignupForm
-              districts={districtList.data ?? []}
+              /* Only what the form renders. The API also returns Malayalam
+                 names and LGD codes; sending them would put them in the
+                 client payload for nothing. */
+              districts={(districtList.data ?? []).map((d) => ({
+                id: d.id ?? 0,
+                nameEn: d.nameEn ?? "",
+              }))}
               termsVersion={termsVersion}
               apiBase={apiBase}
               initialDistrictId={toId(first(params.district))}

@@ -24,15 +24,12 @@ import { useActionState, useEffect, useState } from "react";
 import { submitSignup, type FormState } from "@/app/(agents)/agents/signup/actions";
 import {
   signup as copy,
-  type Bilingual as BilingualText,
 } from "@/lib/agents/content";
-import { En, Ml } from "./Bilingual";
 import { SubmitButton } from "./SubmitButton";
 
 interface Option {
   id: number;
   nameEn: string;
-  nameMl: string;
 }
 
 interface LocalBodyOption extends Option {
@@ -45,14 +42,12 @@ interface WardOption {
   id: number;
   number: number;
   nameEn: string | null;
-  nameMl: string | null;
+  nameMl?: string | null;
 }
 
-function Label({ text, htmlFor }: { text: BilingualText; htmlFor: string }) {
+function Label({ text, htmlFor }: { text: string; htmlFor: string }) {
   return (
-    <label htmlFor={htmlFor}>
-      <Ml>{text.ml}</Ml>
-      <En>{text.en}</En>
+    <label htmlFor={htmlFor}>{text}
     </label>
   );
 }
@@ -180,8 +175,8 @@ export function SignupForm({
 
       {state.error && (
         <p className="notice stop" role="alert">
-          <Ml>{state.error}</Ml>
-          {state.code && <En>{state.code}</En>}
+          {state.error}
+          {state.code && <span className="field-hint">{state.code}</span>}
         </p>
       )}
 
@@ -213,9 +208,7 @@ export function SignupForm({
           aria-invalid={Boolean(fieldError("mobile"))}
           aria-describedby="mobile-hint"
         />
-        <p className="field-hint" id="mobile-hint">
-          <Ml>{copy.hints.mobileNotVerified.ml}</Ml>
-          <En>{copy.hints.mobileNotVerified.en}</En>
+        <p className="field-hint" id="mobile-hint">{copy.hints.mobileNotVerified}
         </p>
         {fieldError("mobile") && <p className="field-hint">{fieldError("mobile")}</p>}
       </div>
@@ -234,11 +227,11 @@ export function SignupForm({
           }}
         >
           <option value="" disabled>
-            — തിരഞ്ഞെടുക്കുക —
+            — Select —
           </option>
           {districts.map((district) => (
             <option key={district.id} value={district.id}>
-              {district.nameMl} · {district.nameEn}
+              {district.nameEn}
             </option>
           ))}
         </select>
@@ -247,9 +240,7 @@ export function SignupForm({
       {districtId > 0 && (
         <>
           <div className="field">
-            <label htmlFor="localBodySearch">
-              <Ml>{copy.hints.searchLocalBody.ml}</Ml>
-              <En>{copy.hints.searchLocalBody.en}</En>
+            <label htmlFor="localBodySearch">{copy.hints.searchLocalBody}
             </label>
             <input
               type="search"
@@ -272,7 +263,7 @@ export function SignupForm({
               onChange={(event) => setLocalBodyId(Number(event.target.value))}
             >
               <option value="" disabled>
-                {loadingBodies ? "…" : "— തിരഞ്ഞെടുക്കുക —"}
+                {loadingBodies ? "…" : "— Select —"}
               </option>
               {visibleBodies.map((body) => (
                 <option
@@ -280,7 +271,7 @@ export function SignupForm({
                   value={body.id}
                   disabled={!body.signupsOpen || body.remaining <= 0}
                 >
-                  {body.nameMl} · {body.nameEn}
+                  {body.nameEn}
                   {body.signupsOpen
                     ? ` — ${body.remaining}/${body.slotCapacity}`
                     : " — closed"}
@@ -289,10 +280,8 @@ export function SignupForm({
             </select>
             {chosenBody && !notListed && (
               <p className="field-hint">
-                <Ml>{`${chosenBody.remaining} ഒഴിവ്`}</Ml>
-                <En>
                   {chosenBody.remaining} of {chosenBody.slotCapacity} places left
-                </En>
+                
               </p>
             )}
           </div>
@@ -313,19 +302,14 @@ export function SignupForm({
                 if (event.target.checked) setLocalBodyId(0);
               }}
             />
-            <label htmlFor="notListed">
-              <Ml>{copy.hints.notListed.ml}</Ml>
-              <En>{copy.hints.notListed.en}</En>
+            <label htmlFor="notListed">{copy.hints.notListed}
             </label>
           </div>
 
           {notListed && (
             <div className="field">
               <Label
-                text={{
-                  ml: "മുനിസിപ്പാലിറ്റി / കോർപ്പറേഷൻ പേര്",
-                  en: "Municipality or corporation name",
-                }}
+                text={"Municipality or corporation name"}
                 htmlFor="pendingLocalBodyName"
               />
               <input
@@ -337,9 +321,7 @@ export function SignupForm({
                 autoComplete="off"
                 aria-describedby="not-listed-note"
               />
-              <p className="field-hint" id="not-listed-note">
-                <Ml>{copy.hints.notListedNote.ml}</Ml>
-                <En>{copy.hints.notListedNote.en}</En>
+              <p className="field-hint" id="not-listed-note">{copy.hints.notListedNote}
               </p>
             </div>
           )}
@@ -350,18 +332,16 @@ export function SignupForm({
         <div className="field">
           <Label text={copy.fields.ward} htmlFor="wardId" />
           <select id="wardId" name="wardId" defaultValue="">
-            <option value="">— {copy.hints.wardOptional.ml} —</option>
+            <option value="">— {copy.hints.wardOptional} —</option>
             {visibleWards.map((ward) => (
               <option key={ward.id} value={ward.id}>
                 {ward.number}
-                {ward.nameMl ? ` · ${ward.nameMl}` : ward.nameEn ? ` · ${ward.nameEn}` : ""}
+                {ward.nameEn ? ` · ${ward.nameEn}` : ""}
               </option>
             ))}
           </select>
           {visibleWards.length === 0 && (
-            <p className="field-hint">
-              <Ml>{copy.hints.wardOptional.ml}</Ml>
-              <En>Ward list not available for this panchayat. It is optional.</En>
+            <p className="field-hint">Ward list not available for this panchayat. It is optional.
             </p>
           )}
         </div>
@@ -383,21 +363,17 @@ export function SignupForm({
           this is the moment the applicant agrees to it. */}
       <div className="choice">
         <input type="checkbox" id="acceptedTerms" name="acceptedTerms" required />
-        <label htmlFor="acceptedTerms">
-          <Ml>{copy.consent.terms.ml}</Ml>
-          <En>{copy.consent.terms.en}</En>
+        <label htmlFor="acceptedTerms">{copy.consent.terms}
         </label>
       </div>
 
-      <p className="chips-note">
-        <Ml>{copy.consent.duplicateWarning.ml}</Ml>
-        <En>{copy.consent.duplicateWarning.en}</En>
+      <p className="chips-note">{copy.consent.duplicateWarning}
       </p>
 
       <div style={{ marginTop: "1.5rem" }}>
         <SubmitButton
           label={copy.submit}
-          pendingLabel={{ ml: "അയയ്ക്കുന്നു…", en: "Submitting…" }}
+          pendingLabel={"Submitting…"}
         />
       </div>
     </form>

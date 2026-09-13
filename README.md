@@ -191,7 +191,6 @@ It prints a cookie to paste into the browser console. Development only.
 | `npm run postman --workspace=apps/api` | Regenerate the Postman collection |
 | `npm run api:types --workspace=apps/web` | Regenerate frontend types from the spec |
 | `npm run build:og --workspace=apps/web` | Rebuild the Open Graph image |
-| `npm run build:font --workspace=apps/web` | Re-subset the Malayalam font |
 
 ---
 

@@ -8,7 +8,6 @@
 import type { Metadata } from "next";
 import { requireRole } from "@/lib/auth-guard";
 import { getPayoutProfile } from "@/lib/api/client";
-import { En, Ml } from "@/components/agents/Bilingual";
 import { Rupees } from "@/components/agents/Money";
 import { PayoutForm } from "@/components/agents/PayoutForm";
 import { MobileVerify } from "@/components/agents/MobileVerify";
@@ -16,21 +15,15 @@ import { AgentNav } from "@/components/agents/AgentNav";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
-  title: "പണം സ്വീകരിക്കൽ",
+  title: "Payout setup",
   robots: { index: false, follow: false },
 };
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
-const REASON: Record<string, { ml: string; en: string }> = {
-  PAN_NOT_VERIFIED: {
-    ml: "പാൻ പരിശോധന പൂർത്തിയായിട്ടില്ല",
-    en: "PAN not yet verified",
-  },
-  MOBILE_NOT_VERIFIED: {
-    ml: "മൊബൈൽ നമ്പർ സ്ഥിരീകരിച്ചിട്ടില്ല",
-    en: "Mobile number not verified",
-  },
+const REASON: Record<string, string> = {
+  PAN_NOT_VERIFIED: "PAN not yet verified",
+  MOBILE_NOT_VERIFIED: "Mobile number not verified",
 };
 
 export default async function PayoutsPage({
@@ -51,21 +44,15 @@ export default async function PayoutsPage({
         <AgentNav email={session.me.user?.email ?? ""} current="payouts" />
 
         <main className="wrap" style={{ paddingTop: "1.5rem" }}>
-          <h1>
-            <Ml>പണം സ്വീകരിക്കൽ</Ml>
-            <En>Payout setup</En>
+          <h1>Payout setup
           </h1>
 
           {flag("saved") && (
-            <p className="notice ok" role="status">
-              <Ml>വിവരങ്ങൾ സേവ് ചെയ്തു. പാൻ പരിശോധനയ്ക്ക് ശേഷം പണം നൽകും.</Ml>
-              <En>Saved. Payouts are released once an administrator verifies your PAN.</En>
+            <p className="notice ok" role="status">Saved. Payouts are released once an administrator verifies your PAN.
             </p>
           )}
           {flag("verified") && (
-            <p className="notice ok" role="status">
-              <Ml>മൊബൈൽ നമ്പർ സ്ഥിരീകരിച്ചു.</Ml>
-              <En>Mobile number verified.</En>
+            <p className="notice ok" role="status">Mobile number verified.
             </p>
           )}
 
@@ -82,9 +69,7 @@ export default async function PayoutsPage({
               </div>
               <ul className="plain-list" style={{ marginTop: "1rem" }}>
                 {(profile.withdrawal.reasons ?? []).map((code) => (
-                  <li key={code}>
-                    <Ml>{REASON[code]?.ml ?? code}</Ml>
-                    <En>{REASON[code]?.en ?? code}</En>
+                  <li key={code}>{REASON[code] ?? code}
                   </li>
                 ))}
               </ul>
@@ -92,9 +77,7 @@ export default async function PayoutsPage({
           )}
 
           <section>
-            <h2>
-              <Ml>മൊബൈൽ സ്ഥിരീകരണം</Ml>
-              <En>Mobile verification</En>
+            <h2>Mobile verification
             </h2>
             <div className="panel">
               <MobileVerify
@@ -105,9 +88,7 @@ export default async function PayoutsPage({
           </section>
 
           <section>
-            <h2>
-              <Ml>പാനും ബാങ്ക് വിവരങ്ങളും</Ml>
-              <En>PAN and bank details</En>
+            <h2>PAN and bank details
             </h2>
             <div className="panel">
               <PayoutForm

@@ -6,7 +6,6 @@
  * change. That is the same contract discipline as the rest of the app — the
  * frontend renders what the API describes.
  */
-import { En, Ml } from "./Bilingual";
 
 export interface ReportTab {
   slug: string;
@@ -37,9 +36,7 @@ export function AdminNav({
         </span>
         <form action="/auth/signout" method="post">
           <button type="submit" className="button secondary">
-            <span>
-              <Ml>സൈൻ ഔട്ട്</Ml>
-              <En>Sign out</En>
+            <span>Sign out
             </span>
           </button>
         </form>

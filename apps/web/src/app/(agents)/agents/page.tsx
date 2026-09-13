@@ -41,7 +41,7 @@ import {
   page as copy,
   whatsappContactUrl,
 } from "@/lib/agents/content";
-import { Bi, En, Ml, Placeholder } from "@/components/agents/Bilingual";
+import { Placeholder } from "@/components/agents/Bilingual";
 import { AvailabilityChecker } from "@/components/agents/AvailabilityChecker";
 import { SignInButton } from "@/components/agents/SignInButton";
 import { OrganizationSchema } from "@/components/agents/OrganizationSchema";
@@ -56,9 +56,9 @@ import type { AvailabilityData } from "@/components/agents/AvailabilityChecker";
 
 export const dynamic = "force-dynamic";
 
-const TITLE = "കമ്മീഷൻ ഏജന്റുമാരെ ആവശ്യമുണ്ട്";
+const TITLE = "Commission agents wanted in Kerala";
 const DESCRIPTION =
-  "കാലിക്യൂട്ട് ടെക്നോളജീസിന്റെ സോഫ്റ്റ്‌വെയർ ഉൽപ്പന്നങ്ങൾ വിൽക്കാൻ കേരളത്തിലെ ഓരോ പഞ്ചായത്തിലും കമ്മീഷൻ ഏജന്റുമാർ. രജിസ്ട്രേഷൻ ഫീസില്ല, നിക്ഷേപമില്ല. കമ്മീഷൻ 10%.";
+  "Calecute Technologies is appointing commission agents in every panchayat in Kerala to sell its software products. No registration fee, no deposit. 10% commission on every payment a referred customer makes.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -77,7 +77,7 @@ export const metadata: Metadata = {
         url: "/og/agents.png",
         width: 1200,
         height: 630,
-        alt: "കമ്മീഷൻ ഏജന്റുമാരെ ആവശ്യമുണ്ട് — Calecute Technologies",
+        alt: "Commission agents wanted — Calecute Technologies",
       },
     ],
   },
@@ -179,7 +179,7 @@ export default async function AgentsPage({
         <span className="mark" aria-hidden="true" />
         <span className="who">
           <strong lang="en">Calecute Technologies (OPC) Pvt Ltd</strong>
-          <span lang="ml">{company.city.ml}</span>
+          <span lang="ml">{company.city}</span>
         </span>
       </header>
 
@@ -190,22 +190,18 @@ export default async function AgentsPage({
             <span className="eyebrow" lang="en">
               Kerala · Commission agent programme
             </span>
-            <h1>
-              <Ml>{copy.title.ml}</Ml>
-              <En>{copy.title.en}</En>
+            <h1>{copy.title}
             </h1>
             <div className="hero-sub">
-              <Bi text={copy.role.body} />
-              <Bi text={copy.role.note} />
+              <p>{copy.role.body}</p>
+              <p>{copy.role.note}</p>
             </div>
 
             {authMessage && (
               <p
                 className={`notice ${authState === "suspended" ? "stop" : "warn"}`}
                 role="status"
-              >
-                <Ml>{authMessage.ml}</Ml>
-                <En>{authMessage.en}</En>
+              >{authMessage}
               </p>
             )}
 
@@ -218,27 +214,25 @@ export default async function AgentsPage({
               footer, stated the way a letterhead states them. */}
           <section className="reveal" aria-labelledby="what-we-do">
             <h2 id="what-we-do" className="sr-only">
-              <En>What we do</En>
+              What we do
             </h2>
-            {isPlaceholder(company.whatWeDo.ml) ? (
+            {isPlaceholder(company.whatWeDo) ? (
               <p>
-                <Placeholder value={company.whatWeDo.en} />
+                <Placeholder value={company.whatWeDo} />
               </p>
             ) : (
-              <Bi text={company.whatWeDo} />
+              <p>{company.whatWeDo}</p>
             )}
           </section>
 
           {/* -------------------------------------------- commission terms */}
           <section className="reveal" aria-labelledby="commission-terms">
             <div className="panel emphasis">
-              <h2 id="commission-terms">
-                <Ml>{copy.commission.heading.ml}</Ml>
-                <En>{copy.commission.heading.en}</En>
+              <h2 id="commission-terms">{copy.commission.heading}
               </h2>
               <ul className="terms-list">
                 {copy.commission.points.map((point) => (
-                  <Bi key={point.en} text={point} as="li" />
+                  <li key={point}>{point}</li>
                 ))}
               </ul>
             </div>
@@ -249,34 +243,28 @@ export default async function AgentsPage({
           <section className="reveal">
             <div className="pair">
               <div>
-                <h2>
-                  <Ml>{copy.expectations.heading.ml}</Ml>
-                  <En>{copy.expectations.heading.en}</En>
+                <h2>{copy.expectations.heading}
                 </h2>
-                <Bi text={copy.expectations.body} />
+                <p>{copy.expectations.body}</p>
               </div>
               <div>
-                <h2>
-                  <Ml>{copy.background.heading.ml}</Ml>
-                  <En>{copy.background.heading.en}</En>
+                <h2>{copy.background.heading}
                 </h2>
-                <Bi text={copy.background.body} />
+                <p>{copy.background.body}</p>
               </div>
             </div>
           </section>
 
           {/* Stated in passing, not badged. See the note in content.ts. */}
           <section className="reveal">
-            <Bi text={copy.notAsked.body} />
+            <p>{copy.notAsked}</p>
           </section>
 
           {/* ------------------------------------------ live availability */}
           <section className="reveal" id="availability" aria-labelledby="availability-h">
-            <h2 id="availability-h">
-              <Ml>{copy.availability.heading.ml}</Ml>
-              <En>{copy.availability.heading.en}</En>
+            <h2 id="availability-h">{copy.availability.heading}
             </h2>
-            <Bi text={copy.availability.prompt} />
+            <p>{copy.availability.prompt}</p>
             <div className="panel">
               <AvailabilityChecker
                 districtId={district}
@@ -294,9 +282,7 @@ export default async function AgentsPage({
 
           {/* --------------------------------- WhatsApp channel and contact */}
           <section className="reveal" aria-labelledby="whatsapp">
-            <h2 id="whatsapp">
-              <Ml>{copy.whatsapp.heading.ml}</Ml>
-              <En>{copy.whatsapp.heading.en}</En>
+            <h2 id="whatsapp">{copy.whatsapp.heading}
             </h2>
             <div className="link-row">
               <a
@@ -305,9 +291,7 @@ export default async function AgentsPage({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <span>
-                  <Ml>ചാനലിൽ ചേരുക</Ml>
-                  <En>Join the channel</En>
+                <span>Join the channel
                 </span>
               </a>
               <a
@@ -317,10 +301,8 @@ export default async function AgentsPage({
                 rel="noopener noreferrer"
               >
                 <span>
-                  <Ml>{copy.contact.label.ml}</Ml>
-                  <En>
-                    {copy.contact.label.en} · {formattedContactNumber()}
-                  </En>
+                    {copy.contact.label} · {formattedContactNumber()}
+                  
                 </span>
               </a>
             </div>
@@ -328,12 +310,12 @@ export default async function AgentsPage({
 
           {/* ------------------------------------------------- footer */}
           <footer className="page-footer">
-            <p lang="en">{company.legalName.en}</p>
+            <p lang="en">{company.legalName}</p>
             <p>
-              {isPlaceholder(company.registeredOffice.en) ? (
-                <Placeholder value={company.registeredOffice.en} />
+              {isPlaceholder(company.registeredOffice) ? (
+                <Placeholder value={company.registeredOffice} />
               ) : (
-                <span lang="en">{company.registeredOffice.en}</span>
+                <span lang="en">{company.registeredOffice}</span>
               )}
             </p>
             {company.cin && (
@@ -350,15 +332,9 @@ export default async function AgentsPage({
               </a>
             </p>
             <nav className="footer-links" aria-label="Legal">
-              <a href="/agents/terms">
-                <Ml>{copy.footer.terms.ml}</Ml>
-              </a>
-              <a href="/agents/privacy">
-                <Ml>{copy.footer.privacy.ml}</Ml>
-              </a>
-              <a href="/contact">
-                <Ml>{copy.footer.contact.ml}</Ml>
-              </a>
+              <a href="/agents/terms"></a>
+              <a href="/agents/privacy"></a>
+              <a href="/contact"></a>
             </nav>
           </footer>
         </main>

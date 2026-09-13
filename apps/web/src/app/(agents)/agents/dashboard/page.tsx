@@ -14,7 +14,6 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { requireRole } from "@/lib/auth-guard";
 import { getAgentDashboard } from "@/lib/api/client";
-import { En, Ml } from "@/components/agents/Bilingual";
 import { Rupees } from "@/components/agents/Money";
 import { ShareRow } from "@/components/agents/ShareRow";
 import { AgentNav } from "@/components/agents/AgentNav";
@@ -22,28 +21,22 @@ import { AgentNav } from "@/components/agents/AgentNav";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "ഡാഷ്ബോർഡ്",
+  title: "Dashboard",
   robots: { index: false, follow: false },
 };
 
-const STATUS_LABEL: Record<string, { ml: string; en: string }> = {
-  PENDING_REVIEW: { ml: "പരിശോധനയിൽ", en: "Under review" },
-  APPROVED: { ml: "അംഗീകരിച്ചു", en: "Approved" },
-  REJECTED: { ml: "നിരസിച്ചു", en: "Rejected" },
-  SUSPENDED: { ml: "താൽക്കാലികമായി നിർത്തി", en: "Suspended" },
-  WAITLISTED: { ml: "വെയിറ്റിംഗ് ലിസ്റ്റിൽ", en: "Waitlisted" },
-  WITHDRAWN: { ml: "പിൻവലിച്ചു", en: "Withdrawn" },
+const STATUS_LABEL: Record<string, string> = {
+  PENDING_REVIEW: "Under review",
+  APPROVED: "Approved",
+  REJECTED: "Rejected",
+  SUSPENDED: "Suspended",
+  WAITLISTED: "Waitlisted",
+  WITHDRAWN: "Withdrawn",
 };
 
-const BLOCKED_REASON: Record<string, { ml: string; en: string }> = {
-  PAN_NOT_SUBMITTED: {
-    ml: "പണം പിൻവലിക്കാൻ പാൻ നൽകണം.",
-    en: "Add your PAN to withdraw.",
-  },
-  PAN_UNDER_REVIEW: {
-    ml: "പാൻ പരിശോധനയിലാണ്.",
-    en: "Your PAN is being verified.",
-  },
+const BLOCKED_REASON: Record<string, string> = {
+  PAN_NOT_SUBMITTED: "Add your PAN to withdraw.",
+  PAN_UNDER_REVIEW: "Your PAN is being verified.",
 };
 
 export default async function AgentDashboard() {
@@ -78,9 +71,7 @@ export default async function AgentDashboard() {
             <p>
               <span className="code-badge">{dashboard.referral?.code}</span>
             </p>
-            <p className="chips-note">
-              <Ml>{status.ml}</Ml>
-              <En>{status.en}</En>
+            <p className="chips-note">{status}
             </p>
           </section>
 
@@ -104,7 +95,7 @@ export default async function AgentDashboard() {
                     height={220}
                   />
                   <a className="chips-note" href="/agents/dashboard/qr?format=svg" download>
-                    <En>Download SVG</En>
+                    Download SVG
                   </a>
                 </div>
               </div>
@@ -113,9 +104,7 @@ export default async function AgentDashboard() {
 
           {/* Earnings. */}
           <section>
-            <h2>
-              <Ml>വരുമാനം</Ml>
-              <En>Earnings</En>
+            <h2>Earnings
             </h2>
             <div className="stat-row">
               <div className="stat accent">
@@ -153,16 +142,10 @@ export default async function AgentDashboard() {
             </div>
 
             {blocked && (
-              <div className="notice warn">
-                <Ml>
-                  {reason?.ml ?? "പണം പിൻവലിക്കാൻ വിവരങ്ങൾ പൂർത്തിയാക്കുക."}
-                </Ml>
-                <En>{reason?.en ?? "Complete payout setup to withdraw."}</En>
+              <div className="notice warn">{reason ?? "Complete payout setup to withdraw."}
                 <p style={{ marginTop: "0.75rem" }}>
                   <a className="button secondary" href="/agents/dashboard/payouts">
-                    <span>
-                      <Ml>പണം സ്വീകരിക്കാൻ സജ്ജമാക്കുക</Ml>
-                      <En>Set up payouts</En>
+                    <span>Set up payouts
                     </span>
                   </a>
                 </p>
@@ -172,14 +155,10 @@ export default async function AgentDashboard() {
 
           {/* Customers. */}
           <section>
-            <h2>
-              <Ml>ഉപഭോക്താക്കൾ</Ml>
-              <En>Customers</En>
+            <h2>Customers
             </h2>
             {(dashboard.customers?.total ?? 0) === 0 ? (
-              <p className="chips-note">
-                <Ml>ഇതുവരെ ഉപഭോക്താക്കളില്ല. നിങ്ങളുടെ ലിങ്ക് പങ്കുവയ്ക്കുക.</Ml>
-                <En>No customers yet. Share your link to get started.</En>
+              <p className="chips-note">No customers yet. Share your link to get started.
               </p>
             ) : (
               <div className="table-scroll">
@@ -210,7 +189,7 @@ export default async function AgentDashboard() {
             {(dashboard.customers?.total ?? 0) > 5 && (
               <p style={{ marginTop: "1rem" }}>
                 <a href="/agents/dashboard/customers">
-                  <En>See all {dashboard.customers?.total} customers</En>
+                  See all {dashboard.customers?.total} customers
                 </a>
               </p>
             )}
@@ -218,21 +197,15 @@ export default async function AgentDashboard() {
 
           {/* Products. */}
           <section>
-            <h2>
-              <Ml>ഉൽപ്പന്നങ്ങൾ</Ml>
-              <En>Your products</En>
+            <h2>Your products
             </h2>
             {(dashboard.products?.length ?? 0) === 0 ? (
-              <p className="chips-note">
-                <Ml>ഇതുവരെ ഉൽപ്പന്നങ്ങൾ നൽകിയിട്ടില്ല.</Ml>
-                <En>No products assigned yet. An administrator assigns these.</En>
+              <p className="chips-note">No products assigned yet. An administrator assigns these.
               </p>
             ) : (
               <ul className="chips">
                 {(dashboard.products ?? []).map((product) => (
-                  <li key={product.id}>
-                    <Ml>{product.nameMl}</Ml>
-                    <En>{product.nameEn}</En>
+                  <li key={product.id}>{product.nameEn}
                   </li>
                 ))}
               </ul>

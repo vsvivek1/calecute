@@ -7,7 +7,6 @@
 import type { Metadata } from "next";
 import { requireRole } from "@/lib/auth-guard";
 import { getDistricts, getReportCatalogue, searchLocalBodies } from "@/lib/api/client";
-import { En, Ml } from "@/components/agents/Bilingual";
 import { AdminNav } from "@/components/agents/AdminNav";
 import { ActionForm } from "@/components/agents/ActionForm";
 import { updateLocalBody } from "../actions";
@@ -61,22 +60,18 @@ export default async function PanchayatsPage({
       />
 
       <main className="admin-wrap">
-        <h1>
-          <Ml>പഞ്ചായത്ത് ക്രമീകരണം</Ml>
-          <En>Panchayat settings</En>
+        <h1>Panchayat settings
         </h1>
         <p className="chips-note">
-          <En>
+          
             Change how many agents a panchayat may hold, or stop it accepting new
             applications. Both are recorded in the audit log.
-          </En>
+          
         </p>
 
         <form method="get" className="filters" style={{ marginTop: "1.5rem" }}>
           <div className="field">
-            <label htmlFor="districtId">
-              <Ml>ജില്ല</Ml>
-              <En>District</En>
+            <label htmlFor="districtId">District
             </label>
             <select id="districtId" name="districtId" defaultValue={String(districtId ?? "")}>
               <option value="">All in scope</option>
@@ -89,24 +84,24 @@ export default async function PanchayatsPage({
           </div>
           <div className="field">
             <label htmlFor="q">
-              <En>Search</En>
+              Search
             </label>
             <input type="search" id="q" name="q" defaultValue={query} />
           </div>
           <button type="submit">
             <span>
-              <En>Find</En>
+              Find
             </span>
           </button>
         </form>
 
         {(bodies.data ?? []).length === 0 ? (
           <p className="chips-note">
-            <En>
+            
               {districtId || query
                 ? "No panchayat matched."
                 : "Choose a district or search to begin."}
-            </En>
+            
           </p>
         ) : (
           <div className="review-list">
@@ -114,10 +109,8 @@ export default async function PanchayatsPage({
               <article className="panel review-card" key={body.id}>
                 <header>
                   <span>
-                    <Ml>{body.nameMl ?? ""}</Ml>
-                    <En>
                       {body.nameEn} · {body.type?.replace(/_/g, " ").toLowerCase()}
-                    </En>
+                    
                   </span>
                   <span className="chips-note" lang="en">
                     {body.filled}/{body.slotCapacity} filled
@@ -130,12 +123,12 @@ export default async function PanchayatsPage({
                   <ActionForm
                     action={updateLocalBody}
                     hidden={{ localBodyId: body.id ?? 0 }}
-                    label={{ ml: "സേവ് ചെയ്യുക", en: "Save" }}
+                    label={"Save"}
                   >
                     <div className="filters" style={{ marginBottom: 0 }}>
                       <div className="field">
                         <label htmlFor={`slots-${body.id}`}>
-                          <En>Slots</En>
+                          Slots
                         </label>
                         <input
                           type="number"
@@ -148,7 +141,7 @@ export default async function PanchayatsPage({
                       </div>
                       <div className="field">
                         <label htmlFor={`open-${body.id}`}>
-                          <En>Signups</En>
+                          Signups
                         </label>
                         <select
                           id={`open-${body.id}`}
@@ -161,7 +154,7 @@ export default async function PanchayatsPage({
                       </div>
                       <div className="field">
                         <label htmlFor={`reason-${body.id}`}>
-                          <En>Reason</En>
+                          Reason
                         </label>
                         <input
                           type="text"

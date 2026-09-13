@@ -10,7 +10,6 @@
  */
 import { useActionState } from "react";
 import type { ActionState } from "@/app/(agents)/admin/actions";
-import { En, Ml } from "./Bilingual";
 import { SubmitButton } from "./SubmitButton";
 
 export function ActionForm({
@@ -22,8 +21,8 @@ export function ActionForm({
   variant,
 }: {
   action: (state: ActionState, data: FormData) => Promise<ActionState>;
-  label: { ml: string; en: string };
-  pendingLabel?: { ml: string; en: string };
+  label: string;
+  pendingLabel?: string;
   hidden?: Record<string, string | number>;
   children?: React.ReactNode;
   variant?: "secondary";
@@ -39,19 +38,19 @@ export function ActionForm({
 
       {state.error && (
         <p className="notice stop" role="alert">
-          <En>{state.error}</En>
+          {state.error}
         </p>
       )}
       {state.ok && (
         <p className="notice ok" role="status">
-          <En>{state.ok}</En>
+          {state.ok}
         </p>
       )}
 
       <div className={variant === "secondary" ? "action-secondary" : undefined}>
         <SubmitButton
           label={label}
-          pendingLabel={pendingLabel ?? { ml: "…", en: "Working…" }}
+          pendingLabel={pendingLabel ?? "Working…"}
         />
       </div>
     </form>
@@ -65,16 +64,14 @@ export function Field({
   hint,
   children,
 }: {
-  label: { ml: string; en: string };
+  label: string;
   htmlFor: string;
   hint?: string;
   children: React.ReactNode;
 }) {
   return (
     <div className="field">
-      <label htmlFor={htmlFor}>
-        <Ml>{label.ml}</Ml>
-        <En>{label.en}</En>
+      <label htmlFor={htmlFor}>{label}
       </label>
       {children}
       {hint && <p className="field-hint" lang="en">{hint}</p>}

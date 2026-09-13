@@ -8,7 +8,6 @@
 import type { Metadata } from "next";
 import { requireRole } from "@/lib/auth-guard";
 import { getReportCatalogue, runReport } from "@/lib/api/client";
-import { En, Ml } from "@/components/agents/Bilingual";
 import { AdminNav } from "@/components/agents/AdminNav";
 import { ActionForm } from "@/components/agents/ActionForm";
 import { approveAgent, rejectAgent } from "../actions";
@@ -46,15 +45,11 @@ export default async function AdminAgentsPage() {
       />
 
       <main className="admin-wrap">
-        <h1>
-          <Ml>അംഗീകാരം കാത്തിരിക്കുന്നവർ</Ml>
-          <En>Applications awaiting a decision</En>
+        <h1>Applications awaiting a decision
         </h1>
 
         {(pending.data ?? []).length === 0 ? (
-          <p className="chips-note" style={{ marginTop: "1.5rem" }}>
-            <Ml>കാത്തിരിക്കുന്ന അപേക്ഷകളില്ല.</Ml>
-            <En>Nothing waiting. </En>
+          <p className="chips-note" style={{ marginTop: "1.5rem" }}>Nothing waiting. 
           </p>
         ) : (
           <div className="review-list">
@@ -102,15 +97,15 @@ export default async function AdminAgentsPage() {
                   <ActionForm
                     action={approveAgent}
                     hidden={{ agentId: String(row.id ?? "") }}
-                    label={{ ml: "അംഗീകരിക്കുക", en: "Approve" }}
-                    pendingLabel={{ ml: "…", en: "Approving…" }}
+                    label={"Approve"}
+                    pendingLabel={"Approving…"}
                   />
 
                   <ActionForm
                     action={rejectAgent}
                     hidden={{ agentId: String(row.id ?? "") }}
-                    label={{ ml: "നിരസിക്കുക", en: "Reject" }}
-                    pendingLabel={{ ml: "…", en: "Rejecting…" }}
+                    label={"Reject"}
+                    pendingLabel={"Rejecting…"}
                     variant="secondary"
                   >
                     {/* Required: the applicant is shown this. */}

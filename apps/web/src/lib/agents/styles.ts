@@ -22,19 +22,11 @@
 export const AGENT_STYLES = String.raw`
 /* ------------------------------------------------------------------ font */
 
-@font-face {
-  font-family: "Noto Sans Malayalam Subset";
-  src: url("/fonts/noto-malayalam-400.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0D00-0D7F, U+200C-200D;
-}
+
 
 :root {
   --font-latin: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
-  --font-ml: "Noto Sans Malayalam Subset", var(--font-latin);
 
   /* Deep, slightly blue-black. Pure #000 makes the WebGL layer look detached. */
   --bg: #06080c;
@@ -91,7 +83,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: var(--font-ml);
+  font-family: var(--font-latin);
   font-size: 1.0625rem;
   line-height: 1.7;
   overflow-x: hidden;
@@ -158,20 +150,8 @@ p:last-child { margin-bottom: 0; }
 
 /* ----------------------------------------------------------- bilingual */
 
-.ml { display: block; }
 
-.en {
-  display: block;
-  font-family: var(--font-latin);
-  font-size: 0.8125em;
-  line-height: 1.55;
-  color: var(--ink-faint);
-  margin-top: 0.3em;
-  letter-spacing: 0;
-}
 
-.bi { margin-bottom: 1rem; }
-.bi:last-child { margin-bottom: 0; }
 
 /* ---------------------------------------------------------------- hero */
 
@@ -183,10 +163,8 @@ p:last-child { margin-bottom: 0; }
   padding: 5rem 0 4rem;
 }
 
-.hero h1 .en { font-size: 0.42em; margin-top: 0.6em; }
 
 .hero-sub { max-width: 32rem; color: var(--ink-muted); margin-top: 1.5rem; }
-.hero-sub .en { color: var(--ink-faint); }
 
 /* -------------------------------------------------------------- glass */
 
@@ -365,7 +343,6 @@ section { padding: 3.25rem 0 0; }
  * sat on the green fill at 1.48:1 — unreadable, on the most important controls
  * in the product. Caught by Lighthouse.
  */
-.button .en, button .en { color: #04130d; opacity: 0.75; margin-top: 0.1em; }
 
 .button.secondary {
   color: var(--ink);
@@ -375,7 +352,6 @@ section { padding: 3.25rem 0 0; }
   backdrop-filter: blur(12px);
 }
 .button.secondary .en,
-.action-secondary button .en { color: var(--ink-faint); opacity: 1; }
 
 .button-note {
   font-family: var(--font-latin);
@@ -577,7 +553,8 @@ a:hover { color: var(--accent-2); }
 
 /* ---------------------------------------------------------------- legal */
 
-.legal { max-width: 42rem; }
+.legal { max-width: 42rem; padding-top: 2.5rem; }
+.legal-intro { color: var(--ink-muted); margin-bottom: 1rem; }
 .legal .clause { padding-top: 2rem; }
 
 .legal h2 {
@@ -637,7 +614,6 @@ a:hover { color: var(--accent-2); }
   font-size: 0.95rem;
 }
 
-.chips > li .en { font-size: 0.75em; }
 
 .chips-note {
   font-family: var(--font-latin);
@@ -645,7 +621,6 @@ a:hover { color: var(--accent-2); }
   color: var(--ink-faint);
   margin-top: 0.9rem;
 }
-.chips-note .ml { font-family: var(--font-ml); font-size: 0.95rem; color: var(--ink-muted); }
 
 /* --------------------------------------------------------------- pair */
 

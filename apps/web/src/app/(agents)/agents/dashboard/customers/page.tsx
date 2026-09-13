@@ -8,13 +8,12 @@
 import type { Metadata } from "next";
 import { requireRole } from "@/lib/auth-guard";
 import { api } from "@/lib/api/client";
-import { En, Ml } from "@/components/agents/Bilingual";
 import { Rupees } from "@/components/agents/Money";
 import { AgentNav } from "@/components/agents/AgentNav";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
-  title: "ഉപഭോക്താക്കൾ",
+  title: "Customers",
   robots: { index: false, follow: false },
 };
 
@@ -40,15 +39,11 @@ export default async function CustomersPage() {
       <div className="app-shell">
         <AgentNav email={session.me.user?.email ?? ""} current="customers" />
         <main className="wrap" style={{ paddingTop: "1.5rem" }}>
-          <h1>
-            <Ml>ഉപഭോക്താക്കൾ</Ml>
-            <En>Customers</En>
+          <h1>Customers
           </h1>
 
           {rows.length === 0 ? (
-            <p className="chips-note" style={{ marginTop: "1.5rem" }}>
-              <Ml>ഇതുവരെ ഉപഭോക്താക്കളില്ല.</Ml>
-              <En>No customers yet.</En>
+            <p className="chips-note" style={{ marginTop: "1.5rem" }}>No customers yet.
             </p>
           ) : (
             <div className="table-scroll" style={{ marginTop: "1.5rem" }}>

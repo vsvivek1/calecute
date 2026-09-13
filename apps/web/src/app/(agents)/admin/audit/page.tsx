@@ -11,7 +11,6 @@
 import type { Metadata } from "next";
 import { requireRole } from "@/lib/auth-guard";
 import { api, getReportCatalogue } from "@/lib/api/client";
-import { En, Ml } from "@/components/agents/Bilingual";
 import { AdminNav } from "@/components/agents/AdminNav";
 
 export const dynamic = "force-dynamic";
@@ -53,15 +52,13 @@ export default async function AuditPage() {
       />
 
       <main className="admin-wrap">
-        <h1>
-          <Ml>ഓഡിറ്റ് ലോഗ്</Ml>
-          <En>Audit log</En>
+        <h1>Audit log
         </h1>
         <p className="chips-note">
-          <En>
+          
             Every admin action, append-only. Entries cannot be edited or deleted
             by anyone, including a super admin.
-          </En>
+          
         </p>
 
         <div className="table-scroll" style={{ marginTop: "1.5rem" }}>
@@ -105,7 +102,7 @@ export default async function AuditPage() {
 
         {(log.data ?? []).length === 0 && (
           <p className="chips-note">
-            <En>Nothing recorded yet.</En>
+            Nothing recorded yet.
           </p>
         )}
       </main>

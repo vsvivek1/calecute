@@ -8,12 +8,11 @@
 import type { Metadata } from "next";
 import { requireSession } from "@/lib/auth-guard";
 import { signup as copy } from "@/lib/agents/content";
-import { En, Ml } from "@/components/agents/Bilingual";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "അപേക്ഷ ലഭിച്ചു",
+  title: "Application received",
   robots: { index: false, follow: false },
 };
 
@@ -33,9 +32,7 @@ export default async function SignupDonePage() {
 
       <div className="content">
         <main className="wrap" style={{ paddingTop: "4rem" }}>
-          <h1>
-            <Ml>{copy.success.heading.ml}</Ml>
-            <En>{copy.success.heading.en}</En>
+          <h1>{copy.success.heading}
           </h1>
 
           {agentCode && (
@@ -44,16 +41,12 @@ export default async function SignupDonePage() {
             </p>
           )}
 
-          <div style={{ maxWidth: "32rem" }}>
-            <Ml>{copy.success.body.ml}</Ml>
-            <En>{copy.success.body.en}</En>
+          <div style={{ maxWidth: "32rem" }}>{copy.success.body}
           </div>
 
           <div style={{ marginTop: "2.5rem" }}>
             <a className="button" href="/agents/dashboard">
-              <span>
-                <Ml>ഡാഷ്ബോർഡിലേക്ക്</Ml>
-                <En>Go to dashboard</En>
+              <span>Go to dashboard
               </span>
             </a>
           </div>

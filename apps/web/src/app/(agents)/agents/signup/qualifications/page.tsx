@@ -4,13 +4,12 @@
 import type { Metadata } from "next";
 import { requireSession } from "@/lib/auth-guard";
 import { signup as copy } from "@/lib/agents/content";
-import { En, Ml } from "@/components/agents/Bilingual";
 import { QualificationsForm } from "@/components/agents/QualificationsForm";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "അധിക വിവരങ്ങൾ",
+  title: "Additional details",
   robots: { index: false, follow: false },
 };
 
@@ -42,18 +41,14 @@ export default async function QualificationsPage({
           </span>
 
           {code && (
-            <p className="notice ok">
-              <Ml>അപേക്ഷ ലഭിച്ചു. നിങ്ങളുടെ ഏജന്റ് കോഡ്:</Ml>
-              <En>Application received. Your agent code:</En>
+            <p className="notice ok">Application received. Your agent code:
               <span className="code-badge" style={{ marginTop: "0.6rem" }}>
                 {code}
               </span>
             </p>
           )}
 
-          <h1>
-            <Ml>{copy.step3Heading.ml}</Ml>
-            <En>{copy.step3Heading.en}</En>
+          <h1>{copy.step3Heading}
           </h1>
 
           <div className="panel" style={{ marginTop: "1.75rem" }}>

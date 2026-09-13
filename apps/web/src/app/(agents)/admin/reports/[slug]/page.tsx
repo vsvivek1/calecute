@@ -12,7 +12,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { requireRole } from "@/lib/auth-guard";
 import { getDistricts, getReportCatalogue, runReport } from "@/lib/api/client";
-import { En, Ml } from "@/components/agents/Bilingual";
 import { AdminNav } from "@/components/agents/AdminNav";
 import { ReportTable } from "@/components/agents/ReportTable";
 
@@ -85,18 +84,16 @@ export default async function ReportPage({
 
         <main className="admin-wrap">
           <h1>
-            <En>{report.report?.title ?? slug}</En>
+            {report.report?.title ?? slug}
           </h1>
           <p className="chips-note">
-            <En>{report.report?.description ?? ""}</En>
+            {report.report?.description ?? ""}
           </p>
 
           {/* A GET form, so a filtered report is a shareable URL. */}
           <form method="get" className="filters" style={{ marginTop: "1.5rem" }}>
             <div className="field">
-              <label htmlFor="districtId">
-                <Ml>ജില്ല</Ml>
-                <En>District</En>
+              <label htmlFor="districtId">District
               </label>
               <select id="districtId" name="districtId" defaultValue={filter.districtId}>
                 <option value="">All in scope</option>
@@ -109,24 +106,24 @@ export default async function ReportPage({
             </div>
             <div className="field">
               <label htmlFor="from">
-                <En>From</En>
+                From
               </label>
               <input type="date" id="from" name="from" defaultValue={filter.from} />
             </div>
             <div className="field">
               <label htmlFor="to">
-                <En>To</En>
+                To
               </label>
               <input type="date" id="to" name="to" defaultValue={filter.to} />
             </div>
             <button type="submit">
               <span>
-                <En>Apply</En>
+                Apply
               </span>
             </button>
           </form>
 
-          {/* Plain spans, not <En>: that renders a block and would stack the
+          {/* Plain spans, not : that renders a block and would stack the
               count and the two export links onto separate lines. */}
           <p className="chips-note" lang="en">
             {report.rowCount} row{report.rowCount === 1 ? "" : "s"}
@@ -138,18 +135,15 @@ export default async function ReportPage({
 
           {report.truncated && (
             <p className="notice warn">
-              <En>
-                Row cap reached — this report is truncated. Narrow the filters or
-                use the CSV export.
-              </En>
+              Row cap reached — this report is truncated. Narrow the filters or
+              use the CSV export.
             </p>
           )}
 
           <ReportTable
             columns={report.columns ?? []}
             rows={report.data ?? []}
-            emptyMl="ഈ റിപ്പോർട്ടിൽ ഒന്നുമില്ല."
-            emptyEn="Nothing matches these filters."
+            empty="Nothing matches these filters."
           />
         </main>
       </div>

@@ -10,24 +10,17 @@
  * Labelled in both languages, per the brief.
  */
 import { page as copy } from "@/lib/agents/content";
-import { En, Ml } from "./Bilingual";
 
 export function SignInButton({ repeated = false }: { repeated?: boolean }) {
   return (
     <section aria-labelledby={repeated ? "signin-repeat" : "signin"}>
-      <h2 id={repeated ? "signin-repeat" : "signin"} className="visually-hidden-not">
-        <Ml>രജിസ്റ്റർ ചെയ്യുക</Ml>
-        <En>Register</En>
+      <h2 id={repeated ? "signin-repeat" : "signin"} className="visually-hidden-not">Register
       </h2>
       <a className="button" href="/auth/google/start?returnTo=/agents/signup">
-        <span>
-          <Ml>{copy.signIn.label.ml}</Ml>
-          <En>{copy.signIn.label.en}</En>
+        <span>{copy.signIn.label}
         </span>
       </a>
-      <p className="button-note">
-        <Ml>{copy.signIn.note.ml}</Ml>
-        <En>{copy.signIn.note.en}</En>
+      <p className="button-note">{copy.signIn.note}
       </p>
     </section>
   );

@@ -14,7 +14,6 @@
 import { useActionState } from "react";
 import { savePayoutProfile } from "@/app/(agents)/agents/dashboard/payouts/actions";
 import type { FormState } from "@/app/(agents)/agents/signup/actions";
-import { En, Ml } from "./Bilingual";
 import { SubmitButton } from "./SubmitButton";
 
 export function PayoutForm({
@@ -38,15 +37,13 @@ export function PayoutForm({
     <form action={action} noValidate>
       {state.error && (
         <p className="notice stop" role="alert">
-          <Ml>{state.error}</Ml>
-          {state.code && <En>{state.code}</En>}
+          {state.error}
+          {state.code && <span className="field-hint">{state.code}</span>}
         </p>
       )}
 
       <div className="field">
-        <label htmlFor="pan">
-          <Ml>പാൻ നമ്പർ</Ml>
-          <En>PAN number</En>
+        <label htmlFor="pan">PAN number
         </label>
         {currentPan ? (
           <p className="chips-note">
@@ -68,24 +65,18 @@ export function PayoutForm({
           aria-describedby="pan-hint"
         />
         <p className="field-hint" id="pan-hint">
-          <Ml>ടിഡിഎസ് ഫയൽ ചെയ്യാൻ ആദായനികുതി വകുപ്പ് ഇത് നിർബന്ധമാക്കുന്നു.</Ml>
-          <En>
             Required by the Income Tax Department so TDS can be filed against
             your name. Stored encrypted and never shown in full again.
-          </En>
+          
         </p>
       </div>
 
       <fieldset>
-        <legend>
-          <Ml>ബാങ്ക് അക്കൗണ്ട്</Ml>
-          <En>Bank account</En>
+        <legend>Bank account
         </legend>
 
         <div className="field">
-          <label htmlFor="bankAccountNumber">
-            <Ml>അക്കൗണ്ട് നമ്പർ</Ml>
-            <En>Account number</En>
+          <label htmlFor="bankAccountNumber">Account number
           </label>
           {currentAccount && (
             <p className="chips-note" lang="en">
@@ -102,9 +93,7 @@ export function PayoutForm({
         </div>
 
         <div className="field">
-          <label htmlFor="bankIfsc">
-            <Ml>ഐഎഫ്എസ്‌സി കോഡ്</Ml>
-            <En>IFSC code</En>
+          <label htmlFor="bankIfsc">IFSC code
           </label>
           <input
             type="text"
@@ -118,9 +107,7 @@ export function PayoutForm({
         </div>
 
         <div className="field">
-          <label htmlFor="bankHolderName">
-            <Ml>അക്കൗണ്ട് ഉടമയുടെ പേര്</Ml>
-            <En>Account holder name</En>
+          <label htmlFor="bankHolderName">Account holder name
           </label>
           <input
             type="text"
@@ -133,9 +120,7 @@ export function PayoutForm({
       </fieldset>
 
       <div className="field">
-        <label htmlFor="upiId">
-          <Ml>യുപിഐ ഐഡി</Ml>
-          <En>UPI id (instead of a bank account)</En>
+        <label htmlFor="upiId">UPI id (instead of a bank account)
         </label>
         <input
           type="text"
@@ -148,8 +133,8 @@ export function PayoutForm({
       </div>
 
       <SubmitButton
-        label={{ ml: "സേവ് ചെയ്യുക", en: "Save payout details" }}
-        pendingLabel={{ ml: "സേവ് ചെയ്യുന്നു…", en: "Saving…" }}
+        label={"Save payout details"}
+        pendingLabel={"Saving…"}
       />
     </form>
   );

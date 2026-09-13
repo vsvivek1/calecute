@@ -13,7 +13,6 @@
 import type { Metadata } from "next";
 import { requireRole } from "@/lib/auth-guard";
 import { getReportCatalogue, runReport } from "@/lib/api/client";
-import { En, Ml } from "@/components/agents/Bilingual";
 import { AdminNav } from "@/components/agents/AdminNav";
 import { ReportTable } from "@/components/agents/ReportTable";
 
@@ -137,9 +136,7 @@ export default async function AdminHome() {
 
           {/* Coverage per district, so the gap is visible at a glance. */}
           <section>
-            <h2>
-              <Ml>ജില്ല തിരിച്ചുള്ള കവറേജ്</Ml>
-              <En>Coverage by district</En>
+            <h2>Coverage by district
             </h2>
             <div className="chart">
               {districtRows.map(([district, counts]) => {
@@ -163,12 +160,10 @@ export default async function AdminHome() {
 
           {/* The landing report itself. */}
           <section>
-            <h2>
-              <Ml>ഏജന്റുമാരില്ലാത്ത പഞ്ചായത്തുകൾ</Ml>
-              <En>{zeroAgents.report?.title ?? "Panchayats with zero agents"}</En>
+            <h2>{zeroAgents.report?.title ?? "Panchayats with zero agents"}
             </h2>
             <p className="chips-note">
-              <En>{zeroAgents.report?.description ?? ""}</En>
+              {zeroAgents.report?.description ?? ""}
             </p>
 
             <p style={{ margin: "1rem 0" }}>
@@ -177,27 +172,24 @@ export default async function AdminHome() {
                 href={`/admin/reports/${landing}`}
                 style={{ width: "auto", display: "inline-flex" }}
               >
-                <span>
-                  <Ml>പൂർണ്ണ റിപ്പോർട്ട്</Ml>
-                  <En>Open full report, filters and export</En>
+                <span>Open full report, filters and export
                 </span>
               </a>
             </p>
 
             {zeroAgents.truncated && (
               <p className="notice warn">
-                <En>
+                
                   Showing the first {zeroAgents.rowCount} rows. Filter by district
                   or export to see everything.
-                </En>
+                
               </p>
             )}
 
             <ReportTable
               columns={zeroAgents.columns ?? []}
               rows={(zeroAgents.data ?? []).slice(0, 50)}
-              emptyMl="എല്ലാ പഞ്ചായത്തിലും ഏജന്റുമാരുണ്ട്."
-              emptyEn="Every panchayat in your scope has at least one agent."
+              empty="Every panchayat in your scope has at least one agent."
             />
           </section>
         </main>

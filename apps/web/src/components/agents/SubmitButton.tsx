@@ -9,22 +9,19 @@
  * confusing 409.
  */
 import { useFormStatus } from "react-dom";
-import { En, Ml } from "./Bilingual";
 
 export function SubmitButton({
   label,
   pendingLabel,
 }: {
-  label: { ml: string; en: string };
-  pendingLabel: { ml: string; en: string };
+  label: string;
+  pendingLabel: string;
 }) {
   const { pending } = useFormStatus();
   const shown = pending ? pendingLabel : label;
   return (
     <button type="submit" disabled={pending} aria-busy={pending}>
-      <span>
-        <Ml>{shown.ml}</Ml>
-        <En>{shown.en}</En>
+      <span>{shown}
       </span>
     </button>
   );

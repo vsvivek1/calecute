@@ -11,7 +11,6 @@
 import type { Metadata } from "next";
 import { requireRole } from "@/lib/auth-guard";
 import { api, getReportCatalogue, runReport } from "@/lib/api/client";
-import { En, Ml } from "@/components/agents/Bilingual";
 import { AdminNav } from "@/components/agents/AdminNav";
 import { ActionForm } from "@/components/agents/ActionForm";
 import { ReportTable } from "@/components/agents/ReportTable";
@@ -65,20 +64,16 @@ export default async function AdminPayoutsPage() {
       />
 
       <main className="admin-wrap">
-        <h1>
-          <Ml>പണം നൽകൽ</Ml>
-          <En>Payouts</En>
+        <h1>Payouts
         </h1>
 
         {/* Who is owed money but cannot be paid, and why. */}
         <section>
-          <h2>
-            <Ml>പണം തടഞ്ഞിരിക്കുന്നവർ</Ml>
-            <En>Blocked from payout</En>
+          <h2>Blocked from payout
           </h2>
           {blocked.length === 0 ? (
             <p className="chips-note">
-              <En>Nobody is blocked. Every agent with a balance can be paid.</En>
+              Nobody is blocked. Every agent with a balance can be paid.
             </p>
           ) : (
             <div className="review-list">
@@ -99,12 +94,12 @@ export default async function AdminPayoutsPage() {
                       <ActionForm
                         action={decidePan}
                         hidden={{ agentId: String(row.id ?? ""), decision: "VERIFIED" }}
-                        label={{ ml: "പാൻ ശരിയാണ്", en: "Verify PAN" }}
+                        label={"Verify PAN"}
                       />
                       <ActionForm
                         action={decidePan}
                         hidden={{ agentId: String(row.id ?? ""), decision: "REJECTED" }}
-                        label={{ ml: "പാൻ തെറ്റാണ്", en: "Reject PAN" }}
+                        label={"Reject PAN"}
                         variant="secondary"
                       >
                         <input type="text" name="note" placeholder="Note (optional)" />
@@ -112,7 +107,7 @@ export default async function AdminPayoutsPage() {
                     </div>
                   ) : (
                     <p className="chips-note">
-                      <En>PAN decisions are made by a super admin.</En>
+                      PAN decisions are made by a super admin.
                     </p>
                   )}
                 </article>
@@ -123,27 +118,25 @@ export default async function AdminPayoutsPage() {
 
         {/* Batches. SUPER_ADMIN only, because these move money. */}
         <section>
-          <h2>
-            <Ml>പേയ്‌മെന്റ് ബാച്ചുകൾ</Ml>
-            <En>Payout batches</En>
+          <h2>Payout batches
           </h2>
 
           {isSuper && (
             <div className="panel" style={{ marginBottom: "1.25rem" }}>
               <ActionForm
                 action={createPayoutBatch}
-                label={{ ml: "ബാച്ച് തുറക്കുക", en: "Open a batch" }}
+                label={"Open a batch"}
               >
                 <p className="chips-note">
-                  <En>
+                  
                     Gathers every releasable commission for the month — verified
                     PAN and confirmed mobile only, as the published terms say.
-                  </En>
+                  
                 </p>
                 <div className="filters" style={{ marginBottom: 0 }}>
                   <div className="field">
                     <label htmlFor="period">
-                      <En>Period</En>
+                      Period
                     </label>
                     <input
                       type="text"
@@ -155,7 +148,7 @@ export default async function AdminPayoutsPage() {
                   </div>
                   <div className="field">
                     <label htmlFor="batch-note">
-                      <En>Note</En>
+                      Note
                     </label>
                     <input type="text" id="batch-note" name="note" />
                   </div>
@@ -166,7 +159,7 @@ export default async function AdminPayoutsPage() {
 
           {(batches.data ?? []).length === 0 ? (
             <p className="chips-note">
-              <En>No batches yet.</En>
+              No batches yet.
             </p>
           ) : (
             <div className="review-list">
@@ -188,8 +181,8 @@ export default async function AdminPayoutsPage() {
                     <ActionForm
                       action={markBatchPaid}
                       hidden={{ batchId: batch.id }}
-                      label={{ ml: "നൽകി എന്ന് രേഖപ്പെടുത്തുക", en: "Mark paid" }}
-                      pendingLabel={{ ml: "…", en: "Recording…" }}
+                      label={"Mark paid"}
+                      pendingLabel={"Recording…"}
                     >
                       <input
                         type="text"
@@ -207,15 +200,12 @@ export default async function AdminPayoutsPage() {
 
         {/* The full liability picture. */}
         <section>
-          <h2>
-            <Ml>ബാക്കി നൽകാനുള്ളത്</Ml>
-            <En>Outstanding commission</En>
+          <h2>Outstanding commission
           </h2>
           <ReportTable
             columns={liability.columns ?? []}
             rows={liability.data ?? []}
-            emptyMl="ഒന്നും ബാക്കിയില്ല."
-            emptyEn="Nothing outstanding."
+            empty="Nothing outstanding."
           />
         </section>
       </main>

@@ -13,7 +13,6 @@ import {
   verifyMobile,
 } from "@/app/(agents)/agents/dashboard/payouts/actions";
 import type { FormState } from "@/app/(agents)/agents/signup/actions";
-import { En, Ml } from "./Bilingual";
 import { SubmitButton } from "./SubmitButton";
 
 export function MobileVerify({
@@ -31,9 +30,7 @@ export function MobileVerify({
 
   if (verified) {
     return (
-      <p className="notice ok">
-        <Ml>മൊബൈൽ നമ്പർ സ്ഥിരീകരിച്ചു.</Ml>
-        <En>Mobile number verified.</En>
+      <p className="notice ok">Mobile number verified.
       </p>
     );
   }
@@ -41,30 +38,22 @@ export function MobileVerify({
   return (
     <div>
       {(state.error || sendState.error) && (
-        <p className="notice stop" role="alert">
-          <Ml>{state.error ?? sendState.error}</Ml>
-        </p>
+        <p className="notice stop" role="alert"></p>
       )}
 
       {!codeSent ? (
         <form action={sendAction}>
-          <p className="chips-note">
-            <Ml>രജിസ്റ്റർ ചെയ്ത നമ്പറിലേക്ക് കോഡ് അയയ്ക്കും.</Ml>
-            <En>A code is sent to the number you registered with.</En>
+          <p className="chips-note">A code is sent to the number you registered with.
           </p>
           <button type="submit" className="button secondary">
-            <span>
-              <Ml>കോഡ് അയയ്ക്കുക</Ml>
-              <En>Send code</En>
+            <span>Send code
             </span>
           </button>
         </form>
       ) : (
         <form action={action}>
           <div className="field">
-            <label htmlFor="code">
-              <Ml>ആറക്ക കോഡ്</Ml>
-              <En>Six-digit code</En>
+            <label htmlFor="code">Six-digit code
             </label>
             <input
               type="text"
@@ -77,8 +66,8 @@ export function MobileVerify({
             />
           </div>
           <SubmitButton
-            label={{ ml: "സ്ഥിരീകരിക്കുക", en: "Verify" }}
-            pendingLabel={{ ml: "പരിശോധിക്കുന്നു…", en: "Checking…" }}
+            label={"Verify"}
+            pendingLabel={"Checking…"}
           />
         </form>
       )}

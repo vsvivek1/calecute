@@ -6,7 +6,7 @@
  * Optional means optional. Every field can be left blank, the whole step can be
  * skipped with one tap, and skipping changes nothing about the application. The
  * heading says so in Malayalam, which is the wording the brief specified:
- * "ഇത് നിർബന്ധമല്ല. തിരഞ്ഞെടുപ്പിൽ സഹായിക്കും."
+ * "This is optional. It helps us choose."
  *
  * The answers exist so an admin can prioritise — an Akshaya operator with four
  * hours a day and reach into government offices is a different prospect from
@@ -25,12 +25,10 @@ import {
   reachOptions,
   signup as copy,
   yesNoOptions,
-  type Bilingual,
 } from "@/lib/agents/content";
-import { En, Ml } from "./Bilingual";
 import { SubmitButton } from "./SubmitButton";
 
-type Choice = { value: string } & Bilingual;
+type Choice = { value: string; label: string };
 
 function RadioGroup({
   name,
@@ -38,14 +36,12 @@ function RadioGroup({
   options,
 }: {
   name: string;
-  legend: Bilingual;
+  legend: string;
   options: Choice[];
 }) {
   return (
     <fieldset>
-      <legend>
-        <Ml>{legend.ml}</Ml>
-        <En>{legend.en}</En>
+      <legend>{legend}
       </legend>
       {options.map((option) => (
         <div className="choice" key={option.value}>
@@ -55,9 +51,7 @@ function RadioGroup({
             name={name}
             value={option.value}
           />
-          <label htmlFor={`${name}-${option.value}`}>
-            <Ml>{option.ml}</Ml>
-            <En>{option.en}</En>
+          <label htmlFor={`${name}-${option.value}`}>{option.label}
           </label>
         </div>
       ))}
@@ -71,14 +65,12 @@ function CheckboxGroup({
   options,
 }: {
   name: string;
-  legend: Bilingual;
+  legend: string;
   options: Choice[];
 }) {
   return (
     <fieldset>
-      <legend>
-        <Ml>{legend.ml}</Ml>
-        <En>{legend.en}</En>
+      <legend>{legend}
       </legend>
       {options.map((option) => (
         <div className="choice" key={option.value}>
@@ -88,9 +80,7 @@ function CheckboxGroup({
             name={name}
             value={option.value}
           />
-          <label htmlFor={`${name}-${option.value}`}>
-            <Ml>{option.ml}</Ml>
-            <En>{option.en}</En>
+          <label htmlFor={`${name}-${option.value}`}>{option.label}
           </label>
         </div>
       ))}
@@ -107,9 +97,7 @@ export function QualificationsForm() {
   return (
     <form action={action}>
       {state.error && (
-        <p className="notice stop" role="alert">
-          <Ml>{state.error}</Ml>
-        </p>
+        <p className="notice stop" role="alert"></p>
       )}
 
       <RadioGroup
@@ -134,13 +122,11 @@ export function QualificationsForm() {
       <div style={{ display: "grid", gap: "0.75rem", marginTop: "1.5rem" }}>
         <SubmitButton
           label={copy.save}
-          pendingLabel={{ ml: "സേവ് ചെയ്യുന്നു…", en: "Saving…" }}
+          pendingLabel={"Saving…"}
         />
         {/* Skipping is a first-class action, not a link buried in small print. */}
         <a className="button secondary" href="/agents/signup/done">
-          <span>
-            <Ml>{copy.skip.ml}</Ml>
-            <En>{copy.skip.en}</En>
+          <span>{copy.skip}
           </span>
         </a>
       </div>

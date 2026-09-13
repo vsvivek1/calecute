@@ -6,7 +6,6 @@
  * no frontend change — and a renamed column cannot leave the UI showing a
  * stale header next to the right data.
  */
-import { En, Ml } from "./Bilingual";
 
 /**
  * Loose on purpose: the generated OpenAPI types mark these optional, and a
@@ -38,19 +37,15 @@ function cellFor(row: Row, column: Column): string {
 export function ReportTable({
   columns,
   rows,
-  emptyMl,
-  emptyEn,
+  empty,
 }: {
   columns: Column[];
   rows: Row[];
-  emptyMl: string;
-  emptyEn: string;
+  empty: string;
 }) {
   if (rows.length === 0) {
     return (
-      <p className="chips-note" style={{ marginTop: "1.5rem" }}>
-        <Ml>{emptyMl}</Ml>
-        <En>{emptyEn}</En>
+      <p className="chips-note" style={{ marginTop: "1.5rem" }}>{empty}
       </p>
     );
   }

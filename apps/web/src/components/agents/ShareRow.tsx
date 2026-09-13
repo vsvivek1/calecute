@@ -9,7 +9,6 @@
  * some of the older Android WebViews this will run in.
  */
 import { useState } from "react";
-import { En, Ml } from "./Bilingual";
 
 export function ShareRow({
   link,
@@ -35,9 +34,7 @@ export function ShareRow({
   return (
     <div>
       <div className="field">
-        <label htmlFor="referral-link">
-          <Ml>നിങ്ങളുടെ ലിങ്ക്</Ml>
-          <En>Your referral link</En>
+        <label htmlFor="referral-link">Your referral link
         </label>
         <input id="referral-link" type="text" readOnly value={link} />
       </div>
@@ -49,15 +46,11 @@ export function ShareRow({
           target="_blank"
           rel="noopener noreferrer"
         >
-          <span>
-            <Ml>വാട്‌സ്ആപ്പിൽ പങ്കുവയ്ക്കുക</Ml>
-            <En>Share on WhatsApp</En>
+          <span>Share on WhatsApp
           </span>
         </a>
         <button type="button" className="button secondary" onClick={copy}>
-          <span>
-            <Ml>{copied ? "പകർത്തി" : "ലിങ്ക് പകർത്തുക"}</Ml>
-            <En>{copied ? "Copied" : "Copy link"}</En>
+          <span>{copied ? "Copied" : "Copy link"}
           </span>
         </button>
       </div>

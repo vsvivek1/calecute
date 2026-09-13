@@ -11,7 +11,6 @@
 import type { Metadata } from "next";
 import { requireRole } from "@/lib/auth-guard";
 import { api, getDistricts, getReportCatalogue } from "@/lib/api/client";
-import { En, Ml } from "@/components/agents/Bilingual";
 import { AdminNav } from "@/components/agents/AdminNav";
 import { ActionForm } from "@/components/agents/ActionForm";
 import { upsertAdmin } from "../actions";
@@ -53,9 +52,7 @@ export default async function AdminUsersPage() {
       />
 
       <main className="admin-wrap">
-        <h1>
-          <Ml>അഡ്മിൻ ഉപയോക്താക്കൾ</Ml>
-          <En>Admin users</En>
+        <h1>Admin users
         </h1>
 
         <section>
@@ -92,33 +89,31 @@ export default async function AdminUsersPage() {
         </section>
 
         <section>
-          <h2>
-            <Ml>റോൾ നൽകുക</Ml>
-            <En>Grant a role</En>
+          <h2>Grant a role
           </h2>
           <div className="panel">
             <ActionForm
               action={upsertAdmin}
-              label={{ ml: "സേവ് ചെയ്യുക", en: "Save" }}
+              label={"Save"}
             >
               <p className="chips-note">
-                <En>
+                
                   Works for an existing account or a new one. The role takes
                   effect the first time they sign in with Google — no invitation
                   email is sent.
-                </En>
+                
               </p>
 
               <div className="field">
                 <label htmlFor="email">
-                  <En>Email address</En>
+                  Email address
                 </label>
                 <input type="email" id="email" name="email" required />
               </div>
 
               <div className="field">
                 <label htmlFor="role">
-                  <En>Role</En>
+                  Role
                 </label>
                 <select id="role" name="role" defaultValue="DISTRICT_ADMIN">
                   <option value="DISTRICT_ADMIN">District admin</option>
@@ -129,7 +124,7 @@ export default async function AdminUsersPage() {
 
               <fieldset>
                 <legend>
-                  <En>Districts (district admins only)</En>
+                  Districts (district admins only)
                 </legend>
                 <div className="district-grid">
                   {(districtList.data ?? []).map((district) => (
@@ -140,9 +135,7 @@ export default async function AdminUsersPage() {
                         name="districtIds"
                         value={district.id}
                       />
-                      <label htmlFor={`district-${district.id}`}>
-                        <Ml>{district.nameMl}</Ml>
-                        <En>{district.nameEn}</En>
+                      <label htmlFor={`district-${district.id}`}>{district.nameEn}
                       </label>
                     </div>
                   ))}

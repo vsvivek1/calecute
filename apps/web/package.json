@@ -9,7 +9,6 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "build:qr": "node scripts/build-qr.mjs",
-    "build:font": "node scripts/subset-malayalam.mjs",
     "api:types": "node scripts/generate-api-types.mjs",
     "build:og": "node scripts/build-og.mjs"
   },
@@ -32,7 +31,6 @@
     "openapi-typescript": "^7.13.0",
     "qrcode": "^1.5.4",
     "sharp": "^0.35.4",
-    "subset-font": "^2.4.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
