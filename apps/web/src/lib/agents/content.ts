@@ -72,8 +72,8 @@ export const company = {
   email: "info@calecutech.com",
   /** PLACEHOLDER — a number a stranger can actually ring. */
   phone: "<<<CONTACT NUMBER>>>",
-  /** PLACEHOLDER — the WhatsApp channel invite link. */
-  whatsappChannel: "<<<WHATSAPP CHANNEL LINK>>>",
+  /** Supplied by the client, 2026-09-13. */
+  whatsappChannel: "https://whatsapp.com/channel/0029Vb8hpyh3mFY8Nd5PiB1H",
 } as const;
 
 /** Where a visitor checks the CIN for themselves. */

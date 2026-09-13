@@ -989,7 +989,7 @@
           },
           "data": {
             "type": "array",
-            "description": "Row shape varies by report; use `columns` to render generically.",
+            "description": "One object per row, keyed by the `key` of each entry in `columns`. Values are formatted exactly as the CSV and PDF exports render them, so a client can build a table from `columns` alone without knowing the report. Rows that describe a single entity also carry an `id` field, which is deliberately NOT in `columns` — it is there so a row can be linked back to its panchayat, agent or ward, not displayed.",
             "items": {
               "type": "object",
               "additionalProperties": true

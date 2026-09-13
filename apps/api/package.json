@@ -16,7 +16,8 @@
     "db:verify": "node --env-file-if-exists=.env.local scripts/verify-rls.mts",
     "smoke": "node --env-file-if-exists=.env.local scripts/smoke.mjs",
     "verify": "npm run typecheck && npm run openapi && node scripts/check-spec-coverage.mjs && npm run db:verify",
-    "geo:convert": "node scripts/convert-lgd.mjs"
+    "geo:convert": "node scripts/convert-lgd.mjs",
+    "dev:session": "node --env-file-if-exists=.env.local scripts/dev-session.mjs"
   },
   "dependencies": {
     "drizzle-orm": "^0.44.6",

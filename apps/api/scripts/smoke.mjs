@@ -640,10 +640,14 @@ async function main() {
   const coverage = await call("GET", `/admin/reports/panchayat-coverage?districtId=${kkd.id}`, {
     auth: superToken,
   });
-  const gpRow = coverage.body.data?.find((r) => r.localBodyId === gp.id);
+  // Rows are keyed by the column keys the API publishes, with `id` carried
+  // alongside for addressing. See the report endpoint.
+  const gpRow = coverage.body.data?.find((r) => r.id === gp.id);
   check(
     "coverage shows 2 filled, 0 remaining, 1 waitlisted",
-    gpRow?.slotsFilled === 2 && gpRow?.slotsRemaining === 0 && gpRow?.waitlisted === 1,
+    Number(gpRow?.approved) + Number(gpRow?.pending) === 2 &&
+      Number(gpRow?.remaining) === 0 &&
+      Number(gpRow?.waitlisted) === 1,
     gpRow,
   );
 
@@ -651,14 +655,14 @@ async function main() {
   check(
     "a district admin's statewide report contains only their district",
     scoped.body.data?.length > 0 &&
-      scoped.body.data.every((r) => r.districtNameEn === "Kozhikode"),
-    scoped.body.data?.map((r) => r.districtNameEn).slice(0, 5),
+      scoped.body.data.every((r) => r.district === "Kozhikode"),
+    scoped.body.data?.map((r) => r.district).slice(0, 5),
   );
 
   check(
     "the scoped report does not leak the Thiruvananthapuram body",
-    !scoped.body.data?.some((r) => r.localBodyId === muni.id),
-    scoped.body.data?.map((r) => r.localBodyNameEn),
+    !scoped.body.data?.some((r) => r.id === muni.id),
+    scoped.body.data?.map((r) => r.name),
   );
 
   // Filtered to the two fixture districts: the unfiltered report now covers
@@ -681,9 +685,9 @@ async function main() {
   };
   check(
     "a super admin sees local bodies in both districts",
-    superSeesBoth.body.data?.some((r) => r.localBodyId === gp.id) &&
-      superSeesBoth.body.data?.some((r) => r.localBodyId === muni.id),
-    superSeesBoth.body.data?.map((r) => r.localBodyNameEn),
+    superSeesBoth.body.data?.some((r) => r.id === gp.id) &&
+      superSeesBoth.body.data?.some((r) => r.id === muni.id),
+    superSeesBoth.body.data?.length,
   );
 
   // Read as bytes: fetch's text decoder strips a leading BOM, so a string
@@ -716,14 +720,14 @@ async function main() {
   const tds = await call("GET", "/admin/reports/tds-by-financial-year", { auth: superToken });
   check(
     "the TDS report masks PAN and totals the deduction",
-    tds.body.data?.some((r) => r.panMasked === "XXXXX1234F" && Number(r.tdsPaise) === 165),
+    tds.body.data?.some((r) => r.pan === "XXXXX1234F" && r.tds === "1.65"),
     tds.body.data?.[0],
   );
 
   const liability = await call("GET", "/admin/reports/outstanding-liability", { auth: superToken });
   check(
     "outstanding liability marks this agent releasable",
-    liability.body.data?.some((r) => r.agentCode === agentCode && r.payable === "yes"),
+    liability.body.data?.some((r) => r.code === agentCode && r.payable === "yes"),
     liability.body.data?.[0],
   );
 
@@ -732,7 +736,7 @@ async function main() {
   });
   check(
     "the full-with-waitlist report finds the full panchayat",
-    waitlistReport.body.data?.some((r) => r.localBodyId === gp.id),
+    waitlistReport.body.data?.some((r) => r.id === gp.id),
     waitlistReport.body.rowCount,
   );
 

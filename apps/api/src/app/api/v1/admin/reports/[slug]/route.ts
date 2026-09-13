@@ -52,6 +52,37 @@ export const GET = handler(async (request, context) => {
         return pdfResponse(bytes, filename, ctx.rateHeaders);
       }
 
+      /*
+       * Rows are projected through the same column accessors that CSV and PDF
+       * use, so all three formats show identical values and a client can render
+       * any report generically from `columns` alone.
+       *
+       * Returning the raw query rows instead — which is what this did first —
+       * left the JSON keyed by database field while `columns` described display
+       * keys, with nothing connecting them. A generic table rendered a grid of
+       * dashes, and the CSV disagreed with the API.
+       */
+      const projected = rows.map((row) => {
+        const projectedRow: Record<string, unknown> = Object.fromEntries(
+          report.columns.map((column) => [column.key, column.value(row)]),
+        );
+
+        /*
+         * Carry the entity id alongside the display values, without making it a
+         * column. A projected row is otherwise unaddressable — a client can
+         * render it but cannot link it back to the panchayat or agent it
+         * describes, which is exactly what an admin wants to do next.
+         *
+         * Not in `columns`, so a generic table does not render it.
+         */
+        const source = row as Record<string, unknown>;
+        const id =
+          source.localBodyId ?? source.agentId ?? source.wardId ?? source.id;
+        if (id !== undefined && id !== null) projectedRow.id = id;
+
+        return projectedRow;
+      });
+
       return ok(ctx, {
         report: {
           slug: report.slug,
@@ -72,7 +103,7 @@ export const GET = handler(async (request, context) => {
         // Reports are capped rather than paginated: they are aggregates meant
         // to be read whole or exported. Hitting the cap is surfaced, not hidden.
         truncated: rows.length >= filter.limit,
-        data: rows,
+        data: projected,
       });
     },
   )(request);

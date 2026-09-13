@@ -253,7 +253,8 @@ section { padding: 3.25rem 0 0; }
   min-width: 0;
 }
 
-.masthead .who strong { color: var(--ink); font-weight: 600; display: block; }
+/* Applies in both shells: the marketing masthead and the app bar. */
+.who strong { color: var(--ink); font-weight: 600; display: block; }
 
 .identity {
   display: grid;
@@ -406,6 +407,7 @@ label { display: block; margin-bottom: 0.4rem; }
 }
 
 input[type="text"], input[type="tel"], input[type="search"],
+input[type="date"], input[type="number"],
 select, textarea {
   display: block;
   width: 100%;
@@ -436,6 +438,13 @@ select {
 }
 
 option { background: var(--bg-raised); color: var(--ink); }
+
+/* The native date picker indicator is black-on-black in a dark theme. */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.55;
+  cursor: pointer;
+}
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
@@ -644,6 +653,19 @@ a:hover { color: var(--accent-2); }
   border: 0;
 }
 
+/* -------------------------------------------------------- agent sharing */
+
+.share-grid { display: grid; gap: 1.75rem; }
+
+@media (min-width: 44rem) {
+  .share-grid { grid-template-columns: 1fr auto; align-items: start; gap: 2.5rem; }
+}
+
+.qr-holder { display: grid; gap: 0.6rem; justify-items: center; }
+
+.share-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.share-row .button { width: auto; min-width: 0; flex: 1 1 12rem; }
+
 /* --------------------------------------------------------- scroll reveal */
 
 /*
@@ -662,7 +684,21 @@ a:hover { color: var(--accent-2); }
 
 /* ---------------------------------------------------------- dashboards */
 
-.app-shell { position: relative; z-index: 2; }
+/*
+ * The authenticated areas get a still backdrop rather than the WebGL scene.
+ * Particles drifting behind a coverage table are a distraction, and loading
+ * 130KB of Three.js on every admin page view buys nothing — the scene is a
+ * first-impression device for the public page, not a work surface.
+ */
+.app-shell {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  background:
+    radial-gradient(90% 55% at 12% -8%, rgba(52, 211, 153, 0.09), transparent 62%),
+    radial-gradient(70% 50% at 92% 4%, rgba(34, 211, 238, 0.07), transparent 60%),
+    var(--bg);
+}
 
 .bar {
   display: flex;
