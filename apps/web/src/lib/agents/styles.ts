@@ -523,6 +523,45 @@ a:hover { color: var(--accent-2); }
 
 .link-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 
+/* ------------------------------------------------------- admin review */
+
+.review-list { display: grid; gap: 1rem; margin-top: 1.5rem; }
+
+.review-card header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.review-card header .chips-note { margin: 0; }
+
+.review-facts { display: grid; gap: 0.6rem; margin: 0 0 1.25rem; }
+.review-facts div { display: grid; grid-template-columns: 7rem 1fr; gap: 0.75rem; margin: 0; }
+.review-facts dt {
+  font-family: var(--font-latin);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding-top: 0.25em;
+}
+.review-facts dd { margin: 0; }
+
+.review-actions { display: grid; gap: 0.75rem; }
+
+@media (min-width: 44rem) {
+  .review-actions { grid-template-columns: auto 1fr; align-items: start; }
+}
+
+.action-form { display: grid; gap: 0.6rem; margin: 0; }
+.action-form button { width: auto; }
+.action-secondary button { background: transparent; color: var(--ink); border: 1px solid var(--hairline-strong); }
+.action-secondary button:hover { background: rgba(255,255,255,0.05); }
+.action-form .notice { margin: 0; }
+
+.district-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 0 1rem; }
+
 /* --------------------------------------------------------------- footer */
 
 .page-footer {

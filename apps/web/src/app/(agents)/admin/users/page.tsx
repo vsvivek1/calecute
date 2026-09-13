@@ -1,0 +1,157 @@
+/**
+ * /admin/users — who is an admin, and which districts they cover.
+ *
+ * SUPER_ADMIN only. This page is the reason no email address is hardcoded
+ * anywhere in the codebase: who holds which role is a database row, changed
+ * here, and every change is written to the audit log.
+ *
+ * A district admin with no districts is refused rather than created, because
+ * such an account can see nothing and the failure would look like a bug.
+ */
+import type { Metadata } from "next";
+import { requireRole } from "@/lib/auth-guard";
+import { api, getDistricts, getReportCatalogue } from "@/lib/api/client";
+import { En, Ml } from "@/components/agents/Bilingual";
+import { AdminNav } from "@/components/agents/AdminNav";
+import { ActionForm } from "@/components/agents/ActionForm";
+import { upsertAdmin } from "../actions";
+
+export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  title: "Admin users",
+  robots: { index: false, follow: false },
+};
+
+interface AdminUser {
+  id: number;
+  email: string;
+  name: string;
+  role: string;
+  status: string;
+  lastLoginAt: string | null;
+  districts: "ALL" | Array<{ districtId: number; nameEn: string; nameMl: string }>;
+}
+
+export default async function AdminUsersPage() {
+  const session = await requireRole("/admin/users", ["SUPER_ADMIN"]);
+
+  const [catalogue, districtList, users] = await Promise.all([
+    getReportCatalogue(session.token),
+    getDistricts(),
+    api.get<{ data: AdminUser[] }>("/admin/users", { token: session.token }),
+  ]);
+
+  return (
+    <div className="app-shell">
+      <AdminNav
+        email={session.me.user?.email ?? ""}
+        role={session.me.user?.role ?? ""}
+        scope="all districts"
+        tabs={(catalogue.data ?? [])
+          .filter((r): r is { slug: string; title: string } => Boolean(r.slug && r.title))
+          .map((r) => ({ slug: r.slug, title: r.title }))}
+      />
+
+      <main className="admin-wrap">
+        <h1>
+          <Ml>അഡ്മിൻ ഉപയോക്താക്കൾ</Ml>
+          <En>Admin users</En>
+        </h1>
+
+        <section>
+          <div className="table-scroll">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th lang="en">Email</th>
+                  <th lang="en">Role</th>
+                  <th lang="en">Districts</th>
+                  <th lang="en">Last signed in</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(users.data ?? []).map((user) => (
+                  <tr key={user.id}>
+                    <td lang="en">{user.email}</td>
+                    <td lang="en">{user.role}</td>
+                    <td lang="en">
+                      {user.districts === "ALL"
+                        ? "all"
+                        : user.districts.map((d) => d.nameEn).join(", ") || "none"}
+                    </td>
+                    <td lang="en">
+                      {user.lastLoginAt
+                        ? new Date(user.lastLoginAt).toLocaleDateString("en-IN")
+                        : "never"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section>
+          <h2>
+            <Ml>റോൾ നൽകുക</Ml>
+            <En>Grant a role</En>
+          </h2>
+          <div className="panel">
+            <ActionForm
+              action={upsertAdmin}
+              label={{ ml: "സേവ് ചെയ്യുക", en: "Save" }}
+            >
+              <p className="chips-note">
+                <En>
+                  Works for an existing account or a new one. The role takes
+                  effect the first time they sign in with Google — no invitation
+                  email is sent.
+                </En>
+              </p>
+
+              <div className="field">
+                <label htmlFor="email">
+                  <En>Email address</En>
+                </label>
+                <input type="email" id="email" name="email" required />
+              </div>
+
+              <div className="field">
+                <label htmlFor="role">
+                  <En>Role</En>
+                </label>
+                <select id="role" name="role" defaultValue="DISTRICT_ADMIN">
+                  <option value="DISTRICT_ADMIN">District admin</option>
+                  <option value="SUPER_ADMIN">Super admin</option>
+                  <option value="AGENT">Agent (remove admin rights)</option>
+                </select>
+              </div>
+
+              <fieldset>
+                <legend>
+                  <En>Districts (district admins only)</En>
+                </legend>
+                <div className="district-grid">
+                  {(districtList.data ?? []).map((district) => (
+                    <div className="choice" key={district.id}>
+                      <input
+                        type="checkbox"
+                        id={`district-${district.id}`}
+                        name="districtIds"
+                        value={district.id}
+                      />
+                      <label htmlFor={`district-${district.id}`}>
+                        <Ml>{district.nameMl}</Ml>
+                        <En>{district.nameEn}</En>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </fieldset>
+            </ActionForm>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}

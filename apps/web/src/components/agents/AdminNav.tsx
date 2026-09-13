@@ -45,7 +45,36 @@ export function AdminNav({
         </form>
       </header>
 
-      <nav className="admin-wrap" style={{ paddingBottom: 0 }} aria-label="Reports">
+      {/* Actions first, then the report catalogue. An admin comes here to do
+          something more often than to read something. */}
+      <nav className="admin-wrap" style={{ paddingBottom: 0 }} aria-label="Admin">
+        <ul className="report-nav">
+          <li>
+            <a href="/admin">Overview</a>
+          </li>
+          <li>
+            <a href="/admin/agents">Approvals</a>
+          </li>
+          <li>
+            <a href="/admin/panchayats">Panchayats</a>
+          </li>
+          <li>
+            <a href="/admin/payouts">Payouts</a>
+          </li>
+          {role === "SUPER_ADMIN" && (
+            <>
+              <li>
+                <a href="/admin/users">Admin users</a>
+              </li>
+              <li>
+                <a href="/admin/audit">Audit log</a>
+              </li>
+            </>
+          )}
+        </ul>
+      </nav>
+
+      <nav className="admin-wrap" style={{ paddingBottom: 0, paddingTop: 0 }} aria-label="Reports">
         <ul className="report-nav">
           {tabs.map((tab) => (
             <li key={tab.slug}>
