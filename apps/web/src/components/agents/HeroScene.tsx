@@ -6,8 +6,13 @@
  * What it shows, and why this rather than decoration: a field of points spread
  * over a tall, narrow territory — Kerala's shape — with lines drawn between
  * neighbours. It is the programme itself: agents distributed across panchayats,
- * connected. Points near the cursor brighten and lift, so the thing responds to
- * the reader without demanding anything from them.
+ * connected. It drifts and responds to the cursor without demanding anything
+ * from the reader.
+ *
+ * Kept deliberately quiet. An earlier version used additive blending and a
+ * white-cored sprite, which made dense parts of the field bloom — depth read as
+ * neon. Normal blending and a soft dot give the same structure without the
+ * glow.
  *
  * Written against Three.js directly rather than react-three-fiber. The scene is
  * a single static graph with one animation loop; a reconciler would add a
@@ -106,13 +111,18 @@ function buildScene(canvas: HTMLCanvasElement, reduced: boolean): SceneHandles |
     c.width = c.height = size;
     const ctx = c.getContext("2d");
     if (ctx) {
+      /*
+       * A soft dot, not a flare. The first version ran a white-hot core out to
+       * a wide coloured halo, which with additive blending made the field look
+       * like neon rather than like points on a map.
+       */
       const gradient = ctx.createRadialGradient(
         size / 2, size / 2, 0,
         size / 2, size / 2, size / 2,
       );
-      gradient.addColorStop(0, "rgba(255,255,255,1)");
-      gradient.addColorStop(0.25, "rgba(160,255,220,0.85)");
-      gradient.addColorStop(1, "rgba(52,211,153,0)");
+      gradient.addColorStop(0, "rgba(180, 226, 208, 0.9)");
+      gradient.addColorStop(0.45, "rgba(120, 190, 172, 0.35)");
+      gradient.addColorStop(1, "rgba(90, 160, 145, 0)");
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, size, size);
     }
@@ -122,11 +132,15 @@ function buildScene(canvas: HTMLCanvasElement, reduced: boolean): SceneHandles |
   })();
 
   const pointMaterial = new THREE.PointsMaterial({
-    size: isSmall ? 0.3 : 0.26,
+    size: isSmall ? 0.24 : 0.2,
     map: sprite,
     transparent: true,
+    opacity: 0.75,
     depthWrite: false,
-    blending: THREE.AdditiveBlending,
+    // Normal blending, not additive: additive accumulates wherever points
+    // overlap, so dense areas bloom into bright patches. This keeps the field
+    // even and quiet.
+    blending: THREE.NormalBlending,
     sizeAttenuation: true,
   });
 
@@ -161,10 +175,10 @@ function buildScene(canvas: HTMLCanvasElement, reduced: boolean): SceneHandles |
   );
 
   const linkMaterial = new THREE.LineBasicMaterial({
-    color: new THREE.Color("#2ec7a6"),
+    color: new THREE.Color("#4e8f80"),
     transparent: true,
-    opacity: 0.16,
-    blending: THREE.AdditiveBlending,
+    opacity: 0.13,
+    blending: THREE.NormalBlending,
     depthWrite: false,
   });
 

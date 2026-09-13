@@ -51,13 +51,15 @@ export const company = {
     en: "Calecute Technologies (OPC) Private Limited",
   },
   /**
-   * PLACEHOLDER — the real CIN from the MCA filing.
+   * Not shown. The client asked for the CIN to be left off the page
+   * (2026-09-13).
    *
-   * This is the single highest-value element on the page: inviting a suspicious
-   * visitor to verify the company themselves is something no scam does. It must
-   * be correct, and it must never be invented.
+   * Worth knowing what that costs: inviting a reader to verify the company on
+   * the MCA register was the strongest trust signal available, because no scam
+   * does it. Set this to the real CIN and the registration strip and the MCA
+   * link come back automatically — the page already handles both.
    */
-  cin: "<<<CIN>>>",
+  cin: null as string | null,
   city: { ml: "കോഴിക്കോട്, കേരളം", en: "Kozhikode, Kerala" },
   /** PLACEHOLDER — one sentence, what the company actually does. */
   whatWeDo: {
@@ -70,15 +72,31 @@ export const company = {
     en: "<<<REGISTERED OFFICE ADDRESS>>>",
   },
   email: "info@calecutech.com",
-  /** PLACEHOLDER — a number a stranger can actually ring. */
-  phone: "<<<CONTACT NUMBER>>>",
+  /**
+   * WhatsApp is the only contact channel offered, at the client's instruction.
+   * It suits the audience: the reader arrived through a WhatsApp forward and
+   * already has the app open.
+   */
+  contactWhatsapp: "8547985289",
   /** Supplied by the client, 2026-09-13. */
   whatsappChannel: "https://whatsapp.com/channel/0029Vb8hpyh3mFY8Nd5PiB1H",
 } as const;
 
-/** Where a visitor checks the CIN for themselves. */
+/** Where a visitor checks the CIN for themselves, once one is published. */
 export const MCA_VERIFY_URL =
   "https://www.mca.gov.in/mcafoportal/viewCompanyMasterData.do";
+
+/** wa.me needs the country code and no punctuation. */
+export function whatsappContactUrl(): string {
+  const digits = company.contactWhatsapp.replace(/\D/g, "");
+  return `https://wa.me/91${digits}`;
+}
+
+/** How the number reads to a Malayali: 85479 85289. */
+export function formattedContactNumber(): string {
+  const d = company.contactWhatsapp.replace(/\D/g, "");
+  return `${d.slice(0, 5)} ${d.slice(5)}`;
+}
 
 /* --------------------------------------------------------------- page */
 
@@ -180,6 +198,11 @@ export const page = {
    */
   verify: {
     linkLabel: { ml: "എംസിഎയിൽ പരിശോധിക്കുക", en: "Check on MCA" },
+  },
+
+  contact: {
+    heading: { ml: "ബന്ധപ്പെടുക", en: "Contact" },
+    label: { ml: "വാട്‌സ്ആപ്പിൽ സന്ദേശം അയയ്ക്കുക", en: "Message us on WhatsApp" },
   },
 
   availability: {

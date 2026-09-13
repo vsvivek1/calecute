@@ -9,7 +9,7 @@
  * `<<<CIN>>>`: publishing a literal placeholder as a machine-readable
  * identifier would be worse than publishing nothing.
  */
-import { company, isPlaceholder } from "@/lib/agents/content";
+import { company, isPlaceholder, whatsappContactUrl } from "@/lib/agents/content";
 
 export function OrganizationSchema() {
   const origin =
@@ -33,7 +33,10 @@ export function OrganizationSchema() {
     },
   };
 
-  if (!isPlaceholder(company.cin)) {
+  // Emitted only when a CIN is actually published. A structured-data
+  // identifier is a machine-readable claim; publishing a blank or placeholder
+  // one would be worse than publishing none.
+  if (company.cin && !isPlaceholder(company.cin)) {
     schema.identifier = {
       "@type": "PropertyValue",
       propertyID: "CIN",
@@ -44,9 +47,15 @@ export function OrganizationSchema() {
     schema.legalName = company.legalName.en;
   }
 
-  if (!isPlaceholder(company.phone)) {
-    schema.telephone = company.phone;
-  }
+  // WhatsApp is the only contact channel, so it is what gets published.
+  schema.contactPoint = {
+    "@type": "ContactPoint",
+    contactType: "customer support",
+    telephone: `+91${company.contactWhatsapp}`,
+    url: whatsappContactUrl(),
+    availableLanguage: ["ml", "en"],
+  };
+  schema.sameAs = [company.whatsappChannel];
 
   return (
     <script

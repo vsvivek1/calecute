@@ -36,8 +36,10 @@ import type { Metadata } from "next";
 import {
   MCA_VERIFY_URL,
   company,
+  formattedContactNumber,
   isPlaceholder,
   page as copy,
+  whatsappContactUrl,
 } from "@/lib/agents/content";
 import { Bi, En, Ml, Placeholder } from "@/components/agents/Bilingual";
 import { AvailabilityChecker } from "@/components/agents/AvailabilityChecker";
@@ -211,40 +213,39 @@ export default async function AgentsPage({
             <h2 id="registration" className="sr-only">
               <En>Registration</En>
             </h2>
-            <div className="reg-strip">
-              <div>
-                <span className="reg-label" lang="en">
-                  CIN
-                </span>
-                {isPlaceholder(company.cin) ? (
-                  <Placeholder value={company.cin} />
-                ) : (
+            {/* Shown only when a CIN is published; see lib/agents/content.ts. */}
+            {company.cin && (
+              <div className="reg-strip">
+                <div>
+                  <span className="reg-label" lang="en">
+                    CIN
+                  </span>
                   <span className="cin-value" lang="en">
                     {company.cin}
                   </span>
-                )}
-              </div>
-              <a
-                className="reg-verify"
-                href={MCA_VERIFY_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span>
-                  <Ml>{copy.verify.linkLabel.ml}</Ml>
-                  <En>{copy.verify.linkLabel.en} ↗</En>
-                </span>
-              </a>
-            </div>
-            {isPlaceholder(company.whatWeDo.ml) ? (
-              <p style={{ marginTop: "1.25rem" }}>
-                <Placeholder value={company.whatWeDo.en} />
-              </p>
-            ) : (
-              <div style={{ marginTop: "1.25rem" }}>
-                <Bi text={company.whatWeDo} />
+                </div>
+                <a
+                  className="reg-verify"
+                  href={MCA_VERIFY_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>
+                    <Ml>{copy.verify.linkLabel.ml}</Ml>
+                    <En>{copy.verify.linkLabel.en} ↗</En>
+                  </span>
+                </a>
               </div>
             )}
+            <div style={{ marginTop: company.cin ? "1.25rem" : 0 }}>
+              {isPlaceholder(company.whatWeDo.ml) ? (
+                <p>
+                  <Placeholder value={company.whatWeDo.en} />
+                </p>
+              ) : (
+                <Bi text={company.whatWeDo} />
+              )}
+            </div>
           </section>
 
           {/* -------------------------------------------- commission terms */}
@@ -322,29 +323,38 @@ export default async function AgentsPage({
             <SignInButton repeated />
           </section>
 
-          {/* ------------------------------------------ WhatsApp channel */}
+          {/* --------------------------------- WhatsApp channel and contact */}
           <section className="reveal" aria-labelledby="whatsapp">
             <h2 id="whatsapp">
               <Ml>{copy.whatsapp.heading.ml}</Ml>
               <En>{copy.whatsapp.heading.en}</En>
             </h2>
-            <p>
-              {isPlaceholder(company.whatsappChannel) ? (
-                <Placeholder value={company.whatsappChannel} />
-              ) : (
-                <a
-                  className="verify-link"
-                  href={company.whatsappChannel}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span>
-                    <Ml>ചാനലിൽ ചേരുക</Ml>
-                    <En>Join the channel ↗</En>
-                  </span>
-                </a>
-              )}
-            </p>
+            <div className="link-row">
+              <a
+                className="verify-link"
+                href={company.whatsappChannel}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>
+                  <Ml>ചാനലിൽ ചേരുക</Ml>
+                  <En>Join the channel</En>
+                </span>
+              </a>
+              <a
+                className="verify-link"
+                href={whatsappContactUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>
+                  <Ml>{copy.contact.label.ml}</Ml>
+                  <En>
+                    {copy.contact.label.en} · {formattedContactNumber()}
+                  </En>
+                </span>
+              </a>
+            </div>
           </section>
 
           {/* ------------------------------------------------- footer */}
@@ -357,24 +367,11 @@ export default async function AgentsPage({
                 <span lang="en">{company.registeredOffice.en}</span>
               )}
             </p>
-            <p lang="en">
-              CIN{" "}
-              {isPlaceholder(company.cin) ? (
-                <Placeholder value={company.cin} />
-              ) : (
-                company.cin
-              )}
-            </p>
+            {company.cin && <p lang="en">CIN {company.cin}</p>}
             <p>
-              <a href={`mailto:${company.email}`}>{company.email}</a>
-              {" · "}
-              {isPlaceholder(company.phone) ? (
-                <Placeholder value={company.phone} />
-              ) : (
-                <a href={`tel:${company.phone.replace(/\s/g, "")}`}>
-                  {company.phone}
-                </a>
-              )}
+              <a href={whatsappContactUrl()} target="_blank" rel="noopener noreferrer">
+                WhatsApp {formattedContactNumber()}
+              </a>
             </p>
             <nav className="footer-links" aria-label="Legal">
               <a href="/agents/terms">

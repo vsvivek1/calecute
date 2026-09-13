@@ -63,11 +63,12 @@ export const AGENT_STYLES = String.raw`
   --hairline: rgba(255, 255, 255, 0.09);
   --hairline-strong: rgba(255, 255, 255, 0.16);
 
-  --radius: 18px;
-  --radius-sm: 10px;
+  --radius: 12px;
+  --radius-sm: 8px;
 
-  --shadow-near: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-far: 0 24px 60px -18px rgba(0, 0, 0, 0.85);
+  /* Neutral depth only. Coloured shadows read as neon, not as depth. */
+  --shadow-near: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-far: 0 18px 40px -22px rgba(0, 0, 0, 0.7);
 
   --measure: 44rem;
 }
@@ -111,8 +112,8 @@ body {
   z-index: 1;
   pointer-events: none;
   background:
-    radial-gradient(135% 62% at 52% 4%, transparent 0%, rgba(6, 8, 12, 0.55) 58%, var(--bg) 88%),
-    linear-gradient(to bottom, rgba(6, 8, 12, 0.1) 0%, rgba(6, 8, 12, 0.45) 42%, rgba(6, 8, 12, 0.9) 70%, var(--bg) 100%);
+    radial-gradient(130% 60% at 52% 2%, transparent 0%, rgba(6, 8, 12, 0.5) 60%, var(--bg) 90%),
+    linear-gradient(to bottom, rgba(6, 8, 12, 0.12) 0%, rgba(6, 8, 12, 0.5) 45%, rgba(6, 8, 12, 0.92) 72%, var(--bg) 100%);
 }
 
 .content { position: relative; z-index: 2; }
@@ -198,24 +199,11 @@ p:last-child { margin-bottom: 0; }
 
 /* The terms box: the one surface given a lit edge, because full disclosure is
    the argument this page is making and it should look deliberate. */
+/* The one surface given emphasis, marked with a plain edge rather than a glow. */
 .panel.emphasis {
   background: var(--glass-strong);
   border-color: var(--hairline-strong);
-}
-
-.panel.emphasis::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(140deg, var(--accent), transparent 45%, var(--accent-2));
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  pointer-events: none;
-  opacity: 0.55;
+  border-left: 2px solid var(--accent);
 }
 
 section { padding: 3.25rem 0 0; }
@@ -241,8 +229,7 @@ section { padding: 3.25rem 0 0; }
   height: 30px;
   border-radius: 8px;
   flex: 0 0 auto;
-  background: linear-gradient(140deg, var(--accent), var(--accent-2));
-  box-shadow: 0 0 24px -4px var(--accent);
+  background: var(--accent);
 }
 
 .masthead .who {
@@ -360,23 +347,17 @@ section { padding: 3.25rem 0 0; }
   font: inherit;
   font-size: 1rem;
   color: #04130d;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  background: var(--accent);
   border: 0;
-  border-radius: 999px;
+  border-radius: 8px;
   text-decoration: none;
   cursor: pointer;
   width: 100%;
-  box-shadow: 0 10px 30px -12px var(--accent), var(--shadow-near);
-  transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+  box-shadow: var(--shadow-near);
+  transition: background 140ms ease;
 }
 
-.button:hover, button:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.06);
-  box-shadow: 0 16px 40px -14px var(--accent), var(--shadow-near);
-}
-
-.button:active, button:active { transform: translateY(0); }
+.button:hover, button:hover { background: #4ade9f; }
 
 .button .en { color: #04130d; opacity: 0.7; margin-top: 0.1em; }
 
@@ -475,12 +456,12 @@ legend { padding: 0 0.45rem; color: var(--ink-muted); }
   border-left: 2px solid var(--accent);
   padding: 0.85rem 0 0.85rem 1rem;
   margin: 1.1rem 0;
-  background: linear-gradient(90deg, rgba(52, 211, 153, 0.07), transparent);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
-.notice.warn { border-left-color: var(--gold); background: linear-gradient(90deg, rgba(251, 191, 36, 0.08), transparent); }
-.notice.stop { border-left-color: var(--stop); background: linear-gradient(90deg, rgba(251, 113, 133, 0.08), transparent); }
+.notice.warn { border-left-color: var(--gold); }
+.notice.stop { border-left-color: var(--stop); }
 
 .placeholder-flag {
   display: inline-block;
@@ -508,10 +489,7 @@ legend { padding: 0 0.45rem; color: var(--ink-muted); }
   font-size: clamp(2.6rem, 9vw, 3.6rem);
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  background: linear-gradient(140deg, var(--accent), var(--accent-2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--accent);
 }
 
 .slots .of { color: var(--ink-faint); font-size: 0.9rem; }
@@ -528,7 +506,7 @@ legend { padding: 0 0.45rem; color: var(--ink-muted); }
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  background: var(--accent);
 }
 
 /* ----------------------------------------------------------------- link */
@@ -543,12 +521,13 @@ a:hover { color: var(--accent-2); }
   min-height: 48px;
   padding: 0.6rem 1.1rem;
   border: 1px solid var(--hairline-strong);
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   text-decoration: none;
   background: var(--glass);
-  backdrop-filter: blur(12px);
 }
 .verify-link:hover { border-color: var(--accent); background: var(--glass-strong); }
+
+.link-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 
 /* --------------------------------------------------------------- footer */
 
@@ -614,9 +593,9 @@ a:hover { color: var(--accent-2); }
 }
 
 .chips > li {
-  padding: 0.55rem 1rem;
-  border: 1px solid var(--hairline-strong);
-  border-radius: 999px;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
   background: var(--glass);
   backdrop-filter: blur(12px);
   font-size: 0.95rem;
@@ -694,10 +673,7 @@ a:hover { color: var(--accent-2); }
   position: relative;
   z-index: 2;
   min-height: 100vh;
-  background:
-    radial-gradient(90% 55% at 12% -8%, rgba(52, 211, 153, 0.09), transparent 62%),
-    radial-gradient(70% 50% at 92% 4%, rgba(34, 211, 238, 0.07), transparent 60%),
-    var(--bg);
+  background: var(--bg);
 }
 
 .bar {
@@ -748,12 +724,7 @@ a:hover { color: var(--accent-2); }
   font-variant-numeric: tabular-nums;
 }
 
-.stat.accent .value {
-  background: linear-gradient(140deg, var(--accent), var(--accent-2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
+.stat.accent .value { color: var(--accent); }
 
 .data-table {
   width: 100%;
@@ -821,7 +792,7 @@ a:hover { color: var(--accent-2); }
   font-family: var(--font-latin);
   font-size: 0.8125rem;
   border: 1px solid var(--hairline);
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   text-decoration: none;
   color: var(--ink-muted);
   background: var(--glass);
@@ -833,7 +804,6 @@ a:hover { color: var(--accent-2); }
 .report-nav a[aria-current="page"] {
   border-color: var(--accent);
   color: var(--ink);
-  background: rgba(52, 211, 153, 0.1);
 }
 
 .qr {
@@ -861,7 +831,7 @@ a:hover { color: var(--accent-2); }
 .chart { display: grid; gap: 0.5rem; margin: 1rem 0 1.5rem; font-family: var(--font-latin); }
 .chart-row { display: grid; grid-template-columns: 9rem 1fr 4rem; gap: 0.75rem; align-items: center; font-size: 0.8125rem; }
 .chart-track { height: 10px; border-radius: 999px; background: rgba(255,255,255,0.07); overflow: hidden; }
-.chart-fill { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+.chart-fill { display: block; height: 100%; border-radius: inherit; background: var(--accent); }
 .chart-row .num { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-muted); }
 
 @media (min-width: 40rem) {
