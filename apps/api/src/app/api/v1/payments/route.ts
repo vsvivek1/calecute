@@ -148,6 +148,27 @@ export const POST = handler(
             };
           }
 
+          /*
+           * Commission has to be attributable to a geography, for the revenue
+           * reports and for TDS. An agent whose local body is not seeded yet
+           * has none, so the payment is recorded and the commission is not.
+           *
+           * Approval already refuses an unplaced agent, so this should be
+           * unreachable — it is here because "should be unreachable" is not a
+           * reason to write a null into the ledger.
+           */
+          if (agent.localBodyId === null) {
+            return {
+              status: 201,
+              body: {
+                recorded: true,
+                paymentId: payment.id,
+                commissionAccrued: false,
+                reason: "AGENT_NOT_PLACED",
+              },
+            };
+          }
+
           const breakdown = commissionFor(netPaise);
 
           const [commission] = await ctx.tx

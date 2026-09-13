@@ -80,6 +80,9 @@ export function SignupForm({
   const [query, setQuery] = useState("");
   const [bodies, setBodies] = useState<LocalBodyOption[]>([]);
   const [localBodyId, setLocalBodyId] = useState(initialLocalBodyId ?? 0);
+  // Temporary: municipalities and corporations are not seeded yet, so a reader
+  // in a town has nothing to pick. See migration 0006.
+  const [notListed, setNotListed] = useState(false);
   const [wards, setWards] = useState<WardOption[]>([]);
   const [loadingBodies, setLoadingBodies] = useState(false);
 
@@ -263,8 +266,9 @@ export function SignupForm({
             <select
               id="localBodyId"
               name="localBodyId"
-              required
-              value={localBodyId || ""}
+              required={!notListed}
+              disabled={notListed}
+              value={notListed ? "" : localBodyId || ""}
               onChange={(event) => setLocalBodyId(Number(event.target.value))}
             >
               <option value="" disabled>
@@ -283,7 +287,7 @@ export function SignupForm({
                 </option>
               ))}
             </select>
-            {chosenBody && (
+            {chosenBody && !notListed && (
               <p className="field-hint">
                 <Ml>{`${chosenBody.remaining} ഒഴിവ്`}</Ml>
                 <En>
@@ -292,10 +296,57 @@ export function SignupForm({
               </p>
             )}
           </div>
+
+          {/*
+            The escape hatch. Only panchayats are seeded, so a reader in a
+            municipality or corporation finds nothing in the list above. Saying
+            so and taking the name is better than leaving them stuck on a form
+            that cannot be completed.
+          */}
+          <div className="choice">
+            <input
+              type="checkbox"
+              id="notListed"
+              checked={notListed}
+              onChange={(event) => {
+                setNotListed(event.target.checked);
+                if (event.target.checked) setLocalBodyId(0);
+              }}
+            />
+            <label htmlFor="notListed">
+              <Ml>{copy.hints.notListed.ml}</Ml>
+              <En>{copy.hints.notListed.en}</En>
+            </label>
+          </div>
+
+          {notListed && (
+            <div className="field">
+              <Label
+                text={{
+                  ml: "മുനിസിപ്പാലിറ്റി / കോർപ്പറേഷൻ പേര്",
+                  en: "Municipality or corporation name",
+                }}
+                htmlFor="pendingLocalBodyName"
+              />
+              <input
+                type="text"
+                id="pendingLocalBodyName"
+                name="pendingLocalBodyName"
+                required
+                defaultValue={state.values?.pendingLocalBodyName ?? ""}
+                autoComplete="off"
+                aria-describedby="not-listed-note"
+              />
+              <p className="field-hint" id="not-listed-note">
+                <Ml>{copy.hints.notListedNote.ml}</Ml>
+                <En>{copy.hints.notListedNote.en}</En>
+              </p>
+            </div>
+          )}
         </>
       )}
 
-      {localBodyId > 0 && (
+      {localBodyId > 0 && !notListed && (
         <div className="field">
           <Label text={copy.fields.ward} htmlFor="wardId" />
           <select id="wardId" name="wardId" defaultValue="">

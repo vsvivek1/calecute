@@ -141,6 +141,7 @@ async function cleanup() {
   await sql`DELETE FROM payout_profiles WHERE agent_id IN (SELECT id FROM agents WHERE mobile LIKE '98765%')`;
   await sql`DELETE FROM agent_qualifications WHERE agent_id IN (SELECT id FROM agents WHERE mobile LIKE '98765%')`;
   await sql`DELETE FROM agent_message_recipients WHERE agent_id IN (SELECT id FROM agents WHERE mobile LIKE '98765%')`;
+  await sql`DELETE FROM review_flags WHERE agent_id IN (SELECT id FROM agents WHERE mobile LIKE '98765%')`;
   await sql`DELETE FROM agents WHERE mobile LIKE '98765%'`;
   await sql`DELETE FROM agent_messages WHERE subject LIKE 'TEST-%'`;
   await sql`DELETE FROM waitlist_entries WHERE mobile LIKE '98765%'`;
@@ -426,6 +427,64 @@ async function main() {
     "availability now reports FULL with 1 waiting",
     availAfter.body.state === "FULL" && availAfter.body.waitlisted === 1,
     availAfter.body,
+  );
+
+  // Unplaced applicant: a municipality that is not seeded yet.
+  const unplacedUser = await mkUser(email("unplaced"), "AGENT");
+  const unplacedToken = await token(unplacedUser, "AGENT");
+  const unplaced = await call("POST", "/signup", {
+    auth: unplacedToken,
+    body: {
+      ...signupBody,
+      mobile: "9876500055",
+      localBodyId: undefined,
+      wardId: undefined,
+      pendingLocalBodyName: "TEST-Some Municipality",
+      formToken: await agedFormToken(unplacedUser),
+    },
+  });
+  check(
+    "an applicant whose town is not seeded can still apply",
+    unplaced.status === 201 &&
+      unplaced.body.agent?.localBodyId === null &&
+      unplaced.body.agent?.pendingLocalBodyName === "TEST-Some Municipality",
+    unplaced.body,
+  );
+
+  const bothGiven = await call("POST", "/signup", {
+    auth: abuserToken,
+    body: {
+      ...signupBody,
+      mobile: "9876500056",
+      pendingLocalBodyName: "TEST-Both",
+      formToken: await agedFormToken(abuser),
+    },
+  });
+  check(
+    "giving both a local body and a typed name is rejected",
+    bothGiven.status === 400,
+    bothGiven.body,
+  );
+
+  const unplacedApprove = await call(
+    "POST",
+    `/admin/agents/${unplaced.body.agent?.id}/approve`,
+    { auth: superToken, body: {} },
+  );
+  check(
+    "an unplaced applicant cannot be approved until a local body is assigned",
+    unplacedApprove.status === 422,
+    unplacedApprove.body,
+  );
+
+  const unplacedTakesNoSlot = await call(
+    "GET",
+    `/geography/local-bodies/${gp.id}/availability`,
+  );
+  check(
+    "an unplaced applicant consumes no panchayat slot",
+    unplacedTakesNoSlot.body.filled === 2,
+    unplacedTakesNoSlot.body,
   );
 
   const quals = await call("POST", "/signup/qualifications", {

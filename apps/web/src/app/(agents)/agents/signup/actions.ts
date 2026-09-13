@@ -44,6 +44,7 @@ export async function submitSignup(
     mobile: text(data, "mobile"),
     districtId: text(data, "districtId"),
     localBodyId: text(data, "localBodyId"),
+    pendingLocalBodyName: text(data, "pendingLocalBodyName"),
     wardId: text(data, "wardId"),
     occupation: text(data, "occupation"),
   };
@@ -55,8 +56,15 @@ export async function submitSignup(
         name: values.name,
         mobile: values.mobile,
         districtId: optionalNumber(data, "districtId"),
-        localBodyId: optionalNumber(data, "localBodyId"),
-        wardId: optionalNumber(data, "wardId") ?? null,
+        // Exactly one of these: a seeded local body, or the name typed by an
+        // applicant whose municipality is not loaded yet.
+        localBodyId: values.pendingLocalBodyName
+          ? null
+          : optionalNumber(data, "localBodyId"),
+        pendingLocalBodyName: values.pendingLocalBodyName || null,
+        wardId: values.pendingLocalBodyName
+          ? null
+          : optionalNumber(data, "wardId") ?? null,
         occupation: values.occupation,
         termsVersion: text(data, "termsVersion"),
         acceptedTerms: data.get("acceptedTerms") === "on",

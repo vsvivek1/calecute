@@ -11,7 +11,8 @@ export interface AgentIdentity {
   agentCode: string;
   status: string;
   districtId: number;
-  localBodyId: number;
+  /** Null while the agent's local body is not seeded — see migration 0006. */
+  localBodyId: number | null;
   mobileVerifiedAt: Date | null;
 }
 

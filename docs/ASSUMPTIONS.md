@@ -12,7 +12,7 @@ These will bite. Nothing else in this document will.
 
 | | Status |
 |---|---|
-| **Urban local bodies** — 87 municipalities, 6 corporations | **Not loaded.** Nobody in a town can sign up. |
+| **Urban local bodies** — 87 municipalities, 6 corporations | **Not loaded.** Applicants in towns type the name instead (see below) and must be placed by hand before approval. |
 | **Wards** | **Not loaded.** Ward is optional at signup, so this degrades rather than blocks. |
 | Registered office address | Placeholder, rendered visibly on the page |
 | One sentence on what the company does | Placeholder, rendered visibly on the page |

@@ -762,6 +762,56 @@ export const funnel: ReportDefinition<FunnelRow> = {
     ),
 };
 
+export interface UnplacedAgentRow {
+  agentId: number;
+  agentCode: string;
+  name: string;
+  districtNameEn: string;
+  typedName: string;
+  createdAt: string;
+  daysWaiting: number;
+}
+
+/**
+ * Applicants whose local body is not in the geography data yet.
+ *
+ * They typed the name of a municipality or corporation because the urban
+ * export is not loaded. They hold no slot, appear in no coverage report, and
+ * cannot be approved — so without this list they would simply be forgotten.
+ * Delete this report once the urban bodies are seeded and the backlog cleared.
+ */
+export const unplacedAgents: ReportDefinition<UnplacedAgentRow> = {
+  slug: "unplaced-agents",
+  title: "Applicants awaiting a local body",
+  description:
+    "Applied from a municipality or corporation that is not in the geography data yet. Each needs a local body assigned before they can be approved.",
+  columns: [
+    { key: "code", header: "Agent code", value: (r) => r.agentCode },
+    { key: "name", header: "Name", value: (r) => r.name },
+    { key: "district", header: "District", value: (r) => r.districtNameEn },
+    { key: "typed", header: "They typed", value: (r) => r.typedName },
+    { key: "applied", header: "Applied", value: (r) => r.createdAt },
+    { key: "days", header: "Days waiting", value: (r) => r.daysWaiting },
+  ],
+  run: (tx, filter) =>
+    rows(
+      tx,
+      sql`
+        SELECT a.id AS "agentId", a.agent_code AS "agentCode", u.name,
+               d.name_en AS "districtNameEn",
+               a.pending_local_body_name AS "typedName",
+               to_char(a.created_at, 'YYYY-MM-DD') AS "createdAt",
+               EXTRACT(day FROM now() - a.created_at)::int AS "daysWaiting"
+          FROM agents a
+          JOIN users u ON u.id = a.user_id
+          JOIN districts d ON d.id = a.district_id
+         WHERE a.local_body_id IS NULL
+           AND ${geoWhere(filter, { districtId: "a.district_id" })}
+         ORDER BY a.created_at ASC
+         LIMIT ${filter.limit}`,
+    ),
+};
+
 /** Every report the admin API exposes, keyed by slug. */
 export const REPORTS = {
   [zeroAgentPanchayats.slug]: zeroAgentPanchayats,
@@ -769,6 +819,7 @@ export const REPORTS = {
   [panchayatCoverage.slug]: panchayatCoverage,
   [fullWithWaitlist.slug]: fullWithWaitlist,
   [zeroAgentWards.slug]: zeroAgentWards,
+  [unplacedAgents.slug]: unplacedAgents,
   [signupsOverTime.slug]: signupsOverTime,
   [pendingVerification.slug]: pendingVerification,
   [agentDirectory.slug]: agentDirectory,

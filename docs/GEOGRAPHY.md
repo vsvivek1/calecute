@@ -18,9 +18,16 @@ with no published name is stored as `PENDING` rather than given a plausible one.
 Reference totals in `apps/api/data/geography/official-totals.json`, verified
 2026-09-13 against the LGD export.
 
-**Consequence of the gaps:** nobody living in a municipality or corporation can
-apply — the picker has no entry for them. Wards are optional at signup, so their
-absence degrades the coverage reports rather than blocking anyone.
+**Consequence of the gaps:** the picker has no entry for a municipality or
+corporation, so the signup form offers a text box instead — the applicant types
+the name, the application is accepted, and an administrator assigns a real local
+body later. Such an agent holds no slot, appears in no coverage report and
+**cannot be approved** until placed. They are listed by the
+`unplaced-agents` admin report, which exists so the backlog is worked through
+rather than forgotten. Remove the text box once this section is finished.
+
+Wards are optional at signup, so their absence degrades the coverage reports
+rather than blocking anyone.
 
 ## Finishing it
 

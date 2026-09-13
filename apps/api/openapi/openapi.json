@@ -1061,12 +1061,31 @@
             "maximum": 9007199254740991
           },
           "localBodyId": {
-            "type": "integer",
-            "exclusiveMinimum": 0,
-            "maximum": 9007199254740991
+            "description": "The chosen panchayat, municipality or corporation. Give this OR pendingLocalBodyName, never both.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pendingLocalBodyName": {
+            "description": "TEMPORARY. Free text, for an applicant whose municipality or corporation is not seeded yet — the urban local bodies are not loaded. Such an application is accepted but holds no slot, appears in no coverage report, and cannot be approved until an administrator assigns a real local body.",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "wardId": {
-            "description": "Optional: ward data is incomplete for some local bodies.",
+            "description": "Optional: ward data is incomplete for some local bodies. Cannot be given without a local body.",
             "anyOf": [
               {
                 "type": "integer",
@@ -1133,7 +1152,6 @@
           "name",
           "mobile",
           "districtId",
-          "localBodyId",
           "occupation",
           "termsVersion",
           "acceptedTerms",

@@ -147,8 +147,21 @@ const signupBody = z.object({
   name: z.string().min(2).max(120),
   mobile: z.string().describe("10-digit Indian mobile number. Not verified at this stage."),
   districtId: z.number().int().positive(),
-  localBodyId: z.number().int().positive(),
-  wardId: z.number().int().positive().nullish().describe("Optional: ward data is incomplete for some local bodies."),
+  localBodyId: z
+    .number()
+    .int()
+    .positive()
+    .nullish()
+    .describe(
+      "The chosen panchayat, municipality or corporation. Give this OR pendingLocalBodyName, never both.",
+    ),
+  pendingLocalBodyName: z
+    .string()
+    .nullish()
+    .describe(
+      "TEMPORARY. Free text, for an applicant whose municipality or corporation is not seeded yet — the urban local bodies are not loaded. Such an application is accepted but holds no slot, appears in no coverage report, and cannot be approved until an administrator assigns a real local body.",
+    ),
+  wardId: z.number().int().positive().nullish().describe("Optional: ward data is incomplete for some local bodies. Cannot be given without a local body."),
   occupation: z.string().min(2).max(120),
   termsVersion: z.string().describe("Version of the terms actually shown to the applicant."),
   acceptedTerms: z.literal(true),

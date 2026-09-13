@@ -156,7 +156,7 @@ export async function recordSignupSignals(
   params: {
     agentId: number;
     districtId: number;
-    localBodyId: number;
+    localBodyId: number | null;
     deviceHash: string | null;
     ipPrefix: string | null;
     fillMs: number | null;
@@ -189,7 +189,10 @@ export async function recordSignupSignals(
   }
 
   // A spike in one panchayat: more than five applications in 24 hours where
-  // the programme allows ten in total.
+  // the programme allows ten in total. Skipped for unplaced applications —
+  // there is no panchayat to spike.
+  if (params.localBodyId === null) return;
+
   const [{ recent }] = (await tx.execute<{ recent: number }>(sql`
     SELECT count(*)::int AS recent FROM agents
      WHERE local_body_id = ${params.localBodyId}
@@ -203,6 +206,28 @@ export async function recordSignupSignals(
       districtId: params.districtId,
       localBodyId: params.localBodyId,
       detail: { signupsIn24h: recent },
+    });
+  }
+}
+
+/**
+ * The district must exist even when the local body is not seeded yet.
+ *
+ * Without this an unplaced application could name any district id at all, and
+ * the agent code — CA-<district>-<sequence> — would be issued against nothing.
+ */
+export async function assertDistrictExists(
+  tx: ScopedDb,
+  districtId: number,
+): Promise<void> {
+  const [row] = await tx
+    .select({ id: districts.id })
+    .from(districts)
+    .where(eq(districts.id, districtId))
+    .limit(1);
+  if (!row) {
+    throw new ApiError("UNKNOWN_GEOGRAPHY", "That district does not exist", {
+      details: { field: "districtId" },
     });
   }
 }

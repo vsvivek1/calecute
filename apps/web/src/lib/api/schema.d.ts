@@ -5391,16 +5391,19 @@ export interface components {
             formToken?: string | null;
             /** @description Hidden field. Must be empty; a value rejects the request. */
             honeypot?: string | null;
-            localBodyId: number;
+            /** @description The chosen panchayat, municipality or corporation. Give this OR pendingLocalBodyName, never both. */
+            localBodyId?: number | null;
             /** @description 10-digit Indian mobile number. Not verified at this stage. */
             mobile: string;
             name: string;
             occupation: string;
+            /** @description TEMPORARY. Free text, for an applicant whose municipality or corporation is not seeded yet — the urban local bodies are not loaded. Such an application is accepted but holds no slot, appears in no coverage report, and cannot be approved until an administrator assigns a real local body. */
+            pendingLocalBodyName?: string | null;
             /** @constant */
             privacyConsent: true;
             /** @description Version of the terms actually shown to the applicant. */
             termsVersion: string;
-            /** @description Optional: ward data is incomplete for some local bodies. */
+            /** @description Optional: ward data is incomplete for some local bodies. Cannot be given without a local body. */
             wardId?: number | null;
         };
         SignupResponse: {

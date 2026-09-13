@@ -16,11 +16,12 @@ import { parseBody, mobileSchema, geoIdSchema } from "@/lib/validation";
 import { RULES } from "@/lib/ratelimit";
 import { ApiError } from "@/lib/errors";
 import { hashFingerprint, ipPrefix } from "@/lib/net";
-import { agents, termsVersions } from "@/db/schema";
+import { agents, reviewFlags, termsVersions } from "@/db/schema";
 import { mapConstraintErrors } from "@/db/constraints";
 import { validateGeographySelection } from "@/lib/geography";
 import { verifyFormToken } from "@/lib/auth/form-token";
 import {
+  assertDistrictExists,
   assertMobileUnused,
   assertNotAlreadyRegistered,
   checkFormIntegrity,
@@ -36,7 +37,12 @@ const bodySchema = z.object({
   name: z.string().trim().min(2).max(120),
   mobile: mobileSchema,
   districtId: geoIdSchema,
-  localBodyId: geoIdSchema,
+  /**
+   * Omitted when the applicant's municipality or corporation is not seeded yet;
+   * they send `pendingLocalBodyName` instead. Exactly one is required.
+   */
+  localBodyId: geoIdSchema.nullish(),
+  pendingLocalBodyName: z.string().trim().min(2).max(120).nullish(),
   wardId: geoIdSchema.nullish(),
   occupation: z.string().trim().min(2).max(120),
 
@@ -59,7 +65,17 @@ const bodySchema = z.object({
    */
   formToken: z.string().max(2048).nullish(),
   deviceFingerprint: z.string().max(512).nullish(),
-});
+})
+  .refine((v) => Boolean(v.localBodyId) !== Boolean(v.pendingLocalBodyName), {
+    message:
+      "Give either localBodyId or pendingLocalBodyName, not both and not neither",
+    path: ["localBodyId"],
+  })
+  // A ward belongs to a local body, so it makes no sense without one.
+  .refine((v) => !(v.wardId && !v.localBodyId), {
+    message: "A ward cannot be given without a local body",
+    path: ["wardId"],
+  });
 
 export const POST = handler(
   authedRoute({ name: "signup.submit", limit: RULES.signup }, async (ctx) => {
@@ -90,13 +106,20 @@ export const POST = handler(
     // Every geography id is checked against the seeded data, and checked to
     // belong together. A modified client cannot file an agent into a ward in
     // another district.
-    await validateGeographySelection(ctx.tx, {
-      districtId: body.districtId,
-      localBodyId: body.localBodyId,
-      wardId: body.wardId ?? null,
-    });
+    let remaining: number | null = null;
+    if (body.localBodyId) {
+      await validateGeographySelection(ctx.tx, {
+        districtId: body.districtId,
+        localBodyId: body.localBodyId,
+        wardId: body.wardId ?? null,
+      });
+      ({ remaining } = await reserveSlot(ctx.tx, body.localBodyId));
+    } else {
+      // Unplaced: the district still has to exist, and no slot is taken because
+      // we do not yet know which body it would come from.
+      await assertDistrictExists(ctx.tx, body.districtId);
+    }
 
-    const { remaining } = await reserveSlot(ctx.tx, body.localBodyId);
     const agentCode = await issueAgentCode(ctx.tx, body.districtId);
     const now = new Date();
 
@@ -110,7 +133,8 @@ export const POST = handler(
           userId: ctx.actor.userId,
           agentCode,
           districtId: body.districtId,
-          localBodyId: body.localBodyId,
+          localBodyId: body.localBodyId ?? null,
+          pendingLocalBodyName: body.pendingLocalBodyName ?? null,
           wardId: body.wardId ?? null,
           mobile: body.mobile,
           occupation: body.occupation,
@@ -125,11 +149,21 @@ export const POST = handler(
     await recordSignupSignals(ctx.tx, {
       agentId: agent.id,
       districtId: body.districtId,
-      localBodyId: body.localBodyId,
+      localBodyId: body.localBodyId ?? null,
       deviceHash: hashFingerprint(body.deviceFingerprint ?? null),
       ipPrefix: ipPrefix(ctx.request),
       fillMs: timing?.elapsedMs ?? null,
     });
+
+    // Flag it so an unplaced application is worked through rather than lost.
+    if (!body.localBodyId) {
+      await ctx.tx.insert(reviewFlags).values({
+        kind: "LOCAL_BODY_NOT_SEEDED",
+        agentId: agent.id,
+        districtId: body.districtId,
+        detail: { typed: body.pendingLocalBodyName },
+      });
+    }
 
     return ok(
       ctx,
@@ -140,6 +174,7 @@ export const POST = handler(
           status: agent.status,
           districtId: agent.districtId,
           localBodyId: agent.localBodyId,
+          pendingLocalBodyName: agent.pendingLocalBodyName,
           wardId: agent.wardId,
         },
         slotsRemainingAfter: remaining,

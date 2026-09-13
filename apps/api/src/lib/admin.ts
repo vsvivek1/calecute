@@ -56,6 +56,20 @@ export async function transitionAgent(
 ) {
   const before = await loadAgentForAdmin(tx, params.agentId);
 
+  /*
+   * An unplaced agent cannot be approved. They typed the name of a
+   * municipality that is not seeded yet, so they hold no slot, appear in no
+   * coverage report, and could not be credited commission. Approving them
+   * would create an agent who looks active and cannot earn.
+   */
+  if (params.to === "APPROVED" && before.localBodyId === null) {
+    throw new ApiError(
+      "UNPROCESSABLE",
+      `Assign a local body first — this applicant typed "${before.pendingLocalBodyName}", which is not in the geography data yet.`,
+      { details: { pendingLocalBodyName: before.pendingLocalBodyName } },
+    );
+  }
+
   if (!params.allowedFrom.includes(before.status)) {
     throw new ApiError(
       "UNPROCESSABLE",

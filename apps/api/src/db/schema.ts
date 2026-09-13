@@ -131,6 +131,7 @@ export const reviewFlagKind = pgEnum("review_flag_kind", [
   "DUPLICATE_PAN",
   "HONEYPOT_TRIPPED",
   "SUBMITTED_TOO_FAST",
+  "LOCAL_BODY_NOT_SEEDED",
 ]);
 
 export const reviewFlagStatus = pgEnum("review_flag_status", [
@@ -351,9 +352,16 @@ export const agents = pgTable(
     districtId: bigint("district_id", { mode: "number" })
       .notNull()
       .references(() => districts.id),
-    localBodyId: bigint("local_body_id", { mode: "number" })
-      .notNull()
-      .references(() => localBodies.id),
+    /**
+     * Null while an applicant's local body is not yet seeded — see
+     * drizzle/0006_pending_local_body.sql. Such an agent holds no slot and
+     * appears in no coverage report until an admin places them.
+     */
+    localBodyId: bigint("local_body_id", { mode: "number" }).references(
+      () => localBodies.id,
+    ),
+    /** What the applicant typed, when their town is not in the picker yet. */
+    pendingLocalBodyName: text("pending_local_body_name"),
     wardId: bigint("ward_id", { mode: "number" }).references(() => wards.id),
     /** Not verified at signup by design; verified later at payout setup. */
     mobile: text("mobile").notNull(),

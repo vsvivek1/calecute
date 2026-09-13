@@ -291,6 +291,21 @@ export const signup = {
       ml: "പഞ്ചായത്തിന്റെ പേര് മലയാളത്തിലോ ഇംഗ്ലീഷിലോ എഴുതി തിരയാം.",
       en: "Search by name in Malayalam or English.",
     },
+    /**
+     * Shown with the "not in the list" option.
+     *
+     * Municipalities and corporations are not loaded yet, so a reader in a town
+     * finds nothing and would otherwise be stuck. Rather than pretend, the form
+     * says so and takes the name as text.
+     */
+    notListed: {
+      ml: "മുനിസിപ്പാലിറ്റി / കോർപ്പറേഷൻ പട്ടികയിൽ ഇല്ലേ? പേര് ഇവിടെ എഴുതുക.",
+      en: "Municipality or corporation not in the list? Type the name here.",
+    },
+    notListedNote: {
+      ml: "നഗരസഭകളുടെ പട്ടിക ചേർക്കുന്ന ജോലി നടക്കുന്നു. നിങ്ങളുടെ അപേക്ഷ സ്വീകരിക്കും, ഞങ്ങൾ പിന്നീട് ശരിയാക്കും.",
+      en: "We are still loading the list of municipalities and corporations. Your application is accepted and we will place it correctly.",
+    },
   },
 
   consent: {
