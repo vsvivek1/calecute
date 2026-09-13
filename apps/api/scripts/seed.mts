@@ -9,6 +9,7 @@
  *   - Kerala and its 14 districts (data/geography/districts.json)
  *   - The initial terms version
  *   - The two SUPER_ADMIN accounts named in the brief
+ *   - The product catalogue
  *
  * What is loaded from an official export, when present in
  * data/geography/incoming/:
@@ -42,6 +43,109 @@ const SUPER_ADMINS = [
 ];
 
 const INITIAL_TERMS_VERSION = "2026-09-01";
+
+/**
+ * The product catalogue.
+ *
+ * Seeded rather than entered by hand so a fresh database has something for an
+ * administrator to assign, and so the names cannot drift. Names are brands, so
+ * name_ml carries the same string — the column is NOT NULL and a transliteration
+ * would be a different product name, not a translation.
+ *
+ * The marketing page at apps/web/src/app/(site)/products/page.tsx lists the same
+ * products for the public. Keep the two in step.
+ */
+const PRODUCTS = [
+  {
+    slug: "win-lss",
+    name: "Win LSS",
+    summary:
+      "LSS scholarship preparation for Class 4: previous papers, timed model exams, and progress by subject.",
+  },
+  {
+    slug: "win-uss",
+    name: "Win USS",
+    summary:
+      "USS scholarship preparation for Class 7: previous papers, timed model exams, and progress by subject.",
+  },
+  {
+    slug: "win-psc",
+    name: "Win PSC",
+    summary:
+      "Kerala PSC preparation: syllabus-wise question banks, current affairs, and ranked mock tests.",
+  },
+  {
+    slug: "win-upsc",
+    name: "Win UPSC",
+    summary:
+      "UPSC civil services preparation: prelims mock tests, current affairs, and answer writing practice.",
+  },
+  {
+    slug: "vidyaz",
+    name: "Vidyaz",
+    summary:
+      "School student management: admissions, attendance, marks, fees, and messages to parents.",
+  },
+  {
+    slug: "mocktest",
+    name: "MockTest",
+    summary:
+      "Online testing for coaching institutes: question banks, scheduled exams, and rank lists.",
+  },
+  {
+    slug: "sparex",
+    name: "Sparex",
+    summary:
+      "Vehicle services: service booking, job cards, and workshop records for owners and garages.",
+  },
+  {
+    slug: "bankmates",
+    name: "BankMates",
+    summary:
+      "For Indian bank staff: offline loan, SIP, FD, RD, EMI and SARFAESI calculators, JAIIB and CAIIB material, and a circle limited to colleagues at the same bank.",
+  },
+  {
+    slug: "rdmanagement",
+    name: "rdManagement",
+    summary:
+      "For recurring deposit agents: subscriber records, collection schedules, and receipts.",
+  },
+  {
+    slug: "chittu",
+    name: "Chittu",
+    summary:
+      "Chitty management for local chit funds: subscribers, auctions, instalments, and payouts.",
+  },
+  {
+    slug: "doplando",
+    name: "Doplando",
+    summary:
+      "ERP for small companies: inventory, billing, purchases, and accounts in one place.",
+  },
+  {
+    slug: "fpo",
+    name: "FPO",
+    summary:
+      "For farmer producer organisations: member records, procurement, and produce trade.",
+  },
+  {
+    slug: "sarfez-field",
+    name: "Sarfez Field",
+    summary:
+      "Field officer asset capture for SARFAESI possession, with photographs and location recorded on site.",
+  },
+  {
+    slug: "sarfez-auctions",
+    name: "Sarfez Auctions",
+    summary: "Bank auction property listings for buyers.",
+  },
+  {
+    slug: "dailydo",
+    name: "DailyDo",
+    summary:
+      "Task management for individuals and teams: offices, projects, assignments, and real-time status.",
+  },
+];
 
 type Csv = Record<string, string>[];
 
@@ -151,6 +255,24 @@ async function seedTerms() {
     )
     ON CONFLICT (version) DO NOTHING
   `;
+}
+
+/**
+ * Upserts the catalogue. Descriptions are corrected here on re-run — an
+ * administrator never edits them, so the repository is the source of truth —
+ * but `active` is left alone, since retiring a product is an admin decision.
+ */
+async function seedProducts() {
+  for (const product of PRODUCTS) {
+    await sql`
+      INSERT INTO products (slug, name_en, name_ml, summary_en)
+      VALUES (${product.slug}, ${product.name}, ${product.name}, ${product.summary})
+      ON CONFLICT (slug) DO UPDATE SET
+        name_en = EXCLUDED.name_en,
+        name_ml = EXCLUDED.name_ml,
+        summary_en = EXCLUDED.summary_en
+    `;
+  }
 }
 
 async function seedSuperAdmins() {
@@ -403,6 +525,8 @@ async function main() {
   console.log(`  terms version ${INITIAL_TERMS_VERSION}   ok`);
   await seedSuperAdmins();
   console.log(`  ${SUPER_ADMINS.length} super admin accounts  ok`);
+  await seedProducts();
+  console.log(`  ${PRODUCTS.length} products             ok`);
 
   const bodies = await loadLocalBodies();
   console.log(`\n  local bodies loaded:   ${bodies.loaded}`);
