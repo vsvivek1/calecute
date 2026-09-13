@@ -4561,7 +4561,7 @@
           "products"
         ],
         "summary": "Product catalogue",
-        "description": "Agents see active products; admins see all. No products are seeded — the brief did not name them.",
+        "description": "Agents see active products; admins see all. The catalogue is seeded from scripts/seed.mts, so it is the same everywhere and cannot drift.",
         "responses": {
           "200": {
             "description": "Success.",

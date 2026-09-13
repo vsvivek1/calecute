@@ -17,6 +17,7 @@ import { getAgentDashboard } from "@/lib/api/client";
 import { Rupees } from "@/components/agents/Money";
 import { ShareRow } from "@/components/agents/ShareRow";
 import { AgentNav } from "@/components/agents/AgentNav";
+import { company, formattedContactNumber, whatsappContactUrl } from "@/lib/agents/content";
 
 export const dynamic = "force-dynamic";
 
@@ -102,6 +103,42 @@ export default async function AgentDashboard() {
             </div>
           </section>
 
+          {/*
+            The channel, asked for once and early.
+            Product news, price changes and payout dates go out there and
+            nowhere else, so an agent who does not follow it misses the things
+            that affect what they earn. Stated as the reason, not as a nag.
+          */}
+          <section>
+            <div className="panel emphasis">
+              <h2>Follow the WhatsApp channel</h2>
+              <p>
+                New products, price changes and payout dates are announced
+                there. It is the only place we announce them.
+              </p>
+              <p style={{ marginTop: "1rem" }}>
+                <a
+                  className="button"
+                  href={company.whatsappChannel}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>Follow the channel</span>
+                </a>
+              </p>
+              <p className="chips-note" style={{ marginTop: "0.75rem" }}>
+                Something wrong, or a question?{" "}
+                <a
+                  href={whatsappContactUrl()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  WhatsApp {formattedContactNumber()}
+                </a>
+              </p>
+            </div>
+          </section>
+
           {/* Earnings. */}
           <section>
             <h2>Earnings
@@ -141,10 +178,14 @@ export default async function AgentDashboard() {
               </div>
             </div>
 
+            <p style={{ marginTop: "1rem" }}>
+              <a href="/agents/dashboard/earnings">See every commission</a>
+            </p>
+
             {blocked && (
               <div className="notice warn">{reason ?? "Complete payout setup to withdraw."}
                 <p style={{ marginTop: "0.75rem" }}>
-                  <a className="button secondary" href="/agents/dashboard/payouts">
+                  <a className="button secondary" href="/agents/dashboard/profile">
                     <span>Set up payouts
                     </span>
                   </a>
@@ -200,7 +241,9 @@ export default async function AgentDashboard() {
             <h2>Your products
             </h2>
             {(dashboard.products?.length ?? 0) === 0 ? (
-              <p className="chips-note">No products assigned yet. An administrator assigns these.
+              <p className="chips-note">
+                Nothing assigned yet — an administrator assigns these.{" "}
+                <a href="/agents/dashboard/products">See everything we make</a>.
               </p>
             ) : (
               <ul className="chips">
@@ -210,6 +253,9 @@ export default async function AgentDashboard() {
                 ))}
               </ul>
             )}
+            <p style={{ marginTop: "1rem" }}>
+              <a href="/agents/dashboard/products">Products and sales material</a>
+            </p>
           </section>
         </main>
       </div>

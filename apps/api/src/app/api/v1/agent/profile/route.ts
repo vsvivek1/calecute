@@ -49,11 +49,17 @@ export const GET = handler(
         localBodyType: localBodies.type,
         wardNumber: wards.number,
         wardNameMl: wards.nameMl,
+        // An applicant whose town is not seeded yet has these instead; see
+        // 0006_pending_local_body.sql and 0007_required_ward.sql.
+        pendingLocalBodyName: agents.pendingLocalBodyName,
+        pendingWardNumber: agents.pendingWardNumber,
       })
       .from(agents)
       .innerJoin(users, eq(users.id, agents.userId))
       .innerJoin(districts, eq(districts.id, agents.districtId))
-      .innerJoin(localBodies, eq(localBodies.id, agents.localBodyId))
+      // Left, not inner: local_body_id is nullable for an unplaced applicant,
+      // and an inner join would return them no profile at all.
+      .leftJoin(localBodies, eq(localBodies.id, agents.localBodyId))
       .leftJoin(wards, eq(wards.id, agents.wardId))
       .where(eq(agents.id, agent.id))
       .limit(1);

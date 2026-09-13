@@ -11,7 +11,7 @@ import { useActionState } from "react";
 import {
   startMobileVerification,
   verifyMobile,
-} from "@/app/(agents)/agents/dashboard/payouts/actions";
+} from "@/app/(agents)/agents/dashboard/profile/actions";
 import type { FormState } from "@/app/(agents)/agents/signup/actions";
 import { SubmitButton } from "./SubmitButton";
 

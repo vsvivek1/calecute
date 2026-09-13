@@ -293,6 +293,33 @@ section { padding: 2.25rem 0 0; }
 .terms-list > li:first-child::before { top: 0.5em; }
 .terms-list { counter-reset: term; }
 
+/* A plain stack of records — products, and anything else that is a short
+   title with a line of explanation under it. No bullet decoration: the rule
+   between rows is enough separation. */
+.stack-list { list-style: none; margin: 0.5rem 0 0; padding: 0; }
+.stack-list > li { padding: 0.9rem 0; }
+.stack-list > li + li { border-top: 1px solid var(--hairline); }
+.stack-list > li > strong { display: block; }
+.stack-list > li > p { margin: 0.3rem 0 0; color: var(--ink-muted); }
+
+/* Label and value pairs. Stacked on a phone, two columns once there is room,
+   because a long Malayalam place name beside a short label wraps badly in a
+   narrow column. */
+.detail-list { margin: 0; }
+.detail-row { padding: 0.7rem 0; }
+.detail-row + .detail-row { border-top: 1px solid var(--hairline); }
+.detail-row dt {
+  font-family: var(--font-latin);
+  font-size: 0.8125rem;
+  color: var(--ink-faint);
+}
+.detail-row dd { margin: 0.2rem 0 0; }
+
+@media (min-width: 34rem) {
+  .detail-row { display: grid; grid-template-columns: 12rem 1fr; gap: 1rem; }
+  .detail-row dd { margin: 0; }
+}
+
 .plain-list > li {
   padding: 0.55rem 0 0.55rem 1.9rem;
   position: relative;

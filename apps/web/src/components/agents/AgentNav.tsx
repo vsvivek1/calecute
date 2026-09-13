@@ -7,8 +7,10 @@
 
 const TABS = [
   { key: "dashboard", href: "/agents/dashboard", label: "Dashboard" },
-  { key: "customers", href: "/agents/dashboard/customers", label: "Customers" },
-  { key: "payouts", href: "/agents/dashboard/payouts", label: "Payouts" },
+  { key: "products", href: "/agents/dashboard/products", label: "Products" },
+  { key: "customers", href: "/agents/dashboard/customers", label: "Enrolments" },
+  { key: "earnings", href: "/agents/dashboard/earnings", label: "Earnings" },
+  { key: "profile", href: "/agents/dashboard/profile", label: "Profile" },
 ] as const;
 
 export function AgentNav({

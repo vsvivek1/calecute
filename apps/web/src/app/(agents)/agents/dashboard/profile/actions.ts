@@ -31,7 +31,7 @@ export async function savePayoutProfile(
   data: FormData,
 ): Promise<FormState> {
   const token = await currentAccessToken();
-  if (!token) redirect("/auth/google/start?returnTo=/agents/dashboard/payouts");
+  if (!token) redirect("/auth/google/start?returnTo=/agents/dashboard/profile");
 
   const body: Record<string, string> = {};
   const pan = text(data, "pan");
@@ -61,7 +61,7 @@ export async function savePayoutProfile(
     throw error;
   }
 
-  redirect("/agents/dashboard/payouts?saved=1");
+  redirect("/agents/dashboard/profile?saved=1");
 }
 
 /**
@@ -80,7 +80,7 @@ export async function startMobileVerification(
   ..._args: unknown[]
 ): Promise<FormState> {
   const token = await currentAccessToken();
-  if (!token) redirect("/auth/google/start?returnTo=/agents/dashboard/payouts");
+  if (!token) redirect("/auth/google/start?returnTo=/agents/dashboard/profile");
 
   try {
     await api.post("/payouts/mobile/start", {}, { token });
@@ -89,7 +89,7 @@ export async function startMobileVerification(
     if (error instanceof ApiError) return { error: error.message, code: error.code };
     throw error;
   }
-  redirect("/agents/dashboard/payouts?sent=1");
+  redirect("/agents/dashboard/profile?sent=1");
 }
 
 export async function verifyMobile(
@@ -97,7 +97,7 @@ export async function verifyMobile(
   data: FormData,
 ): Promise<FormState> {
   const token = await currentAccessToken();
-  if (!token) redirect("/auth/google/start?returnTo=/agents/dashboard/payouts");
+  if (!token) redirect("/auth/google/start?returnTo=/agents/dashboard/profile");
 
   try {
     await api.post("/payouts/mobile/verify", { code: text(data, "code") }, { token });
@@ -106,5 +106,5 @@ export async function verifyMobile(
     if (error instanceof ApiError) return { error: error.message, code: error.code };
     throw error;
   }
-  redirect("/agents/dashboard/payouts?verified=1");
+  redirect("/agents/dashboard/profile?verified=1");
 }

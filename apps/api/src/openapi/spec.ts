@@ -1266,7 +1266,7 @@ export function buildSpec(serverUrl: string): Json {
         get: operation({
           tag: "products",
           summary: "Product catalogue",
-          description: "Agents see active products; admins see all. No products are seeded — the brief did not name them.",
+          description: "Agents see active products; admins see all. The catalogue is seeded from scripts/seed.mts, so it is the same everywhere and cannot drift.",
           responses: { "200": ok200({ type: "object" }) },
         }),
       },

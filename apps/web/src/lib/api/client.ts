@@ -186,6 +186,85 @@ export const getEligibility = (token: string, localBodyId?: number) =>
     { token },
   );
 
+/**
+ * Products, in two flavours. `agent/products` is what an administrator has
+ * assigned to this agent — the ones they may actually sell — and `/products` is
+ * the whole catalogue, shown alongside so a newly approved agent can see the
+ * range while assignment is still pending.
+ */
+export interface AgentProduct {
+  id: number;
+  slug: string;
+  nameEn: string;
+  summaryEn: string | null;
+  assets?: { id: number; title: string; kind: string; url: string }[];
+}
+
+export const getAgentProducts = (token: string) =>
+  api.get<{ data: AgentProduct[] }>("/agent/products", { token });
+
+export const getCatalogue = (token: string) =>
+  api.get<{ data: (AgentProduct & { active: boolean })[] }>("/products", {
+    token,
+  });
+
+export interface AgentEarnings {
+  summary?: {
+    pendingPaise?: number;
+    paidPaise?: number;
+    lifetimePaise?: number;
+    tdsWithheldPaise?: number;
+  };
+  terms?: {
+    rateBps?: number;
+    tdsRateBps?: number;
+    tdsSection?: string;
+    basis?: string;
+    payoutFrequency?: string;
+  };
+  data?: {
+    id: number;
+    accruedAt: string | null;
+    status: string;
+    basePaise: number;
+    grossCommissionPaise: number;
+    tdsPaise: number;
+    netCommissionPaise: number;
+    financialYear: string | null;
+    customerName: string | null;
+  }[];
+}
+
+export const getAgentEarnings = (token: string) =>
+  api.get<AgentEarnings>("/agent/earnings", { token });
+
+export interface AgentProfile {
+  agentCode?: string;
+  status?: string;
+  name?: string | null;
+  email?: string | null;
+  mobile?: string | null;
+  mobileVerifiedAt?: string | null;
+  occupation?: string | null;
+  districtNameEn?: string | null;
+  localBodyNameEn?: string | null;
+  localBodyType?: string | null;
+  wardNumber?: number | null;
+  pendingLocalBodyName?: string | null;
+  pendingWardNumber?: number | null;
+  createdAt?: string | null;
+  termsVersion?: string | null;
+  termsAcceptedAt?: string | null;
+  reviewNote?: string | null;
+}
+
+export const getAgentProfile = (token: string) =>
+  api.get<{
+    profile: AgentProfile | null;
+    qualifications: Record<string, unknown> | null;
+    note?: string;
+  }>("/agent/profile", { token });
+
 export const getReportCatalogue = (token: string) =>
   api.get<ReportCatalogue>("/admin/reports", { token });
 
