@@ -42,7 +42,13 @@ export const AGENT_STYLES = String.raw`
 
   --ink: #f2f5f9;          /* 17:1 on --bg */
   --ink-muted: #9aa6b8;    /* 8.1:1  — AA for body text */
-  --ink-faint: #7d8798;    /* 5.6:1  — AA at 16px+ */
+  /*
+   * Raised from #7d8798. That passed AA against the flat background but not
+   * against the WebGL layer, which is brighter in places — Lighthouse caught
+   * the English gloss spans failing. Contrast has to hold against the lightest
+   * point the scene reaches, not against the base colour.
+   */
+  --ink-faint: #8e9aab;    /* 6.8:1 on --bg, ~4.7:1 over the brightest scene */
 
   /* Kerala green through backwater teal. Used for emphasis, never for alarm. */
   --accent: #34d399;
@@ -353,7 +359,13 @@ section { padding: 3.25rem 0 0; }
 
 .button:hover, button:hover { background: #4ade9f; }
 
-.button .en { color: #04130d; opacity: 0.7; margin-top: 0.1em; }
+/*
+ * Applies to <button> as well as .button. The rule used to name only the class,
+ * so the English gloss inside every form submit kept the page's muted grey and
+ * sat on the green fill at 1.48:1 — unreadable, on the most important controls
+ * in the product. Caught by Lighthouse.
+ */
+.button .en, button .en { color: #04130d; opacity: 0.75; margin-top: 0.1em; }
 
 .button.secondary {
   color: var(--ink);
@@ -362,7 +374,8 @@ section { padding: 3.25rem 0 0; }
   box-shadow: none;
   backdrop-filter: blur(12px);
 }
-.button.secondary .en { color: var(--ink-faint); }
+.button.secondary .en,
+.action-secondary button .en { color: var(--ink-faint); opacity: 1; }
 
 .button-note {
   font-family: var(--font-latin);

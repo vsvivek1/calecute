@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3001",
-    "build": "npm run openapi && next build",
+    "build": "npm run openapi && npm run postman && next build",
     "start": "next start --port 3001",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
@@ -17,7 +17,8 @@
     "smoke": "node --env-file-if-exists=.env.local scripts/smoke.mjs",
     "verify": "npm run typecheck && npm run openapi && node scripts/check-spec-coverage.mjs && npm run db:verify",
     "geo:convert": "node scripts/convert-lgd.mjs",
-    "dev:session": "node --env-file-if-exists=.env.local scripts/dev-session.mjs"
+    "dev:session": "node --env-file-if-exists=.env.local scripts/dev-session.mjs",
+    "postman": "node scripts/build-postman.mjs"
   },
   "dependencies": {
     "drizzle-orm": "^0.44.6",
