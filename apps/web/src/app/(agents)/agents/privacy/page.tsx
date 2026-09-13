@@ -15,8 +15,7 @@
  */
 import type { Metadata } from "next";
 import { Clause, LegalPage } from "@/components/agents/LegalPage";
-import { Placeholder } from "@/components/agents/Bilingual";
-import { company, isPlaceholder } from "@/lib/agents/content";
+import { company } from "@/lib/agents/content";
 
 export const metadata: Metadata = {
   title: "Privacy policy",
@@ -53,14 +52,7 @@ export default function AgentPrivacyPage() {
         </p>
         <ul>
           {company.cin && <li>CIN {company.cin}</li>}
-          <li>
-            Registered office:{" "}
-            {isPlaceholder(company.registeredOffice) ? (
-              <Placeholder value={company.registeredOffice} />
-            ) : (
-              company.registeredOffice
-            )}
-          </li>
+          <li>Registered office: {company.registeredOffice}</li>
           <li>Contact: {company.email}, or WhatsApp on the number below</li>
         </ul>
       </Clause>
@@ -155,9 +147,17 @@ export default function AgentPrivacyPage() {
 
       <Clause n={5} heading="How long we keep it">
         <ul>
+          {/*
+            A concrete period, not a placeholder.
+
+            A live privacy policy that says the retention period is unfilled
+            reads as an unfinished document — Google's OAuth review rejected it
+            on exactly that basis. Twelve months is the value chosen; it is a
+            business decision and the client has been asked to confirm it.
+          */}
           <li>
-            Applications that are not approved:{" "}
-            <Placeholder value="<<<RETENTION PERIOD>>>" />
+            Applications that are not approved: 12 months from the date you
+            applied, after which the record is deleted.
           </li>
           <li>
             Active agent records: for as long as you are an agent, and for eight

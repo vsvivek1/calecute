@@ -12,8 +12,7 @@
  */
 import type { Metadata } from "next";
 import { Clause, LegalPage } from "@/components/agents/LegalPage";
-import { Placeholder } from "@/components/agents/Bilingual";
-import { company, isPlaceholder } from "@/lib/agents/content";
+import { company } from "@/lib/agents/content";
 
 export const metadata: Metadata = {
   title: "Terms of service",
@@ -52,11 +51,7 @@ export default function AgentTermsPage() {
         <p>
           {company.legalName} is a One Person Company incorporated in India with
           its registered office at{" "}
-          {isPlaceholder(company.registeredOffice) ? (
-            <Placeholder value={company.registeredOffice} />
-          ) : (
-            company.registeredOffice
-          )}
+          {company.registeredOffice}
           .
         </p>
         <p>
@@ -232,11 +227,72 @@ export default function AgentTermsPage() {
         </p>
       </Clause>
 
-      <Clause n={11} heading="Personal data">
+      {/*
+        A full data section, not just a pointer.
+
+        Google's OAuth review fetches whichever URL is entered in the privacy
+        policy field and checks that it details data collection. If someone
+        enters this URL instead of /agents/privacy the review fails, and it has
+        already failed once that way. Summarising the substance here costs
+        nothing and is normal in a terms document; the full policy remains the
+        authoritative version and is linked below.
+      */}
+      <Clause n={11} heading="Personal data and privacy">
         <p>
-          How we handle your personal data is set out in our{" "}
-          <a href="/agents/privacy">privacy policy</a>, which forms part of
-          these terms.
+          Our full <a href="/agents/privacy">privacy policy</a> forms part of
+          these terms. In summary:
+        </p>
+
+        <p>
+          <strong>What we collect.</strong> When you sign in with Google we
+          receive your email address, your name and a stable account
+          identifier — nothing else, and never your password. When you apply we
+          collect six fields: your name, mobile number, district, panchayat or
+          municipality, ward and occupation. You may optionally tell us your
+          education, previous experience, hours available, whether you have a
+          vehicle, your computer literacy and the kinds of people you can reach.
+          When you set up payouts we collect your PAN and your bank account or
+          UPI details, and not before. We also record a truncated form of your
+          IP address and a hashed device identifier to detect people creating
+          many accounts.
+        </p>
+
+        <p>
+          <strong>What we do not collect.</strong> Your date of birth, your
+          address, a photograph, or any uploaded document. We do not read your
+          Google contacts, calendar, files or mail.
+        </p>
+
+        <p>
+          <strong>Why.</strong> To assess your application, issue your agent
+          code, record which customers you referred, calculate and pay your
+          commission, meet our obligations under Indian tax law, and contact you
+          about the programme. We do not sell your data, use it for advertising,
+          or share it with anyone except administrators of this programme, the
+          Income Tax Department, our bank, our hosting providers, and where the
+          law requires it.
+        </p>
+
+        <p>
+          <strong>How it is protected.</strong> Your PAN and bank account number
+          are encrypted at rest using AES-256-GCM and are shown only as a mask
+          such as XXXXX1234F — to you, to administrators and in every export. No
+          part of this system returns a full PAN, and it never appears in logs
+          or audit records.
+        </p>
+
+        <p>
+          <strong>How long we keep it.</strong> Commission and tax records for
+          eight financial years, as Indian tax law requires. Applications
+          that are not approved are deleted after 12 months.
+        </p>
+
+        <p>
+          <strong>Your rights.</strong> Under the Digital Personal Data
+          Protection Act, 2023 you may obtain a copy of your data, correct it,
+          have it erased, withdraw consent, and complain to us and then to the
+          Data Protection Board of India. Your dashboard does the first three
+          without needing to contact anyone.
         </p>
       </Clause>
 
