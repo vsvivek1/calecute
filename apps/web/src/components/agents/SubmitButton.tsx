@@ -13,14 +13,21 @@ import { useFormStatus } from "react-dom";
 export function SubmitButton({
   label,
   pendingLabel,
+  disabled,
 }: {
   label: string;
   pendingLabel: string;
+  /** Set when the form is not answerable yet, e.g. a picker with no choice. */
+  disabled?: boolean;
 }) {
   const { pending } = useFormStatus();
   const shown = pending ? pendingLabel : label;
   return (
-    <button type="submit" disabled={pending} aria-busy={pending}>
+    <button
+      type="submit"
+      disabled={pending || Boolean(disabled)}
+      aria-busy={pending}
+    >
       <span>{shown}
       </span>
     </button>

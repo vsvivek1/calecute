@@ -421,14 +421,23 @@ label { display: block; margin-bottom: 0.4rem; }
   border-radius: var(--radius-sm);
 }
 .pick-list li + li { border-top: 1px solid var(--hairline); }
-.pick-list a {
+/* Links on the public page, buttons in the signup form: same row either way. */
+.pick-list a, .pick-list button {
   display: block;
+  width: 100%;
   padding: 0.75rem 0.9rem;
   min-height: 44px;
+  font: inherit;
+  text-align: left;
   text-decoration: none;
   color: var(--ink);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
 }
-.pick-list a:hover, .pick-list a:focus-visible {
+.pick-list a:hover, .pick-list a:focus-visible,
+.pick-list button:hover, .pick-list button:focus-visible {
   background: rgba(255, 255, 255, 0.05);
   text-decoration: underline;
 }

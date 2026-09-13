@@ -73,9 +73,15 @@ const bodySchema = z.object({
   formToken: z.string().max(2048).nullish(),
   deviceFingerprint: z.string().max(512).nullish(),
 })
+  /*
+   * Exactly one of the two. The message is written for the person filling the
+   * form, not for whoever wrote the client: this fires when a picker fails to
+   * resolve a typed name, and "give either localBodyId or pendingLocalBodyName"
+   * told an applicant nothing they could act on.
+   */
   .refine((v) => Boolean(v.localBodyId) !== Boolean(v.pendingLocalBodyName), {
     message:
-      "Give either localBodyId or pendingLocalBodyName, not both and not neither",
+      "Choose your panchayat or municipality from the list. If it is not there, tick the box and type its name.",
     path: ["localBodyId"],
   });
 

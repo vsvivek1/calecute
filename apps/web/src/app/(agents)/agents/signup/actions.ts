@@ -44,9 +44,15 @@ export async function submitSignup(
     mobile: text(data, "mobile"),
     districtId: text(data, "districtId"),
     localBodyId: text(data, "localBodyId"),
+    localBodyName: text(data, "localBodyName"),
     pendingLocalBodyName: text(data, "pendingLocalBodyName"),
     wardNumber: text(data, "wardNumber"),
     occupation: text(data, "occupation"),
+    // Echoed so the form can put the checkboxes back. React resets a form once
+    // its action completes, restoring each field from its HTML attribute, so
+    // anything not echoed here comes back blank after a rejected submission.
+    notListed: data.get("notListed") === "on" ? "on" : "",
+    acceptedTerms: data.get("acceptedTerms") === "on" ? "on" : "",
   };
 
   try {

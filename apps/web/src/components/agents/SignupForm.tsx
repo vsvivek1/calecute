@@ -67,7 +67,6 @@ export function SignupForm({
   termsVersion: string;
   apiBase: string;
   initialDistrictId?: number;
-  initialLocalBodyId?: number;
   defaultName: string;
   formToken: string;
 }) {
@@ -75,8 +74,14 @@ export function SignupForm({
 
   const [districtId, setDistrictId] = useState(initialDistrictId ?? 0);
   const [bodies, setBodies] = useState<LocalBodyOption[]>([]);
-  /** What is typed in the picker. The id below is derived from it. */
+  /**
+   * What is typed in the picker. The id below is derived from it. It is also
+   * posted under its own name so a rejected submission comes back carrying
+   * what the applicant actually typed.
+   */
   const [bodyName, setBodyName] = useState("");
+  /** True while the applicant is choosing, so the matches are worth showing. */
+  const [picking, setPicking] = useState(false);
   // Temporary: municipalities and corporations are not seeded yet, so a reader
   // in a town has nothing to pick. See migration 0006.
   const [notListed, setNotListed] = useState(false);
@@ -130,7 +135,27 @@ export function SignupForm({
     : undefined;
   const localBodyId = chosenBody?.id ?? 0;
 
+  /*
+   * The matches to offer. Capped at eight: more than that on a phone pushes the
+   * rest of the form off the screen, and eight is enough to tell someone they
+   * are on the right track.
+   */
+  const suggestions =
+    picking && typed && !chosenBody && !notListed
+      ? visibleBodies
+          .filter((b) => b.nameEn.toLowerCase().includes(typed))
+          .slice(0, 8)
+      : [];
+
+  /*
+   * A name that resolved to nothing is the failure this picker exists to
+   * prevent. Blocking the button is kinder than posting it and getting back a
+   * validation error naming a field the applicant never filled in.
+   */
+  const geographyReady = notListed || localBodyId > 0;
+
   const fieldError = (name: string) => state.fields?.[name];
+  const fieldMessages = Object.values(state.fields ?? {});
 
   return (
     <form action={action} noValidate>
@@ -154,10 +179,18 @@ export function SignupForm({
       </div>
 
       {state.error && (
-        <p className="notice stop" role="alert">
-          {state.error}
+        <div className="notice stop" role="alert">
+          {/*
+            Field messages win over the top-level one. "Request body failed
+            validation" is true and useless; the field message says what to fix.
+          */}
+          {fieldMessages.length > 0 ? (
+            fieldMessages.map((message) => <p key={message}>{message}</p>)
+          ) : (
+            <p>{state.error}</p>
+          )}
           {state.code && <span className="field-hint">{state.code}</span>}
-        </p>
+        </div>
       )}
 
       <div className="field">
@@ -195,11 +228,26 @@ export function SignupForm({
 
       <div className="field">
         <Label text={copy.fields.district} htmlFor="districtId" />
+        {/*
+          Uncontrolled, with the value echoed back by the action.
+
+          React resets the form once a server action completes, and a reset
+          restores every field from its HTML attribute. A controlled <select>
+          has no selected attribute, so a rejected submission silently emptied
+          the district — the form looked like it had thrown the answers away.
+          An uncontrolled select carries defaultSelected, so the reset puts the
+          right option back. Same reasoning for both checkboxes below.
+
+          The key is the other half of it: React applies defaultValue on mount
+          only, so without a key that changes with the choice the select would
+          keep the empty default it was born with.
+        */}
         <select
+          key={districtId}
           id="districtId"
           name="districtId"
           required
-          value={districtId || ""}
+          defaultValue={districtId || ""}
           onChange={(event) => {
             setDistrictId(Number(event.target.value));
             // A name from the previous district cannot be right here.
@@ -220,31 +268,41 @@ export function SignupForm({
       {districtId > 0 && (
         <>
           {/*
-            One box, not two. The datalist gives the browser's own filtering
-            and its own keyboard and touch handling, which beats anything
-            re-implemented here and costs no JavaScript.
+            One box, and the matches listed under it.
+
+            This started as a <datalist>, which was wrong: datalist support is
+            patchy on exactly the Android browsers this programme recruits on,
+            so the dropdown never appeared, people typed a name freely, it did
+            not match a row exactly, and the form posted an empty id — the API
+            then rejected the whole submission with a validation error that
+            named a field the applicant had never heard of. The picker now
+            renders its own matches, which behave the same everywhere, and the
+            form refuses to submit until one of them has actually been picked.
           */}
           <div className="field">
             <Label text={copy.fields.localBody} htmlFor="localBodyName" />
             <input
               type="text"
               id="localBodyName"
-              list="localBodyOptions"
+              name="localBodyName"
               value={bodyName}
               disabled={notListed}
               required={!notListed}
-              onChange={(event) => setBodyName(event.target.value)}
+              onChange={(event) => {
+                setBodyName(event.target.value);
+                setPicking(true);
+              }}
+              onFocus={() => setPicking(true)}
               autoComplete="off"
               enterKeyHint="next"
               placeholder={loadingBodies ? "Loading…" : "Start typing"}
               aria-describedby="local-body-hint"
               aria-invalid={Boolean(typed) && !chosenBody && !notListed}
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded={suggestions.length > 0}
+              aria-controls="localBodyMatches"
             />
-            <datalist id="localBodyOptions">
-              {visibleBodies.map((body) => (
-                <option key={body.id} value={body.nameEn} />
-              ))}
-            </datalist>
 
             {/* The id is what is submitted; the name is only how it is chosen. */}
             <input
@@ -252,6 +310,25 @@ export function SignupForm({
               name="localBodyId"
               value={notListed || !localBodyId ? "" : localBodyId}
             />
+
+            {suggestions.length > 0 && (
+              <ul className="pick-list" id="localBodyMatches" role="listbox">
+                {suggestions.map((body) => (
+                  <li key={body.id} role="option" aria-selected="false">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setBodyName(body.nameEn);
+                        setPicking(false);
+                      }}
+                    >
+                      {body.nameEn}
+                      {body.signupsOpen ? "" : " — closed"}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
 
             <p className="field-hint" id="local-body-hint">
               {notListed
@@ -263,9 +340,14 @@ export function SignupForm({
                       : `${chosenBody.filled} people have applied here so far`
                     : "Registration is closed for this one."
                   : typed
-                    ? "No match yet — keep typing, or tick the box below."
+                    ? suggestions.length === 0
+                      ? "Nothing matches that. Check the spelling, or tick the box below if it is a municipality or corporation."
+                      : "Pick one from the list."
                     : copy.hints.searchLocalBody}
             </p>
+            {fieldError("localBodyId") && (
+              <p className="field-hint">{fieldError("localBodyId")}</p>
+            )}
           </div>
 
           {/*
@@ -278,7 +360,8 @@ export function SignupForm({
             <input
               type="checkbox"
               id="notListed"
-              checked={notListed}
+              name="notListed"
+              defaultChecked={state.values?.notListed === "on"}
               onChange={(event) => {
                 setNotListed(event.target.checked);
                 if (event.target.checked) setBodyName("");
@@ -353,7 +436,13 @@ export function SignupForm({
       {/* Unticked by default, and the duplicate-PAN rule is stated here because
           this is the moment the applicant agrees to it. */}
       <div className="choice">
-        <input type="checkbox" id="acceptedTerms" name="acceptedTerms" required />
+        <input
+          type="checkbox"
+          id="acceptedTerms"
+          name="acceptedTerms"
+          required
+          defaultChecked={state.values?.acceptedTerms === "on"}
+        />
         <label htmlFor="acceptedTerms">{copy.consent.terms}
         </label>
       </div>
@@ -365,7 +454,13 @@ export function SignupForm({
         <SubmitButton
           label={copy.submit}
           pendingLabel={"Submitting…"}
+          disabled={!geographyReady}
         />
+        {!geographyReady && districtId > 0 && (
+          <p className="field-hint">
+            Choose your panchayat or municipality from the list to continue.
+          </p>
+        )}
       </div>
     </form>
   );
