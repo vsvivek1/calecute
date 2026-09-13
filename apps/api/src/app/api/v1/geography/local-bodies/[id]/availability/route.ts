@@ -22,7 +22,10 @@ export const GET = handler(async (request, context) => {
   }
 
   return publicRoute({ name: "geo.availability" }, async (ctx) =>
-    ok(ctx, await availabilityFor(ctx.tx, parsed.data)),
+    // Thirty seconds. This was uncached when capacity gated signup and a stale
+    // number could have turned someone away; it is now a count of applications
+    // received, where half a minute of staleness changes nothing.
+    ok(ctx, await availabilityFor(ctx.tx, parsed.data), 200, 30),
   )(request);
 });
 

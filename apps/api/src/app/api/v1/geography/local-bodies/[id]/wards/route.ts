@@ -46,16 +46,21 @@ export const GET = handler(async (request, context) => {
       .where(eq(wards.localBodyId, parsed.data))
       .orderBy(asc(wards.number));
 
-    return ok(ctx, {
-      data: rows,
-      wardData: body.wardData,
+    return ok(
+      ctx,
+      {
+        data: rows,
+        wardData: body.wardData,
       // Tells the client to render an explanatory line rather than an empty
       // dropdown that looks broken.
-      note:
-        rows.length === 0
-          ? "Ward list not yet loaded for this local body. Ward is optional at signup."
-          : null,
-    });
+        note:
+          rows.length === 0
+            ? "Ward list not yet loaded for this local body. Ward is optional at signup."
+            : null,
+      },
+      200,
+      3600,
+    );
   })(request);
 });
 

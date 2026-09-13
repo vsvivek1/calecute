@@ -38,8 +38,16 @@ export const company = {
   /** Registered CIN, supplied 2026-09-13. Shown as a quiet footer detail. */
   cin: "U62013KL2026OPC105471" as string | null,
   city: "Kozhikode, Kerala",
-  /** PLACEHOLDER — one sentence, what the company actually does. */
-  whatWeDo: "<<<ONE SENTENCE — what the company does>>>",
+  /**
+   * One sentence, supplied 2026-09-13.
+   *
+   * Written to be recognisable to the reader rather than exhaustive. A Kerala
+   * recruit assessing whether this is a real company gets more from "exam
+   * apps, school and coaching software, tools for agents and small businesses"
+   * than from a list of eleven product names they have never heard of.
+   */
+  whatWeDo:
+    "We build software used across Kerala: exam preparation apps for LSS, USS, PSC and UPSC, management systems for schools and coaching institutes, tools for banking and RD agents, planning and ERP software for small businesses, and trade apps for farmer producer organisations.",
   /** Registered office as filed, supplied 2026-09-13. */
   registeredOffice:
     "11/698A, Poolakadavu, Marikkunnu (PO), Kozhikode 673012, Kerala, India",

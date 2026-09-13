@@ -109,6 +109,11 @@ export function ok(
   ctx: { request: NextRequest; rateHeaders: Record<string, string> },
   body: unknown,
   status = 200,
+  publicCacheSeconds?: number,
 ): Response {
-  return json(ctx.request, body, { status, headers: ctx.rateHeaders });
+  return json(ctx.request, body, {
+    status,
+    headers: ctx.rateHeaders,
+    publicCacheSeconds,
+  });
 }

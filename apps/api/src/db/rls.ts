@@ -56,16 +56,26 @@ export async function withRls<T>(
   fn: (tx: ScopedDb) => Promise<T>,
 ): Promise<T> {
   return db.transaction(async (tx) => {
-    // Drop privileges first, before any identity is set or any row is touched.
-    // SET ROLE takes an identifier, not a parameter, so this is sql.raw of a
-    // module constant — never of anything derived from a request.
-    await tx.execute(sql.raw(`SET LOCAL ROLE ${APP_ROLE}`));
+    /*
+     * One statement, not three.
+     *
+     * `SET LOCAL ROLE x` is the same thing as set_config('role', 'x', true),
+     * so the privilege drop and both identity settings fit in a single round
+     * trip. That matters more than it looks: the database is in Singapore and
+     * the functions are in Mumbai, so each round trip costs about 55ms. Three
+     * separate statements added ~110ms to every request in the product.
+     *
+     * The role is still a module constant rather than anything derived from a
+     * request, and both identity values are bound parameters.
+     */
     await tx.execute(
-      sql`SELECT set_config('app.user_id', ${
-        actor.userId === null ? "" : String(actor.userId)
-      }, true)`,
+      sql`SELECT
+            set_config('role', ${APP_ROLE}, true),
+            set_config('app.user_id', ${
+              actor.userId === null ? "" : String(actor.userId)
+            }, true),
+            set_config('app.role', ${actor.role}, true)`,
     );
-    await tx.execute(sql`SELECT set_config('app.role', ${actor.role}, true)`);
     return fn(tx);
   });
 }

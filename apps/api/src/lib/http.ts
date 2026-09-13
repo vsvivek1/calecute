@@ -12,6 +12,18 @@ export const API_VERSION = "v1";
 export interface ResponseInit_ {
   status?: number;
   headers?: Record<string, string>;
+  /**
+   * Seconds this response may be served from Vercel's edge cache.
+   *
+   * Only for endpoints whose response is identical for every caller. Anything
+   * user-specific must stay `no-store`, which is the default — a cached
+   * dashboard served to the wrong person is the worst bug this codebase could
+   * have.
+   *
+   * Ignored when the request carries an Authorization header, so an
+   * authenticated call can never populate or read a shared cache entry.
+   */
+  publicCacheSeconds?: number;
 }
 
 function corsHeaders(request: Request): Record<string, string> {
@@ -39,12 +51,23 @@ export function json(
   init: ResponseInit_ = {},
 ): Response {
   const requestId = requestIdOf(request);
+
+  // A caller presenting a token gets an uncached response, always.
+  const cacheable =
+    init.publicCacheSeconds !== undefined && !request.headers.get("authorization");
+
+  const cacheControl = cacheable
+    ? `public, max-age=0, s-maxage=${init.publicCacheSeconds}, stale-while-revalidate=${
+        (init.publicCacheSeconds as number) * 10
+      }`
+    : "no-store";
+
   return Response.json(body, {
     status: init.status ?? 200,
     headers: {
       ...corsHeaders(request),
       "X-Request-Id": requestId,
-      "Cache-Control": "no-store",
+      "Cache-Control": cacheControl,
       ...init.headers,
     },
   });

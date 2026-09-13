@@ -33,7 +33,7 @@ export const GET = handler(async (request, context) => {
       .where(eq(blockPanchayats.districtId, parsed.data))
       .orderBy(asc(blockPanchayats.nameEn));
 
-    return ok(ctx, { data: rows });
+    return ok(ctx, { data: rows }, 200, 3600);
   })(request);
 });
 

@@ -49,15 +49,22 @@ export const GET = handler(
     const data = hasNextPage ? rows.slice(0, query.limit) : rows;
     const last = data[data.length - 1];
 
-    return ok(ctx, {
-      data,
-      pageInfo: {
-        hasNextPage,
-        nextCursor:
-          hasNextPage && last ? encodeCursor({ k: last.nameEn, id: last.id }) : null,
-        limit: query.limit,
+    return ok(
+      ctx,
+      {
+        data,
+        pageInfo: {
+          hasNextPage,
+          nextCursor:
+            hasNextPage && last ? encodeCursor({ k: last.nameEn, id: last.id }) : null,
+          limit: query.limit,
+        },
       },
-    });
+      200,
+      // Short: the rows carry live application counts. Sixty seconds is well
+      // inside what "how many have applied so far" needs to mean.
+      60,
+    );
   }),
 );
 

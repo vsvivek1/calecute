@@ -25,7 +25,9 @@ export const GET = handler(
       .from(districts)
       .orderBy(asc(districts.nameEn));
 
-    return ok(ctx, { data: rows });
+    // The 14 districts of Kerala do not change. An hour at the edge means
+    // most readers never invoke a function for them at all.
+    return ok(ctx, { data: rows }, 200, 3600);
   }),
 );
 
