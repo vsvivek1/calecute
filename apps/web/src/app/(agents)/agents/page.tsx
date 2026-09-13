@@ -329,9 +329,9 @@ export default async function AgentsPage({
               </a>
             </p>
             <nav className="footer-links" aria-label="Legal">
-              <a href="/agents/terms"></a>
-              <a href="/agents/privacy"></a>
-              <a href="/contact"></a>
+              <a href="/agents/terms">{copy.footer.terms}</a>
+              <a href="/agents/privacy">{copy.footer.privacy}</a>
+              <a href={whatsappContactUrl()}>Contact</a>
             </nav>
           </footer>
         </main>

@@ -81,6 +81,7 @@ html {
 
 body {
   margin: 0;
+  overflow-wrap: break-word;
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-latin);
@@ -119,7 +120,7 @@ body {
 .wrap {
   max-width: var(--measure);
   margin: 0 auto;
-  padding: 0 1.25rem 6rem;
+  padding: 0 1.15rem 3.5rem;
 }
 
 /* ---------------------------------------------------------------- type */
@@ -155,12 +156,19 @@ p:last-child { margin-bottom: 0; }
 
 /* ---------------------------------------------------------------- hero */
 
+/*
+ * Sized for a phone first.
+ *
+ * This was min-height: 88vh, which on a 844px screen meant the reader had to
+ * scroll past a near-empty viewport before reaching the sign-in button — the
+ * one thing the page is asking them to do. It now takes only the room it
+ * needs on a small screen and grows on a large one.
+ */
 .hero {
-  min-height: 88vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 5rem 0 4rem;
+  padding: 2.5rem 0 2rem;
 }
 
 
@@ -173,7 +181,7 @@ p:last-child { margin-bottom: 0; }
   background: var(--glass);
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
-  padding: 1.6rem 1.5rem;
+  padding: 1.25rem 1.1rem;
   backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
   box-shadow: var(--shadow-far);
@@ -190,7 +198,7 @@ p:last-child { margin-bottom: 0; }
   border-left: 2px solid var(--accent);
 }
 
-section { padding: 3.25rem 0 0; }
+section { padding: 2.25rem 0 0; }
 
 /* ---------------------------------------------------------- identity */
 
@@ -526,7 +534,11 @@ a:hover { color: var(--accent-2); }
 .review-card header .chips-note { margin: 0; }
 
 .review-facts { display: grid; gap: 0.6rem; margin: 0 0 1.25rem; }
-.review-facts div { display: grid; grid-template-columns: 7rem 1fr; gap: 0.75rem; margin: 0; }
+.review-facts div { display: grid; gap: 0.15rem; margin: 0; }
+
+@media (min-width: 34rem) {
+  .review-facts div { grid-template-columns: 7rem 1fr; gap: 0.75rem; }
+}
 .review-facts dt {
   font-family: var(--font-latin);
   font-size: 0.72rem;
@@ -692,8 +704,8 @@ a:hover { color: var(--accent-2); }
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 1.25rem;
+  gap: 0.75rem;
+  padding: 0.85rem 1.15rem;
   background: rgba(6, 8, 12, 0.72);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--hairline);
@@ -707,8 +719,8 @@ a:hover { color: var(--accent-2); }
 
 .stat-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: 0.6rem;
   margin: 1.25rem 0;
 }
 
@@ -774,7 +786,7 @@ a:hover { color: var(--accent-2); }
   background: var(--glass);
 }
 
-.admin-wrap { max-width: 76rem; margin: 0 auto; padding: 1.5rem 1.25rem 5rem; }
+.admin-wrap { max-width: 76rem; margin: 0 auto; padding: 1.25rem 1.15rem 3.5rem; }
 
 .filters {
   display: flex;
@@ -783,7 +795,11 @@ a:hover { color: var(--accent-2); }
   align-items: flex-end;
   margin-bottom: 1.5rem;
 }
-.filters .field { margin-bottom: 0; min-width: 10rem; flex: 1 1 10rem; }
+.filters .field { margin-bottom: 0; flex: 1 1 100%; }
+
+@media (min-width: 34rem) {
+  .filters .field { min-width: 10rem; flex: 1 1 10rem; }
+}
 .filters button { width: auto; }
 
 .report-nav {
@@ -828,8 +844,10 @@ a:hover { color: var(--accent-2); }
 
 .code-badge {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 1.35rem;
-  letter-spacing: 0.1em;
+  font-size: 1.15rem;
+  letter-spacing: 0.06em;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   padding: 0.55rem 1rem;
   display: inline-block;
   border-radius: var(--radius-sm);
@@ -847,8 +865,12 @@ a:hover { color: var(--accent-2); }
 
 @media (min-width: 40rem) {
   .wrap { padding: 0 1.5rem 7rem; }
-  .panel { padding: 2rem 2rem; }
+  .panel { padding: 2rem; }
   .button { width: auto; min-width: 18rem; }
+  .hero { min-height: 78vh; padding: 5rem 0 4rem; }
+  section { padding: 3.25rem 0 0; }
+  .code-badge { font-size: 1.35rem; letter-spacing: 0.1em; }
+  .admin-wrap { padding: 1.5rem 1.5rem 5rem; }
 }
 
 /*
