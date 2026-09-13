@@ -25,11 +25,19 @@ ALTER TABLE public.agents
 -- A placed agent has a real ward row; an unplaced one has the number they
 -- typed. This mirrors agents_local_body_or_pending_check and is enforced for
 -- the same reason: half-placed rows are the ones nobody notices.
+--
+-- NOT VALID, deliberately. Applications filed before this migration have no
+-- ward, because the form did not ask for one, and rejecting the migration over
+-- them would mean either dropping real people's applications or guessing a
+-- number on their behalf. Neither is acceptable. NOT VALID enforces the rule on
+-- every insert and update from here on and leaves the existing rows alone; they
+-- are flagged for review below so somebody asks those agents rather than the
+-- gap sitting there forever. Once they are answered, VALIDATE CONSTRAINT.
 ALTER TABLE public.agents
   ADD CONSTRAINT agents_ward_or_pending_check CHECK (
     (local_body_id IS NOT NULL AND ward_id IS NOT NULL AND pending_ward_number IS NULL)
     OR (local_body_id IS NULL AND ward_id IS NULL AND pending_ward_number IS NOT NULL)
-  );
+  ) NOT VALID;
 
 ALTER TABLE public.agents
   ADD CONSTRAINT agents_pending_ward_number_check CHECK (
@@ -85,3 +93,6 @@ END;
 $$;
 
 GRANT EXECUTE ON FUNCTION app.ward_for(bigint, smallint) TO calecute_app;
+
+-- Existing applications with no ward, surfaced rather than silently tolerated.
+ALTER TYPE review_flag_kind ADD VALUE IF NOT EXISTS 'WARD_MISSING';

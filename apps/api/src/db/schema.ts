@@ -132,6 +132,7 @@ export const reviewFlagKind = pgEnum("review_flag_kind", [
   "HONEYPOT_TRIPPED",
   "SUBMITTED_TOO_FAST",
   "LOCAL_BODY_NOT_SEEDED",
+  "WARD_MISSING",
 ]);
 
 export const reviewFlagStatus = pgEnum("review_flag_status", [
