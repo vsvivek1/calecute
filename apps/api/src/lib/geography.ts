@@ -116,8 +116,15 @@ export interface Availability {
   remaining: number;
   signupsOpen: boolean;
   waitlisted: number;
-  /** OPEN | FULL | CLOSED — the three states the public page renders. */
-  state: "OPEN" | "FULL" | "CLOSED";
+  /**
+   * OPEN or CLOSED only.
+   *
+   * There is no FULL any more. Capacity no longer refuses an application —
+   * selection happens later from everyone who applied — so a page that said
+   * "full" would be turning people away from something that would have
+   * accepted them.
+   */
+  state: "OPEN" | "CLOSED";
 }
 
 /** Live slot availability for one local body. Never cached, never estimated. */
@@ -153,7 +160,7 @@ export async function availabilityFor(
     remaining,
     signupsOpen: body.signupsOpen,
     waitlisted: waiting,
-    state: !body.signupsOpen ? "CLOSED" : remaining > 0 ? "OPEN" : "FULL",
+    state: body.signupsOpen ? "OPEN" : "CLOSED",
   };
 }
 

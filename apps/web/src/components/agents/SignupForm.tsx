@@ -33,8 +33,7 @@ interface Option {
 }
 
 interface LocalBodyOption extends Option {
-  remaining: number;
-  slotCapacity: number;
+  filled: number;
   signupsOpen: boolean;
 }
 
@@ -266,22 +265,19 @@ export function SignupForm({
                 {loadingBodies ? "…" : "— Select —"}
               </option>
               {visibleBodies.map((body) => (
-                <option
-                  key={body.id}
-                  value={body.id}
-                  disabled={!body.signupsOpen || body.remaining <= 0}
-                >
+                // Only a closed panchayat is unselectable. Being at capacity
+                // no longer refuses anyone.
+                <option key={body.id} value={body.id} disabled={!body.signupsOpen}>
                   {body.nameEn}
-                  {body.signupsOpen
-                    ? ` — ${body.remaining}/${body.slotCapacity}`
-                    : " — closed"}
+                  {body.signupsOpen ? "" : " — closed"}
                 </option>
               ))}
             </select>
             {chosenBody && !notListed && (
               <p className="field-hint">
-                  {chosenBody.remaining} of {chosenBody.slotCapacity} places left
-                
+                {chosenBody.filled === 1
+                  ? "1 person has applied here so far"
+                  : `${chosenBody.filled} people have applied here so far`}
               </p>
             )}
           </div>

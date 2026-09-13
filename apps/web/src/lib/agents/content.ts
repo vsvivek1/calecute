@@ -70,7 +70,7 @@ export const page = {
   eyebrow: "Calecute Technologies · Kerala",
 
   role: {
-    body: "We are appointing commission agents to sell our software products. Ten agents in each panchayat.",
+    body: "We are appointing commission agents to sell our software products, across every panchayat in Kerala.",
     note: "No salary. You earn when the customers you bring pay.",
   },
 
@@ -111,11 +111,17 @@ export const page = {
   verify: { linkLabel: "Check on MCA" },
 
   availability: {
-    heading: "Places available",
-    prompt: "See how many places are left in your panchayat.",
-    full: "This panchayat is full. You can join the waiting list.",
+    heading: "Your panchayat",
+    prompt: "Find your panchayat and register.",
+    /**
+     * No "full" message. Capacity does not refuse anyone — who gets a place is
+     * decided later from everyone who applied — so telling a reader their
+     * panchayat is full would turn away somebody the programme would accept.
+     */
     closed: "This panchayat is not accepting applications at the moment.",
     noData: "The panchayat list has not been loaded yet.",
+    applied: "people have applied here so far",
+    appliedOne: "person has applied here so far",
   },
 
   signIn: {

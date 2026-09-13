@@ -54,29 +54,40 @@ export async function issueAgentCode(
 }
 
 /**
- * Take a slot in a local body, or fail.
+ * Record an application against a local body.
  *
- * Concurrency matters here: two people submitting in the same second must not
- * both see "1 place left" and both take it. This is the one place where a race
- * would genuinely over-fill a panchayat.
+ * Capacity is NOT enforced here any more. The programme is still described as
+ * ten agents per panchayat, and `slot_capacity` is still stored and still
+ * reported, but a panchayat being at or over that number no longer turns
+ * someone away: the client decided that who actually gets a place is a
+ * selection to make later, from the people who applied, rather than a race
+ * won by whoever filled the form first.
  *
- * The obvious tool — `SELECT ... FOR UPDATE` on the local_bodies row — does NOT
- * work under row-level security. Postgres applies the UPDATE policy's USING
- * clause to a locking read, and `local_bodies_admin_write` only admits admins,
- * so an applicant's FOR UPDATE returns zero rows and the signup fails with a
- * misleading "not found". Verified: as an AGENT, a plain SELECT sees the row and
- * FOR UPDATE sees nothing.
+ * That is the better ordering for this programme. The first ten applicants in
+ * a panchayat are not the best ten, and refusing the eleventh loses somebody
+ * an admin might have preferred.
  *
- * A transaction-scoped advisory lock keyed on the local body gives the same
- * serialisation without needing write access to the row. It releases on commit
- * or rollback, so a failed signup never leaves the panchayat locked.
+ * What is still enforced is `signups_open` — an admin deliberately closing a
+ * panchayat is a decision that should hold.
+ *
+ * The advisory lock stays. Two people submitting in the same second still get
+ * a consistent count back, and the lock is what makes the returned number
+ * meaningful rather than a race.
  */
 const SLOT_LOCK_NAMESPACE = 1001;
 
-export async function reserveSlot(
+export interface SlotState {
+  /** How many applications this local body now holds, including this one. */
+  applications: number;
+  slotCapacity: number;
+  /** True when applications exceed the nominal capacity. Informational only. */
+  overSubscribed: boolean;
+}
+
+export async function recordApplication(
   tx: ScopedDb,
   localBodyId: number,
-): Promise<{ remaining: number }> {
+): Promise<SlotState> {
   await tx.execute(
     sql`SELECT pg_advisory_xact_lock(${SLOT_LOCK_NAMESPACE}, ${localBodyId})`,
   );
@@ -101,30 +112,19 @@ export async function reserveSlot(
   }
 
   // Counted through the SECURITY DEFINER helper: the applicant cannot see other
-  // applicants' rows under RLS, so a direct count here would always read zero
-  // and every panchayat would accept an unlimited number of agents.
+  // applicants' rows under RLS, so a direct count here would always read zero.
   const [{ filled }] = (await tx.execute(
     sql`SELECT app.filled_slots(${localBodyId}) AS filled`,
   )) as unknown as { filled: number }[];
 
-  if (filled >= body.slot_capacity) {
-    throw new ApiError(
-      "SLOT_UNAVAILABLE",
-      "All places in this panchayat are taken. You can join the waitlist.",
-      { details: { slotCapacity: body.slot_capacity, filled } },
-    );
-  }
-
-  return { remaining: body.slot_capacity - filled - 1 };
+  const applications = filled + 1;
+  return {
+    applications,
+    slotCapacity: body.slot_capacity,
+    overSubscribed: applications > body.slot_capacity,
+  };
 }
 
-/**
- * The honeypot and timing checks.
- *
- * The honeypot is a field no human sees; a bot that fills every input trips it.
- * The timing check rejects a submission that arrived impossibly fast. Both are
- * hard failures because a real person cannot trigger either.
- */
 export function checkFormIntegrity(params: {
   honeypot?: string | null;
   fillMs?: number | null;

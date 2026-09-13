@@ -290,8 +290,12 @@ const localBodySchema: Json = {
     slotCapacity: { type: "integer", description: "Places available to agents. Programme default is 10." },
     signupsOpen: { type: "boolean" },
     wardData: { type: "string", enum: ["COMPLETE", "PARTIAL", "PENDING"] },
-    filled: { type: "integer" },
-    remaining: { type: "integer" },
+    filled: { type: "integer", description: "Applications received for this local body." },
+    remaining: {
+      type: "integer",
+      description:
+        "slotCapacity minus filled, floored at zero. Informational — it does not gate signup.",
+    },
     waitlisted: { type: "integer" },
   },
 };
@@ -302,14 +306,19 @@ const availabilitySchema: Json = {
   properties: {
     localBodyId: { type: "integer" },
     slotCapacity: { type: "integer" },
-    filled: { type: "integer" },
-    remaining: { type: "integer" },
+    filled: { type: "integer", description: "Applications received for this local body." },
+    remaining: {
+      type: "integer",
+      description:
+        "slotCapacity minus filled, floored at zero. Informational — it does not gate signup.",
+    },
     signupsOpen: { type: "boolean" },
     waitlisted: { type: "integer" },
     state: {
       type: "string",
-      enum: ["OPEN", "FULL", "CLOSED"],
-      description: "Read live from the database on every request. Never cached, never estimated.",
+      enum: ["OPEN", "CLOSED"],
+      description:
+        "OPEN unless an administrator has closed the panchayat. There is no FULL state: reaching the nominal capacity no longer refuses an application, because who gets a place is selected later from everyone who applied.",
     },
   },
 };
@@ -451,7 +460,7 @@ const wardListSchema: Json = {
 
 const signupResponseSchema: Json = {
   type: "object",
-  required: ["agent", "slotsRemainingAfter"],
+  required: ["agent"],
   properties: {
     agent: {
       type: "object",
@@ -464,7 +473,16 @@ const signupResponseSchema: Json = {
         wardId: { type: ["integer", "null"] },
       },
     },
-    slotsRemainingAfter: { type: "integer" },
+    applicationsInPanchayat: {
+      type: ["integer", "null"],
+      description: "How many people have now applied in this panchayat, including this one.",
+    },
+    slotCapacity: { type: ["integer", "null"] },
+    overSubscribed: {
+      type: "boolean",
+      description:
+        "True when applications exceed the nominal capacity. Informational: the application was still accepted.",
+    },
     nextStep: { type: "string" },
   },
 };
@@ -1039,7 +1057,7 @@ export function buildSpec(serverUrl: string): Json {
           responses: {
             "201": ok200(ref("SignupResponse"), "Application created; agent code issued."),
             "409": errorResponse(
-              "ALREADY_REGISTERED, MOBILE_ALREADY_USED, SLOT_UNAVAILABLE or PANCHAYAT_CLOSED.",
+              "ALREADY_REGISTERED, MOBILE_ALREADY_USED or PANCHAYAT_CLOSED. A panchayat at capacity is NOT a rejection.",
             ),
           },
         }),

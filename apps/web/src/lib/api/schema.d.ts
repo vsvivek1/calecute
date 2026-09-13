@@ -4752,7 +4752,7 @@ export interface paths {
                         "application/json": components["schemas"]["Error"];
                     };
                 };
-                /** @description ALREADY_REGISTERED, MOBILE_ALREADY_USED, SLOT_UNAVAILABLE or PANCHAYAT_CLOSED. */
+                /** @description ALREADY_REGISTERED, MOBILE_ALREADY_USED or PANCHAYAT_CLOSED. A panchayat at capacity is NOT a rejection. */
                 409: {
                     headers: {
                         [name: string]: unknown;
@@ -5130,16 +5130,18 @@ export interface components {
             source?: string;
         };
         Availability: {
+            /** @description Applications received for this local body. */
             filled: number;
             localBodyId: number;
+            /** @description slotCapacity minus filled, floored at zero. Informational — it does not gate signup. */
             remaining: number;
             signupsOpen?: boolean;
             slotCapacity: number;
             /**
-             * @description Read live from the database on every request. Never cached, never estimated.
+             * @description OPEN unless an administrator has closed the panchayat. There is no FULL state: reaching the nominal capacity no longer refuses an application, because who gets a place is selected later from everyone who applied.
              * @enum {string}
              */
-            state: "OPEN" | "FULL" | "CLOSED";
+            state: "OPEN" | "CLOSED";
             waitlisted?: number;
         };
         /** @description The published commission terms, served so no client hardcodes them. */
@@ -5228,10 +5230,12 @@ export interface components {
         LocalBody: {
             blockPanchayatId?: number | null;
             districtId: number;
+            /** @description Applications received for this local body. */
             filled?: number;
             id: number;
             nameEn: string;
             nameMl: string;
+            /** @description slotCapacity minus filled, floored at zero. Informational — it does not gate signup. */
             remaining?: number;
             signupsOpen?: boolean;
             /** @description Places available to agents. Programme default is 10. */
@@ -5415,8 +5419,12 @@ export interface components {
                 status?: string;
                 wardId?: number | null;
             };
+            /** @description How many people have now applied in this panchayat, including this one. */
+            applicationsInPanchayat?: number | null;
             nextStep?: string;
-            slotsRemainingAfter: number;
+            /** @description True when applications exceed the nominal capacity. Informational: the application was still accepted. */
+            overSubscribed?: boolean;
+            slotCapacity?: number | null;
         };
         Ward: {
             id: number;

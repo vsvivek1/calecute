@@ -27,7 +27,7 @@ import {
   checkFormIntegrity,
   issueAgentCode,
   recordSignupSignals,
-  reserveSlot,
+  recordApplication,
 } from "@/lib/signup";
 
 export const dynamic = "force-dynamic";
@@ -106,14 +106,14 @@ export const POST = handler(
     // Every geography id is checked against the seeded data, and checked to
     // belong together. A modified client cannot file an agent into a ward in
     // another district.
-    let remaining: number | null = null;
+    let slots: Awaited<ReturnType<typeof recordApplication>> | null = null;
     if (body.localBodyId) {
       await validateGeographySelection(ctx.tx, {
         districtId: body.districtId,
         localBodyId: body.localBodyId,
         wardId: body.wardId ?? null,
       });
-      ({ remaining } = await reserveSlot(ctx.tx, body.localBodyId));
+      slots = await recordApplication(ctx.tx, body.localBodyId);
     } else {
       // Unplaced: the district still has to exist, and no slot is taken because
       // we do not yet know which body it would come from.
@@ -177,7 +177,13 @@ export const POST = handler(
           pendingLocalBodyName: agent.pendingLocalBodyName,
           wardId: agent.wardId,
         },
-        slotsRemainingAfter: remaining,
+        /*
+         * Reported, not enforced. Capacity no longer turns anyone away — who
+         * gets a place is a selection made later from everyone who applied.
+         */
+        applicationsInPanchayat: slots?.applications ?? null,
+        slotCapacity: slots?.slotCapacity ?? null,
+        overSubscribed: slots?.overSubscribed ?? false,
         nextStep: "/api/v1/signup/qualifications",
       },
       201,

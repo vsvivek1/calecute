@@ -78,9 +78,19 @@ the same default.
 corporation. They live in one table with a `type`, so the picker and every
 report treat them uniformly, as the brief required.
 
-**A slot is consumed by `PENDING_REVIEW` and `APPROVED` agents.** A rejected or
-suspended agent frees theirs. Otherwise a burst of spam applications would lock
-a panchayat until someone processed them all.
+**Capacity does not refuse anyone.** `slot_capacity` is stored, reported and
+adjustable, and the programme is still described as ten agents per panchayat —
+but a panchayat at that number still accepts applications. The client decided
+that who gets a place is a selection made later from everyone who applied,
+rather than a race won by whoever filled the form first. The first ten
+applicants in a panchayat are not the best ten.
+
+The public page therefore shows how many people have applied, not how many
+places are left, and there is no FULL state. The waitlist endpoint still exists
+but nothing routes to it, because nobody is turned away.
+
+An administrator closing a panchayat is still enforced — that is a deliberate
+decision rather than an arithmetic one.
 
 **Commission is calculated on `gross − GST − gateway fee`,** floored to the
 paisa at each step. TDS is 2% of the gross commission, not of the payment. Both

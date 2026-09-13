@@ -73,20 +73,23 @@ export function AvailabilityChecker({
 
     return (
       <div>
-        <p>{body?.nameEn ?? ""}
-        </p>
+        <p>{body?.nameEn ?? ""}</p>
 
         {open ? (
           <>
+            {/*
+              How many people have applied — a fact, not a countdown. There is
+              no "places left" any more: capacity does not gate registration,
+              so presenting one would be turning people away from something
+              that would accept them.
+            */}
             <p className="slots">
-              <span className="count">{availability.remaining}</span>
+              <span className="count">{availability.filled}</span>
               <span className="of">
-                of {availability.slotCapacity} places left
+                {availability.filled === 1
+                  ? copy.availability.appliedOne
+                  : copy.availability.applied}
               </span>
-            </p>
-            <p>
-                {availability.filled} of {availability.slotCapacity} already taken
-              
             </p>
             <a
               className="button"
@@ -94,37 +97,15 @@ export function AvailabilityChecker({
                 `/agents/signup?district=${district}&panchayat=${localBody}`,
               )}`}
             >
-              <span>Apply for this panchayat
-              </span>
-            </a>
-          </>
-        ) : availability.state === "FULL" ? (
-          <>
-            <p className="notice warn">{copy.availability.full}
-            </p>
-            {(availability.waitlisted ?? 0) > 0 && (
-              <p className="button-note">
-                {availability.waitlisted} already waiting
-              </p>
-            )}
-            <a
-              className="button secondary"
-              href={`/auth/google/start?returnTo=${encodeURIComponent(
-                `/agents/waitlist?district=${district}&panchayat=${localBody}`,
-              )}`}
-            >
-              <span>Join the waiting list
-              </span>
+              <span>Register for this panchayat</span>
             </a>
           </>
         ) : (
-          <p className="notice">{copy.availability.closed}
-          </p>
+          <p className="notice">{copy.availability.closed}</p>
         )}
 
         <p className="button-note">
-          <a href="/agents#availability">Check a different panchayat
-          </a>
+          <a href="/agents#availability">Check a different panchayat</a>
         </p>
       </div>
     );
@@ -173,9 +154,7 @@ export function AvailabilityChecker({
               {bodies.map((row) => (
                 <option key={row.id} value={row.id}>
                   {row.nameEn}
-                  {row.signupsOpen
-                    ? ` (${row.remaining}/${row.slotCapacity})`
-                    : " (closed)"}
+                  {row.signupsOpen ? "" : " (closed)"}
                 </option>
               ))}
             </select>

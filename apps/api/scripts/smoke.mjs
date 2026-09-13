@@ -247,7 +247,7 @@ async function main() {
 
   const avail = await call("GET", `/geography/local-bodies/${gp.id}/availability`);
   check(
-    "availability reports 2 slots, 0 filled, state OPEN",
+    "availability reports 2 slots, 0 applications, state OPEN",
     avail.body.slotCapacity === 2 && avail.body.filled === 0 && avail.body.state === "OPEN",
     avail.body,
   );
@@ -400,8 +400,10 @@ async function main() {
       formToken: await agedFormToken(applicant2),
     },
   });
-  check("second applicant takes the last slot", second.status === 201, second.body);
+  check("a second applicant is accepted", second.status === 201, second.body);
 
+  // Capacity no longer refuses anyone: a panchayat at its nominal limit still
+  // accepts applications, and who gets a place is selected later.
   const third = await call("POST", "/signup", {
     auth: applicant3Token,
     body: {
@@ -411,23 +413,48 @@ async function main() {
     },
   });
   check(
-    "a full panchayat refuses a third applicant with SLOT_UNAVAILABLE",
-    third.status === 409 && third.body.error?.code === "SLOT_UNAVAILABLE",
+    "a panchayat at capacity still accepts an application",
+    third.status === 201,
+    third.body,
+  );
+  check(
+    "the response reports it as over-subscribed",
+    third.body.overSubscribed === true &&
+      third.body.applicationsInPanchayat === 3 &&
+      third.body.slotCapacity === 2,
     third.body,
   );
 
-  const waitlist = await call("POST", "/signup/waitlist", {
-    auth: applicant3Token,
-    body: { districtId: kkd.id, localBodyId: gp.id, mobile: "9876500003" },
-  });
-  check("a full panchayat offers a waitlist", waitlist.status === 201, waitlist.body);
-
   const availAfter = await call("GET", `/geography/local-bodies/${gp.id}/availability`);
   check(
-    "availability now reports FULL with 1 waiting",
-    availAfter.body.state === "FULL" && availAfter.body.waitlisted === 1,
+    "availability stays OPEN past capacity and reports 3 applications",
+    availAfter.body.state === "OPEN" && availAfter.body.filled === 3,
     availAfter.body,
   );
+
+  // Closing a panchayat is a deliberate admin decision and still holds.
+  await call("PATCH", `/admin/local-bodies/${gp.id}`, {
+    auth: superToken,
+    body: { signupsOpen: false, reason: "smoke test" },
+  });
+  const closedAttempt = await call("POST", "/signup", {
+    auth: abuserToken,
+    body: {
+      ...signupBody,
+      mobile: "9876500044",
+      formToken: await agedFormToken(abuser),
+    },
+  });
+  check(
+    "a closed panchayat still refuses an application",
+    closedAttempt.status === 409 &&
+      closedAttempt.body.error?.code === "PANCHAYAT_CLOSED",
+    closedAttempt.body,
+  );
+  await call("PATCH", `/admin/local-bodies/${gp.id}`, {
+    auth: superToken,
+    body: { signupsOpen: true, reason: "smoke test" },
+  });
 
   // Unplaced applicant: a municipality that is not seeded yet.
   const unplacedUser = await mkUser(email("unplaced"), "AGENT");
@@ -482,8 +509,8 @@ async function main() {
     `/geography/local-bodies/${gp.id}/availability`,
   );
   check(
-    "an unplaced applicant consumes no panchayat slot",
-    unplacedTakesNoSlot.body.filled === 2,
+    "an unplaced applicant is counted against no panchayat",
+    unplacedTakesNoSlot.body.filled === 3,
     unplacedTakesNoSlot.body,
   );
 
@@ -787,10 +814,9 @@ async function main() {
   // alongside for addressing. See the report endpoint.
   const gpRow = coverage.body.data?.find((r) => r.id === gp.id);
   check(
-    "coverage shows 2 filled, 0 remaining, 1 waitlisted",
-    Number(gpRow?.approved) + Number(gpRow?.pending) === 2 &&
-      Number(gpRow?.remaining) === 0 &&
-      Number(gpRow?.waitlisted) === 1,
+    "coverage shows all three applications and zero remaining",
+    Number(gpRow?.approved) + Number(gpRow?.pending) === 3 &&
+      Number(gpRow?.remaining) === 0,
     gpRow,
   );
 
@@ -874,13 +900,15 @@ async function main() {
     liability.body.data?.[0],
   );
 
-  const waitlistReport = await call("GET", "/admin/reports/full-panchayats-waitlist", {
-    auth: superToken,
-  });
+  const overSubscribed = await call(
+    "GET",
+    "/admin/reports/full-panchayats-waitlist",
+    { auth: superToken },
+  );
   check(
-    "the full-with-waitlist report finds the full panchayat",
-    waitlistReport.body.data?.some((r) => r.id === gp.id),
-    waitlistReport.body.rowCount,
+    "the over-subscribed report runs",
+    overSubscribed.status === 200,
+    overSubscribed.body.rowCount,
   );
 
   const badReport = await call("GET", "/admin/reports/does-not-exist", { auth: superToken });
