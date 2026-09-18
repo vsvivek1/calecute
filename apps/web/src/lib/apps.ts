@@ -122,11 +122,32 @@ export const PROCESSORS: Record<string, Processor[]> = {
       policy: "https://razorpay.com/privacy/",
     },
   ],
+  razorpay_recallio: [
+    {
+      name: "Razorpay Software Private Limited",
+      role: "Takes payment when you choose to pay by UPI or card. The payment screen is Razorpay's own; your UPI id, card or netbanking details are entered there and never reach us. We are told only that a payment succeeded, and for how much.",
+      policy: "https://razorpay.com/privacy/",
+    },
+  ],
   fcm: [
     {
       name: "Firebase Cloud Messaging (Google LLC)",
       role: "Delivers push notifications to your device. It receives the notification text and your device's push token. It is not used to sign you in and holds none of your app data.",
       policy: "https://firebase.google.com/support/privacy",
+    },
+  ],
+  supabase: [
+    {
+      name: "Supabase Inc.",
+      role: "Hosts the database and the sign-in service. Your study record is stored there so a new phone can pick up where the old one left off. Supabase stores it on our behalf and does not use it for its own purposes.",
+      policy: "https://supabase.com/privacy",
+    },
+  ],
+  play_billing: [
+    {
+      name: "Google Play Billing (Google LLC)",
+      role: "Takes the payment for a subscription and tells the app whether you have one. The payment screen is Google's own — your card, UPI or netbanking details are entered there and never reach us. We receive only the fact that a subscription is active.",
+      policy: "https://policies.google.com/privacy",
     },
   ],
   hosting: [
@@ -507,6 +528,189 @@ const BASE: Omit<AppEntry, 'slug'|'name'|'androidPackage'|'iosBundleId'|'isDemo'
       ],
     },
   },
+  {
+    tagline: "Revise. Recall. Rank.",
+    audience:
+      "Candidates preparing for Kerala Public Service Commission examinations. Anyone can create an account with a Google account.",
+    summary:
+      "Recallio teaches a PSC syllabus as small fact cards and schedules them with spaced repetition, so each fact comes back just before you would have forgotten it. A day takes about five minutes, and the plan is counted back from your exam date.",
+    collects: [
+      {
+        category: "Personal identifiers",
+        items: ["Name", "Email address", "Profile picture"],
+        purpose:
+          "Creating your account and recognising you when you sign in on another phone. All three come from Google Sign-In; we never see your Google password.",
+      },
+      {
+        category: "App activity",
+        items: [
+          "Which course you are preparing for, your exam date and when your plan started",
+          "Which cards you have been shown, whether you answered each correctly, how many times, and when each is next due",
+          "Mock test attempts: the option you chose for each question, and the resulting score",
+          "Your daily reminder time and whether you chose English or Malayalam",
+        ],
+        purpose:
+          "This is the study record itself. The schedule is computed from it, and it is what makes a streak, a progress bar and a weak-module figure possible. It is also what would be lost if it were not backed up, which is why it is stored to your account and not only on the phone.",
+      },
+      {
+        category: "Purchases",
+        items: ["Whether a subscription for a course is active", "Which payment route was used"],
+        purpose:
+          "Unlocking the course you paid for, and restoring it after a reinstall. The payment itself is handled entirely by Google Play or by Razorpay — we never see your card, UPI or netbanking details.",
+        optional: true,
+      },
+      {
+        category: "Device identifiers",
+        items: ["Push notification token"],
+        purpose:
+          "Delivering announcements that only a server can know about — a corrected card, new material for your course, a payment that completed while the app was closed. Your daily study reminder does NOT use this: that one is scheduled by your own phone and needs no token. Sign out and the token is deleted.",
+        optional: true,
+      },
+    ],
+    permissions: [
+      {
+        name: "Notifications",
+        why: "Two separate things share this permission. Your daily study reminder is scheduled by your own phone at the time you chose, needs no token and arrives with no signal. Announcements — corrected cards, new material — are sent from our server and do use a push token, which you can stop by turning notifications off.",
+      },
+      {
+        name: "Internet",
+        why: "Signing in, downloading course content, and backing up your study record. The app is built to work without it: once content has been downloaded, a full day's study works with no signal.",
+      },
+    ],
+    sharedWith: [],
+    processors: ["google", "supabase", "play_billing", "razorpay_recallio", "fcm"],
+    retention:
+      "Your study record is kept while your account exists, because its value is that it remembers years of revision. Delete the account and it is removed within 30 days. Content you never touched — the cards themselves — is ours and is not personal data.",
+    iconSrc: "/recallio/icon.png",
+    qr: {
+      svg: "/recallio/qr.svg",
+      png: "/recallio/qr.png",
+      target: "https://calecutech.com/apps/recallio",
+    },
+    availabilityNote:
+      "Recallio is not on Google Play yet. This page carries the store link once the listing is live, and it is already the address printed on anything we hand out, so nothing has to be reprinted later.",
+    features: [
+      "The official syllabus broken into small fact cards — a statement, why it is true, the trick the exam plays with it, and where it comes from.",
+      "Spaced repetition tuned for an exam date: every interval is capped so nothing is ever scheduled after the day you sit the paper, and every card is shown at least once in the final ten days.",
+      "A 100-day plan derived from the marks each module carries, not from guesswork — coverage, then consolidation, then final revision on the cards you have actually got wrong.",
+      "Miss a day and the backlog is spread across the next three rather than dumped on tomorrow. Miss a week and the plan is rebuilt from the days that actually remain.",
+      "Negative marking is shown wherever a score appears, taken from the course itself rather than assumed — skipping costs nothing, guessing does.",
+      "Every card in both English and Malayalam, with technical terms left in English because that is how the exam writes them.",
+      "Works offline. Study data lives on the phone first and syncs when there is a connection, so a day on patchy mobile data is still a day of study.",
+    ],
+    policyUpdated: "September 17, 2026",
+    serviceName: "the Recallio service",
+    lawfulBasis:
+      "We process your data to provide the service you asked for — an account, a study plan, and a record of what you have revised. You give consent when you create an account, and you may withdraw it at any time by deleting the account.",
+    signInHelp:
+      "Recallio uses Google Sign-In only, and there is no guest mode — your progress has to belong to an account or a new phone could not restore it. If sign-in fails, check that the Google account has a verified email address. We cannot reset a Google password; that is done at myaccount.google.com. If a subscription does not appear after reinstalling, open Papers and tap Restore, and make sure you are signed in with the same Google account that bought it.",
+    securityNote:
+      "Every table is protected by a database policy that ties a row to the account that owns it, so one signed-in user cannot read another's study record even if the app on their phone is tampered with. Sign-in tokens are held in the Android keystore or iOS keychain, never in ordinary app storage.",
+    deleteIdentifier: "the Google account you sign in with",
+    deletes: [
+      "Your name, email address and profile picture",
+      "Your course, exam date, plan start date, reminder time and language",
+      "Your entire study record — every card's schedule, your streak, and how many times you have seen each fact",
+      "Every mock test attempt and its score",
+      "Your push notification token, so this device stops receiving anything",
+      "Any active sessions",
+    ],
+    retainsOnDelete:
+      "Nothing identifying you is kept. A subscription is a record held by Google Play or Razorpay, not by us, so deleting your Recallio account does **not** cancel it — cancel that in the Play Store, or it will keep renewing. Deleting your account does not refund a subscription already paid for.",
+    notCollected: [
+      "We do not collect your contacts, calendar, call logs or SMS.",
+      "We do not track you across other apps or websites, and there is no analytics or advertising SDK in the app.",
+      "We do not use advertising identifiers and show no advertising.",
+      "The app never asks for camera, microphone, location or file access, because it does not use them.",
+      "We never receive your Google password, and never your card, UPI or netbanking details — those are entered on Google Play's or Razorpay's own screen.",
+    ],
+    terms: {
+      updated: "September 17, 2026",
+      intro:
+        "These terms apply to the Recallio app and cover what a general terms page cannot: what the study material is and is not, who sets the syllabus, and how subscriptions bought through Google Play work. Where they differ from our general terms of service, these take precedence for Recallio.",
+      sections: [
+        {
+          heading: "Recallio is not connected to the Kerala PSC",
+          body: [
+            "Recallio is an independent study app made by Calecute Technologies LLC. We are **not** affiliated with, endorsed by, appointed by, or connected in any way to the Kerala Public Service Commission or to any government department of the State of Kerala or the Union of India.",
+            "\"Kerala PSC\", category numbers, post names and syllabus titles are used only to describe what the study material covers. We do not conduct examinations, issue notifications, accept applications, or influence any recruitment decision. Nobody at Recallio can help with your application, your hall ticket, your rank list, or any grievance about them — those go to the Commission.",
+            "The Commission's own notification is the only authority on the syllabus, the exam pattern, the marks, the negative marking and the dates. Where anything in this app differs from it, the notification is right and we are wrong. Check it before you rely on us.",
+          ],
+        },
+        {
+          heading: "The study material",
+          body: [
+            "Cards are written and checked by people, and people make mistakes. A card marked as unverified has not yet been checked against the source named on it. Even a verified card can be wrong, out of date, or overtaken by a change in the syllabus.",
+            "Where we reproduce a past question, the official answer key is shown as published. Where our review disagrees with that key we say so and show both — but the Commission's key is what was used to mark that paper, whatever we think of it.",
+            "The Malayalam text is a translation for study. Technical terms are deliberately left in English because that is how the exam and the standard textbooks write them.",
+            "Report anything that looks wrong and we will check it. Corrections reach the app without you needing to update it.",
+          ],
+        },
+        {
+          heading: "We do not promise you a rank",
+          body: [
+            "The tagline is what the method is for, not a guarantee of outcome. Nothing in this app is a promise that you will pass, be shortlisted, place in a rank list, or be appointed.",
+            "A daily plan, a streak and a progress figure describe what you have revised in this app. They do not measure how prepared you are, and they do not predict your result.",
+            "We are not liable for any loss arising from reliance on the study material, a mock test score, or anything else in the app.",
+          ],
+        },
+        {
+          heading: "Free cards and subscriptions",
+          body: [
+            "The first 200 cards of a course are free, and they are ordinary cards taken in teaching order from the start of the syllabus — not a sample or a teaser. They exist so you can judge the method before paying for it.",
+            "After that, a course needs a subscription. What it unlocks is stated on the paywall before you pay: every card for that course, scheduled day by day through to your exam date.",
+            "If you do not subscribe you keep your account, your streak, your progress on those first 200 cards, and read-only access to the plan. We do not delete a free user's data and we do not reset a streak.",
+          ],
+        },
+        {
+          heading: "Payment, renewal and refunds",
+          body: [
+            "You can pay through Google Play or by UPI or card through Razorpay. Where you pay through Google Play, Google is the merchant of record and the price shown comes from Google Play including any tax it collects. Where you pay by UPI or card, the price is the one shown in the app and Calecute Technologies LLC is the merchant of record.",
+            "A subscription renews automatically until you cancel it, and deleting your Recallio account does not cancel it. **A Google Play subscription is cancelled in the Play Store.** A UPI or card subscription is cancelled by writing to us, and we will stop the renewal.",
+            "A Google Play purchase follows Google Play's refund policy and is requested through Google, not through us — we cannot reverse a Play charge ourselves. A UPI or card payment is refunded by us under our refund policy; write to us and we will process it back to the same method.",
+            "A subscription is tied to your Recallio account, however you paid. Reinstalling or moving to a new phone restores it — sign in with the same Google account, and tap Restore on the Papers screen if you paid through Google Play. You should never need to contact us to get back something you paid for.",
+          ],
+        },
+        {
+          heading: "Your account and your study record",
+          body: [
+            "Sign-in is required before the first card, because a study record that is not tied to an account cannot survive a lost phone.",
+            "Your account is yours alone. Do not share your sign-in, and do not share subscription access with others.",
+            "Your study record belongs to you. It is stored on your phone first and copied to your account, and where the two disagree the phone wins — we would rather keep a day of study you have already done than a tidier copy on a server.",
+            "You can delete your account at any time; see the account deletion page. We may suspend an account that is being shared, automated, or used to extract the content in bulk.",
+          ],
+        },
+        {
+          heading: "The content itself",
+          body: [
+            "The cards, questions, explanations and translations in Recallio are our work and remain ours. You may use them to study. You may not copy, republish, sell, or feed them into another product or service, and you may not scrape the app.",
+            "Past examination questions belong to the Commission that set them and are reproduced for study.",
+          ],
+        },
+        {
+          heading: "Availability",
+          body: [
+            "Recallio is provided as it is. We do not guarantee it will be available without interruption, and we may change or withdraw features.",
+            "The app is built to work offline once content has been downloaded, and a day of study does not need a connection. Signing in, downloading a new course and backing up your progress do.",
+            "Reminders are scheduled by your phone. If the phone is off, or the system stops the app to save battery, a reminder may not arrive. Your streak is not a promise that we will remind you.",
+          ],
+        },
+        {
+          heading: "Liability",
+          body: [
+            "To the extent the law allows, we are not liable for indirect or consequential loss, for loss of profit or opportunity, or for any loss arising from reliance on the study material, a mock score, an exam date, or a schedule.",
+            "Nothing here limits liability that cannot be limited by law.",
+          ],
+        },
+        {
+          heading: "Governing law",
+          body: [
+            "These terms are governed by the laws of India, and the courts at Kozhikode, Kerala have jurisdiction.",
+          ],
+        },
+      ],
+    },
+  },
 ];
 
 /**
@@ -521,6 +725,7 @@ const BASE: Omit<AppEntry, 'slug'|'name'|'androidPackage'|'iosBundleId'|'isDemo'
 const FIELD = 0;
 const BUYER = 1;
 const BANKMATES = 2;
+const RECALLIO = 3;
 
 export const APPS: AppEntry[] = [
   {
@@ -561,6 +766,14 @@ export const APPS: AppEntry[] = [
     name: "BankMates",
     androidPackage: "com.calecutech.bankmates",
     iosBundleId: "com.calecutech.bankmates",
+    isDemo: false,
+  },
+  {
+    ...BASE[RECALLIO],
+    slug: "recallio",
+    name: "Recallio",
+    androidPackage: "com.calecutech.recallio",
+    iosBundleId: "com.calecutech.recallio",
     isDemo: false,
   },
 ];

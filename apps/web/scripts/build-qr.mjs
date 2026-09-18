@@ -1,18 +1,21 @@
 /**
- * Generates the downloadable BankMates QR code.
+ * Generates the downloadable QR code for an app's page.
  *
- *   node scripts/build-qr.mjs
+ *   node scripts/build-qr.mjs            # every app below
+ *   node scripts/build-qr.mjs recallio   # just one
  *
- * Outputs public/bankmates/qr.svg and qr.png. Both are committed, so this only
- * needs re-running if TARGET changes — which it should not: the QR points at
- * our own page rather than at a Play listing precisely so that a printed copy
- * on a branch noticeboard keeps working after the listing goes public, and
- * keeps working if the store URL ever changes.
+ * Outputs public/<slug>/qr.svg and qr.png, both committed, so this only needs
+ * re-running when an app is added. Each QR points at our own page rather than
+ * at a Play listing precisely so that a printed copy on a noticeboard keeps
+ * working after the listing goes public, and keeps working if the store URL
+ * ever changes.
  *
  * Error correction is level H (tolerates ~30% damage), which is what makes it
- * safe to sit the chai mark in the middle. The mark covers about 6% of the
+ * safe to sit the app's mark in the middle. The mark covers about 6% of the
  * code's area — well inside that budget, and it survives a phone camera at an
- * angle in bad branch lighting.
+ * angle in bad lighting.
+ *
+ * Each app needs public/<slug>/mark.png: a square, transparent logo.
  */
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
@@ -22,10 +25,24 @@ import QRCode from 'qrcode';
 import sharp from 'sharp';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const OUT = join(ROOT, 'public', 'bankmates');
 
-const TARGET = 'https://calecutech.com/apps/bankmates';
-const NAVY = '#0B1F4D';
+/** slug -> the ink colour its mark sits best against. */
+const APPS = {
+  bankmates: { ink: '#0B1F4D' },
+  recallio: { ink: '#001B4E' },
+};
+
+const only = process.argv[2];
+const slugs = only ? [only] : Object.keys(APPS);
+for (const slug of slugs) {
+  if (!APPS[slug]) throw new Error(`Unknown app "${slug}". Known: ${Object.keys(APPS).join(', ')}`);
+  await build(slug, APPS[slug].ink);
+}
+
+async function build(slug, NAVY) {
+const OUT = join(ROOT, 'public', slug);
+
+const TARGET = `https://calecutech.com/apps/${slug}`;
 
 const svg = await QRCode.toString(TARGET, {
   type: 'svg',
@@ -70,5 +87,6 @@ await sharp(Buffer.from(branded), { density: 600 })
   .toFile(join(OUT, 'qr.png'));
 
 console.log(`QR → ${TARGET}`);
-console.log(`  public/bankmates/qr.svg  (${size} modules incl. margin, ECC H)`);
-console.log(`  public/bankmates/qr.png  1024×1024`);
+console.log(`  public/${slug}/qr.svg  (${size} modules incl. margin, ECC H)`);
+console.log(`  public/${slug}/qr.png  1024×1024`);
+}

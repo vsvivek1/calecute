@@ -16,7 +16,9 @@
     "db:seed": "npm run db:seed --workspace=apps/api",
     "geo:fetch": "npm run geo:fetch --workspace=apps/api",
     "openapi": "npm run openapi --workspace=apps/api",
-    "api:types": "npm run api:types --workspace=apps/web"
+    "api:types": "npm run api:types --workspace=apps/web",
+    "dev:recallio": "npm run dev --workspace=apps/recallio",
+    "build:recallio": "npm run build --workspace=apps/recallio"
   },
   "devDependencies": {
     "xlsx": "^0.18.5"
