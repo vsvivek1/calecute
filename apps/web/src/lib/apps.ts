@@ -157,6 +157,13 @@ export const PROCESSORS: Record<string, Processor[]> = {
       policy: "https://vercel.com/legal/privacy-policy",
     },
   ],
+  cloudflare: [
+    {
+      name: "Cloudflare, Inc.",
+      role: "Stores and delivers uploaded photographs — lot images and, where required, KYC documents — over its content delivery network. Cloudflare stores this on our behalf and does not use it for its own purposes.",
+      policy: "https://www.cloudflare.com/privacypolicy/",
+    },
+  ],
 };
 
 const BASE: Omit<AppEntry, 'slug'|'name'|'androidPackage'|'iosBundleId'|'isDemo'>[] = [

@@ -37,6 +37,8 @@ export const company = {
   shortName: "Calecute Technologies",
   /** Registered CIN, supplied 2026-09-13. Shown as a quiet footer detail. */
   cin: "U62013KL2026OPC105471" as string | null,
+  /** Registered GSTIN, supplied 2026-09-23 for the GoldLelam launch. */
+  gstin: "32AAOCC1290K1ZK" as string | null,
   city: "Kozhikode, Kerala",
   /**
    * One sentence, supplied 2026-09-13.
