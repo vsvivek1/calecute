@@ -119,11 +119,21 @@ export const FAQS = [
   },
 ] as const;
 
-/** Named third parties GoldLelam's privacy page discloses, from the shared registry. */
+/**
+ * Named third parties GoldLelam's privacy page discloses. Mostly the shared
+ * registry, plus one GoldLelam-specific entry: file uploads (lot photos, KYC
+ * documents) go to Supabase Storage, which the shared `PROCESSORS.supabase`
+ * entry doesn't mention — it's worded for apps that only use Supabase for
+ * the database and sign-in.
+ */
 export const GOLDLELAM_PROCESSORS = [
   ...PROCESSORS.google,
-  ...PROCESSORS.cloudflare,
   ...PROCESSORS.fcm,
   ...PROCESSORS.supabase,
+  {
+    name: "Supabase Inc. (Storage)",
+    role: "Stores files you upload — lot photographs and KYC documents — in access-controlled storage. Supabase stores them on our behalf and does not use them for its own purposes.",
+    policy: "https://supabase.com/privacy",
+  },
   ...PROCESSORS.hosting,
 ] as const;
