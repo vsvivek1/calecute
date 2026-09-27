@@ -10,3 +10,4 @@ next-env.d.ts
 # npm leaves some workspace deps here rather than hoisting them to the root,
 # and the root ignore is rooted so it does not reach them.
 node_modules/
+.vercel
