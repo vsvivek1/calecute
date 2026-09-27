@@ -2,28 +2,25 @@
   "name": "calecute",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
-    "build:qr": "node scripts/build-qr.mjs"
-  },
-  "dependencies": {
-    "next": "16.2.9",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "dev": "npm run dev --workspace=apps/web",
+    "dev:api": "npm run dev --workspace=apps/api",
+    "build": "npm run build --workspace=apps/api && npm run build --workspace=apps/web",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "db:generate": "npm run db:generate --workspace=apps/api",
+    "db:migrate": "npm run db:migrate --workspace=apps/api",
+    "db:seed": "npm run db:seed --workspace=apps/api",
+    "geo:fetch": "npm run geo:fetch --workspace=apps/api",
+    "openapi": "npm run openapi --workspace=apps/api",
+    "api:types": "npm run api:types --workspace=apps/web",
+    "dev:recallio": "npm run dev --workspace=apps/recallio",
+    "build:recallio": "npm run build --workspace=apps/recallio"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.9",
-    "qrcode": "^1.5.4",
-    "sharp": "^0.35.4",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "xlsx": "^0.18.5"
   }
 }

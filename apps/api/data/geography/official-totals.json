@@ -1,0 +1,25 @@
+{
+  "_comment": [
+    "Reference totals the completeness report measures against.",
+    "",
+    "THESE NUMBERS ARE UNVERIFIED. They are the commonly published figures for",
+    "Kerala's local government tiers and are recorded here so the seed report",
+    "has something to compare against — not as an authority. Replace each one",
+    "with the figure from the LSGD/LGD export you load, and set `verified` to",
+    "the date you checked. The report prints the `verified` field next to every",
+    "count so nobody mistakes an unverified baseline for an official one."
+  ],
+  "verified": "2026-09-13",
+  "source": "LGD (lgdirectory.gov.in) exports: Pri_Lb_Specific_State and All_Pricovered_Villages, Kerala (state code 32), downloaded 2026-09-13",
+  "totals": {
+    "districts": 14,
+    "blockPanchayats": 152,
+    "gramPanchayats": 941,
+    "municipalities": 87,
+    "corporations": 6,
+    "wards": null
+  },
+  "notes": {
+    "wards": "No reliable statewide ward total is recorded here. Ward counts are per local body and come from the delimitation notification; the loader derives the total from the file it loads."
+  }
+}

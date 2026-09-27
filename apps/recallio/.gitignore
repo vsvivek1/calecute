@@ -1,0 +1,13 @@
+.next/
+.env*
+!.env.example
+next-env.d.ts
+*.tsbuildinfo
+
+# Supabase and Razorpay keys for local development.
+.env.local
+
+# npm leaves some workspace deps here rather than hoisting them to the root,
+# and the root ignore is rooted so it does not reach them.
+node_modules/
+.vercel

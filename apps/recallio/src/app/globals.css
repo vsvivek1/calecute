@@ -1,0 +1,70 @@
+:root {
+  --navy: #001b4e;
+  --blue: #0163bb;
+  --green: #39bb73;
+  --amber: #f4ac1e;
+  --ink: #111827;
+  --muted: #667085;
+  --line: #e4e8f0;
+  --paper: #f6f8fc;
+  --card: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+a { color: var(--blue); }
+
+.wrap { max-width: 980px; margin: 0 auto; padding: 24px 20px 64px; }
+
+.bar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 20px; background: var(--card);
+  border-bottom: 1px solid var(--line);
+}
+.bar .name { font-weight: 800; color: var(--navy); letter-spacing: -0.3px; }
+.bar .tag { color: var(--blue); font-weight: 600; font-size: 13px; }
+.bar .spacer { flex: 1; }
+
+.card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 14px; padding: 20px; margin-bottom: 16px;
+}
+
+h1 { font-size: 28px; margin: 18px 0 6px; letter-spacing: -0.5px; }
+h2 { font-size: 19px; margin: 0 0 12px; }
+.sub { color: var(--muted); margin: 0 0 22px; }
+
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .6px; }
+
+button, .btn {
+  font: inherit; font-weight: 600; cursor: pointer;
+  border-radius: 10px; padding: 10px 16px; border: 1px solid transparent;
+}
+.btn-primary { background: var(--blue); color: #fff; }
+.btn-primary:disabled { background: #b9c6d8; cursor: not-allowed; }
+.btn-ghost { background: transparent; border-color: var(--line); color: var(--ink); }
+.btn-sm { padding: 6px 10px; font-size: 13px; border-radius: 8px; }
+
+input[type="number"], input[type="search"] {
+  font: inherit; padding: 8px 10px; border: 1px solid var(--line);
+  border-radius: 8px; width: 110px;
+}
+input[type="search"] { width: 280px; }
+
+.pill { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+.pill-free { background: #eef3fb; color: var(--blue); }
+.pill-paid { background: #e8f7ee; color: #1d7a45; }
+.pill-comp { background: #fdf3e0; color: #93630b; }
+
+.note { color: var(--muted); font-size: 13px; }
+.err { background: #fdecec; color: #8c1d1d; padding: 12px 14px; border-radius: 10px; margin-bottom: 14px; }
+.ok { background: #e8f7ee; color: #1d7a45; padding: 12px 14px; border-radius: 10px; margin-bottom: 14px; }
