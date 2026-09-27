@@ -136,6 +136,13 @@ export const PROCESSORS: Record<string, Processor[]> = {
       policy: "https://firebase.google.com/support/privacy",
     },
   ],
+  firebase: [
+    {
+      name: "Google Firebase (Cloud Firestore, Cloud Storage and App Check)",
+      role: "Hosts the member database and uploaded files (profile photos, bulletins). App Check confirms requests come from the genuine app and holds no personal data. Google stores this on our behalf and does not use it for its own purposes.",
+      policy: "https://firebase.google.com/support/privacy",
+    },
+  ],
   supabase: [
     {
       name: "Supabase Inc.",
@@ -711,6 +718,100 @@ const BASE: Omit<AppEntry, 'slug'|'name'|'androidPackage'|'iosBundleId'|'isDemo'
       ],
     },
   },
+  {
+    tagline: "Membership, dues, unit news and grievances for KSEBEA",
+    audience:
+      "Members of the KSEB Engineers Association (KSEBEA). Not affiliated with or endorsed by KSEB or any government body.",
+    summary:
+      "KSEBEA lets a member see their unit's office bearers and activities, read association news and the Hydel Bullet, pay their membership dues, and raise a grievance, all from a phone.",
+    collects: [
+      {
+        category: "Personal identifiers",
+        items: ["Name, email address and profile picture, from Google Sign-In"],
+        purpose: "Creating and securing your account. We never see your Google password.",
+      },
+      {
+        category: "Personal identifiers",
+        items: [
+          "Phone number and address",
+          "Your unit, and your office-bearer role where you hold one",
+        ],
+        purpose:
+          "Showing your unit's office bearers and activities, and routing correspondence to the right person.",
+      },
+      {
+        category: "Photos",
+        items: ["A profile photo you choose to upload"],
+        purpose: "Shown on your profile in place of your Google account picture, if you replace it.",
+        optional: true,
+      },
+      {
+        category: "Financial information",
+        items: ["Whether your membership dues for a period are paid, and the amount"],
+        purpose:
+          "Recording that dues have been paid. Card, UPI and netbanking details are entered on Razorpay's own screen and are never sent to or stored on our servers.",
+      },
+      {
+        category: "Messages and other user-generated content",
+        items: ["The text of a grievance you submit"],
+        purpose: "Routing your grievance to the right office bearer and letting them respond to you.",
+      },
+      {
+        category: "App activity",
+        items: [
+          "Annual General Body (AGB) event registration: whether you're attending, accommodation and meal preferences, and the payment method you chose",
+        ],
+        purpose: "Planning the event and recording who is attending.",
+        optional: true,
+      },
+      {
+        category: "App activity",
+        items: ["Name, phone and email on an Engineers' Houses booking request"],
+        purpose: "Passing your booking request to the caretaker of the house you're booking.",
+        optional: true,
+      },
+    ],
+    permissions: [
+      { name: "Camera and photo library", why: "Choosing or taking a profile photo. Used only when you tap to change it." },
+      { name: "Internet", why: "Signing in, and loading your unit's activities, news and the Hydel Bullet." },
+    ],
+    sharedWith: [
+      "Office bearers of your own unit and of KSEBEA centrally, to the extent their role requires it — for example, a grievance you raise is visible to the office bearer it's routed to.",
+    ],
+    processors: ["google", "razorpay", "firebase"],
+    retention:
+      "Your account and membership record are kept while you remain a KSEBEA member. Records that dues were paid are kept as the association's own financial record and are not deleted with the account.",
+    features: [
+      "Your unit's office bearers, activities and news, and the association's own bulletin, the Hydel Bullet.",
+      "Pay your membership dues from the app, by card, UPI or netbanking through Razorpay.",
+      "Raise a grievance and have it routed to the right office bearer.",
+      "Register for the Annual General Body (AGB) meeting, including accommodation and meal preferences.",
+      "Request a stay at one of the association's Engineers' Houses.",
+    ],
+    policyUpdated: "September 27, 2026",
+    serviceName: "the KSEBEA app",
+    lawfulBasis:
+      "We process your data to provide the service you asked for — a membership account, unit information, dues payment and grievance handling. You give consent when you create an account, and you may withdraw it by requesting account deletion below.",
+    signInHelp:
+      "KSEBEA uses Google Sign-In only. If sign-in fails, check that the Google account has a verified email address. We cannot reset a Google password; that is done at myaccount.google.com.",
+    securityNote:
+      "A member can only reach their own profile and their own unit's records through the app; office-bearer screens are restricted to members holding that role.",
+    deleteIdentifier: "the Google account you sign in with",
+    deletes: [
+      "Your name, email, profile picture and uploaded profile photo",
+      "Your phone number, address, unit and office-bearer role",
+      "Grievances you submitted and their responses",
+      "Your AGB event registration and Engineers' Houses booking requests",
+    ],
+    retainsOnDelete:
+      "Records that you paid membership dues, and any office-bearer minutes or unit records that name you in that official capacity, are **not** deleted — they are the association's own financial and administrative records, kept for its record-keeping regardless of whether you remain a member.",
+    notCollected: [
+      "We do not collect your contacts, calendar, call logs or SMS.",
+      "We do not track you across other apps or websites, and there is no analytics or advertising SDK in the app.",
+      "We do not use advertising identifiers and show no advertising.",
+      "We never receive your Google password, and never your card, UPI or netbanking details — those are entered on Razorpay's own screen.",
+    ],
+  },
 ];
 
 /**
@@ -726,6 +827,7 @@ const FIELD = 0;
 const BUYER = 1;
 const BANKMATES = 2;
 const RECALLIO = 3;
+const KSEBEA = 4;
 
 export const APPS: AppEntry[] = [
   {
@@ -774,6 +876,14 @@ export const APPS: AppEntry[] = [
     name: "Recallio",
     androidPackage: "com.calecutech.recallio",
     iosBundleId: "com.calecutech.recallio",
+    isDemo: false,
+  },
+  {
+    ...BASE[KSEBEA],
+    slug: "ksebea",
+    name: "KSEBEA Engineers Association",
+    androidPackage: "com.calecutech.ksebea",
+    iosBundleId: "com.calecutech.ksebea",
     isDemo: false,
   },
 ];
