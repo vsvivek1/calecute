@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Recallio LSS">
+  <rect width="64" height="64" rx="16" fill="#ffc53d"/>
+  <rect x="13" y="17" width="34" height="28" rx="6" fill="#fff8ec" stroke="#1e2a47" stroke-width="3" transform="rotate(-8 30 31)"/>
+  <rect x="19" y="21" width="34" height="28" rx="6" fill="#fff" stroke="#1e2a47" stroke-width="3" transform="rotate(6 36 35)"/>
+  <path d="M29 36.5l5 5 9-11" fill="none" stroke="#c93a26" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(6 36 35)"/>
+</svg>
