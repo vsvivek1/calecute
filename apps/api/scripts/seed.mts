@@ -57,6 +57,30 @@ const INITIAL_TERMS_VERSION = "2026-09-01";
  */
 const PRODUCTS = [
   {
+    slug: "recallio-uss",
+    name: "Recallio: USS Kerala Exam Prep",
+    summary:
+      "Short daily study cards for the Class 7 USS scholarship exam, in Malayalam and English.",
+  },
+  {
+    slug: "recallio-lss",
+    name: "Recallio: LSS Kerala Exam Prep",
+    summary:
+      "Short daily study cards for the Class 4 LSS scholarship exam, in Malayalam and English.",
+  },
+  {
+    slug: "recallio-plus-one-science",
+    name: "Recallio: Plus One Science",
+    summary:
+      "Short daily study cards for Kerala Higher Secondary Plus One Science, in Malayalam and English.",
+  },
+  {
+    slug: "recallio-plus-two-science",
+    name: "Recallio: Plus Two Science",
+    summary:
+      "Short daily study cards for Kerala Higher Secondary Plus Two Science, in Malayalam and English.",
+  },
+  {
     slug: "win-lss",
     name: "Win LSS",
     summary:

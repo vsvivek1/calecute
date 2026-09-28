@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 /**
@@ -18,6 +19,10 @@ type Product = {
   emoji: string;
   color: string;
   href?: string;
+  /** App logo shown instead of the emoji. */
+  image?: string;
+  /** Link with a plain <a>: the target is a static site under public/, not a Next route. */
+  native?: boolean;
 };
 
 const featured: (Product & { badge: string; badgeClass: string })[] = [
@@ -46,6 +51,42 @@ const featured: (Product & { badge: string; badgeClass: string })[] = [
 ];
 
 const learning: Product[] = [
+  {
+    title: "Recallio: USS Kerala Exam Prep",
+    desc: "Short daily study cards for the Class 7 USS scholarship exam, in Malayalam and English. Built from the textbook and revised at the right time.",
+    emoji: "🏆",
+    color: "bg-amber-100 dark:bg-amber-900/30",
+    href: "/uss-recallio",
+    image: "/uss-recallio/assets/logo-96.png",
+    native: true,
+  },
+  {
+    title: "Recallio: LSS Kerala Exam Prep",
+    desc: "Short daily study cards for the Class 4 LSS scholarship exam, in Malayalam and English. Coming soon.",
+    emoji: "🏅",
+    color: "bg-yellow-100 dark:bg-yellow-900/30",
+    href: "/lss-recallio",
+    image: "/lss-recallio/assets/logo.svg",
+    native: true,
+  },
+  {
+    title: "Recallio: Plus One Science",
+    desc: "Short daily study cards for Kerala Higher Secondary Plus One Science, in Malayalam and English. Coming soon.",
+    emoji: "🧪",
+    color: "bg-emerald-100 dark:bg-emerald-900/30",
+    href: "/plus-one-science",
+    image: "/plus-one-science/assets/logo.svg",
+    native: true,
+  },
+  {
+    title: "Recallio: Plus Two Science",
+    desc: "Short daily study cards for Kerala Higher Secondary Plus Two Science, in Malayalam and English. Coming soon.",
+    emoji: "⚛️",
+    color: "bg-sky-100 dark:bg-sky-900/30",
+    href: "/plus-two-science",
+    image: "/plus-two-science/assets/logo.svg",
+    native: true,
+  },
   {
     title: "Win LSS",
     desc: "LSS scholarship preparation for Class 4 — previous papers, timed model exams, and progress by subject.",
@@ -155,7 +196,12 @@ const services: Product[] = [
   },
 ];
 
-function Icon({ emoji, color }: { emoji: string; color: string }) {
+function Icon({ emoji, color, image }: { emoji: string; color: string; image?: string }) {
+  if (image) {
+    return (
+      <Image src={image} alt="" width={48} height={48} unoptimized className="h-12 w-12 shrink-0 rounded-lg object-cover" />
+    );
+  }
   return (
     <div
       className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg text-2xl ${color}`}
@@ -170,7 +216,7 @@ function Icon({ emoji, color }: { emoji: string; color: string }) {
 function Card({ product }: { product: Product }) {
   const body = (
     <>
-      <Icon emoji={product.emoji} color={product.color} />
+      <Icon emoji={product.emoji} color={product.color} image={product.image} />
       <h3 className="mt-4 text-lg font-medium">{product.title}</h3>
       <p className="mt-2 text-sm text-black/60 dark:text-white/60">
         {product.desc}
@@ -186,11 +232,16 @@ function Card({ product }: { product: Product }) {
   const shell =
     "rounded-xl border border-black/10 p-6 dark:border-white/15";
 
+  const linked = `${shell} transition-colors hover:bg-black/[.03] dark:hover:bg-white/[.06]`;
+  if (product.href && product.native) {
+    return (
+      <a href={product.href} className={linked}>
+        {body}
+      </a>
+    );
+  }
   return product.href ? (
-    <Link
-      href={product.href}
-      className={`${shell} transition-colors hover:bg-black/[.03] dark:hover:bg-white/[.06]`}
-    >
+    <Link href={product.href} className={linked}>
       {body}
     </Link>
   ) : (
