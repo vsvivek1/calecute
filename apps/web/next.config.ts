@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Recallio: LSS Kerala Exam Prep does the same under public/lss-recallio/
+  // (published by the lss-recallio repo's web/publish_to_calecutech.py).
   // Recallio: USS Kerala Exam Prep keeps its policy pages as plain static
   // files under public/uss-recallio/ (published by the uss-recallio repo's
   // web/publish_to_calecutech.py). Next does not resolve a folder to its
@@ -10,6 +12,8 @@ const nextConfig: NextConfig = {
     return [
       { source: "/uss-recallio", destination: "/uss-recallio/index.html" },
       { source: `/uss-recallio/:slug(${pages})`, destination: "/uss-recallio/:slug/index.html" },
+      { source: "/lss-recallio", destination: "/lss-recallio/index.html" },
+      { source: `/lss-recallio/:slug(${pages})`, destination: "/lss-recallio/:slug/index.html" },
     ];
   },
   async redirects() {
