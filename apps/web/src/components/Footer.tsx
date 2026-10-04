@@ -7,6 +7,7 @@ const legalLinks = [
   { href: "/terms", label: "Terms of Service" },
   { href: "/refund-policy", label: "Refund & Cancellation Policy" },
   { href: "/data-deletion", label: "Data Deletion" },
+  { href: "/report-unauthorized-transaction", label: "Report Unauthorized Transaction" },
 ];
 
 const companyLinks = [
