@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
   // files under public/uss-recallio/ (published by the uss-recallio repo's
   // web/publish_to_calecutech.py). Next does not resolve a folder to its
   // index.html, so each clean URL is mapped to its file here.
+  // Find My Bus (vsvivek1/findbus) keeps its policy pages under public/findmybus/.
   async rewrites() {
     const pages = "privacy|terms|child-safety|refunds|delete-account|support";
     return [
@@ -20,6 +21,8 @@ const nextConfig: NextConfig = {
       { source: `/plus-one-science/:slug(${pages})`, destination: "/plus-one-science/:slug/index.html" },
       { source: "/plus-two-science", destination: "/plus-two-science/index.html" },
       { source: `/plus-two-science/:slug(${pages})`, destination: "/plus-two-science/:slug/index.html" },
+      { source: "/findmybus", destination: "/findmybus/index.html" },
+      { source: `/findmybus/:slug(${pages})`, destination: "/findmybus/:slug/index.html" },
     ];
   },
   async redirects() {

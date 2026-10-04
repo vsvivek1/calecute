@@ -36,4 +36,10 @@ export const STATIC_APPS: StaticApp[] = [
     href: "/plus-two-science",
     image: "/plus-two-science/assets/logo.svg",
   },
+  {
+    name: "Find My Bus",
+    tagline: "Live bus tracking for riders and bus owners",
+    href: "/findmybus",
+    image: "/findmybus/assets/logo-192.png",
+  },
 ];
