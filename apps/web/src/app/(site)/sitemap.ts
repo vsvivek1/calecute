@@ -72,6 +72,8 @@ const PATHS: Array<{ path: string; priority: number; changeFrequency: "monthly" 
   { path: "/terms", priority: 0.3, changeFrequency: "yearly" },
   { path: "/refund-policy", priority: 0.3, changeFrequency: "yearly" },
   { path: "/data-deletion", priority: 0.3, changeFrequency: "yearly" },
+  // Play Console alternative billing declaration links here.
+  { path: "/report-unauthorized-transaction", priority: 0.3, changeFrequency: "yearly" },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
