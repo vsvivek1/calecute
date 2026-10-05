@@ -150,6 +150,20 @@ export const PROCESSORS: Record<string, Processor[]> = {
       policy: "https://supabase.com/privacy",
     },
   ],
+  supabase_workforce: [
+    {
+      name: "Supabase Inc.",
+      role: "Hosts the database of listings and the sign-in service. Supabase stores this on our behalf and does not use it for its own purposes.",
+      policy: "https://supabase.com/privacy",
+    },
+  ],
+  twilio: [
+    {
+      name: "Twilio Inc.",
+      role: "Sends the one-time sign-in code by SMS. It receives your mobile number and the code, and nothing else about you.",
+      policy: "https://www.twilio.com/en-us/legal/privacy",
+    },
+  ],
   play_billing: [
     {
       name: "Google Play Billing (Google LLC)",
@@ -812,6 +826,131 @@ const BASE: Omit<AppEntry, 'slug'|'name'|'androidPackage'|'iosBundleId'|'isDemo'
       "We never receive your Google password, and never your card, UPI or netbanking details — those are entered on Razorpay's own screen.",
     ],
   },
+  {
+    tagline: "Find local workers and call them directly",
+    audience:
+      "Anyone looking for a local worker, and workers aged 18 or over who want to be found. Browsing needs no account; listing yourself needs a mobile number.",
+    summary:
+      "Work Force is a directory of local workers. Workers list their skills, area and daily rate, and anyone who needs a job done can find them and call or WhatsApp them directly. We do not take a cut, arrange the work, or stand between the two of you.",
+    collects: [
+      {
+        category: "Personal identifiers",
+        items: ["Mobile number"],
+        purpose:
+          "Signing you in with a one-time SMS code, and — because the point of a listing is to be called — shown on your listing so people can phone or WhatsApp you. Only workers who list themselves give us a number; people who only browse give us nothing.",
+      },
+      {
+        category: "Personal info",
+        items: [
+          "Name",
+          "Skills (for example plumber, electrician, painter)",
+          "Area you work in, as you type it",
+          "Daily rate, if you choose to give one",
+          "A short description you write about yourself",
+          "Whether you are available for work",
+        ],
+        purpose:
+          "This is the listing itself. It is shown publicly to everyone using the app while \"Available for work\" is on, so the right people can find you.",
+      },
+    ],
+    permissions: [
+      {
+        name: "Internet",
+        why: "Loading the list of workers, signing in, and saving your listing.",
+      },
+      {
+        name: "Phone and WhatsApp links",
+        why: "Tapping Call or WhatsApp on a listing hands the number to your phone's dialler or to WhatsApp. The app itself never places calls, reads your call log, or sees what happens after you tap.",
+      },
+    ],
+    sharedWith: [
+      "Your listing — name, mobile number, skills, area, rate, description and availability — is shown to every user of the app while you are marked available. That is the purpose of the app. Turn availability off, or remove the listing, and it stops being shown.",
+    ],
+    processors: ["supabase_workforce", "twilio"],
+    retention:
+      "Your listing is kept while you choose to be listed. Remove it in the app and it is deleted at once. Delete your account and your phone number and listing are removed within 30 days.",
+    availabilityNote:
+      "Work Force is in testing on Google Play and is not yet publicly listed. This page will carry the store link once it is live.",
+    features: [
+      "Search workers by skill or area, with no account and no sign-in.",
+      "Call or WhatsApp a worker straight from their listing. No middleman, no booking fee, no commission.",
+      "Workers list themselves in a minute with a mobile number: skills, area, an optional daily rate and a few words about their work.",
+      "One switch to show or hide your listing, so you are only called when you want work.",
+      "Remove your listing from inside the app at any time, and it is gone immediately.",
+    ],
+    policyUpdated: "October 5, 2026",
+    serviceName: "the Work Force service",
+    lawfulBasis:
+      "We process a worker's data because they asked us to publish it — that is what listing yourself means. You give consent when you create a listing, and you may withdraw it at any time by hiding or removing the listing, or by deleting your account.",
+    signInHelp:
+      "Only workers sign in; browsing needs no account. Sign-in is by a one-time code sent by SMS to your mobile number. If the code does not arrive, check the number includes your country code, wait a minute, and request a new one. Codes expire after a few minutes. If you have changed your number, sign in with the new one and create the listing again, then write to us to remove the old one.",
+    securityNote:
+      "Every listing is protected by a database policy that lets only the account that created it change or delete it, and the phone number on a listing is copied from the verified sign-in rather than typed, so nobody can publish a listing under someone else's number.",
+    deleteIdentifier: "the mobile number you signed in with",
+    deletes: [
+      "Your listing: name, skills, area, daily rate, description and availability",
+      "Your mobile number and sign-in account",
+      "Any active sessions",
+    ],
+    retainsOnDelete:
+      "Nothing identifying you is kept by us. We cannot recall a number someone already saw on your listing, or wrote down, or saved in their phone before you removed it — removing a listing stops it being shown from then on.",
+    notCollected: [
+      "We do not collect your contacts, calendar, call logs or SMS.",
+      "We do not track you across other apps or websites, and there is no analytics or advertising SDK in the app.",
+      "We do not use advertising identifiers and show no advertising.",
+      "The app never asks for camera, microphone, location or file access, because it does not use them. Your area is only what you type.",
+      "We take no payment and never see any payment details. Any money for work is between you and the worker.",
+    ],
+    terms: {
+      updated: "October 5, 2026",
+      intro:
+        "These terms apply to the Work Force app. Where they differ from our general terms of service, these take precedence for Work Force.",
+      sections: [
+        {
+          heading: "We are a directory, not an employer or agent",
+          body: [
+            "Work Force shows listings that workers publish about themselves. We do not employ, recruit, vet, train, insure or supervise anyone listed, and we are not a party to any agreement between a worker and the person who calls them.",
+            "We do not check skills, qualifications, licences, identity beyond the mobile number, or past work. Satisfy yourself that a worker is right for the job before you engage them.",
+            "Rates, timing, quality and payment are agreed directly between you. We take no commission and handle no money, and we cannot resolve a dispute about work done or not done.",
+          ],
+        },
+        {
+          heading: "Listing yourself",
+          body: [
+            "You must be 18 or over to list yourself, and the listing must be about you. Do not list someone else, a business you do not run, or a number that is not yours.",
+            "What you publish must be true. Do not claim skills you do not have, and do not use the description for advertising, contact details other than your own, or anything abusive or unlawful.",
+            "Your listing, including your mobile number, is public to every user while you are marked available. Only list yourself if you are content to be called by people you do not know.",
+          ],
+        },
+        {
+          heading: "Using the listings",
+          body: [
+            "Use a worker's number only to ask about work. Do not harass, spam, or collect numbers from the app for any other purpose, and do not scrape the app.",
+            "We may remove any listing, or block an account, that breaks these terms or that we receive a credible complaint about.",
+          ],
+        },
+        {
+          heading: "Availability",
+          body: [
+            "Work Force is provided as it is. We do not guarantee it will be available without interruption, that any listing is current, or that any worker will answer or take a job. We may change or withdraw features.",
+          ],
+        },
+        {
+          heading: "Liability",
+          body: [
+            "To the extent the law allows, we are not liable for the work done or not done by anyone found through the app, for any loss, injury or damage arising from it, or for indirect or consequential loss of any kind.",
+            "Nothing here limits liability that cannot be limited by law.",
+          ],
+        },
+        {
+          heading: "Governing law",
+          body: [
+            "These terms are governed by the laws of India, and the courts at Kozhikode, Kerala have jurisdiction.",
+          ],
+        },
+      ],
+    },
+  },
 ];
 
 /**
@@ -828,6 +967,7 @@ const BUYER = 1;
 const BANKMATES = 2;
 const RECALLIO = 3;
 const KSEBEA = 4;
+const WORKFORCE = 5;
 
 export const APPS: AppEntry[] = [
   {
@@ -884,6 +1024,14 @@ export const APPS: AppEntry[] = [
     name: "KSEBEA Engineers Association",
     androidPackage: "com.calecutech.ksebea",
     iosBundleId: "com.calecutech.ksebea",
+    isDemo: false,
+  },
+  {
+    ...BASE[WORKFORCE],
+    slug: "workforce",
+    name: "Work Force",
+    androidPackage: "com.calecutech.workforce",
+    iosBundleId: "com.calecutech.workforce",
     isDemo: false,
   },
 ];
