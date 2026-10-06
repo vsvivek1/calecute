@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#14a35f"/>
+      <stop offset="1" stop-color="#07502d"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6c75a"/>
+      <stop offset="1" stop-color="#d9961c"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <!-- palm frond hint, bottom left -->
+  <path d="M0 400 C90 360 150 380 210 440 C150 420 90 425 0 470 Z" fill="#ffffff" opacity="0.08"/>
+  <path d="M512 330 C430 300 370 330 330 390 C390 360 450 362 512 390 Z" fill="#ffffff" opacity="0.06"/>
+  <!-- stopwatch crown and buttons -->
+  <rect x="226" y="70" width="60" height="34" rx="10" fill="url(#gold)"/>
+  <rect x="244" y="96" width="24" height="30" fill="url(#gold)"/>
+  <rect x="352" y="118" width="40" height="22" rx="8" fill="url(#gold)" transform="rotate(45 372 129)"/>
+  <!-- stopwatch body -->
+  <circle cx="256" cy="286" r="166" fill="url(#gold)"/>
+  <circle cx="256" cy="286" r="138" fill="#ffffff"/>
+  <!-- progress arc (time elapsed) -->
+  <path d="M256 160 A126 126 0 0 1 382 286" fill="none" stroke="#14a35f" stroke-width="22" stroke-linecap="round"/>
+  <!-- question mark -->
+  <path d="M206 250 C206 212 228 192 260 192 C294 192 316 212 316 242 C316 268 300 280 282 291 C268 300 264 308 264 324 L264 334"
+        fill="none" stroke="#0a5c35" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="264" cy="384" r="21" fill="#0a5c35"/>
+</svg>
