@@ -87,6 +87,7 @@ img { max-width: 100%; height: auto; }
 .nav-desktop a:hover { background: var(--panel); color: var(--green-deep); text-decoration: none; }
 .nav-desktop a[aria-current="page"] { color: var(--green-deep); font-weight: 600; background: var(--panel); }
 .nav-desktop .btn { margin-left: 0.5rem; }
+.nav-desktop a.btn-primary, .nav-desktop a.btn-primary:hover { color: #fff; background: linear-gradient(135deg, var(--green), var(--green-deep)); }
 
 .nav-mobile { position: relative; }
 .nav-mobile summary {
@@ -168,6 +169,10 @@ img { max-width: 100%; height: auto; }
 .phone-body { padding: 1rem; display: grid; gap: 0.5rem; }
 .phone-q { font-weight: 600; color: var(--ink); margin-bottom: 0.3rem; }
 .phone-opt { border: 1px solid var(--hairline); border-radius: 10px; padding: 0.55rem 0.7rem; color: var(--ink-muted); }
+.phone-foot { margin-top: auto; padding: 1rem; display: grid; gap: 0.6rem; }
+.phone-bar { height: 6px; border-radius: 999px; background: var(--panel); overflow: hidden; }
+.phone-bar span { display: block; height: 100%; width: 40%; background: var(--gold); }
+.phone-next { text-align: center; border-radius: 999px; padding: 0.6rem; background: var(--green); color: #fff; font-weight: 600; }
 .phone-opt.picked { border-color: var(--green); background: var(--panel); color: var(--green-deep); font-weight: 600; }
 
 /* ---------------------------------------------------------------- sections */

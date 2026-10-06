@@ -67,6 +67,10 @@ export default function QuizKeralaHome() {
                     </div>
                   ))}
                 </div>
+                <div className="phone-foot">
+                  <div className="phone-bar"><span /></div>
+                  <div className="phone-next">Next question</div>
+                </div>
               </div>
             </div>
           </div>
