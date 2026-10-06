@@ -42,4 +42,10 @@ export const STATIC_APPS: StaticApp[] = [
     href: "/findmybus",
     image: "/findmybus/assets/logo-192.png",
   },
+  {
+    name: "QuizKerala",
+    tagline: "Timed quizzes with live leaderboards",
+    href: "/quizkerala",
+    image: "/quizkerala/logo-192.png",
+  },
 ];
