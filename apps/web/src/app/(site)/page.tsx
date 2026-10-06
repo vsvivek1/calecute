@@ -105,6 +105,23 @@ export default function Home() {
             See the product →
           </Link>
         </div>
+        <Link
+          href="/quizkerala"
+          className="mt-6 flex items-center gap-4 rounded-xl border border-black/10 p-6 transition-colors hover:bg-black/[.03] dark:border-white/15 dark:hover:bg-white/[.06] sm:p-8"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/quizkerala/logo-192.png" alt="" width={48} height={48} className="h-12 w-12 shrink-0 rounded-lg" />
+          <div>
+            <h3 className="text-xl font-medium">QuizKerala</h3>
+            <p className="mt-1 text-black/70 dark:text-white/70">
+              Timed online quizzes with Google sign-in, join-by-code and a live
+              leaderboard where the faster player wins ties.
+            </p>
+            <span className="mt-2 inline-block text-sm font-medium underline underline-offset-2">
+              Visit QuizKerala →
+            </span>
+          </div>
+        </Link>
         <p className="mt-6 text-sm text-black/60 dark:text-white/60">
           We currently work with clients across India and international markets
           on web, mobile, and SaaS projects. Want to see work relevant to your

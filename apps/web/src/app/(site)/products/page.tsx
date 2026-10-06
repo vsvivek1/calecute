@@ -52,6 +52,14 @@ const featured: (Product & { badge: string; badgeClass: string })[] = [
 
 const learning: Product[] = [
   {
+    title: "QuizKerala",
+    desc: "Timed online quizzes for schools, clubs and colleges. Google sign-in, join with a code, one attempt each, and a live leaderboard where the faster player wins ties.",
+    emoji: "⏱️",
+    color: "bg-emerald-100 dark:bg-emerald-900/30",
+    href: "/quizkerala",
+    image: "/quizkerala/logo-192.png",
+  },
+  {
     title: "Recallio: USS Kerala Exam Prep",
     desc: "Short daily study cards for the Class 7 USS scholarship exam, in Malayalam and English. Built from the textbook and revised at the right time.",
     emoji: "🏆",
