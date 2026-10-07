@@ -17,6 +17,13 @@ export async function generateMetadata({
   return {
     title: `${app.name} | Calecutech`,
     description: app.tagline,
+    ...(app.ogImage && {
+      openGraph: {
+        title: app.name,
+        description: app.tagline,
+        images: [{ url: `https://calecutech.com${app.ogImage}`, width: 1200, height: 630 }],
+      },
+    }),
   };
 }
 
@@ -87,6 +94,24 @@ export default async function AppHomePage({
             ))}
           </ul>
         </section>
+
+        {app.screenshots && (
+          <section>
+            <h2 className="text-xl font-medium">Screenshots</h2>
+            <div className="mt-4 flex snap-x gap-4 overflow-x-auto pb-2">
+              {app.screenshots.map((shot) => (
+                <Image
+                  key={shot.src}
+                  src={shot.src}
+                  alt={shot.alt}
+                  width={540}
+                  height={960}
+                  className="h-auto w-44 shrink-0 snap-start rounded-2xl ring-1 ring-black/10 sm:w-52 dark:ring-white/15"
+                />
+              ))}
+            </div>
+          </section>
+        )}
 
         {app.qr && (
           <section className="rounded-xl border border-black/10 p-6 dark:border-white/15">

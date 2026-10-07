@@ -52,6 +52,10 @@ export type AppEntry = {
   features?: string[];
   /** Square icon shown in the overview hero. */
   iconSrc?: string;
+  /** Phone screenshots shown on the overview page, in store order. */
+  screenshots?: { src: string; alt: string }[];
+  /** 1200x630 image used when the app's page is shared. */
+  ogImage?: string;
   /** Extra line in the Availability section — store status, how to get it. */
   availabilityNote?: string;
   /**
@@ -869,8 +873,20 @@ const BASE: Omit<AppEntry, 'slug'|'name'|'androidPackage'|'iosBundleId'|'isDemo'
     processors: ["supabase_workforce", "twilio"],
     retention:
       "Your listing is kept while you choose to be listed. Remove it in the app and it is deleted at once. Delete your account and your phone number and listing are removed within 30 days.",
+    iconSrc: "/workforce/icon.png",
+    ogImage: "/workforce/og.png",
+    screenshots: [
+      { src: "/workforce/screen-home.jpg", alt: "The list of workers, with a search box, skill filters, and Call and WhatsApp buttons on each listing" },
+      { src: "/workforce/screen-profile.jpg", alt: "A worker's own listing form: name, skills, area, daily rate, description and an Available for work switch" },
+      { src: "/workforce/screen-login.jpg", alt: "Sign-in screen asking for a mobile number to receive a one-time code" },
+    ],
     availabilityNote:
-      "Work Force is in testing on Google Play and is not yet publicly listed. This page will carry the store link once it is live.",
+      "Work Force is in testing on Google Play and is not yet publicly listed. This page will carry the store link once it is live. The QR code above already points here, so anything printed now keeps working afterwards.",
+    qr: {
+      svg: "/workforce/qr.svg",
+      png: "/workforce/qr.png",
+      target: "https://calecutech.com/apps/workforce",
+    },
     features: [
       "Search workers by skill or area, with no account and no sign-in.",
       "Call or WhatsApp a worker straight from their listing. No middleman, no booking fee, no commission.",
