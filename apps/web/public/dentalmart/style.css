@@ -1,0 +1,84 @@
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body-font);font-size:17px;line-height:1.6}
+img{max-width:100%;height:auto}
+a{color:var(--link)}
+header.site{position:relative;z-index:5}
+header.site .bar{max-width:1120px;margin:0 auto;padding:16px 20px;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-family:var(--display-font);font-size:22px}
+.brand img{border-radius:var(--icon-radius,10px)}
+nav.links{display:flex;flex-wrap:wrap;gap:4px 18px;font-size:15px}
+nav.links a{color:inherit;text-decoration:none;padding:4px 0;border-bottom:2px solid transparent}
+nav.links a:hover,nav.links a[aria-current=page]{border-bottom-color:var(--accent)}
+main.doc{position:relative;max-width:820px;margin:24px auto 64px;padding:40px clamp(20px,5vw,56px);background:var(--paper);color:var(--paper-ink)}
+main.doc h1{font-family:var(--display-font);font-size:clamp(34px,6vw,52px);line-height:1.05;margin:0 0 8px}
+main.doc h2{font-family:var(--display-font);font-size:24px;line-height:1.2;margin:36px 0 10px}
+main.doc .meta{opacity:.7;font-size:14px;margin:0 0 28px}
+main.doc a{color:var(--paper-link,var(--link))}
+.box{border:var(--box-border);background:var(--box-bg);padding:4px 22px 10px;margin:24px 0}
+.box h2{margin-top:18px!important}
+.table-wrap{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--rule)}
+th{font-family:var(--display-font);font-weight:normal;font-size:16px}
+details{border-bottom:1px solid var(--rule);padding:10px 0}
+summary{cursor:pointer;font-weight:600}
+footer.site{position:relative;background:var(--foot-bg);color:var(--foot-ink);padding:40px 20px 24px;font-size:15px}
+footer.site .cols{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:28px}
+@media (max-width:720px){footer.site .cols{grid-template-columns:1fr}}
+footer.site a{color:inherit}
+footer.site h4{font-family:var(--display-font);font-weight:normal;font-size:18px;margin:0 0 8px}
+footer.site ul{list-style:none;margin:0;padding:0}
+footer.site li{margin:4px 0}
+.fbrand{display:flex;align-items:center;gap:10px;font-family:var(--display-font);font-size:20px}
+.fbrand img{border-radius:var(--icon-radius,10px)}
+.fine{max-width:1120px;margin:28px auto 0;opacity:.7;font-size:13px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.btn{display:inline-block;padding:12px 22px;text-decoration:none;font-weight:700}
+@media (max-width:720px){main.doc{margin:20px 10px 48px;transform:none!important}}
+body{overflow-x:hidden}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+:root{
+  --green:#0A7D3C;--black:#0b0b0b;--grey:#F4F4F5;--line:#d4d4d8;
+  --bg:#fff;--ink:var(--black);--link:var(--green);--accent:var(--green);
+  --display-font:'Geist',Helvetica,Arial,sans-serif;--body-font:'Geist',Helvetica,Arial,sans-serif;
+  --paper:#fff;--paper-ink:var(--black);--rule:var(--line);
+  --box-border:0;--box-bg:var(--grey);--foot-bg:var(--black);--foot-ink:#e4e4e7;--icon-radius:0;
+}
+body{font-weight:400;letter-spacing:-.005em}
+header.site{border-bottom:1px solid var(--black)}
+.brand span{font-weight:800;letter-spacing:-.04em}
+nav.links a{font-size:14px;text-transform:uppercase;letter-spacing:.06em}
+.grid{max-width:1120px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:repeat(12,1fr);column-gap:20px}
+.hero{border-bottom:1px solid var(--black);position:relative}
+.hero .grid{padding-top:56px;padding-bottom:56px;align-items:end}
+.hero .num{grid-column:1/13;font-size:13px;letter-spacing:.12em;text-transform:uppercase;border-top:6px solid var(--green);padding-top:10px;margin-bottom:24px;display:flex;justify-content:space-between}
+.hero h1{grid-column:1/9;font-weight:800;font-size:clamp(60px,11vw,148px);line-height:.86;letter-spacing:-.06em;margin:0}
+.hero h1 span{color:var(--green)}
+.hero .compo{grid-column:9/13;width:100%;height:auto}
+.hero .lead{grid-column:1/8;font-size:21px;font-weight:300;line-height:1.45;margin:36px 0 0}
+.hero .cta{grid-column:1/13;margin-top:28px}
+@media (max-width:820px){.hero h1,.hero .compo,.hero .lead{grid-column:1/13}.hero .compo{max-width:300px;margin-top:24px}}
+.btn{background:var(--green);color:#fff;font-weight:600;border-radius:0;margin:0 10px 10px 0}
+.btn.ghost{background:#fff;color:var(--black);outline:1px solid var(--black);outline-offset:-1px}
+.rows{max-width:1120px;margin:0 auto;padding:0 20px}
+.row{display:grid;grid-template-columns:120px 1fr 1.4fr;gap:20px;border-bottom:1px solid var(--black);padding:26px 0;align-items:baseline}
+.row .n{font-weight:800;font-size:44px;color:var(--green);letter-spacing:-.04em;line-height:1}
+.row h3{font-weight:600;font-size:24px;margin:0;letter-spacing:-.02em}
+.row p{margin:0;font-size:16px}
+@media (max-width:720px){.row{grid-template-columns:60px 1fr}.row p{grid-column:2}}
+.label{max-width:1120px;margin:56px auto 0;padding:0 20px;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+.split{margin:20px max(20px,calc((100% - 1080px)/2)) 64px;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--black)}
+.split>div{padding:30px}
+.split>div+div{border-left:1px solid var(--black);background:var(--green);color:#fff}
+.split h3{font-size:30px;font-weight:800;letter-spacing:-.03em;margin:0 0 10px}
+@media (max-width:720px){.split{grid-template-columns:1fr}.split>div+div{border-left:0;border-top:1px solid var(--black)}}
+main.doc{border-top:6px solid var(--green);padding-top:28px}
+main.doc h1{font-weight:800;letter-spacing:-.05em}
+main.doc h2{font-weight:600;letter-spacing:-.02em;border-top:1px solid var(--black);padding-top:14px}
+.box{border-left:6px solid var(--green)}
+th{font-weight:600;text-transform:uppercase;font-size:12px;letter-spacing:.08em}
+.doc-head svg{width:48px;height:auto}
+footer.site .fbrand span{font-weight:800;letter-spacing:-.04em}
