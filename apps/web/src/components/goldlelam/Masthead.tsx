@@ -4,7 +4,7 @@ import { GOLDLELAM } from "@/lib/goldlelam/content";
 export function Masthead() {
   return (
     <header className="masthead">
-      <Link href="/goldlelam" className="masthead-brand">
+      <Link href="/bankers-gold" className="masthead-brand">
         <span className="mark" aria-hidden="true" />
         {GOLDLELAM.name}
       </Link>

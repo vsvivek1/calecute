@@ -66,6 +66,8 @@ const PATHS: Array<{ path: string; priority: number; changeFrequency: "monthly" 
   { path: "/findmybus/terms", priority: 0.4, changeFrequency: "yearly" },
   { path: "/findmybus/support", priority: 0.4, changeFrequency: "yearly" },
   { path: "/findmybus/delete-account", priority: 0.4, changeFrequency: "yearly" },
+  // Bankers Gold (GoldLelam). Product page; its policy pages live under /goldlelam.
+  { path: "/bankers-gold", priority: 0.8, changeFrequency: "monthly" },
   // QuizKerala. Next routes under app/quizkerala with their own layout.
   { path: "/quizkerala", priority: 0.7, changeFrequency: "monthly" },
   { path: "/quizkerala/how-it-works", priority: 0.5, changeFrequency: "monthly" },
