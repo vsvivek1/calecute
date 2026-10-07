@@ -43,6 +43,42 @@ export const STATIC_APPS: StaticApp[] = [
     image: "/findmybus/assets/logo-192.png",
   },
   {
+    name: "Grahanila: Kerala Astrology",
+    tagline: "Jathakam, porutham and muhurtham with classical sources",
+    href: "/jathakam",
+    image: "/jathakam/assets/icon-192.png",
+  },
+  {
+    name: "spareX",
+    tagline: "Second-hand vehicle spares, scrap and workshops",
+    href: "/sparex",
+    image: "/sparex/assets/icon-192.png",
+  },
+  {
+    name: "FarmConnect",
+    tagline: "Buy fresh produce straight from Kerala farmers",
+    href: "/farmconnect",
+    image: "/farmconnect/assets/icon-192.png",
+  },
+  {
+    name: "Voffer",
+    tagline: "Fresh offers from shops near you",
+    href: "/voffer",
+    image: "/voffer/assets/icon-192.png",
+  },
+  {
+    name: "DentalMart",
+    tagline: "B2B marketplace for dental supplies",
+    href: "/dentalmart",
+    image: "/dentalmart/assets/icon-192.png",
+  },
+  {
+    name: "Doplando",
+    tagline: "Task and team planner",
+    href: "/doplando",
+    image: "/doplando/assets/icon-192.png",
+  },
+  {
     name: "QuizKerala",
     tagline: "Timed quizzes with live leaderboards",
     href: "/quizkerala",
