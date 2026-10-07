@@ -42,6 +42,13 @@ const nextConfig: NextConfig = {
       { source: "/doplando/privacy", destination: "https://doplando.com/privacy", permanent: false },
       { source: "/doplando/terms", destination: "https://doplando.com/terms", permanent: false },
       {
+        // GoldLelam ships on the stores as Bankers Gold; its product page is
+        // /bankers-gold. The policy pages under /goldlelam/* stay where they are.
+        source: "/goldlelam",
+        destination: "/bankers-gold",
+        permanent: false,
+      },
+      {
         // Payout setup moved into the profile page. Anyone holding the old
         // link — a bookmark, a WhatsApp forward — lands where it went.
         source: "/agents/dashboard/payouts",
