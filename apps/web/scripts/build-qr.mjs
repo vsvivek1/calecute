@@ -30,6 +30,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const APPS = {
   bankmates: { ink: '#0B1F4D' },
   recallio: { ink: '#001B4E' },
+  workforce: { ink: '#8F3600' },
 };
 
 const only = process.argv[2];
