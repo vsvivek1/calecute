@@ -37,6 +37,12 @@ export const STATIC_APPS: StaticApp[] = [
     image: "/plus-two-science/assets/logo.svg",
   },
   {
+    name: "Geological Assistant Prep",
+    tagline: "Kerala PSC Geological Assistant (Ground Water Dept) exam prep",
+    href: "/geological-assistant",
+    image: "/geological-assistant/assets/logo.svg",
+  },
+  {
     name: "Find My Bus",
     tagline: "Live bus tracking for riders and bus owners",
     href: "/findmybus",
