@@ -49,6 +49,12 @@ export const STATIC_APPS: StaticApp[] = [
     image: "/jathakam/assets/icon-192.png",
   },
   {
+    name: "Muhurtham Clock",
+    tagline: "The Kerala panchangam as a live clock: kalams, horas, Abhijit",
+    href: "/muhurtham-clock",
+    image: "/muhurtham-clock/assets/icon-192.png",
+  },
+  {
     name: "spareX",
     tagline: "Second-hand vehicle spares, scrap and workshops",
     href: "/sparex",
