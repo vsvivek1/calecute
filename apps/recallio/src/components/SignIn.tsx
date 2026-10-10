@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { browserClient } from '@/lib/supabase-browser';
 import type { View } from '@/lib/types';
 
-export default function SignIn({ view }: { view: View }) {
+export default function SignIn({ view, course }: { view: View; course?: string | null }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,7 +14,7 @@ export default function SignIn({ view }: { view: View }) {
     const supabase = browserClient();
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: `${window.location.origin}/auth/callback${course ? `?course=${encodeURIComponent(course)}` : ''}` },
     });
     if (error) {
       setError(error.message);

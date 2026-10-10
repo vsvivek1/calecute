@@ -4,7 +4,13 @@ import PayButton from './PayButton';
 
 const DEFAULT_FREE_LIMIT = 200;
 
-export default async function UserHome({ session }: { session: Session }) {
+export default async function UserHome({
+  session,
+  focusCourse,
+}: {
+  session: Session;
+  focusCourse?: string | null;
+}) {
   const supabase = await serverClient();
 
   // RLS restricts all three of these to the signed-in user, so no user filter
@@ -58,11 +64,16 @@ export default async function UserHome({ session }: { session: Session }) {
         </p>
       </div>
 
-      {(courses ?? []).map((course) => {
+      {[...(courses ?? [])]
+        .sort((a, b) => Number(b.id === focusCourse) - Number(a.id === focusCourse))
+        .map((course) => {
         const hasSub = owned.has(course.id) || unlimited;
         const sub = (subscriptions ?? []).find((s) => s.course_id === course.id);
         return (
-          <div className="card" key={course.id}>
+          <div className="card" key={course.id} id={course.id}>
+            {course.id === focusCourse && !hasSub && (
+              <p className="note">You came here to buy this course.</p>
+            )}
             <h2>{course.name}</h2>
             <p className="note" style={{ marginTop: -6 }}>{course.code}</p>
 

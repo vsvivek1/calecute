@@ -11,10 +11,15 @@ import { cookies } from 'next/headers';
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
+  // Keep the course the visitor came to buy, if it looks like a course id.
+  const course = searchParams.get('course');
+  const dest = course && /^[a-z0-9-]{1,64}$/.test(course)
+    ? `${origin}/?course=${encodeURIComponent(course)}`
+    : origin;
   if (!code) return NextResponse.redirect(origin);
 
   const store = await cookies();
-  const response = NextResponse.redirect(origin);
+  const response = NextResponse.redirect(dest);
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
