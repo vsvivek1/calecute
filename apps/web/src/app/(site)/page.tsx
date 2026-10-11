@@ -56,6 +56,14 @@ export default function Home() {
           New: {BANKERS_GOLD.name}, bank gold auctions on your phone
           <span aria-hidden="true">→</span>
         </Link>
+        <Link
+          href="/history-clock/app"
+          className="mt-3 inline-flex items-center gap-2 rounded-full border-2 border-[#1f2433] bg-[#e8b64c] px-4 py-2 text-sm font-semibold text-[#1f2433] shadow-[3px_3px_0_#1f2433] hover:bg-[#f0c868]"
+        >
+          <span aria-hidden="true">🕰</span>
+          Try History Clock: slide through 5,000 years of world history
+          <span aria-hidden="true">→</span>
+        </Link>
       </section>
 
       {/* Services */}

@@ -1,10 +1,11 @@
 /**
- * Shell for the Chronomap policy pages. Each page passes its own sections, so
+ * Shell for the History Clock policy pages. Each page passes its own sections, so
  * the wording stays with the page it belongs to.
  */
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { POLICY_UPDATED, chronomap, legalEntity, contactEmail, policyLinks } from "@/lib/chronomap/content";
+import s from "./sketch.module.css";
+import { POLICY_UPDATED, historyClock, legalEntity, contactEmail, policyLinks } from "@/lib/history-clock/content";
 
 export function PolicyPage({
   title,
@@ -18,14 +19,14 @@ export function PolicyPage({
   return (
     <article className="mx-auto max-w-3xl px-6 py-16 text-[#1d2538]">
       <p className="text-sm uppercase tracking-[0.2em] text-[#7d5e22]">
-        {chronomap.name} · {legalEntity}
+        {historyClock.name} · {legalEntity}
       </p>
-      <h1 className="mt-3 font-serif text-4xl font-semibold tracking-tight text-[#101c33]">{title}</h1>
+      <h1 className={`${s.hand} mt-3 text-5xl leading-tight text-[#1f2433]`}>{title}</h1>
       <p className="mt-3 text-sm text-[#4a5264]">Last updated {POLICY_UPDATED}</p>
 
       <div className="mt-6 rounded-lg border border-[#c9a86a] bg-[#fbf7ec] p-4 text-sm leading-6">
         <strong className="text-[#101c33]">Legal review pending.</strong> This text describes the
-        Chronomap preview as it works today. It has not yet been reviewed by a lawyer. Items marked{" "}
+        History Clock first version as it works today. It has not yet been reviewed by a lawyer. Items marked{" "}
         <Todo>TODO</Todo> must be completed before launch.
       </div>
 
@@ -33,7 +34,7 @@ export function PolicyPage({
 
       <div className="mt-10 space-y-10">{children}</div>
 
-      <nav aria-label="Chronomap policies" className="mt-14 border-t border-[#1d2538]/10 pt-6 text-sm">
+      <nav aria-label="History Clock policies" className="mt-14 border-t border-[#1d2538]/10 pt-6 text-sm">
         <ul className="flex flex-wrap gap-x-6 gap-y-2">
           {policyLinks.map((link) => (
             <li key={link.href}>
@@ -43,7 +44,7 @@ export function PolicyPage({
             </li>
           ))}
           <li>
-            <Link href="/chronomap" className="text-[#7d5e22] underline underline-offset-2 hover:text-[#101c33]">
+            <Link href="/history-clock" className="text-[#7d5e22] underline underline-offset-2 hover:text-[#101c33]">
               Overview
             </Link>
           </li>

@@ -5,7 +5,7 @@ const links = [
   { href: "/services", label: "Services" },
   { href: "/products", label: "Products" },
   { href: "/locations", label: "Locations" },
-  { href: "/chronomap", label: "Chronomap" },
+  { href: "/history-clock", label: "History Clock" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];

@@ -1,0 +1,170 @@
+/*
+ * The History Clock "caricature" look: ink outlines, wobbly hand-drawn
+ * corners, flat hard shadows and paper. Colours live on .page so every
+ * History Clock page shares them.
+ */
+
+.page {
+  --paper: #fbf3e0;
+  --paper-deep: #f3e6c8;
+  --ink: #1f2433;
+  --ink-soft: #4a4f5e;
+  --terracotta: #d9653b;
+  --teal: #2f7f7a;
+  --mustard: #e8b64c;
+  --plum: #8a4f7d;
+  background-color: var(--paper);
+  background-image: radial-gradient(rgba(31, 36, 51, 0.07) 1px, transparent 1px);
+  background-size: 18px 18px;
+  color: var(--ink);
+}
+
+.hand {
+  font-family: var(--font-hand), "Comic Sans MS", cursive;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* A card drawn with a slightly uneven pen. */
+.card {
+  background: #fffaf0;
+  border: 2.5px solid var(--ink);
+  border-radius: 18px 6px 16px 8px / 8px 16px 6px 18px;
+  box-shadow: 5px 5px 0 var(--ink);
+}
+
+.tiltLeft {
+  transform: rotate(-1.2deg);
+}
+
+.tiltRight {
+  transform: rotate(1deg);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2.5px solid var(--ink);
+  border-radius: 14px 5px 12px 6px / 6px 12px 5px 14px;
+  box-shadow: 4px 4px 0 var(--ink);
+  padding: 0.7rem 1.3rem;
+  font-weight: 600;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--ink);
+}
+
+.btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.btn:focus-visible,
+.chip:focus-visible {
+  outline: 3px dashed var(--terracotta);
+  outline-offset: 3px;
+}
+
+.btnPrimary {
+  background: var(--mustard);
+  color: var(--ink);
+}
+
+.btnTeal {
+  background: var(--teal);
+  color: #fff;
+}
+
+.btnPlain {
+  background: #fffaf0;
+  color: var(--ink);
+}
+
+.chip {
+  border: 2px solid var(--ink);
+  border-radius: 999px 900px 999px 950px;
+  padding: 0.3rem 0.85rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: #fffaf0;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.chipOn {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* A marker-pen underline under a heading word. */
+.scribble {
+  background-image: linear-gradient(transparent 62%, rgba(232, 182, 76, 0.75) 62%, rgba(232, 182, 76, 0.75) 88%, transparent 88%);
+  padding: 0 0.15em;
+}
+
+.slider {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 14px;
+  border: 2.5px solid var(--ink);
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f3e6c8, #e8b64c 55%, #d9653b);
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid var(--ink);
+  background: #fffaf0 radial-gradient(circle, var(--ink) 0 3px, transparent 4px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.slider::-moz-range-thumb {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid var(--ink);
+  background: #fffaf0 radial-gradient(circle, var(--ink) 0 3px, transparent 4px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.slider:focus-visible {
+  outline: 3px dashed var(--terracotta);
+  outline-offset: 6px;
+}
+
+.wobble {
+  animation: wobble 5s ease-in-out infinite;
+  transform-origin: 50% 90%;
+}
+
+@keyframes wobble {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wobble {
+    animation: none;
+  }
+  .btn,
+  .btn:hover,
+  .btn:active {
+    transition: none;
+    transform: none;
+  }
+}
