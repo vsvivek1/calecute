@@ -79,6 +79,12 @@ const PATHS: Array<{ path: string; priority: number; changeFrequency: "monthly" 
   { path: "/quizkerala/terms", priority: 0.4, changeFrequency: "yearly" },
   { path: "/quizkerala/delete-account", priority: 0.4, changeFrequency: "yearly" },
   { path: "/quizkerala/child-safety", priority: 0.4, changeFrequency: "yearly" },
+  // Chronomap product page and its policy pages. /chronomap/app is a preview
+  // state and is deliberately left out (it is noindex).
+  { path: "/chronomap", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/chronomap/privacy", priority: 0.4, changeFrequency: "yearly" },
+  { path: "/chronomap/terms", priority: 0.4, changeFrequency: "yearly" },
+  { path: "/chronomap/delete-account", priority: 0.4, changeFrequency: "yearly" },
   { path: "/locations", priority: 0.4, changeFrequency: "yearly" },
   { path: "/contact", priority: 0.5, changeFrequency: "yearly" },
   { path: "/privacy", priority: 0.3, changeFrequency: "yearly" },
