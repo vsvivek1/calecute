@@ -37,6 +37,14 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // FarmConnect ships on the stores as "FPO"; a guessed /fpo URL lands on
+      // the FarmConnect site, which stays at /farmconnect.
+      { source: "/fpo", destination: "/farmconnect", permanent: false },
+      {
+        source: "/fpo/:slug(privacy|terms|delete-account|support)",
+        destination: "/farmconnect/:slug",
+        permanent: false,
+      },
       // Doplando's privacy policy and terms live on its own domain; these
       // keep a guessed calecutech.com URL from landing on a 404.
       { source: "/doplando/privacy", destination: "https://doplando.com/privacy", permanent: false },
