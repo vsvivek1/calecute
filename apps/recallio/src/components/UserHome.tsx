@@ -1,4 +1,5 @@
 import { serverClient } from '@/lib/supabase';
+import { SHOW_FREE_TIER } from '@/lib/backend';
 import type { Session } from '@/lib/types';
 import PayButton from './PayButton';
 
@@ -44,6 +45,7 @@ export default async function UserHome({
       <h1>Your account</h1>
       <p className="sub">{session.email}</p>
 
+      {SHOW_FREE_TIER && (
       <div className="card">
         <h2>Free cards</h2>
         {unlimited ? (
@@ -63,6 +65,7 @@ export default async function UserHome({
           you subscribe. Your streak and progress are never reset.
         </p>
       </div>
+      )}
 
       {[...(courses ?? [])]
         .sort((a, b) => Number(b.id === focusCourse) - Number(a.id === focusCourse))
