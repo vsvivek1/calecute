@@ -3,6 +3,9 @@ import { company, officeLines } from "@/lib/company";
 
 const legalLinks = [
   { href: "/apps", label: "Mobile Apps" },
+  { href: "/history-clock/privacy", label: "History Clock Privacy" },
+  { href: "/history-clock/terms", label: "History Clock Terms" },
+  { href: "/history-clock/delete-account", label: "History Clock Account Deletion" },
   { href: "/privacy", label: "Privacy Policy" },
   { href: "/terms", label: "Terms of Service" },
   { href: "/refund-policy", label: "Refund & Cancellation Policy" },
@@ -13,6 +16,7 @@ const legalLinks = [
 const companyLinks = [
   { href: "/services", label: "Services" },
   { href: "/products", label: "Products" },
+  { href: "/history-clock", label: "History Clock" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];

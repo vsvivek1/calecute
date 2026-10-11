@@ -37,6 +37,14 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // FarmConnect ships on the stores as "FPO"; a guessed /fpo URL lands on
+      // the FarmConnect site, which stays at /farmconnect.
+      { source: "/fpo", destination: "/farmconnect", permanent: false },
+      {
+        source: "/fpo/:slug(privacy|terms|delete-account|support)",
+        destination: "/farmconnect/:slug",
+        permanent: false,
+      },
       // Doplando's privacy policy and terms live on its own domain; these
       // keep a guessed calecutech.com URL from landing on a 404.
       { source: "/doplando/privacy", destination: "https://doplando.com/privacy", permanent: false },
@@ -47,6 +55,13 @@ const nextConfig: NextConfig = {
         source: "/goldlelam",
         destination: "/bankers-gold",
         permanent: false,
+      },
+      {
+        // Chronomap was renamed History Clock. The placeholder mobile app and
+        // any shared links still point at /chronomap/*, so they follow it.
+        source: "/chronomap/:path*",
+        destination: "/history-clock/:path*",
+        permanent: true,
       },
       {
         // Payout setup moved into the profile page. Anyone holding the old

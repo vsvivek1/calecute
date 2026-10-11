@@ -67,8 +67,8 @@ export const STATIC_APPS: StaticApp[] = [
     image: "/sparex/assets/icon-192.png",
   },
   {
-    name: "FarmConnect",
-    tagline: "Buy fresh produce straight from Kerala farmers",
+    name: "FPO: Farm Connect",
+    tagline: "Farmers' digital mall: buy straight from Kerala farmers",
     href: "/farmconnect",
     image: "/farmconnect/assets/icon-192.png",
   },
