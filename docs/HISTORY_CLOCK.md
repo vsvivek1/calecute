@@ -48,4 +48,4 @@ No external images or scripts. Artwork is inline SVG and CSS. Fonts (Geist, Patr
 
 Vercel project `calecute` (team `sparex1`) builds `apps/web` from `main`. History Clock has no environment variables of its own. `NEXT_PUBLIC_SITE_ORIGIN` (default `https://calecutech.com`) sets canonical URLs, the sitemap and robots.txt.
 
-The History Clock placeholder mobile app (ZIP `prompts/`, `lib/main.dart`) links to these routes. It collects no data. It is not part of this repository.
+The History Clock preview mobile app lives in `apps/mobile` (Flutter, package ID `com.calecutech.historyclock`; see `apps/mobile/README.md`). It links to these routes and collects no data, so keep the routes stable.
