@@ -1,0 +1,955 @@
+{
+"note": "Small sample used only in demo mode (no Supabase keys). The full course loads from Supabase after purchase.",
+"cards": [
+{
+"id": "geological-assistant-pp-f016",
+"module_id": "geological-assistant-m1",
+"subtopic": "Topographical maps",
+"statement": "A map is a scaled, two-dimensional representation of part of the Earth's surface; its scale is the ratio of map distance to ground distance.",
+"reasoning": "Scale 1:50,000 means 1 cm on the map is 50,000 cm (0.5 km) on the ground.",
+"source_ref": "Kerala PSC Assistant Geologist 2025",
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 15
+},
+{
+"id": "geological-assistant-pp-f039",
+"module_id": "geological-assistant-m1",
+"subtopic": "Geomorphology of Kerala / India",
+"statement": "Munnar, in Idukki district at about 1,500 m, is an example of a plateau (the high-range upland) in the Western Ghats of Kerala.",
+"reasoning": "Kerala has highland, midland and lowland zones; Munnar is highland.",
+"source_ref": "Kerala PSC Junior Hydrogeologist 2023",
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 38
+},
+{
+"id": "geological-assistant-u1a-f001",
+"module_id": "geological-assistant-m1",
+"subtopic": "Earth and the solar system",
+"statement": "The nebular hypothesis (Kant and Laplace) says the Sun and planets formed from one rotating cloud of gas and dust; it is the most widely accepted model.",
+"reasoning": "A spinning cloud flattens into a disc. This explains why all planets orbit in the same direction and nearly the same plane.",
+"source_ref": "UPSC Combined Geo-Scientist Prelims 2021 (Geology Paper II)",
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 40
+},
+{
+"id": "geological-assistant-u1a-f002",
+"module_id": "geological-assistant-m1",
+"subtopic": "Earth and the solar system",
+"statement": "Mercury, Venus, Earth and Mars are terrestrial (rocky, dense) planets; Jupiter, Saturn, Uranus and Neptune are Jovian (large, low-density) planets. The asteroid belt lies between Mars and Jupiter.",
+"reasoning": "Near the hot young Sun only rock and metal could condense. Farther out, gas and ice could collect, making giant planets.",
+"source_ref": null,
+"verified": true,
+"frequency": 2,
+"tier": 2,
+"order_index": 41
+},
+{
+"id": "geological-assistant-u1a-f003",
+"module_id": "geological-assistant-m1",
+"subtopic": "Earth and the solar system",
+"statement": "The Earth is about 4.55 billion years old, an age first fixed by Clair Patterson (1956) from lead isotopes in meteorites.",
+"reasoning": "Earth's first rocks were destroyed by later melting and recycling. Meteorites formed at the same time and stayed unchanged, so they give the true age.",
+"source_ref": null,
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 42
+},
+{
+"id": "geological-assistant-u1a-f073",
+"module_id": "geological-assistant-m1",
+"subtopic": "Seismic belts of the earth",
+"statement": "Circum-Pacific belt releases about 80% of earthquake energy (about 68% of earthquakes by number in some Indian texts); Alpine-Himalayan belt is second (about 15-21%); mid-ocean ridges third.",
+"reasoning": "The Pacific is ringed by subduction zones, which store and release the most strain. Ridges give only small, shallow shocks.",
+"source_ref": null,
+"verified": false,
+"frequency": 3,
+"tier": 1,
+"order_index": 112
+},
+{
+"id": "geological-assistant-pp-f002",
+"module_id": "geological-assistant-m2",
+"subtopic": "Behaviour of minerals and rocks under deformation conditions",
+"statement": "Rock strength increases with confining pressure and decreases as temperature rises.",
+"reasoning": "Pressure presses cracks shut, so the rock is harder to break. Heat softens the rock so it flows more easily.",
+"source_ref": "Kerala PSC Assistant Geologist 2025",
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 1
+},
+{
+"id": "geological-assistant-pp-f015",
+"module_id": "geological-assistant-m2",
+"subtopic": "Stratigraphic principles and correlation",
+"statement": "By the law of superposition, in an undisturbed sequence of sedimentary layers the lowest bed is the oldest and the topmost bed is the youngest.",
+"reasoning": "Steno's law: you lay new layers on top of old ones.",
+"source_ref": "Kerala PSC Assistant Geologist 2025",
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 14
+},
+{
+"id": "geological-assistant-pp-f040",
+"module_id": "geological-assistant-m2",
+"subtopic": "Precambrian stratigraphy of India",
+"statement": "The crystalline basement rocks of Kerala (charnockite, gneiss and khondalite) are Precambrian, mainly Archaean to Proterozoic in age.",
+"reasoning": "They are the oldest rocks of the state; sedimentary rocks are only Tertiary and Quaternary.",
+"source_ref": "Kerala PSC Junior Hydrogeologist 2023",
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 39
+},
+{
+"id": "geological-assistant-u2a-f001",
+"module_id": "geological-assistant-m2",
+"subtopic": "Measurement of strain in deformed rocks",
+"statement": "Stress is force per unit area (SI unit: pascal). Strain is the change in shape or volume that stress produces, and it has no units.",
+"reasoning": "Stress is the cause, strain is the effect. Strain is a ratio (change in length / original length), so the units cancel.",
+"source_ref": null,
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 396
+},
+{
+"id": "geological-assistant-u2a-f002",
+"module_id": "geological-assistant-m2",
+"subtopic": "Measurement of strain in deformed rocks",
+"statement": "The strain ellipsoid is the shape a sphere takes after homogeneous strain. Its axes are X ≥ Y ≥ Z: longest, intermediate and shortest.",
+"reasoning": "Think of squeezing a ball of clay: it becomes an egg or a disc. X is the stretch direction, Z is the squeeze direction.",
+"source_ref": null,
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 397
+},
+{
+"id": "geological-assistant-u2a-f003",
+"module_id": "geological-assistant-m2",
+"subtopic": "Measurement of strain in deformed rocks",
+"statement": "Pure shear is coaxial (non-rotational) strain. Simple shear is non-coaxial (rotational) strain.",
+"reasoning": "Pure shear = squeezing a block flat; the strain axes do not turn. Simple shear = pushing the top of a pack of cards sideways; the strain axes rotate.",
+"source_ref": null,
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 398
+},
+{
+"id": "geological-assistant-pp-f003",
+"module_id": "geological-assistant-m3",
+"subtopic": "Physical, chemical and crystallographic characteristics of common rock forming silicate mineral groups",
+"statement": "Ionic radius is the main control on substitution: ions of similar size (within about 15%) and balanced charge can replace one another in a crystal lattice (Goldschmidt's rules).",
+"reasoning": "Think of fitting a similar-sized brick into the same hole.",
+"source_ref": "Kerala PSC Assistant Geologist 2025",
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 2
+},
+{
+"id": "geological-assistant-pp-f004",
+"module_id": "geological-assistant-m3",
+"subtopic": "Mineral fuels",
+"statement": "Coalification (peat to lignite to bituminous coal to anthracite) releases methane, carbon dioxide, nitrogen and water as by-products while the coal becomes richer in carbon.",
+"reasoning": "The coal loses its volatile parts and keeps the carbon.",
+"source_ref": "Kerala PSC Assistant Geologist 2025",
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 3
+},
+{
+"id": "geological-assistant-pp-f005",
+"module_id": "geological-assistant-m3",
+"subtopic": "Mineral fuels",
+"statement": "Most of the methane in a coal seam is held by adsorption on the internal surfaces of coal micropores, not as free gas; lowering the pressure by pumping out water releases it.",
+"reasoning": "Gas molecules stick on the organic surface like a film.",
+"source_ref": "Kerala PSC Assistant Geologist 2025",
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 4
+},
+{
+"id": "geological-assistant-pp-f008",
+"module_id": "geological-assistant-m3",
+"subtopic": "Mineral fuels",
+"statement": "Gas hydrate is an ice-like water cage around gas molecules. Methane, ethane, CO2 and H2S form structure I; larger propane and isobutane form structure II.",
+"reasoning": "Bigger guest molecules need bigger cages.",
+"source_ref": "Kerala PSC Assistant Geologist 2025",
+"verified": false,
+"frequency": 3,
+"tier": 1,
+"order_index": 7
+},
+{
+"id": "geological-assistant-u3c-f059",
+"module_id": "geological-assistant-m3",
+"subtopic": "Ceramic minerals",
+"statement": "Kerala's best-known china clay deposit is at Kundara (Kollam district); the state holds about 23% of India's china clay resources (IBM, IMY 2022; inventory as on 1.4.2015).",
+"reasoning": "The clay occurs in the Tertiary Warkalli beds and as residual clay over weathered gneiss. Thonnakkal near Thiruvananthapuram is another centre.",
+"source_ref": null,
+"verified": false,
+"frequency": 3,
+"tier": 1,
+"order_index": 1092
+},
+{
+"id": "geological-assistant-u3c-f070",
+"module_id": "geological-assistant-m3",
+"subtopic": "Fertilizer minerals",
+"statement": "India has no working potash mine and imports its potash; potash salts (polyhalite, sylvite) are known in the buried evaporites of the Nagaur-Ganganagar basin, Rajasthan.",
+"reasoning": "Potash salts form only in the last stage of sea water evaporation and dissolve easily, so they survive only deep underground. Status as known in 2025.",
+"source_ref": null,
+"verified": false,
+"frequency": 2,
+"tier": 2,
+"order_index": 1103
+},
+{
+"id": "geological-assistant-u4a-f001",
+"module_id": "geological-assistant-m4",
+"subtopic": "Forms of igneous rocks",
+"statement": "A sill is a sheet-like (tabular) concordant intrusion: it lies parallel to the bedding or foliation of the country rock.",
+"reasoning": "Concordant means it follows the layers. Memory hook: a window sill lies flat, like the beds.",
+"source_ref": null,
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 1114
+},
+{
+"id": "geological-assistant-u4a-f002",
+"module_id": "geological-assistant-m4",
+"subtopic": "Forms of igneous rocks",
+"statement": "A dyke is a tabular discordant intrusion: it cuts across the bedding or foliation of the country rock.",
+"reasoning": "Discordant means it cuts the layers. Dykes fill cracks, so they are usually steep. Dolerite is the commonest dyke rock.",
+"source_ref": null,
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 1115
+},
+{
+"id": "geological-assistant-u4a-f003",
+"module_id": "geological-assistant-m4",
+"subtopic": "Forms of igneous rocks",
+"statement": "A laccolith is a concordant intrusion with a flat floor and a domed roof, usually built by viscous acid (silica-rich) magma.",
+"reasoning": "Thick, sticky magma cannot spread far sideways. It piles up and lifts the roof beds, like a mushroom cap.",
+"source_ref": "Kerala PSC Junior Petrological Analyst (KMML) 2026",
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 1116
+},
+{
+"id": "geological-assistant-u4a-f008",
+"module_id": "geological-assistant-m4",
+"subtopic": "Textures of igneous rocks",
+"statement": "By crystallinity, igneous rocks are holocrystalline (all crystals), holohyaline (all glass, like obsidian) or hypocrystalline (crystals plus glass).",
+"reasoning": "Holo = whole, hyaline = glassy. Glass forms when lava cools too fast for crystals to grow.",
+"source_ref": "Goa PSC Assistant Professor Geology 2021",
+"verified": true,
+"frequency": 2,
+"tier": 2,
+"order_index": 1121
+},
+{
+"id": "geological-assistant-u4a-f009",
+"module_id": "geological-assistant-m4",
+"subtopic": "Textures of igneous rocks",
+"statement": "Slow cooling at depth gives coarse (phaneritic) grains because few nuclei form and grow large; fast cooling of lava gives fine (aphanitic) grains or glass.",
+"reasoning": "Nuclei are the tiny starting points of crystals. Slow cooling = few nuclei, big crystals. Fast cooling = many nuclei, tiny crystals.",
+"source_ref": "Kerala PSC HSST Geology 2026",
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 1122
+},
+{
+"id": "geological-assistant-u4a-f010",
+"module_id": "geological-assistant-m4",
+"subtopic": "Textures of igneous rocks",
+"statement": "Porphyritic texture has large crystals (phenocrysts) set in a finer groundmass, usually recording two stages of cooling; with a glassy groundmass it is called vitrophyric.",
+"reasoning": "The big crystals grew slowly at depth. Then the magma rose and the rest cooled quickly around them.",
+"source_ref": null,
+"verified": true,
+"frequency": 3,
+"tier": 1,
+"order_index": 1123
+},
+{
+"id": "geological-assistant-pp-f017",
+"module_id": "geological-assistant-m5",
+"subtopic": "Water-bearing properties of rocks",
+"statement": "Volcanic rock permeability varies: vesicular, jointed or rubbly-topped basalt can be a good aquifer, but dense massive lava (basalt or rhyolite) is nearly tight; unweathered igneous and metamorphic rocks are generally tight.",
+"reasoning": "Permeability comes from vesicles, joints, rubbly flow tops and lava tubes, not from rock name.",
+"source_ref": "Kerala PSC Junior Hydrogeologist 2023",
+"verified": false,
+"frequency": 3,
+"tier": 1,
+"order_index": 16
+},
+{
+"id": "geological-assistant-pp-f019",
+"module_id": "geological-assistant-m5",
+"subtopic": "Groundwater provinces and problems",
+"statement": "The Indo-Gangetic alluvium is India's most productive aquifer system: thick sand-gravel beds, river, canal and rainfall recharge give very high yields and large groundwater resources.",
+"reasoning": "Think thick, loose sand-gravel plus big rivers.",
+"source_ref": "Kerala PSC Junior Hydrogeologist 2023",
+"verified": false,
+"frequency": 3,
+"tier": 1,
+"order_index": 18
+},
+{
+"id": "geological-assistant-pp-f020",
+"module_id": "geological-assistant-m5",
+"subtopic": "Hydrologic cycle and water budget",
+"statement": "Evaporation absorbs about 590 calories per gram of water (latent heat of vaporisation near 15 C, about 2.47 MJ/kg) and continues until the air above is saturated.",
+"reasoning": "This heat comes from the water and surroundings, which is why evaporation cools.",
+"source_ref": "Kerala PSC Junior Hydrogeologist 2023",
+"verified": false,
+"frequency": 3,
+"tier": 1,
+"order_index": 19
+},
+{
+"id": "geological-assistant-pp-f029",
+"module_id": "geological-assistant-m5",
+"subtopic": "Types of wells and well construction",
+"statement": "Bored wells are made with hand or rotary augers in soft ground; they are shallow, commonly up to about 30 m deep (limit varies by textbook).",
+"reasoning": "Auger = a big screw that bores into soil.",
+"source_ref": "Kerala PSC Junior Hydrogeologist 2023",
+"verified": false,
+"frequency": 3,
+"tier": 1,
+"order_index": 28
+},
+{
+"id": "geological-assistant-pp-f030",
+"module_id": "geological-assistant-m5",
+"subtopic": "Natural hazards - landslides",
+"statement": "In the Standard Penetration Test, the N value is the number of blows of a 63.5 kg hammer needed to drive the split-spoon sampler through the last 300 mm of a 450 mm drive.",
+"reasoning": "N tells how dense or stiff a soil is. Engineering-geology item, outside the listed syllabus.",
+"source_ref": "Kerala PSC Junior Hydrogeologist 2023",
+"verified": false,
+"frequency": 3,
+"tier": 1,
+"order_index": 29
+},
+{
+"id": "geological-assistant-pp-f032",
+"module_id": "geological-assistant-m5",
+"subtopic": "Groundwater exploration - geophysical methods",
+"statement": "In neutron-capture (pulsed-neutron) logging, chlorine in saline water has a high thermal-neutron capture cross-section, so a high capture reading points to a saline water-bearing formation.",
+"reasoning": "Chlorine absorbs slow neutrons strongly.",
+"source_ref": "Kerala PSC Junior Hydrogeologist 2023",
+"verified": false,
+"frequency": 3,
+"tier": 1,
+"order_index": 31
+}
+],
+"questions": [
+{
+"id": "geological-assistant-pp-q002",
+"paper_code": "Kerala PSC Assistant Geologist 2025",
+"stem": "Which change would make a rock weaker under deformation?",
+"option_a": "Rise in temperature",
+"option_b": "Increase in strain rate",
+"option_c": "Increase in confining pressure",
+"option_d": "Fall in temperature",
+"official_answer": "a",
+"verified_answer": "a"
+},
+{
+"id": "geological-assistant-pp-q003",
+"paper_code": "Kerala PSC Assistant Geologist 2025",
+"stem": "Which property is the main control on whether one ion can replace another in a mineral?",
+"option_a": "Similar ionic radius",
+"option_b": "Equal atomic mass",
+"option_c": "Same crystal colour",
+"option_d": "Same melting point of the metal",
+"official_answer": "a",
+"verified_answer": "a"
+},
+{
+"id": "geological-assistant-pp-q004",
+"paper_code": "Kerala PSC Assistant Geologist 2025",
+"stem": "Which combustible gas is the main by-product of coalification that stays trapped in coal seams?",
+"option_a": "Methane",
+"option_b": "Ethylene",
+"option_c": "Hydrogen sulphide",
+"option_d": "Carbon monoxide",
+"official_answer": "a",
+"verified_answer": "a"
+},
+{
+"id": "geological-assistant-pp-q005",
+"paper_code": "Kerala PSC Assistant Geologist 2025",
+"stem": "How is most methane stored in an unmined coal seam?",
+"option_a": "By adsorption on the organic surface of coal",
+"option_b": "Locked in carbonate minerals",
+"option_c": "Dissolved in seam brine",
+"option_d": "As free gas in large open caves",
+"official_answer": "a",
+"verified_answer": "a"
+},
+{
+"id": "geological-assistant-pp-q008",
+"paper_code": "Kerala PSC Assistant Geologist 2025",
+"stem": "Which guest molecule stabilises structure II gas hydrate?",
+"option_a": "Ethane",
+"option_b": "Hydrogen sulphide",
+"option_c": "Propane",
+"option_d": "Carbon dioxide",
+"official_answer": "c",
+"verified_answer": "c"
+},
+{
+"id": "geological-assistant-pp-q025",
+"paper_code": "Kerala PSC Junior Hydrogeologist 2023",
+"stem": "How does permeability of crystalline rock generally change with depth?",
+"option_a": "Stays constant",
+"option_b": "Rises steadily with depth",
+"option_c": "Falls as fractures become fewer and tighter",
+"option_d": "Is greatest at the base of a deep hole",
+"official_answer": "c",
+"verified_answer": "c"
+},
+{
+"id": "geological-assistant-pp-q026",
+"paper_code": "Kerala PSC Junior Hydrogeologist 2023",
+"stem": "Which process after burial mainly reduces the primary porosity of limestone?",
+"option_a": "Tectonic fracturing",
+"option_b": "Cementation by calcite",
+"option_c": "Dissolution along joints",
+"option_d": "Weathering by carbonic acid",
+"official_answer": "b",
+"verified_answer": "b"
+},
+{
+"id": "geological-assistant-pp-q029",
+"paper_code": "Kerala PSC Junior Hydrogeologist 2023",
+"stem": "Which tool is used to make a bored well in soft ground?",
+"option_a": "Down-the-hole hammer",
+"option_b": "Percussion chisel bit",
+"option_c": "Jetting pipe",
+"option_d": "Auger",
+"official_answer": "d",
+"verified_answer": "d"
+},
+{
+"id": "geological-assistant-pp-q030",
+"paper_code": "Kerala PSC Junior Hydrogeologist 2023",
+"stem": "The SPT N value is the number of hammer blows needed to drive the sampler by:",
+"option_a": "150 mm",
+"option_b": "300 mm",
+"option_c": "600 mm",
+"option_d": "450 mm",
+"official_answer": "b",
+"verified_answer": "b"
+},
+{
+"id": "geological-assistant-pp-q031",
+"paper_code": "Kerala PSC Junior Hydrogeologist 2023",
+"stem": "Which device picks up seismic waves in a refraction survey?",
+"option_a": "Geophone",
+"option_b": "Gravimeter",
+"option_c": "Resistivity electrode",
+"option_d": "Magnetometer",
+"official_answer": "a",
+"verified_answer": "a"
+},
+{
+"id": "geological-assistant-pp-q032",
+"paper_code": "Kerala PSC Junior Hydrogeologist 2023",
+"stem": "A high thermal-neutron capture cross-section in a pulsed-neutron log most likely indicates:",
+"option_a": "Saline (chloride-rich) water in the formation",
+"option_b": "Fresh water in clean sand",
+"option_c": "Dry quartz sand",
+"option_d": "Gas-filled pores",
+"official_answer": "a",
+"verified_answer": "a"
+},
+{
+"id": "geological-assistant-pp-q039",
+"paper_code": "Kerala PSC Junior Hydrogeologist 2023",
+"stem": "Which landform type does Munnar in Kerala represent?",
+"option_a": "Alluvial fan",
+"option_b": "Plateau",
+"option_c": "Coastal plain",
+"option_d": "Delta",
+"official_answer": "b",
+"verified_answer": "b"
+},
+{
+"id": "geological-assistant-pp-q040",
+"paper_code": "Kerala PSC Junior Hydrogeologist 2023",
+"stem": "The crystalline basement rocks of Kerala belong mainly to which time span?",
+"option_a": "Cenozoic",
+"option_b": "Palaeozoic",
+"option_c": "Precambrian (Archaean to Proterozoic)",
+"option_d": "Mesozoic",
+"official_answer": "c",
+"verified_answer": "c"
+},
+{
+"id": "geological-assistant-u1a-q001",
+"paper_code": "UPSC Combined Geo-Scientist Prelims 2021 (Geology Paper II)",
+"stem": "The nebular hypothesis for the origin of the solar system is associated with which pair of workers?",
+"option_a": "Kant and Laplace",
+"option_b": "Hoyle and Lyttleton",
+"option_c": "Chamberlin and Moulton",
+"option_d": "Jeans and Jeffreys",
+"official_answer": "a",
+"verified_answer": "a"
+},
+{
+"id": "geological-assistant-u1a-q002",
+"paper_code": null,
+"stem": "Which one of the following is NOT a terrestrial planet?",
+"option_a": "Venus",
+"option_b": "Mars",
+"option_c": "Neptune",
+"option_d": "Mercury",
+"official_answer": "c",
+"verified_answer": "c"
+},
+{
+"id": "geological-assistant-u1a-q003",
+"paper_code": null,
+"stem": "The Widmanstatten pattern is a characteristic feature of:",
+"option_a": "Lunar basalts",
+"option_b": "Carbonaceous chondrites",
+"option_c": "Iron meteorites",
+"option_d": "Tektites",
+"official_answer": "c",
+"verified_answer": "c"
+},
+{
+"id": "geological-assistant-u1a-q004",
+"paper_code": null,
+"stem": "The mean density of the Earth as a whole is closest to:",
+"option_a": "11 g/cm3",
+"option_b": "5.5 g/cm3",
+"option_c": "3.3 g/cm3",
+"option_d": "2.7 g/cm3",
+"official_answer": "b",
+"verified_answer": "b"
+},
+{
+"id": "geological-assistant-u2a-q001",
+"paper_code": null,
+"stem": "On a Flinn diagram, a strain ellipsoid with k = 0 has which shape?",
+"option_a": "Plane-strain ellipsoid with the Y axis unchanged",
+"option_b": "Perfect sphere (no strain)",
+"option_c": "Oblate (pancake-shaped, pure flattening)",
+"option_d": "Prolate (cigar-shaped, pure constriction)",
+"official_answer": "c",
+"verified_answer": "c"
+},
+{
+"id": "geological-assistant-u2a-q002",
+"paper_code": null,
+"stem": "The Flinn diagram is a plot of:",
+"option_a": "dip angle against layer thickness",
+"option_b": "stress against strain",
+"option_c": "the axial ratio X/Y against the axial ratio Y/Z",
+"option_d": "shear stress against normal stress",
+"official_answer": "c",
+"verified_answer": "c"
+},
+{
+"id": "geological-assistant-u2a-q003",
+"paper_code": null,
+"stem": "Which strain-analysis method is correctly paired with the data it uses?",
+"option_a": "Wellman method — axial ratios of reduction spots",
+"option_b": "Rf/φ method — angles between hinge line and median line of deformed brachiopods",
+"option_c": "Fry method — distances between the centres of neighbouring grains or ooids",
+"option_d": "Flinn method — spacing of joints in a competent bed",
+"official_answer": "c",
+"verified_answer": "c"
+},
+{
+"id": "geological-assistant-u2a-q004",
+"paper_code": null,
+"stem": "A belemnite fossil originally 10 cm long has been stretched to 15 cm. Its quadratic elongation (λ) is:",
+"option_a": "2.25",
+"option_b": "0.25",
+"option_c": "1.5",
+"option_d": "0.5",
+"official_answer": "a",
+"verified_answer": "a"
+},
+{
+"id": "geological-assistant-u3a-q001",
+"paper_code": null,
+"stem": "How many crystal classes (point groups) are possible in crystals?",
+"option_a": "7",
+"option_b": "14",
+"option_c": "230",
+"option_d": "32",
+"official_answer": "d",
+"verified_answer": "d"
+},
+{
+"id": "geological-assistant-u3a-q002",
+"paper_code": "Kerala PSC HSST Geology 2026 (QP 80/2026/OL)",
+"stem": "Which rotation axis of symmetry can never occur in a crystal?",
+"option_a": "5-fold",
+"option_b": "6-fold",
+"option_c": "3-fold",
+"option_d": "2-fold",
+"official_answer": "a",
+"verified_answer": "a"
+},
+{
+"id": "geological-assistant-pp-q016",
+"paper_code": "Kerala PSC Assistant Geologist 2025",
+"stem": "On a map of scale 1:50,000, a distance of 2 cm represents how much on the ground?",
+"option_a": "2 km",
+"option_b": "0.5 km",
+"option_c": "1 km",
+"option_d": "10 km",
+"official_answer": "c",
+"verified_answer": "c"
+},
+{
+"id": "geological-assistant-u4a-q001",
+"paper_code": null,
+"stem": "Which igneous body is a sheet-like intrusion lying parallel to the bedding of the country rock?",
+"option_a": "Stock",
+"option_b": "Sill",
+"option_c": "Dyke",
+"option_d": "Batholith",
+"official_answer": "b",
+"verified_answer": "b"
+},
+{
+"id": "geological-assistant-u4a-q002",
+"paper_code": null,
+"stem": "A lens-shaped concordant intrusion occupying the crest of an anticline or the trough of a syncline is called a",
+"option_a": "Bysmalith",
+"option_b": "Phacolith",
+"option_c": "Laccolith",
+"option_d": "Lopolith",
+"official_answer": "b",
+"verified_answer": "b"
+},
+{
+"id": "geological-assistant-u4a-q003",
+"paper_code": null,
+"stem": "The Bushveld Complex of South Africa, a huge saucer-shaped mafic intrusion, is the classic example of a",
+"option_a": "Laccolith",
+"option_b": "Lopolith",
+"option_c": "Chonolith",
+"option_d": "Phacolith",
+"official_answer": "b",
+"verified_answer": "b"
+},
+{
+"id": "geological-assistant-u4a-q004",
+"paper_code": null,
+"stem": "Three of these igneous forms are concordant. Which one is the odd one out?",
+"option_a": "Dyke",
+"option_b": "Laccolith",
+"option_c": "Lopolith",
+"option_d": "Sill",
+"official_answer": "a",
+"verified_answer": "a"
+},
+{
+"id": "geological-assistant-u4a-q005",
+"paper_code": "Kerala PSC Junior Petrological Analyst (KMML) 2026",
+"stem": "Laccoliths, with a flat floor and an up-arched roof, are most commonly built by which kind of magma?",
+"option_a": "Fluid basic (basaltic) magma",
+"option_b": "Carbonatite magma",
+"option_c": "Very fluid ultrabasic magma",
+"option_d": "Viscous acid (silica-rich) magma",
+"official_answer": "d",
+"verified_answer": "d"
+},
+{
+"id": "geological-assistant-u4a-q006",
+"paper_code": null,
+"stem": "A discordant granite pluton of the same nature as a batholith, but with an exposed area of less than 100 square km, is called a",
+"option_a": "Sill",
+"option_b": "Lopolith",
+"option_c": "Phacolith",
+"option_d": "Stock",
+"official_answer": "d",
+"verified_answer": "d"
+}
+],
+"question_cards": [
+{
+"question_id": "geological-assistant-pp-q002",
+"card_id": "geological-assistant-pp-f002"
+},
+{
+"question_id": "geological-assistant-pp-q003",
+"card_id": "geological-assistant-pp-f003"
+},
+{
+"question_id": "geological-assistant-pp-q004",
+"card_id": "geological-assistant-pp-f004"
+},
+{
+"question_id": "geological-assistant-pp-q004",
+"card_id": "geological-assistant-pp-f005"
+},
+{
+"question_id": "geological-assistant-pp-q004",
+"card_id": "geological-assistant-pp-f008"
+},
+{
+"question_id": "geological-assistant-pp-q005",
+"card_id": "geological-assistant-pp-f004"
+},
+{
+"question_id": "geological-assistant-pp-q005",
+"card_id": "geological-assistant-pp-f005"
+},
+{
+"question_id": "geological-assistant-pp-q005",
+"card_id": "geological-assistant-pp-f008"
+},
+{
+"question_id": "geological-assistant-pp-q008",
+"card_id": "geological-assistant-pp-f004"
+},
+{
+"question_id": "geological-assistant-pp-q008",
+"card_id": "geological-assistant-pp-f005"
+},
+{
+"question_id": "geological-assistant-pp-q008",
+"card_id": "geological-assistant-pp-f008"
+},
+{
+"question_id": "geological-assistant-u2a-q001",
+"card_id": "geological-assistant-u2a-f001"
+},
+{
+"question_id": "geological-assistant-u2a-q001",
+"card_id": "geological-assistant-u2a-f002"
+},
+{
+"question_id": "geological-assistant-u2a-q001",
+"card_id": "geological-assistant-u2a-f003"
+},
+{
+"question_id": "geological-assistant-u2a-q002",
+"card_id": "geological-assistant-u2a-f001"
+},
+{
+"question_id": "geological-assistant-u2a-q002",
+"card_id": "geological-assistant-u2a-f002"
+},
+{
+"question_id": "geological-assistant-u2a-q002",
+"card_id": "geological-assistant-u2a-f003"
+},
+{
+"question_id": "geological-assistant-u2a-q003",
+"card_id": "geological-assistant-u2a-f001"
+},
+{
+"question_id": "geological-assistant-u2a-q003",
+"card_id": "geological-assistant-u2a-f002"
+},
+{
+"question_id": "geological-assistant-u2a-q003",
+"card_id": "geological-assistant-u2a-f003"
+},
+{
+"question_id": "geological-assistant-u2a-q004",
+"card_id": "geological-assistant-u2a-f001"
+},
+{
+"question_id": "geological-assistant-u2a-q004",
+"card_id": "geological-assistant-u2a-f002"
+},
+{
+"question_id": "geological-assistant-u2a-q004",
+"card_id": "geological-assistant-u2a-f003"
+},
+{
+"question_id": "geological-assistant-u3a-q001",
+"card_id": "geological-assistant-pp-f003"
+},
+{
+"question_id": "geological-assistant-u3a-q002",
+"card_id": "geological-assistant-pp-f003"
+},
+{
+"question_id": "geological-assistant-pp-q016",
+"card_id": "geological-assistant-pp-f016"
+},
+{
+"question_id": "geological-assistant-pp-q025",
+"card_id": "geological-assistant-pp-f017"
+},
+{
+"question_id": "geological-assistant-pp-q026",
+"card_id": "geological-assistant-pp-f017"
+},
+{
+"question_id": "geological-assistant-pp-q029",
+"card_id": "geological-assistant-pp-f029"
+},
+{
+"question_id": "geological-assistant-pp-q030",
+"card_id": "geological-assistant-pp-f030"
+},
+{
+"question_id": "geological-assistant-pp-q031",
+"card_id": "geological-assistant-pp-f032"
+},
+{
+"question_id": "geological-assistant-pp-q032",
+"card_id": "geological-assistant-pp-f032"
+},
+{
+"question_id": "geological-assistant-pp-q039",
+"card_id": "geological-assistant-pp-f039"
+},
+{
+"question_id": "geological-assistant-pp-q040",
+"card_id": "geological-assistant-pp-f040"
+},
+{
+"question_id": "geological-assistant-u1a-q001",
+"card_id": "geological-assistant-u1a-f001"
+},
+{
+"question_id": "geological-assistant-u1a-q001",
+"card_id": "geological-assistant-u1a-f002"
+},
+{
+"question_id": "geological-assistant-u1a-q001",
+"card_id": "geological-assistant-u1a-f003"
+},
+{
+"question_id": "geological-assistant-u1a-q002",
+"card_id": "geological-assistant-u1a-f001"
+},
+{
+"question_id": "geological-assistant-u1a-q002",
+"card_id": "geological-assistant-u1a-f002"
+},
+{
+"question_id": "geological-assistant-u1a-q002",
+"card_id": "geological-assistant-u1a-f003"
+},
+{
+"question_id": "geological-assistant-u1a-q003",
+"card_id": "geological-assistant-u1a-f001"
+},
+{
+"question_id": "geological-assistant-u1a-q003",
+"card_id": "geological-assistant-u1a-f002"
+},
+{
+"question_id": "geological-assistant-u1a-q003",
+"card_id": "geological-assistant-u1a-f003"
+},
+{
+"question_id": "geological-assistant-u1a-q004",
+"card_id": "geological-assistant-u1a-f001"
+},
+{
+"question_id": "geological-assistant-u1a-q004",
+"card_id": "geological-assistant-u1a-f002"
+},
+{
+"question_id": "geological-assistant-u1a-q004",
+"card_id": "geological-assistant-u1a-f003"
+},
+{
+"question_id": "geological-assistant-u4a-q001",
+"card_id": "geological-assistant-u4a-f001"
+},
+{
+"question_id": "geological-assistant-u4a-q001",
+"card_id": "geological-assistant-u4a-f002"
+},
+{
+"question_id": "geological-assistant-u4a-q001",
+"card_id": "geological-assistant-u4a-f003"
+},
+{
+"question_id": "geological-assistant-u4a-q002",
+"card_id": "geological-assistant-u4a-f001"
+},
+{
+"question_id": "geological-assistant-u4a-q002",
+"card_id": "geological-assistant-u4a-f002"
+},
+{
+"question_id": "geological-assistant-u4a-q002",
+"card_id": "geological-assistant-u4a-f003"
+},
+{
+"question_id": "geological-assistant-u4a-q003",
+"card_id": "geological-assistant-u4a-f001"
+},
+{
+"question_id": "geological-assistant-u4a-q003",
+"card_id": "geological-assistant-u4a-f002"
+},
+{
+"question_id": "geological-assistant-u4a-q003",
+"card_id": "geological-assistant-u4a-f003"
+},
+{
+"question_id": "geological-assistant-u4a-q004",
+"card_id": "geological-assistant-u4a-f001"
+},
+{
+"question_id": "geological-assistant-u4a-q004",
+"card_id": "geological-assistant-u4a-f002"
+},
+{
+"question_id": "geological-assistant-u4a-q004",
+"card_id": "geological-assistant-u4a-f003"
+},
+{
+"question_id": "geological-assistant-u4a-q005",
+"card_id": "geological-assistant-u4a-f001"
+},
+{
+"question_id": "geological-assistant-u4a-q005",
+"card_id": "geological-assistant-u4a-f002"
+},
+{
+"question_id": "geological-assistant-u4a-q005",
+"card_id": "geological-assistant-u4a-f003"
+},
+{
+"question_id": "geological-assistant-u4a-q006",
+"card_id": "geological-assistant-u4a-f001"
+},
+{
+"question_id": "geological-assistant-u4a-q006",
+"card_id": "geological-assistant-u4a-f002"
+},
+{
+"question_id": "geological-assistant-u4a-q006",
+"card_id": "geological-assistant-u4a-f003"
+}
+]
+}
