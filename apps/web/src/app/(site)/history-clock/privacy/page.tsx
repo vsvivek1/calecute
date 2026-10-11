@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
-import { PolicyPage, Section, Todo } from "@/components/chronomap/PolicyPage";
-import { SITE_ORIGIN, chronomap, contactEmail, legalEntity } from "@/lib/chronomap/content";
+import { PolicyPage, Section, Todo } from "@/components/history-clock/PolicyPage";
+import { SITE_ORIGIN, historyClock, contactEmail, legalEntity } from "@/lib/history-clock/content";
 
 export const metadata: Metadata = {
-  title: "Chronomap Privacy Policy | Calecutech",
-  description: "How the Chronomap preview handles personal data today, and what is planned.",
-  alternates: { canonical: `${SITE_ORIGIN}/chronomap/privacy` },
+  title: "History Clock Privacy Policy | Calecutech",
+  description: "How the History Clock preview handles personal data today, and what is planned.",
+  alternates: { canonical: `${SITE_ORIGIN}/history-clock/privacy` },
 };
 
-export default function ChronomapPrivacyPage() {
+export default function HistoryClockPrivacyPage() {
   return (
     <PolicyPage
-      title={`${chronomap.name} Privacy Policy`}
+      title={`${historyClock.name} Privacy Policy`}
       intro={
         <p>
-          This policy explains what personal data {chronomap.name} handles, why, and with whom it is shared.
+          This policy explains what personal data {historyClock.name} handles, why, and with whom it is shared.
           It describes the current preview. Where we plan features that are not yet built, we say so
           separately.
         </p>
@@ -22,7 +22,7 @@ export default function ChronomapPrivacyPage() {
     >
       <Section id="who" heading="1. Who we are">
         <p>
-          {chronomap.name} is provided by {legalEntity}, trading as Calecutech. Our operations office is in
+          {historyClock.name} is provided by {legalEntity}, trading as Calecutech. Our operations office is in
           Kozhikode, Kerala, India. You can reach us at{" "}
           <a className="underline underline-offset-2" href={`mailto:${contactEmail}`}>
             {contactEmail}
@@ -33,9 +33,10 @@ export default function ChronomapPrivacyPage() {
 
       <Section id="scope" heading="2. What this policy covers">
         <p>
-          This policy covers the Chronomap pages on calecutech.com, including the{" "}
-          <code>/chronomap</code> overview and the <code>/chronomap/app</code> preview. It also covers
-          the Chronomap placeholder mobile app, which opens these pages in your browser and collects no
+          This policy covers the History Clock pages on calecutech.com, including the{" "}
+          <code>/history-clock</code> overview, the <code>/history-clock/app</code> map and the{" "}
+          <code>/history-clock/quiz</code> Kerala quiz. It also covers
+          the History Clock placeholder mobile app, which opens these pages in your browser and collects no
           personal data of its own.
         </p>
       </Section>
@@ -43,12 +44,13 @@ export default function ChronomapPrivacyPage() {
       <Section id="now" heading="3. What we collect today">
         <ul className="list-disc space-y-2 pl-5">
           <li>
-            <strong>No accounts or sign-in.</strong> Chronomap does not currently create accounts, and no
-            Chronomap page asks you to sign in.
+            <strong>No accounts or sign-in.</strong> History Clock does not currently create accounts, and no
+            History Clock page asks you to sign in.
           </li>
           <li>
-            <strong>No forms or inputs.</strong> The pages and the preview do not ask for your name,
-            email address or other details, and the preview does not save what you click.
+            <strong>No personal details asked.</strong> The pages do not ask for your name, email
+            address or other details. The map and the quiz run in your browser; they do not send or save
+            the places you pick, the years you choose or your quiz answers.
           </li>
           <li>
             <strong>Standard web server records.</strong> When you load a page, our hosting provider
@@ -97,7 +99,7 @@ export default function ChronomapPrivacyPage() {
 
       <Section id="security" heading="7. Security">
         <p>
-          The site is served over HTTPS. Because Chronomap has no accounts and no passwords, there is no
+          The site is served over HTTPS. Because History Clock has no accounts and no passwords, there is no
           password store to protect in the preview. No system is perfectly secure, so please tell us at
           once if you believe something has gone wrong.
         </p>
@@ -114,7 +116,7 @@ export default function ChronomapPrivacyPage() {
 
       <Section id="children" heading="9. Children">
         <p>
-          Chronomap is an educational product. We do not knowingly collect personal data from children.
+          History Clock is an educational product. We do not knowingly collect personal data from children.
           If you believe a child has sent us personal data, contact us and we will delete it.{" "}
           <Todo>TODO: legal review of age thresholds for the countries where the product will be offered.</Todo>
         </p>
@@ -124,7 +126,7 @@ export default function ChronomapPrivacyPage() {
         <p>
           You can ask us what information we hold about you, correct it, or delete it. The process for
           this is on the{" "}
-          <a className="underline underline-offset-2" href="/chronomap/delete-account">
+          <a className="underline underline-offset-2" href="/history-clock/delete-account">
             account and data deletion page
           </a>
           .

@@ -57,6 +57,13 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       {
+        // Chronomap was renamed History Clock. The placeholder mobile app and
+        // any shared links still point at /chronomap/*, so they follow it.
+        source: "/chronomap/:path*",
+        destination: "/history-clock/:path*",
+        permanent: true,
+      },
+      {
         // Payout setup moved into the profile page. Anyone holding the old
         // link — a bookmark, a WhatsApp forward — lands where it went.
         source: "/agents/dashboard/payouts",

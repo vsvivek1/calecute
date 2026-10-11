@@ -1,27 +1,27 @@
 import type { Metadata } from "next";
-import { PolicyPage, Section, Todo } from "@/components/chronomap/PolicyPage";
-import { SITE_ORIGIN, chronomap, contactEmail, legalEntity } from "@/lib/chronomap/content";
+import { PolicyPage, Section, Todo } from "@/components/history-clock/PolicyPage";
+import { SITE_ORIGIN, historyClock, contactEmail, legalEntity } from "@/lib/history-clock/content";
 
 export const metadata: Metadata = {
-  title: "Chronomap Terms of Use | Calecutech",
-  description: "Terms for using Chronomap, the interactive historical atlas by Calecutech.",
-  alternates: { canonical: `${SITE_ORIGIN}/chronomap/terms` },
+  title: "History Clock Terms of Use | Calecutech",
+  description: "Terms for using History Clock, the interactive historical atlas by Calecutech.",
+  alternates: { canonical: `${SITE_ORIGIN}/history-clock/terms` },
 };
 
-export default function ChronomapTermsPage() {
+export default function HistoryClockTermsPage() {
   return (
     <PolicyPage
-      title={`${chronomap.name} Terms of Use`}
+      title={`${historyClock.name} Terms of Use`}
       intro={
         <p>
-          These terms apply when you use {chronomap.name}, including the website pages and the preview app.
-          By using {chronomap.name} you agree to them. If you do not agree, please do not use it.
+          These terms apply when you use {historyClock.name}, including the website pages, the map, the quiz and the placeholder app.
+          By using {historyClock.name} you agree to them. If you do not agree, please do not use it.
         </p>
       }
     >
-      <Section id="provider" heading="1. Who provides Chronomap">
+      <Section id="provider" heading="1. Who provides History Clock">
         <p>
-          {chronomap.name} is provided by {legalEntity}, trading as Calecutech. Contact:{" "}
+          {historyClock.name} is provided by {legalEntity}, trading as Calecutech. Contact:{" "}
           <a className="underline underline-offset-2" href={`mailto:${contactEmail}`}>
             {contactEmail}
           </a>
@@ -29,9 +29,9 @@ export default function ChronomapTermsPage() {
         </p>
       </Section>
 
-      <Section id="nature" heading="2. What Chronomap is">
+      <Section id="nature" heading="2. What History Clock is">
         <p>
-          {chronomap.name} is an informational and educational historical atlas. It lets you select a place
+          {historyClock.name} is an informational and educational historical atlas. It lets you select a place
           and move along a timeline to see historical events, dynasties, monuments and cultural developments.
           It is not a source of legal, financial or academic advice.
         </p>
@@ -43,7 +43,7 @@ export default function ChronomapTermsPage() {
 
       <Section id="use" heading="3. Permitted use">
         <p>
-          You may use {chronomap.name} for personal, educational and research purposes, and you may quote
+          You may use {historyClock.name} for personal, educational and research purposes, and you may quote
           short passages from it when you credit the source.
         </p>
       </Section>
@@ -52,8 +52,8 @@ export default function ChronomapTermsPage() {
         <ul className="list-disc space-y-2 pl-5">
           <li>Use automated methods to copy or harvest large amounts of content or to overload the service.</li>
           <li>Attempt to disrupt, probe or gain unauthorised access to the site or its systems.</li>
-          <li>Present content from {chronomap.name} as authoritative without checking its sources.</li>
-          <li>Use the {chronomap.name} name or logo in a way that suggests endorsement without our permission.</li>
+          <li>Present content from {historyClock.name} as authoritative without checking its sources.</li>
+          <li>Use the {historyClock.name} name or logo in a way that suggests endorsement without our permission.</li>
         </ul>
       </Section>
 
@@ -61,12 +61,13 @@ export default function ChronomapTermsPage() {
         <p>
           History involves uncertainty. Dates may be approximate, and historians may disagree about events,
           attributions and interpretations. We aim to label such cases on each entry. Where you rely on
-          Chronomap for study, research or publication, please check the primary and scholarly sources it
+          History Clock for study, research or publication, please check the primary and scholarly sources it
           links to.
         </p>
         <p>
-          The example journey and the interface preview on the website are illustrative. They are not
-          complete records.
+          The map and quiz in this first version contain a hand-picked sample of entries for a limited
+          number of regions. They are not complete records, and the modern borders on the map are for
+          orientation only.
         </p>
       </Section>
 
@@ -74,7 +75,7 @@ export default function ChronomapTermsPage() {
         <p>
           Entries are meant to cite the sources they rely on. Where we include material owned by others,
           such as images, maps, texts or data, we will credit the owner and use it only under a licence that
-          permits it. If you believe material on {chronomap.name} is used without permission, tell us and we
+          permits it. If you believe material on {historyClock.name} is used without permission, tell us and we
           will review it promptly.{" "}
           <Todo>TODO: list the licence and source for each third-party asset before launch.</Todo>
         </p>
@@ -90,15 +91,15 @@ export default function ChronomapTermsPage() {
 
       <Section id="ip" heading="8. Intellectual property">
         <p>
-          Unless stated otherwise, the Chronomap software, design, text and arrangement of content belong to
+          Unless stated otherwise, the History Clock software, design, text and arrangement of content belong to
           {" "}{legalEntity}. You may not copy or reuse them except as these terms allow or as the law
-          permits. <Todo>TODO: confirm trademark status of the working name &ldquo;Chronomap&rdquo;.</Todo>
+          permits. <Todo>TODO: confirm trademark status of the working name &ldquo;History Clock&rdquo;.</Todo>
         </p>
       </Section>
 
       <Section id="disclaimer" heading="9. Disclaimers">
         <p>
-          {chronomap.name} is provided &ldquo;as is&rdquo; and &ldquo;as available&rdquo;, without warranties
+          {historyClock.name} is provided &ldquo;as is&rdquo; and &ldquo;as available&rdquo;, without warranties
           of any kind, express or implied, including warranties of accuracy, completeness, fitness for a
           particular purpose or uninterrupted availability.
         </p>
@@ -107,7 +108,7 @@ export default function ChronomapTermsPage() {
       <Section id="liability" heading="10. Limitation of liability">
         <p>
           To the fullest extent the law allows, {legalEntity} is not liable for indirect or consequential
-          losses arising from your use of {chronomap.name}.{" "}
+          losses arising from your use of {historyClock.name}.{" "}
           <Todo>TODO: legal review of this clause and any mandatory consumer rights in the countries where the product is offered.</Todo>
         </p>
       </Section>
