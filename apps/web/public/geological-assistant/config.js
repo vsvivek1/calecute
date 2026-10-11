@@ -4,6 +4,6 @@
 window.GEO_CONFIG = {
   salesOpen: false,
   courseId: "geological-assistant",
-  consoleUrl: "https://user.recallio.calecutech.com/",
+  consoleUrl: "/geological-assistant/study",
   pricePaise: 300000
 };

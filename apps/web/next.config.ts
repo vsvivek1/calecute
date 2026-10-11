@@ -31,6 +31,11 @@ const nextConfig: NextConfig = {
         { source: `/${app}`, destination: `/${app}/index.html` },
         { source: `/${app}/:slug(${pages})`, destination: `/${app}/:slug/index.html` },
       ]),
+      // Geological Assistant Prep: home, policy pages and the web course
+      // (a static app under public/geological-assistant/study/).
+      { source: "/geological-assistant", destination: "/geological-assistant/index.html" },
+      { source: `/geological-assistant/:slug(${pages})`, destination: "/geological-assistant/:slug/index.html" },
+      { source: "/geological-assistant/study", destination: "/geological-assistant/study/index.html" },
       { source: "/jathakam", destination: "/jathakam/index.html" },
       { source: `/jathakam/:slug(${pages}|disclaimer)`, destination: "/jathakam/:slug.html" },
     ];
