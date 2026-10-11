@@ -50,12 +50,14 @@ Without `key.properties`, release builds fall back to the debug key, which Play 
 
 Use Play App Signing: Google holds the app signing key and you keep only the upload key. Add the upload key's SHA-1 and SHA-256 (`keytool -list -v -keystore ...`) and the Play app-signing key's fingerprints to Firebase when Google sign-in is added.
 
+## Store listing
+
+`store/` has the Play icon (512×512), feature graphic (1024×500), phone screenshots, and `store/listing.md` with the listing text, Data safety and other App content answers. The launcher icons (Android adaptive and legacy, iOS) use the same crowned-clock mascot as the website.
+
 ## Before the first Play release
 
 - Google Play developer account for Calecutech, with identity verification done.
-- App icon and splash in the History Clock style (the defaults are still the Flutter logo).
-- Store listing: short and full description, at least two phone screenshots, a 512×512 icon and a 1024×500 feature graphic.
-- Data safety form: no data collected or shared. Content rating questionnaire, target audience, ads declaration (no ads), app access (no login).
+- Fill the Play Console from `store/listing.md`.
 - Confirm the linked pages are live: `/history-clock`, `/history-clock/app`, `/history-clock/quiz`, `/history-clock/privacy`, `/history-clock/terms`, `/history-clock/delete-account`, `/contact` on calecutech.com. The policy pages still have legal `TODO`s (see `docs/HISTORY_CLOCK.md`).
 - Start with internal or closed testing. Play can reject a link-only app for limited functionality, and new personal developer accounts must run a closed test with testers before production access.
 - Revisit the privacy policy, Data safety form and this README before adding Firebase, analytics, crash reporting or any other SDK.

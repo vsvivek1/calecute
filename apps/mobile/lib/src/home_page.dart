@@ -156,21 +156,11 @@ class _ClockBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 84,
-      height: 84,
-      decoration: BoxDecoration(
-        color: Sketch.mustard,
-        shape: BoxShape.circle,
-        border: Border.all(color: Sketch.ink, width: 3),
-        boxShadow: const [BoxShadow(color: Sketch.ink, offset: Offset(4, 4))],
-      ),
-      child: const Icon(
-        Icons.schedule,
-        size: 50,
-        color: Sketch.ink,
-        semanticLabel: 'History Clock logo',
-      ),
+    return Image.asset(
+      'assets/images/mascot.png',
+      width: 132,
+      height: 132,
+      semanticLabel: 'History Clock mascot, a crowned clock',
     );
   }
 }
