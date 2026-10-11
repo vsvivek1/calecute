@@ -148,9 +148,11 @@ const business: Product[] = [
   },
   {
     title: "FPO",
-    desc: "For farmer producer organisations — member records, procurement, and produce trade.",
+    desc: "The farmers' digital mall: every farmer opens a shop, buyers order straight from the farm.",
     emoji: "🌾",
     color: "bg-lime-100 dark:bg-lime-900/30",
+    href: "/farmconnect",
+    native: true,
   },
 ];
 
