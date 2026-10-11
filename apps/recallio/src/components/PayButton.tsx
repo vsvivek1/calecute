@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { browserClient } from '@/lib/supabase-browser';
+import { PAY_FUNCTION } from '@/lib/backend';
 
 declare global {
   interface Window {
@@ -46,7 +47,7 @@ export default function PayButton({
     // one rupee.
     const supabase = browserClient();
     const { data, error } = await supabase.functions.invoke(
-      'razorpay-create-order',
+      PAY_FUNCTION,
       { body: { courseId } },
     );
 
