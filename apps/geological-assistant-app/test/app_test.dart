@@ -45,18 +45,18 @@ void main() {
 
     await tester.tap(find.text('Try the demo'));
     await waitForHome(tester);
-    expect(find.text('30 cards today'), findsOneWidget);
+    expect(find.text('25 cards today'), findsOneWidget);
 
     await tester.tap(find.text('Start studying'));
     await tester.pumpAndSettle();
     expect(find.text('New card'), findsOneWidget);
     await tester.tap(find.text('Got it'));
     await tester.pumpAndSettle();
-    expect(find.text('Card 2 of 30'), findsOneWidget);
+    expect(find.text('Card 2 of 25'), findsOneWidget);
 
     await tester.pageBack();
     await tester.pumpAndSettle();
-    expect(find.text('29 cards today'), findsOneWidget);
+    expect(find.text('24 cards today'), findsOneWidget);
     expect(prefs.getString('progress:demo'), contains('interval_days'));
 
     // Let the delayed sync timer fire so the test ends cleanly.

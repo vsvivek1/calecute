@@ -217,6 +217,28 @@ void main() {
       expect(c.questionsByUnit['m1'], isNull);
     });
 
+    test('reads attempts saved by the app and by the website', () {
+      Map<String, dynamic> row(Object answers) => {
+        'kind': 'unit',
+        'module_id': null,
+        'total': 2,
+        'correct': 1,
+        'wrong': 1,
+        'score': 1,
+        'answers': answers,
+        'started_at': '2026-10-11T10:00:00Z',
+      };
+      final app = QuizAttempt.fromRow(
+        row([
+          {'q': 'q1', 'a': 'b'},
+          {'q': 'q2', 'a': null},
+        ]),
+      );
+      expect(app.answers, {'q1': 1, 'q2': null});
+      final web = QuizAttempt.fromRow(row({'q1': 'c', 'q2': 'A'}));
+      expect(web.answers, {'q1': 2, 'q2': 0});
+    });
+
     test('verified answer wins over the official one', () {
       final q = Question.fromJson({
         'id': 'q',

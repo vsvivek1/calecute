@@ -22,7 +22,7 @@ class AppState {
     this.progress = const {},
     this.attempts = const [],
     this.newToday = 0,
-    this.newPerDay = 30,
+    this.newPerDay = 25,
     this.priorityMode = PriorityMode.highFirst,
     this.offline = false,
     this.busy = false,
@@ -93,7 +93,7 @@ class AppController extends Notifier<AppState> {
     Future.microtask(start);
     return AppState(
       course: store.readCourse() ?? Course.fallback,
-      newPerDay: store.readNewPerDay() ?? 30,
+      newPerDay: store.readNewPerDay() ?? 25,
       priorityMode: store.readPriorityMode(),
     );
   }

@@ -347,6 +347,22 @@ class QuizAttempt {
     'finished_at': finishedAt.toUtc().toIso8601String(),
   };
 
+  /// The app saves `[{q, a}]`; the website saves `{question_id: 'a'}`.
+  static Map<String, int?> _parseAnswers(Object? raw) {
+    int? letter(Object? a) =>
+        a is String ? Question.letters.indexOf(a.trim().toLowerCase()) : null;
+    if (raw is List) {
+      return {
+        for (final a in raw.whereType<Map<String, dynamic>>())
+          if (a['q'] is String) a['q'] as String: letter(a['a']),
+      };
+    }
+    if (raw is Map<String, dynamic>) {
+      return {for (final e in raw.entries) e.key: letter(e.value)};
+    }
+    return {};
+  }
+
   factory QuizAttempt.fromRow(Map<String, dynamic> j) => QuizAttempt(
     kind: j['kind'] as String,
     unitId: j['module_id'] as String?,
@@ -354,12 +370,7 @@ class QuizAttempt {
     correct: j['correct'] as int,
     wrong: j['wrong'] as int,
     score: (j['score'] as num).toDouble(),
-    answers: {
-      for (final a in (j['answers'] as List? ?? const []))
-        (a as Map<String, dynamic>)['q'] as String: a['a'] == null
-            ? null
-            : Question.letters.indexOf(a['a'] as String),
-    },
+    answers: _parseAnswers(j['answers']),
     startedAt: DateTime.parse(j['started_at'] as String).toLocal(),
     finishedAt: DateTime.parse((j['finished_at'] ?? j['started_at']) as String)
         .toLocal(),

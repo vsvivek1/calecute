@@ -73,7 +73,7 @@ class ProgressScreen extends ConsumerWidget {
                 dense: true,
                 title: Text(
                   a.unitId == null
-                      ? 'Mistakes retry'
+                      ? 'Mixed practice'
                       : 'Unit ${content.unitById(a.unitId!)?.number ?? ''} quiz',
                 ),
                 subtitle: Text('${a.correct}/${a.total} right'),
