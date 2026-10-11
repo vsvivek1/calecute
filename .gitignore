@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# mobile signing keys: keep local, only the README is tracked
+/apps/mobile/keys/*
+!/apps/mobile/keys/README.md
