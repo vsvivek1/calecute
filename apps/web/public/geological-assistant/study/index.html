@@ -3,30 +3,34 @@
 <head>
 <base href="/geological-assistant/">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Study | Geological Assistant Prep</title>
 <meta name="description" content="Your Geological Assistant Prep course: daily fact cards, unit quizzes and timed mock tests.">
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
-<meta name="theme-color" content="#1f2a33">
-<link rel="stylesheet" href="style.css">
+<meta name="theme-color" content="#1c242c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="study/study.css">
 </head>
 <body>
-<header class="site"><div class="bar">
-<a class="brand" href="./"><img src="assets/logo.svg" width="34" height="34" alt=""><span>Geological Assistant Prep</span></a>
-<nav class="links" aria-label="Pages"><a href="study#/">Today</a><a href="./">Home</a><a href="support/">Support</a><a href="#" id="signout" hidden>Sign out</a></nav>
-</div><div class="strata"></div></header>
+<header class="top">
+<div class="top-in">
+<a class="brand" href="study#/"><img src="assets/logo.svg" width="30" height="30" alt=""><span>Geological Assistant <em>Prep</em></span></a>
+<nav aria-label="Pages"><a href="./">Course home</a><a href="support/">Help</a><a href="#" id="signout" hidden>Sign out</a></nav>
+</div>
+<div class="strata" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+</header>
 
-<main class="wrap app" id="app" aria-live="polite">
-<p class="meta">Loading&hellip;</p>
+<main class="app" id="app" aria-live="polite">
+<p class="loading"><span class="spin" aria-hidden="true"></span>Loading&hellip;</p>
 </main>
 
-<footer class="site"><div class="wrap cols">
-<div><strong>Geological Assistant Prep</strong><br>by Calecute Technologies (OPC) Private Limited<br><a href="mailto:info@calecutech.com">info@calecutech.com</a></div>
-<div><strong>Legal</strong><ul><li><a href="privacy/">Privacy Policy</a></li><li><a href="terms/">Terms of Use</a></li><li><a href="refunds/">Refund Policy</a></li></ul></div>
-<div><strong>Help</strong><ul><li><a href="support/">Support</a></li><li><a href="delete-account/">Delete your account</a></li></ul></div>
-</div></footer>
+<footer class="foot">
+<p>Calecute Technologies (OPC) Private Limited · <a href="mailto:info@calecutech.com">info@calecutech.com</a></p>
+<p><a href="privacy/">Privacy</a> · <a href="terms/">Terms</a> · <a href="refunds/">Refunds</a> · <a href="support/">Support</a> · <a href="delete-account/">Delete account</a></p>
+</footer>
 
 <script type="module" src="study/app.js"></script>
 </body>
