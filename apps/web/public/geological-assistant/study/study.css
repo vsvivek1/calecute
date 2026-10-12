@@ -29,3 +29,21 @@
 table.res{border-collapse:collapse;width:100%;font:15px system-ui,sans-serif}
 table.res td,table.res th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left}
 @media(max-width:560px){.rate{grid-template-columns:1fr}}
+.bill{display:grid;gap:4px;margin:6px 0 14px;max-width:420px;font:15px system-ui,sans-serif}
+.bill label{font-weight:600;margin-top:6px}
+.bill input,.bill select{width:100%;box-sizing:border-box;min-width:0;font:16px system-ui,sans-serif;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
+.bill details{margin-top:8px}.bill summary{cursor:pointer;color:var(--acc)}
+.bill details label,.bill details input{display:block;width:100%;box-sizing:border-box}
+.invoice{background:#fff;color:#1b1b1b;border:1px solid var(--line);border-radius:10px;padding:28px;margin:16px 0;font:15px/1.5 system-ui,sans-serif}
+.invoice header{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;border-bottom:2px solid #1b1b1b;padding-bottom:14px}
+.invoice h1{margin:0 0 6px;font-size:26px}
+.invoice .seller{text-align:right}
+.invoice .k{color:#666;font-size:13px}
+.invoice .parties{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;margin:16px 0}
+.invoice table.lines{width:100%;border-collapse:collapse;margin:10px 0}
+.invoice table.lines th,.invoice table.lines td{padding:8px 6px;border-bottom:1px solid #ddd;text-align:left}
+.invoice .r{text-align:right!important}
+.invoice tr.total td{font-weight:800;border-top:2px solid #1b1b1b}
+.invoice .small{color:#555}
+@media(max-width:560px){.invoice .seller{text-align:left}.invoice{padding:18px}}
+@media print{header.site,footer.site,.noprint{display:none!important}.app{padding:0}.invoice{border:0;margin:0;padding:0}}

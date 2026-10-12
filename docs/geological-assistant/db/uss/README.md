@@ -9,6 +9,11 @@ The course lives in its own schema, `geological_assistant`, inside the USS proje
 - `seed/seed_01..12.sql`: 1,854 cards, 1,212 questions, 3,602 question links.
   **Applied 11 Oct 2026** and checked row by row against the source. Safe to re-run.
 - `0002_payment_orders.sql`: Razorpay orders table. **Applied 11 Oct 2026.**
+- `0003_invoices.sql`: GST tax invoices and credit notes (`invoices`, `invoice_settings`,
+  `issue_invoice()`, `issue_credit_note()`). The webhook issues one invoice per capture
+  (numbered `GA/26-27/0001`, a new series each April) and one credit note per refund
+  (`GACN/26-27/0001`). Buyers see them under My invoices on the study page and save them as PDF.
+  Until `invoice_settings.gstin` is filled the documents are plain receipts with no GST lines.
 - `functions/ga-razorpay-create-order`, `functions/ga-razorpay-webhook`: **deployed 11 Oct 2026**
   to the USS project. They use only this schema. Until the Razorpay secrets are set they answer
   503 and change nothing.
@@ -31,7 +36,11 @@ To take payments (owner steps):
    `NEXT_PUBLIC_FREE_TIER=off`. See `apps/recallio/.env.example`.
 4. USS Auth > URL Configuration: add `https://<console host>/auth/callback**`.
 5. Point `consoleUrl` in `apps/web/public/geological-assistant/config.js` at that host.
-6. One test payment, then `salesOpen: true`.
+6. Seller details for invoices (SQL editor), once the GST registration is done:
+   `update geological_assistant.invoice_settings set gstin = '32…', address = '<registered address>';`
+   The price is treated as GST-inclusive (₹3,000 = ₹2,542.37 + 18% GST). To charge GST on top
+   instead, set `price_includes_gst = false`.
+7. One test payment, then `salesOpen: true`.
 
 Content (`cards`, `questions`, `question_cards`) is readable only by signed-in users with an
 active subscription (RLS). `courses` and `modules` are public for the shop page.

@@ -18,6 +18,8 @@ const RAZORPAY_KEY_SECRET = Deno.env.get('RAZORPAY_KEY_SECRET');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
+const GSTIN = /^\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
+
 const cors = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-client-info',
@@ -45,12 +47,21 @@ Deno.serve(async (req) => {
   if (authError || !user) return json({ error: 'Not signed in' }, 401);
 
   let courseId: string;
+  let billing: { name?: string; stateCode?: string; gstin?: string } | undefined;
   try {
-    ({ courseId } = await req.json());
+    ({ courseId, billing } = await req.json());
   } catch {
     return json({ error: 'Bad body' }, 400);
   }
   if (!courseId) return json({ error: 'courseId is required' }, 400);
+
+  // What the buyer wants on the GST invoice. All optional; the state decides
+  // CGST+SGST or IGST, and a GSTIN (for a business) overrides the state.
+  const billingName = billing?.name?.trim().slice(0, 120) || null;
+  const billingState = billing?.stateCode?.trim() || null;
+  const billingGstin = billing?.gstin?.trim().toUpperCase() || null;
+  if (billingState && !/^\d{2}$/.test(billingState)) return json({ error: 'Pick your state from the list' }, 400);
+  if (billingGstin && !GSTIN.test(billingGstin)) return json({ error: 'That GSTIN does not look right' }, 400);
 
   const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, { db: { schema: SCHEMA } });
 
@@ -74,6 +85,16 @@ Deno.serve(async (req) => {
     .limit(1);
   if (existing && existing.length > 0) return json({ error: 'Already subscribed' }, 409);
 
+  // The course price is GST-inclusive unless invoice_settings says otherwise,
+  // and GST is only added once the seller has a GSTIN.
+  const { data: tax } = await admin
+    .from('invoice_settings')
+    .select('gstin, gst_rate_bp, price_includes_gst')
+    .maybeSingle();
+  const amount = tax?.gstin && tax.price_includes_gst === false
+    ? Math.round((course.price_minor * (10000 + tax.gst_rate_bp)) / 10000)
+    : course.price_minor;
+
   const currency = course.price_currency ?? 'INR';
   const orderResponse = await fetch('https://api.razorpay.com/v1/orders', {
     method: 'POST',
@@ -82,7 +103,7 @@ Deno.serve(async (req) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      amount: course.price_minor,
+      amount,
       currency,
       receipt: `ga_${user.id.slice(0, 8)}_${Date.now()}`,
       // Echoed back on the webhook; `app` lets the webhook skip payments that
@@ -102,9 +123,12 @@ Deno.serve(async (req) => {
     course_id: courseId,
     provider: 'razorpay',
     provider_ref: order.id,
-    amount_minor: course.price_minor,
+    amount_minor: amount,
     currency,
     status: order.status ?? 'created',
+    billing_name: billingName,
+    billing_state_code: billingState,
+    billing_gstin: billingGstin,
   });
   if (insertError) console.error('could not record the order', insertError);
 
