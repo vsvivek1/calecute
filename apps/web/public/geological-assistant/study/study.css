@@ -29,3 +29,7 @@
 table.res{border-collapse:collapse;width:100%;font:15px system-ui,sans-serif}
 table.res td,table.res th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left}
 @media(max-width:560px){.rate{grid-template-columns:1fr}}
+.plan{margin:6px 0 16px;padding-left:22px;font-size:17px;line-height:1.6}
+.tag{display:inline-block;font:700 11px system-ui,sans-serif;color:var(--acct);background:var(--acc);border-radius:6px;padding:2px 7px;letter-spacing:.04em}
+.tag.rev{background:var(--ok)}
+input.date{display:block;font:17px system-ui,sans-serif;padding:10px 12px;margin:6px 0;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
