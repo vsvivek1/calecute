@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { company, officeLines } from "@/lib/company";
+import { company, entities, officeLines } from "@/lib/company";
 import { pricingModels, services } from "@/lib/offerings";
 import { BANKERS_GOLD } from "@/lib/bankers-gold/content";
 
@@ -233,24 +233,24 @@ export default function Home() {
       <section className="mt-24 rounded-xl border border-black/10 p-6 dark:border-white/15 sm:p-8">
         <h2 className="text-2xl font-semibold">Company details</h2>
         <div className="mt-6 grid gap-6 sm:grid-cols-3 text-sm">
-          <div>
-            <p className="font-medium">Registered entity</p>
-            <p className="mt-1 text-black/60 dark:text-white/60">
-              {company.legalName}
-              <br />
-              {company.jurisdiction}
-            </p>
-          </div>
-          <div>
-            <p className="font-medium">Operations office</p>
-            <p className="mt-1 text-black/60 dark:text-white/60">
-              {officeLines.map((line) => (
-                <span key={line} className="block">
-                  {line}
-                </span>
-              ))}
-            </p>
-          </div>
+          {entities.map((e) => (
+            <div key={e.key}>
+              <p className="font-medium">{e.legalName}</p>
+              <p className="mt-1 text-black/60 dark:text-white/60">
+                {e.addressLines.map((line) => (
+                  <span key={line} className="block">
+                    {line}
+                  </span>
+                ))}
+                {e.ids.map((id) => (
+                  <span key={id} className="block">
+                    {id}
+                  </span>
+                ))}
+                <span className="mt-2 block">{e.role}</span>
+              </p>
+            </div>
+          ))}
           <div>
             <p className="font-medium">Contact</p>
             <p className="mt-1 text-black/60 dark:text-white/60">
@@ -259,6 +259,10 @@ export default function Home() {
                 href={`mailto:${company.email}`}
               >
                 {company.email}
+              </a>
+              <br />
+              <a className="underline underline-offset-2" href="tel:+918547985289">
+                +91 85479 85289
               </a>
             </p>
           </div>

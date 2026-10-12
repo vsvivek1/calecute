@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { company, officeLines } from "@/lib/company";
+import { company, copyrightHolders, entities } from "@/lib/company";
 
 const legalLinks = [
   { href: "/apps", label: "Mobile Apps" },
@@ -29,14 +29,28 @@ export default function Footer() {
           <div>
             <p className="font-medium">{company.brand}</p>
             <address className="mt-2 not-italic text-black/60 dark:text-white/60">
-              {company.legalName}
-              <span className="block">{company.jurisdiction}</span>
-              <span className="mt-2 block">{officeLines.join(", ")}</span>
-              <a
-                className="mt-2 block hover:underline"
-                href={`mailto:${company.email}`}
-              >
+              {entities.map((e) => (
+                <span key={e.key} className="mb-3 block">
+                  <span className="block text-black/80 dark:text-white/80">
+                    {e.legalName}
+                  </span>
+                  {e.addressLines.map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                  {e.ids.map((id) => (
+                    <span key={id} className="block text-xs">
+                      {id}
+                    </span>
+                  ))}
+                </span>
+              ))}
+              <a className="block hover:underline" href={`mailto:${company.email}`}>
                 {company.email}
+              </a>
+              <a className="block hover:underline" href="tel:+918547985289">
+                +91 85479 85289
               </a>
             </address>
           </div>
@@ -69,7 +83,7 @@ export default function Footer() {
         </div>
 
         <p className="mt-8 border-t border-black/10 pt-6 text-black/60 dark:border-white/10 dark:text-white/60">
-          &copy; {new Date().getFullYear()} {company.legalName}. All rights
+          &copy; {new Date().getFullYear()} {copyrightHolders}. All rights
           reserved.
         </p>
       </div>
