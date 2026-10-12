@@ -86,6 +86,9 @@ window.addEventListener('hashchange', route);
 function route() {
   const [, page, arg] = (location.hash || '#/').split('/');
   if (!state.user) return signIn();
+  // Invoices stay readable after a refund, when the course itself is locked.
+  if (page === 'invoices') return invoices();
+  if (page === 'invoice') return invoice(arg);
   if (!state.paid) return buy();
   if (page === 'study') return study(arg ? +arg : null);
   if (page === 'quiz') return quiz(arg);
@@ -125,13 +128,29 @@ function buy() {
   const price = state.course?.price_minor ?? 300000;
   const msg = h('div');
   const button = h('button', { class: 'btn', onclick: pay }, 'Pay ' + rupees(price) + ' by UPI, card or netbanking');
+  // Billing details for the GST invoice. The state is the place of supply.
+  const stateSel = h('select', { id: 'bill-state' },
+    STATES.map(([code, name]) => h('option', { value: code, selected: code === '32' }, name)));
+  const nameIn = h('input', { id: 'bill-name', autocomplete: 'name', maxlength: 120,
+    value: state.user.user_metadata?.full_name || '' });
+  const gstinIn = h('input', { id: 'bill-gstin', maxlength: 15, placeholder: '32ABCDE1234F1Z5', style: 'text-transform:uppercase' });
+  const billing = h('div', { class: 'bill' },
+    h('label', { for: 'bill-name' }, 'Name on invoice'), nameIn,
+    h('label', { for: 'bill-state' }, 'Your state'), stateSel,
+    h('details', {}, h('summary', {}, 'Buying for a business? Add your GSTIN'),
+      h('label', { for: 'bill-gstin' }, 'GSTIN'), gstinIn));
 
   async function pay() {
     button.disabled = true;
     msg.replaceChildren();
     try {
       await loadRazorpay();
-      const { data, error } = await sb.functions.invoke('ga-razorpay-create-order', { body: { courseId: COURSE } });
+      const gstin = gstinIn.value.trim().toUpperCase();
+      if (gstin && !GSTIN.test(gstin)) throw new Error('That GSTIN does not look right. Leave it empty if you are not buying for a business.');
+      const { data, error } = await sb.functions.invoke('ga-razorpay-create-order', { body: {
+        courseId: COURSE,
+        billing: { name: nameIn.value.trim(), stateCode: gstin ? gstin.slice(0, 2) : stateSel.value, gstin },
+      } });
       if (error || !data?.orderId) {
         let detail = data?.error;
         try { detail = detail || (await error?.context?.json())?.error; } catch { /* not JSON */ }
@@ -155,14 +174,14 @@ function buy() {
     h('h1', {}, 'Unlock the full course'),
     h('p', { class: 'small' }, 'Signed in as ' + (state.user.email || '')),
     h('div', { class: 'panel' },
-      h('p', { class: 'big' }, rupees(price), h('span', { class: 'small' }, '  one-time, lifetime access')),
+      h('p', { class: 'big' }, rupees(price), h('span', { class: 'small' }, '  one-time, lifetime access, inclusive of all taxes')),
       h('ul', {},
         h('li', {}, '1,854 fact cards with the reason behind each fact'),
         h('li', {}, '1,212 practice questions, unit quizzes and timed mock tests'),
         h('li', {}, 'Spaced revision: each fact comes back just before you forget it'),
         h('li', {}, 'Web and Android app on the same account')),
-      button, msg,
-      h('p', { class: 'small' }, 'Paid through Razorpay. Your card and UPI details go to Razorpay, never to us. ',
+      billing, button, msg,
+      h('p', { class: 'small' }, 'You get an invoice under My invoices as soon as the payment is confirmed. Paid through Razorpay. Your card and UPI details go to Razorpay, never to us. ',
         h('a', { href: 'refunds/' }, 'Refund Policy'), '.')),
     h('div', { class: 'panel' }, h('h2', {}, 'What is inside'),
       h('div', { class: 'units' }, state.modules.map((m) =>
@@ -217,7 +236,8 @@ async function dashboard() {
       h('div', { class: 'row' },
         h('a', { class: 'btn', href: 'study#/mock' }, 'Start a mock test'),
         h('a', { class: 'btn ghost', href: 'study#/quiz/pp' }, 'Past-paper questions'),
-        h('a', { class: 'btn ghost', href: 'study#/results' }, 'My scores'))),
+        h('a', { class: 'btn ghost', href: 'study#/results' }, 'My scores'),
+        h('a', { class: 'btn ghost', href: 'study#/invoices' }, 'My invoices'))),
     h('h2', { style: 'margin-top:26px' }, 'Units'),
     h('div', { class: 'units' }, perUnit.map(({ m, total, seen: s }) =>
       h('div', { class: 'unit' },
@@ -493,5 +513,112 @@ async function results() {
       : h('p', {}, 'No tests yet. Try a unit quiz or a mock test.'),
   );
 }
+
+// ---------- invoices ----------
+// Issued by the payment webhook (geological_assistant.issue_invoice); this page
+// only shows them. "Save as PDF" is the browser's print dialog.
+async function invoices() {
+  const { data, error } = await sb.from('invoices').select('id,doc_type,invoice_no,issued_at,total_minor')
+    .order('issued_at', { ascending: false });
+  if (error) return show(errorBox('Could not load your invoices: ' + error.message));
+  show(
+    h('div', { class: 'row' }, h('a', { href: 'study#/' }, '← My course')),
+    h('h1', {}, 'My invoices'),
+    data.length ? h('table', { class: 'res' },
+      h('tr', {}, h('th', {}, 'Date'), h('th', {}, 'Number'), h('th', {}, 'Amount'), h('th', {}, '')),
+      data.map((r) => h('tr', {},
+        h('td', {}, dateIN(r.issued_at)),
+        h('td', {}, r.invoice_no, r.doc_type === 'credit_note' ? ' (credit note)' : ''),
+        h('td', {}, (r.doc_type === 'credit_note' ? '−' : '') + rupees2(r.total_minor)),
+        h('td', {}, h('a', { href: 'study#/invoice/' + r.id }, 'View / download')))))
+      : h('p', {}, 'No invoices yet. Your invoice appears here a few seconds after your payment is confirmed.'),
+  );
+}
+
+async function invoice(id) {
+  const { data: d, error } = await sb.from('invoices').select('*').eq('id', id).maybeSingle();
+  if (error || !d) return show(errorBox('Invoice not found.'));
+  const credit = d.doc_type === 'credit_note';
+  const taxed = !!d.seller_gstin;
+  const title = credit ? 'Credit Note' : taxed ? 'Tax Invoice' : 'Receipt';
+  const pct = (bp) => (bp / 100).toString() + '%';
+  const original = credit && d.original_invoice_id
+    ? (await sb.from('invoices').select('invoice_no,issued_at').eq('id', d.original_invoice_id).maybeSingle()).data
+    : null;
+  const taxRows = !taxed ? [] : d.igst_minor > 0
+    ? [['IGST @ ' + pct(d.gst_rate_bp), d.igst_minor]]
+    : [['CGST @ ' + pct(d.gst_rate_bp / 2), d.cgst_minor], ['SGST @ ' + pct(d.gst_rate_bp / 2), d.sgst_minor]];
+  const kv = (k, v) => v ? h('div', {}, h('span', { class: 'k' }, k), ' ', v) : null;
+
+  show(
+    h('div', { class: 'row noprint' },
+      h('a', { href: 'study#/invoices' }, '← My invoices'),
+      h('button', { class: 'btn sm', onclick: () => window.print() }, 'Download PDF / Print')),
+    h('article', { class: 'invoice' },
+      h('header', {},
+        h('div', {}, h('h1', {}, title),
+          kv(credit ? 'Credit note no.' : taxed ? 'Invoice no.' : 'Receipt no.', d.invoice_no),
+          kv('Date', dateIN(d.issued_at)),
+          original && kv('Against invoice', original.invoice_no + ' dated ' + dateIN(original.issued_at))),
+        h('div', { class: 'seller' }, h('strong', {}, d.seller_name), h('div', {}, d.seller_address),
+          kv('GSTIN', d.seller_gstin), kv('State', stateName(d.seller_state_code) + ' (' + d.seller_state_code + ')'))),
+      h('section', { class: 'parties' },
+        h('div', {}, h('div', { class: 'k' }, 'Billed to'),
+          h('strong', {}, d.buyer_name || d.buyer_email || 'Customer'),
+          d.buyer_name && d.buyer_email ? h('div', {}, d.buyer_email) : null,
+          kv('GSTIN', d.buyer_gstin)),
+        h('div', {},
+          kv('Place of supply', stateName(d.place_of_supply) + ' (' + d.place_of_supply + ')'),
+          taxed ? kv('Reverse charge', 'No') : null,
+          kv('Payment ref.', d.provider_payment_id))),
+      h('table', { class: 'lines' },
+        h('tr', {}, h('th', {}, 'Description'), h('th', {}, 'SAC'), h('th', {}, 'Qty'), h('th', { class: 'r' }, taxed ? 'Taxable value' : 'Amount')),
+        h('tr', {}, h('td', {}, d.description), h('td', {}, d.sac), h('td', {}, '1'), h('td', { class: 'r' }, rupees2(d.taxable_minor))),
+        taxRows.map(([k, v]) => h('tr', { class: 'sum' }, h('td', { colspan: 3 }, k), h('td', { class: 'r' }, rupees2(v)))),
+        h('tr', { class: 'sum total' }, h('td', { colspan: 3 }, credit ? 'Total credited' : 'Total paid'),
+          h('td', { class: 'r' }, rupees2(d.total_minor)))),
+      h('p', { class: 'small' }, 'Amount in words: ' + inWords(d.total_minor)),
+      !taxed ? h('p', { class: 'small' }, 'The seller is not registered under GST, so no GST is charged.') : null,
+      h('p', { class: 'small' }, 'This is a computer-generated ' + title.toLowerCase() +
+        ' and needs no signature. Questions: info@calecutech.com')),
+  );
+}
+
+function dateIN(t) { return new Date(t).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' }); }
+function rupees2(minor) { return '₹' + (minor / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function stateName(code) { return STATES.find(([c]) => c === code)?.[1] ?? code; }
+
+// "Rupees Three Thousand Only", in the Indian system (lakh, crore).
+function inWords(minor) {
+  const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve',
+    'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+  const two = (n) => n < 20 ? ones[n] : tens[Math.floor(n / 10)] + (n % 10 ? ' ' + ones[n % 10] : '');
+  const three = (n) => [n >= 100 ? ones[Math.floor(n / 100)] + ' Hundred' : '', two(n % 100)].filter(Boolean).join(' ');
+  const words = (n) => {
+    if (!n) return 'Zero';
+    const parts = [];
+    for (const [size, name] of [[1e7, 'Crore'], [1e5, 'Lakh'], [1e3, 'Thousand']]) {
+      if (n >= size) { parts.push(words(Math.floor(n / size)) + ' ' + name); n %= size; }
+    }
+    if (n) parts.push(three(n));
+    return parts.join(' ');
+  };
+  const r = Math.floor(minor / 100), p = minor % 100;
+  return 'Rupees ' + words(r) + (p ? ' and ' + two(p) + ' Paise' : '') + ' Only';
+}
+
+const GSTIN = /^\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
+// GST state codes.
+const STATES = [
+  ['35', 'Andaman and Nicobar Islands'], ['37', 'Andhra Pradesh'], ['12', 'Arunachal Pradesh'], ['18', 'Assam'],
+  ['10', 'Bihar'], ['04', 'Chandigarh'], ['22', 'Chhattisgarh'], ['26', 'Dadra and Nagar Haveli and Daman and Diu'],
+  ['07', 'Delhi'], ['30', 'Goa'], ['24', 'Gujarat'], ['06', 'Haryana'], ['02', 'Himachal Pradesh'],
+  ['01', 'Jammu and Kashmir'], ['20', 'Jharkhand'], ['29', 'Karnataka'], ['32', 'Kerala'], ['38', 'Ladakh'],
+  ['31', 'Lakshadweep'], ['23', 'Madhya Pradesh'], ['27', 'Maharashtra'], ['14', 'Manipur'], ['17', 'Meghalaya'],
+  ['15', 'Mizoram'], ['13', 'Nagaland'], ['21', 'Odisha'], ['34', 'Puducherry'], ['03', 'Punjab'], ['08', 'Rajasthan'],
+  ['11', 'Sikkim'], ['33', 'Tamil Nadu'], ['36', 'Telangana'], ['16', 'Tripura'], ['09', 'Uttar Pradesh'],
+  ['05', 'Uttarakhand'], ['19', 'West Bengal'],
+];
 
 boot().catch((e) => show(errorBox('Something went wrong: ' + e.message)));

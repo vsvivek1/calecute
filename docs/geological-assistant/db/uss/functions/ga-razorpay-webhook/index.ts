@@ -12,6 +12,10 @@
  * Deploy (USS project; Razorpay sends no Supabase JWT, the signature is the auth):
  *   supabase functions deploy ga-razorpay-webhook --no-verify-jwt
  *   supabase secrets set RAZORPAY_WEBHOOK_SECRET=...
+ * It also issues the GST tax invoice for each capture and a credit note for
+ * each refund (geological_assistant.issue_invoice / issue_credit_note, both
+ * idempotent, so a repeated delivery returns the document already issued).
+ *
  * Razorpay dashboard > Webhooks: URL .../functions/v1/ga-razorpay-webhook,
  * events payment.captured and refund.processed.
  */
@@ -102,6 +106,32 @@ Deno.serve(async (req) => {
       .from('payment_orders')
       .update({ status: status === 'active' ? 'paid' : 'refunded' })
       .eq('provider_ref', payment.order_id);
+  }
+
+  // Access is already granted above; an invoice failure only makes Razorpay
+  // retry, and the retry finds the subscription in place.
+  const refund = event.payload?.refund?.entity;
+  const { error: invoiceError } = status === 'active'
+    ? await admin.rpc('issue_invoice', {
+      p_payment_id: payment.id,
+      p_order_id: payment.order_id ?? null,
+      p_user_id: userId,
+      p_course_id: courseId,
+      p_paid_minor: payment.amount,
+      p_email: payment.email ?? null,
+      p_paid_at: new Date((payment.created_at ?? Date.now() / 1000) * 1000).toISOString(),
+    })
+    : refund?.id
+    ? await admin.rpc('issue_credit_note', {
+      p_refund_id: refund.id,
+      p_payment_id: payment.id,
+      p_refund_minor: refund.amount,
+      p_refunded_at: new Date((refund.created_at ?? Date.now() / 1000) * 1000).toISOString(),
+    })
+    : { error: null };
+  if (invoiceError) {
+    console.error('could not issue the invoice', invoiceError);
+    return new Response('retry', { status: 500 });
   }
 
   return new Response('ok', { status: 200 });
