@@ -1,273 +1,253 @@
 import Link from "next/link";
-import { company, entities, officeLines } from "@/lib/company";
+import { Bricolage_Grotesque } from "next/font/google";
+import { company, entities } from "@/lib/company";
 import { pricingModels, services } from "@/lib/offerings";
 import { BANKERS_GOLD } from "@/lib/bankers-gold/content";
+import { STATIC_APPS } from "@/lib/static-apps";
+
+/*
+ * Landing page.
+ *
+ * Idea: the strongest proof that a small Kozhikode studio is real is the
+ * number of real apps it has shipped, so the hero IS the app shelf.
+ * One accent idea: the kasavu border (gold double stripe of a Kerala saree)
+ * marks the edge of the hero. Everything else stays quiet.
+ *
+ * Tokens: ink #13201B, backwater #0E5E4F, mist #EAF2EF, kasavu #B8892B.
+ */
+
+const display = Bricolage_Grotesque({
+  subsets: ["latin"],
+  weight: ["500", "700", "800"],
+  variable: "--font-display",
+});
+
+type ShelfApp = { name: string; href: string; image: string };
+
+const SHELF: ShelfApp[] = [
+  { name: BANKERS_GOLD.name, href: BANKERS_GOLD.path, image: "/bankers-gold/icon.png" },
+  { name: "BankMates", href: "/apps/bankmates", image: "/bankmates/icon.png" },
+  { name: "Recallio", href: "/apps/recallio", image: "/recallio/icon.png" },
+  { name: "Work Force", href: "/apps/workforce", image: "/workforce/icon.png" },
+  ...STATIC_APPS.map(({ name, href, image }) => ({ name, href, image })),
+];
+
+const featured = [
+  {
+    name: BANKERS_GOLD.name,
+    line: "Bank gold-loan auctions on your phone. Browse lots, pay the EMD, bid live.",
+    href: BANKERS_GOLD.path,
+    image: "/bankers-gold/icon.png",
+  },
+  {
+    name: "Muhurtham Clock",
+    line: "The Kerala panchangam as a live clock: Rahu kalam, horas, Abhijit muhurtham.",
+    href: "/muhurtham-clock",
+    image: "/muhurtham-clock/assets/icon-192.png",
+  },
+  {
+    name: "History Clock",
+    line: "Slide through 5,000 years of world history on one dial.",
+    href: "/history-clock/app",
+    image: null,
+  },
+  {
+    name: "DailyDo",
+    line: "Task management for teams, with voice dictation and daily reports.",
+    href: "/products/dailydo",
+    image: null,
+  },
+];
 
 export default function Home() {
   return (
-    <div className="mx-auto max-w-5xl px-6 py-20">
-      {/* DailyDo floating bubble */}
-      <div className="fixed bottom-6 right-6 z-50 group">
-        <Link
-          href="/products/dailydo"
-          className="flex items-center gap-3 rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:bg-blue-700 transition-all hover:scale-105 active:scale-95"
-        >
-          <span className="text-base">✓</span>
-          Try DailyDo
-        </Link>
-        <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block">
-          <div className="rounded-xl bg-white dark:bg-zinc-900 border border-black/10 dark:border-white/10 shadow-xl p-3 w-52 text-xs text-black/70 dark:text-white/70">
-            Task management for teams — plan, assign, and track daily work.
-          </div>
-        </div>
-      </div>
-
-      {/* Hero */}
-      <section className="text-center">
-        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-          Software Development &amp; SaaS Solutions for Global Businesses
-        </h1>
-        <p className="mx-auto mt-5 max-w-2xl text-lg text-black/60 dark:text-white/60">
-          We build web applications, mobile apps, and scalable SaaS platforms
-          for international clients.
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-4">
-          <Link
-            href="/contact"
-            className="rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90"
+    <div className={`${display.variable} home text-[#13201B] dark:text-[#E8EFEC]`}>
+      {/* Hero: headline left, app shelf right */}
+      <section className="mx-auto grid max-w-5xl gap-12 px-6 pb-16 pt-16 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:pt-24">
+        <div>
+          <h1
+            className="font-[family-name:var(--font-display)] text-[clamp(2.75rem,7vw,5.25rem)] font-extrabold leading-[0.95] tracking-[-0.03em]"
           >
-            Start a project
-          </Link>
-          <Link
-            href="/services"
-            className="rounded-full border border-black/10 px-5 py-3 text-sm font-medium hover:bg-black/[.04] dark:border-white/15 dark:hover:bg-white/[.06]"
-          >
-            View services
-          </Link>
-        </div>
-        <p className="mt-6 text-sm text-black/50 dark:text-white/50">
-          {company.legalName} &middot; {officeLines.join(", ")}
-        </p>
-        <Link
-          href={BANKERS_GOLD.path}
-          className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#e3b19a]/60 bg-[#fdeef3] px-4 py-2 text-sm font-medium text-[#a83a5e] hover:bg-[#fbe2ea] dark:bg-[#3b0f24] dark:text-[#f6e3d6]"
-        >
-          <span aria-hidden="true">✦</span>
-          New: {BANKERS_GOLD.name}, bank gold auctions on your phone
-          <span aria-hidden="true">→</span>
-        </Link>
-        <Link
-          href="/history-clock/app"
-          className="mt-3 inline-flex items-center gap-2 rounded-full border-2 border-[#1f2433] bg-[#e8b64c] px-4 py-2 text-sm font-semibold text-[#1f2433] shadow-[3px_3px_0_#1f2433] hover:bg-[#f0c868]"
-        >
-          <span aria-hidden="true">🕰</span>
-          Try History Clock: slide through 5,000 years of world history
-          <span aria-hidden="true">→</span>
-        </Link>
-      </section>
-
-      {/* Services */}
-      <section className="mt-24">
-        <h2 className="text-2xl font-semibold">Services</h2>
-        <p className="mt-2 text-black/60 dark:text-white/60">
-          Four ways we work with clients, from a single site to a full product
-          team.
-        </p>
-        <div className="mt-8 grid gap-6 sm:grid-cols-2">
-          {services.map((s) => (
-            <div
-              key={s.title}
-              className="rounded-xl border border-black/10 p-6 dark:border-white/15"
-            >
-              <div
-                className={`flex h-12 w-12 items-center justify-center rounded-lg text-2xl ${s.color}`}
-              >
-                {s.emoji}
-              </div>
-              <h3 className="mt-4 text-lg font-medium">{s.title}</h3>
-              <p className="mt-2 text-sm text-black/60 dark:text-white/60">
-                {s.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* What we've built */}
-      <section className="mt-24">
-        <h2 className="text-2xl font-semibold">What we&rsquo;ve built</h2>
-        <p className="mt-2 text-black/60 dark:text-white/60">
-          Our own products are the clearest example of how we work.
-        </p>
-        <div className="relative mt-8 overflow-hidden rounded-2xl bg-[linear-gradient(150deg,#1d0912_0%,#3b0f24_55%,#5a1838_100%)] p-6 text-[#f6e3d6] sm:p-8">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full border-[18px] border-[#e3b19a]/70 shadow-[0_0_80px_rgba(217,79,122,0.45)]"
-          />
-          <div className="relative flex items-start gap-4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/bankers-gold/icon.png" alt="" width={48} height={48} className="h-12 w-12 shrink-0 rounded-lg bg-white" />
-            <div>
-              <span className="rounded-full bg-[#e3b19a]/20 px-2.5 py-0.5 text-xs font-medium text-[#f2c46d]">
-                New
-              </span>
-              <h3 className="mt-2 text-xl font-medium text-white">{BANKERS_GOLD.name}</h3>
-            </div>
-          </div>
-          <p className="relative mt-3 max-w-xl text-[#f6e3d6]/80">
-            Bank gold-loan auctions on your phone: browse lots, pay the EMD and
-            bid live. Banks keep full control of their auctions.
+            Apps for Kerala, built in Kozhikode.
+          </h1>
+          <p className="mt-6 max-w-[34rem] text-lg leading-relaxed text-[#13201B]/75 dark:text-[#E8EFEC]/75">
+            We make mobile apps and web software for students, banks, farmers
+            and small businesses. We build the same for clients in India and
+            abroad.
           </p>
-          <div className="relative mt-5 flex flex-wrap items-center gap-3">
-            <a
-              href={BANKERS_GOLD.playStoreUrl}
-              target="_blank"
-              rel="noopener"
-              className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-[#e3b19a]/50 bg-black px-4 text-sm font-semibold text-white hover:border-[#f2c46d]"
-            >
-              <span aria-hidden="true">▶</span> Get it on Google Play
-            </a>
-            {BANKERS_GOLD.appStoreUrl ? (
-              <a
-                href={BANKERS_GOLD.appStoreUrl}
-                target="_blank"
-                rel="noopener"
-                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-[#e3b19a]/50 bg-black px-4 text-sm font-semibold text-white hover:border-[#f2c46d]"
-              >
-                Download on the App Store
-              </a>
-            ) : (
-              <span className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-dashed border-[#e3b19a]/50 px-4 text-sm font-semibold text-white/60">
-                App Store: coming soon
-              </span>
-            )}
+          <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
             <Link
-              href={BANKERS_GOLD.path}
-              className="text-sm font-medium text-[#f2c46d] underline underline-offset-2"
+              href="/contact"
+              className="rounded-full bg-[#0E5E4F] px-6 py-3.5 text-sm font-semibold text-white hover:bg-[#0B4C40] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0E5E4F]"
             >
-              See the product →
+              Start a project
+            </Link>
+            <Link
+              href="/apps"
+              className="text-sm font-semibold underline decoration-[#B8892B] decoration-2 underline-offset-[6px] hover:decoration-[#0E5E4F]"
+            >
+              See all {SHELF.length} apps
             </Link>
           </div>
         </div>
-        <div className="mt-8 rounded-xl border border-black/10 p-6 dark:border-white/15 sm:p-8">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-2xl dark:bg-blue-900/30">
-              ✅
-            </div>
-            <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/40 dark:text-green-400">
-              Live
-            </span>
-          </div>
-          <h3 className="mt-4 text-xl font-medium">DailyDo</h3>
-          <p className="mt-2 text-black/70 dark:text-white/70">
-            A subscription task-management platform for teams — offices,
-            projects, task assignment, voice dictation, and daily reports, with
-            free and paid monthly plans. Designed, built, and operated by us,
-            including authentication, billing, and real-time sync.
+
+        <div>
+          <ul className="grid grid-cols-4 gap-3 sm:grid-cols-6 lg:grid-cols-5" aria-label="Apps we have published">
+            {SHELF.map((app, i) => (
+              <li key={app.href} className="shelf-item" style={{ animationDelay: `${i * 40}ms` }}>
+                <Link
+                  href={app.href}
+                  title={app.name}
+                  className="block rounded-[22%] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0E5E4F]"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={app.image}
+                    alt={app.name}
+                    width={96}
+                    height={96}
+                    loading={i < 10 ? "eager" : "lazy"}
+                    className="aspect-square w-full rounded-[22%] bg-white object-cover ring-1 ring-black/5 transition-transform hover:-translate-y-0.5 dark:ring-white/10"
+                  />
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4 text-sm text-[#13201B]/60 dark:text-[#E8EFEC]/60">
+            Every icon here is a live app or site we built and run.
           </p>
-          <Link
-            href="/products/dailydo"
-            className="mt-4 inline-block text-sm font-medium underline underline-offset-2"
-          >
-            See the product →
-          </Link>
         </div>
-        <Link
-          href="/quizkerala"
-          className="mt-6 flex items-center gap-4 rounded-xl border border-black/10 p-6 transition-colors hover:bg-black/[.03] dark:border-white/15 dark:hover:bg-white/[.06] sm:p-8"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/quizkerala/logo-192.png" alt="" width={48} height={48} className="h-12 w-12 shrink-0 rounded-lg" />
-          <div>
-            <h3 className="text-xl font-medium">QuizKerala</h3>
-            <p className="mt-1 text-black/70 dark:text-white/70">
-              Timed online quizzes with Google sign-in, join-by-code and a live
-              leaderboard where the faster player wins ties.
-            </p>
-            <span className="mt-2 inline-block text-sm font-medium underline underline-offset-2">
-              Visit QuizKerala →
-            </span>
-          </div>
-        </Link>
-        <p className="mt-6 text-sm text-black/60 dark:text-white/60">
-          We currently work with clients across India and international markets
-          on web, mobile, and SaaS projects. Want to see work relevant to your
-          industry?{" "}
-          <Link href="/contact" className="underline underline-offset-2">
-            Ask us for examples
-          </Link>
-          .
-        </p>
       </section>
 
-      {/* Pricing model */}
-      <section className="mt-24">
-        <h2 className="text-2xl font-semibold">Our Pricing Model</h2>
-        <p className="mt-2 text-black/60 dark:text-white/60">
-          How we charge, stated up front. Every engagement is invoiced against
-          one of these three models.
-        </p>
-        <div className="mt-8 grid gap-6 sm:grid-cols-3">
-          {pricingModels.map((p) => (
-            <div
-              key={p.title}
-              className="rounded-xl border border-black/10 p-6 dark:border-white/15"
-            >
-              <h3 className="text-lg font-medium">{p.title}</h3>
-              <p className="mt-2 text-sm text-black/60 dark:text-white/60">
-                {p.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-        <p className="mt-6 text-sm text-black/60 dark:text-white/60">
-          All prices are quoted in writing before work begins. See our{" "}
-          <Link href="/refund-policy" className="underline underline-offset-2">
-            Refund &amp; Cancellation Policy
-          </Link>{" "}
-          for how cancellations and refunds are handled.
-        </p>
-      </section>
+      {/* Kasavu border */}
+      <div aria-hidden="true" className="mx-auto max-w-5xl px-6">
+        <div className="h-[5px] bg-[#B8892B]" />
+        <div className="mt-[3px] h-px bg-[#B8892B]" />
+      </div>
 
-      {/* Company details */}
-      <section className="mt-24 rounded-xl border border-black/10 p-6 dark:border-white/15 sm:p-8">
-        <h2 className="text-2xl font-semibold">Company details</h2>
-        <div className="mt-6 grid gap-6 sm:grid-cols-3 text-sm">
-          {entities.map((e) => (
-            <div key={e.key}>
-              <p className="font-medium">{e.legalName}</p>
-              <p className="mt-1 text-black/60 dark:text-white/60">
-                {e.addressLines.map((line) => (
-                  <span key={line} className="block">
-                    {line}
+      <div className="mx-auto max-w-5xl px-6">
+        {/* New and notable */}
+        <section className="grid gap-10 py-20 lg:grid-cols-[1fr_2fr]">
+          <h2 className="font-[family-name:var(--font-display)] text-3xl font-bold tracking-tight">
+            New and notable
+          </h2>
+          <ul className="divide-y divide-[#13201B]/10 dark:divide-white/10">
+            {featured.map((f) => (
+              <li key={f.href}>
+                <Link href={f.href} className="group flex items-center gap-5 py-5">
+                  {f.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={f.image} alt="" width={56} height={56} className="h-14 w-14 shrink-0 rounded-2xl bg-white ring-1 ring-black/5" />
+                  ) : (
+                    <span aria-hidden="true" className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#EAF2EF] font-[family-name:var(--font-display)] text-xl font-bold text-[#0E5E4F] dark:bg-[#0E5E4F]/30 dark:text-[#CFE6DF]">
+                      {f.name.charAt(0)}
+                    </span>
+                  )}
+                  <span>
+                    <span className="block text-lg font-semibold group-hover:text-[#0E5E4F] dark:group-hover:text-[#7FC4B4]">
+                      {f.name}
+                    </span>
+                    <span className="block text-[#13201B]/70 dark:text-[#E8EFEC]/70">{f.line}</span>
                   </span>
-                ))}
-                {e.ids.map((id) => (
-                  <span key={id} className="block">
-                    {id}
-                  </span>
-                ))}
-                <span className="mt-2 block">{e.role}</span>
-              </p>
-            </div>
-          ))}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* Services */}
+        <section className="grid gap-10 border-t border-[#13201B]/10 py-20 dark:border-white/10 lg:grid-cols-[1fr_2fr]">
           <div>
-            <p className="font-medium">Contact</p>
-            <p className="mt-1 text-black/60 dark:text-white/60">
-              <a
-                className="underline underline-offset-2"
-                href={`mailto:${company.email}`}
-              >
-                {company.email}
-              </a>
-              <br />
-              <a className="underline underline-offset-2" href="tel:+918547985289">
-                +91 85479 85289
-              </a>
+            <h2 className="font-[family-name:var(--font-display)] text-3xl font-bold tracking-tight">
+              Build with us
+            </h2>
+            <p className="mt-3 max-w-xs text-[#13201B]/70 dark:text-[#E8EFEC]/70">
+              The team that ships our own apps can build yours.
             </p>
           </div>
-        </div>
-      </section>
+          <dl className="grid gap-x-10 gap-y-8 sm:grid-cols-2">
+            {services.map((s) => (
+              <div key={s.title}>
+                <dt className="font-semibold">{s.title}</dt>
+                <dd className="mt-1.5 text-[#13201B]/70 dark:text-[#E8EFEC]/70">{s.desc}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+
+        {/* Pricing */}
+        <section className="grid gap-10 border-t border-[#13201B]/10 py-20 dark:border-white/10 lg:grid-cols-[1fr_2fr]">
+          <div>
+            <h2 className="font-[family-name:var(--font-display)] text-3xl font-bold tracking-tight">
+              How we charge
+            </h2>
+            <p className="mt-3 max-w-xs text-[#13201B]/70 dark:text-[#E8EFEC]/70">
+              Every price is quoted in writing before work begins.
+            </p>
+          </div>
+          <div>
+            <dl className="grid gap-x-10 gap-y-8 sm:grid-cols-3">
+              {pricingModels.map((p) => (
+                <div key={p.title}>
+                  <dt className="font-semibold">{p.title}</dt>
+                  <dd className="mt-1.5 text-sm text-[#13201B]/70 dark:text-[#E8EFEC]/70">{p.desc}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="mt-8 text-sm text-[#13201B]/70 dark:text-[#E8EFEC]/70">
+              Cancellations and refunds follow our{" "}
+              <Link href="/refund-policy" className="underline underline-offset-2">
+                Refund &amp; Cancellation Policy
+              </Link>
+              .
+            </p>
+          </div>
+        </section>
+
+        {/* Company details */}
+        <section className="grid gap-10 border-t border-[#13201B]/10 py-20 dark:border-white/10 lg:grid-cols-[1fr_2fr]">
+          <h2 className="font-[family-name:var(--font-display)] text-3xl font-bold tracking-tight">
+            Company details
+          </h2>
+          <div className="grid gap-8 text-sm sm:grid-cols-3">
+            {entities.map((e) => (
+              <div key={e.key}>
+                <p className="font-semibold">{e.legalName}</p>
+                <p className="mt-1.5 text-[#13201B]/70 dark:text-[#E8EFEC]/70">
+                  {e.addressLines.map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                  {e.ids.map((id) => (
+                    <span key={id} className="block">
+                      {id}
+                    </span>
+                  ))}
+                  <span className="mt-2 block">{e.role}</span>
+                </p>
+              </div>
+            ))}
+            <div>
+              <p className="font-semibold">Contact</p>
+              <p className="mt-1.5 text-[#13201B]/70 dark:text-[#E8EFEC]/70">
+                <a className="block underline underline-offset-2" href={`mailto:${company.email}`}>
+                  {company.email}
+                </a>
+                <a className="block underline underline-offset-2" href="tel:+918547985289">
+                  +91 85479 85289
+                </a>
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <style>{`
+        .home .shelf-item { animation: shelf-in 420ms cubic-bezier(.2,.7,.2,1) both; }
+        @keyframes shelf-in { from { opacity: 0; transform: translateY(8px) scale(.96); } to { opacity: 1; transform: none; } }
+        @media (prefers-reduced-motion: reduce) { .home .shelf-item { animation: none; } }
+      `}</style>
     </div>
   );
 }
