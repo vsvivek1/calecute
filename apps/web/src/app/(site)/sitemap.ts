@@ -66,6 +66,14 @@ const PATHS: Array<{ path: string; priority: number; changeFrequency: "monthly" 
   { path: "/findmybus/terms", priority: 0.4, changeFrequency: "yearly" },
   { path: "/findmybus/support", priority: 0.4, changeFrequency: "yearly" },
   { path: "/findmybus/delete-account", priority: 0.4, changeFrequency: "yearly" },
+  // Geological Assistant Prep. Static pages under public/geological-assistant.
+  // The course home is the page meant to rank for the Kerala PSC exam; the
+  // study app itself is noindex and stays out.
+  { path: "/geological-assistant", priority: 0.9, changeFrequency: "weekly" },
+  { path: "/geological-assistant/privacy", priority: 0.3, changeFrequency: "yearly" },
+  { path: "/geological-assistant/terms", priority: 0.3, changeFrequency: "yearly" },
+  { path: "/geological-assistant/refunds", priority: 0.3, changeFrequency: "yearly" },
+  { path: "/geological-assistant/support", priority: 0.3, changeFrequency: "yearly" },
   // Bankers Gold (GoldLelam). Product page; its policy pages live under /goldlelam.
   { path: "/bankers-gold", priority: 0.8, changeFrequency: "monthly" },
   // QuizKerala. Next routes under app/quizkerala with their own layout.
