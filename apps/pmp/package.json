@@ -1,0 +1,31 @@
+{
+  "name": "@calecute/pmp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3200",
+    "prebuild": "node scripts/build-sample.mjs",
+    "build": "next build",
+    "build:android": "node scripts/build-sample.mjs && BUILD_TARGET=android next build && cap sync android",
+    "start": "next start -p 3200",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test --experimental-strip-types src/lib/*.test.ts",
+    "check:bank": "node scripts/check-bank.mjs"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.0",
+    "@capacitor/core": "^7.4.0",
+    "next": "16.2.9",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "server-only": "^0.0.1",
+    "stripe": "^18.5.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.0",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5"
+  }
+}
