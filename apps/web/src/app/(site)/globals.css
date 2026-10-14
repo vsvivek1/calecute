@@ -24,3 +24,59 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
+
+/* ---------- Home page motion ---------- */
+@keyframes home-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33% { transform: translate3d(6%, -4%, 0) scale(1.08); }
+  66% { transform: translate3d(-5%, 5%, 0) scale(0.95); }
+}
+@keyframes home-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+@keyframes home-marquee {
+  to { transform: translateX(-50%); }
+}
+@keyframes home-words {
+  0%, 20% { transform: translateY(0); }
+  25%, 45% { transform: translateY(-1.1em); }
+  50%, 70% { transform: translateY(-2.2em); }
+  75%, 95% { transform: translateY(-3.3em); }
+  100% { transform: translateY(-4.4em); }
+}
+@keyframes home-shine {
+  to { background-position: 200% center; }
+}
+@keyframes home-reveal {
+  from { opacity: 0; transform: translateY(48px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes home-ping {
+  75%, 100% { transform: scale(2.4); opacity: 0; }
+}
+
+.home-blob { animation: home-drift 18s ease-in-out infinite; }
+.home-float { animation: home-float 7s ease-in-out infinite; }
+.home-marquee { animation: home-marquee 40s linear infinite; }
+.home-words { animation: home-words 10s cubic-bezier(0.7, 0, 0.3, 1) infinite; }
+.home-shine {
+  background-size: 200% auto;
+  animation: home-shine 6s linear infinite;
+}
+.home-ping { animation: home-ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite; }
+
+/* Scroll reveal: visible by default, animated only where the browser can tie it to scroll. */
+@supports (animation-timeline: view()) {
+  .home-reveal {
+    animation: home-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 60%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-blob, .home-float, .home-marquee, .home-words, .home-shine, .home-ping, .home-reveal {
+    animation: none !important;
+  }
+}
