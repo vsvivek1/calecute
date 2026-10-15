@@ -16,6 +16,7 @@ const FILES = [
   'tests/supabase_stub.sql',
   'migrations/0001_pta.sql',
   'migrations/0002_api.sql',
+  'migrations/0003_hardening.sql',
   'seed.sql',
 ];
 

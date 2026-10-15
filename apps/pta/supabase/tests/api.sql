@@ -112,11 +112,16 @@ select pg_temp.check((select email from pta.guardians where name = 'New Parent')
 select pg_temp.check(jsonb_array_length(pta.school_students(:school) -> 'students') = 4, 'student list');
 select pg_temp.check(pta.add_class(:school, 'Grade 6 A', 'rahul@example.com') is not null, 'add class');
 select pta.add_staff(:school, 'new.teacher@example.com', 'New Teacher', 'teacher');
+select pg_temp.check(pta.add_class(:school, 'Grade 7 A', 'Class.Teacher@example.com') is not null, 'add class with a new teacher');
+select pg_temp.check(exists (select 1 from pta.staff where email = 'class.teacher@example.com' and role = 'teacher'), 'a new class teacher is added to staff');
 select pg_temp.check(pta.post_event(:school, null, 'Onam celebration', '', '', now() + interval '20 days', false) is not null, 'post event');
 select pg_temp.check(jsonb_array_length(pta.event_responses_for((select id from pta.events where needs_consent)) -> 'students') = 3, 'consent tracker');
 
 select pg_temp.as_user('stranger@example.com');
 select pg_temp.check(pta.exam_average('00000000-0000-4000-a000-0000000000e2') is null, 'a stranger gets no class average');
+
+select pg_temp.as_user('class.teacher@example.com');
+select pg_temp.check(jsonb_array_length(pta.whoami() -> 'classes') = 1, 'a new class teacher sees their class');
 
 select pg_temp.as_user('new@example.com');
 select pg_temp.check(jsonb_array_length(pta.whoami() -> 'children') = 1, 'a newly added parent sees their child on first sign-in');

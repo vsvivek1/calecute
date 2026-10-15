@@ -20,6 +20,7 @@ appears in the top bar.
 ```
 apps/pta/supabase/migrations/0001_pta.sql   tables + row-level security
 apps/pta/supabase/migrations/0002_api.sql   pta.* functions: the API
+apps/pta/supabase/migrations/0003_hardening.sql  fixes found on first deploy
             │
             ├── apps/pta (this app)          calls them with supabase-js
             └── apps/pta_mobile (Flutter)    calls them with supabase_flutter
@@ -56,6 +57,7 @@ PTA_DEMO=1 npm run dev --workspace=apps/pta    # localhost:3200
    ```bash
    psql "$DATABASE_URL" -f apps/pta/supabase/migrations/0001_pta.sql
    psql "$DATABASE_URL" -f apps/pta/supabase/migrations/0002_api.sql
+   psql "$DATABASE_URL" -f apps/pta/supabase/migrations/0003_hardening.sql
    ```
    Then **Settings → API → Exposed schemas: add `pta`.** Without it both apps
    get "schema not found".

@@ -7,4 +7,4 @@ DB=pta_rls_$$
 createdb "$DB"
 trap 'dropdb "$DB"' EXIT
 psql -q -o /dev/null -v ON_ERROR_STOP=1 -d "$DB" \
-  -f tests/supabase_stub.sql -f migrations/0001_pta.sql -f migrations/0002_api.sql -f seed.sql -f tests/rls.sql -f tests/api.sql
+  -f tests/supabase_stub.sql -f migrations/0001_pta.sql -f migrations/0002_api.sql -f migrations/0003_hardening.sql -f seed.sql -f tests/rls.sql -f tests/api.sql
