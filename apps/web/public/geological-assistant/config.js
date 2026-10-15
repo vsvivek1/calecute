@@ -1,8 +1,8 @@
-// Sales switch. Keep salesOpen=false until: Razorpay keys are set in Supabase,
-// razorpay-create-order and razorpay-webhook are deployed, the course row is seeded,
-// and one test payment has unlocked the course. Then set true and redeploy.
+// Sales switch. Open since 15 Oct 2026: Razorpay keys are set in Supabase,
+// ga-razorpay-create-order and ga-razorpay-webhook are deployed, and a test payment
+// unlocked the course on 13 Oct. Set false to show "Notify me at launch" again.
 window.GEO_CONFIG = {
-  salesOpen: false,
+  salesOpen: true,
   courseId: "geological-assistant",
   consoleUrl: "/geological-assistant/study",
   pricePaise: 300000
