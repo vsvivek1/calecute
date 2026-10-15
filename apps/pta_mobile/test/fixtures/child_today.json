@@ -1,0 +1,79 @@
+{
+ "fees": {
+  "due_paise": 1975000,
+  "next_due_date": "2026-10-10",
+  "overdue_paise": 125000
+ },
+ "events": [
+  {
+   "id": "977e24e9-d5bc-4002-a0b7-e7c8629cf500",
+   "title": "Parent-teacher meeting",
+   "response": null,
+   "starts_at": "2026-10-19T04:30:00+00:00",
+   "needs_consent": false
+  },
+  {
+   "id": "ed7dfa11-a758-4107-8f41-ccaed520d95c",
+   "title": "Field trip: Planetarium",
+   "response": null,
+   "starts_at": "2026-10-22T03:30:00+00:00",
+   "needs_consent": true
+  },
+  {
+   "id": "4ae1280c-fe98-4749-a42b-8763b610954f",
+   "title": "Annual sports day",
+   "response": null,
+   "starts_at": "2026-10-27T03:00:00+00:00",
+   "needs_consent": false
+  }
+ ],
+ "student": {
+  "id": "00000000-0000-4000-a000-0000000000a1",
+  "name": "Aditi Nair",
+  "class": "Grade 5 A"
+ },
+ "latest_exam": {
+  "name": "Mid-term",
+  "held_on": "2026-10-05",
+  "percent": 75
+ },
+ "homework_due": [
+  {
+   "id": "9ba03b1b-b1cc-458f-b764-d982dc96f0e0",
+   "done": false,
+   "title": "Fractions worksheet",
+   "subject": "Maths",
+   "due_date": "2026-10-16"
+  },
+  {
+   "id": "5a31e37e-c2fe-4a24-86e5-92423867b028",
+   "done": false,
+   "title": "Read chapter 6",
+   "subject": "English",
+   "due_date": "2026-10-17"
+  }
+ ],
+ "quizzes_open": 1,
+ "notices_unread": [
+  {
+   "id": "db7b6c53-e851-4b17-ab87-833ae3397121",
+   "title": "School closed on Friday",
+   "priority": "urgent",
+   "created_at": "2026-10-15T07:02:31.928+00:00"
+  },
+  {
+   "id": "32a41fba-0b0e-4f2f-b0d9-9b6288d67017",
+   "title": "Bring an old newspaper",
+   "priority": "normal",
+   "created_at": "2026-10-15T07:02:31.928+00:00"
+  }
+ ],
+ "complaints_open": 1,
+ "attendance_month": {
+  "leave": 0,
+  "absent": 1,
+  "marked": 12,
+  "present": 11
+ },
+ "attendance_today": null
+}
