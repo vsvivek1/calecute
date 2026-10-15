@@ -175,3 +175,11 @@ footer.foot a { color: var(--ink-2); margin-right: 16px; }
 input.text { width: 100%; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 10px; font: inherit; }
 input.text:focus { outline: none; border-color: var(--brand-2); }
 .keybox { font-family: ui-monospace, Menlo, monospace; font-size: 0.8rem; word-break: break-all; background: var(--bg); border: 1px dashed var(--line); padding: 10px; border-radius: 8px; }
+
+.btn-google {
+  background: #fff;
+  color: #1f1f1f;
+  border: 1px solid #dadce0;
+  gap: 10px;
+}
+.btn-google:hover { background: #f8f9fa; }

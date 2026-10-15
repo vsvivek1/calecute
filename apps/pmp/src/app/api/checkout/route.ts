@@ -1,6 +1,11 @@
 import { priceCents, siteOrigin, stripe } from '@/lib/stripe';
+import { userFromRequest } from '@/lib/user';
 
+// Buyers sign in with Google first, and checkout is locked to that account's
+// email, so the purchase can always be found again from the account.
 export async function POST(req: Request) {
+  const user = await userFromRequest(req);
+  if (!user) return Response.json({ error: 'Please sign in with Google first.' }, { status: 401 });
   const origin = siteOrigin(req);
   const priceId = process.env.STRIPE_PRICE_ID;
 
@@ -22,10 +27,12 @@ export async function POST(req: Request) {
             },
           },
     ],
+    customer_email: user.email,
+    client_reference_id: user.id,
     customer_creation: 'always',
     allow_promotion_codes: true,
-    metadata: { product: 'pmp-prep' },
-    payment_intent_data: { metadata: { product: 'pmp-prep' } },
+    metadata: { product: 'pmp-prep', user_id: user.id },
+    payment_intent_data: { metadata: { product: 'pmp-prep', user_id: user.id } },
     success_url: `${origin}/unlock?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/#pricing`,
   });

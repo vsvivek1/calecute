@@ -69,7 +69,7 @@ export default function StudyHome() {
             <h3>Unlock the full prep</h3>
             <p className="muted">
               The full bank, timed mocks, daily spaced review and weak-area drills.
-              {IS_APP ? ' Already bought on the web? Sign in with the same email.' : ''}
+              {IS_APP ? ' Already bought on the web? Sign in with the same Google account.' : ''}
             </p>
             <div className="row">
               {!IS_APP && <BuyButton />}
