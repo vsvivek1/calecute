@@ -95,6 +95,7 @@ const PATHS: Array<{ path: string; priority: number; changeFrequency: "monthly" 
   { path: "/history-clock/terms", priority: 0.4, changeFrequency: "yearly" },
   { path: "/history-clock/delete-account", priority: 0.4, changeFrequency: "yearly" },
   { path: "/locations", priority: 0.4, changeFrequency: "yearly" },
+  { path: "/careers", priority: 0.6, changeFrequency: "weekly" },
   { path: "/contact", priority: 0.5, changeFrequency: "yearly" },
   { path: "/privacy", priority: 0.3, changeFrequency: "yearly" },
   { path: "/terms", priority: 0.3, changeFrequency: "yearly" },

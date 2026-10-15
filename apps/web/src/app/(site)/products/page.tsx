@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Accent, CtaPanel, PageHero } from "@/components/site/Bold";
 
 /**
  * What we sell.
@@ -209,12 +210,12 @@ const services: Product[] = [
 function Icon({ emoji, color, image }: { emoji: string; color: string; image?: string }) {
   if (image) {
     return (
-      <Image src={image} alt="" width={48} height={48} unoptimized className="h-12 w-12 shrink-0 rounded-lg object-cover" />
+      <Image src={image} alt="" width={48} height={48} unoptimized className="h-12 w-12 shrink-0 rounded-2xl object-cover shadow-sm" />
     );
   }
   return (
     <div
-      className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg text-2xl ${color}`}
+      className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl ${color}`}
       aria-hidden="true"
     >
       {emoji}
@@ -226,23 +227,31 @@ function Icon({ emoji, color, image }: { emoji: string; color: string; image?: s
 function Card({ product }: { product: Product }) {
   const body = (
     <>
-      <Icon emoji={product.emoji} color={product.color} image={product.image} />
-      <h3 className="mt-4 text-lg font-medium">{product.title}</h3>
-      <p className="mt-2 text-sm text-black/60 dark:text-white/60">
+      <div className="flex items-start justify-between gap-4">
+        <Icon emoji={product.emoji} color={product.color} image={product.image} />
+        {product.href && (
+          <span
+            aria-hidden="true"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-sm transition group-hover:-rotate-45 group-hover:border-transparent group-hover:bg-foreground group-hover:text-background dark:border-white/15"
+          >
+            →
+          </span>
+        )}
+      </div>
+      <h3 className="mt-6 font-[family-name:var(--font-display)] text-xl font-bold tracking-tight">
+        {product.title}
+      </h3>
+      <p className="mt-2 text-sm leading-relaxed text-black/60 dark:text-white/60">
         {product.desc}
       </p>
-      {product.href && (
-        <span className="mt-4 inline-block text-sm font-medium underline underline-offset-2">
-          Learn more →
-        </span>
-      )}
+      {product.href && <span className="sr-only">Learn more</span>}
     </>
   );
 
   const shell =
-    "rounded-xl border border-black/10 p-6 dark:border-white/15";
+    "home-reveal group relative flex flex-col overflow-hidden rounded-[1.5rem] border border-black/[.08] bg-[linear-gradient(160deg,rgba(0,0,0,0.02),transparent_60%)] p-7 dark:border-white/10 dark:bg-[linear-gradient(160deg,rgba(255,255,255,0.04),transparent_60%)]";
 
-  const linked = `${shell} transition-colors hover:bg-black/[.03] dark:hover:bg-white/[.06]`;
+  const linked = `${shell} transition duration-300 hover:-translate-y-1 hover:border-indigo-300 hover:shadow-[0_30px_60px_-30px_rgba(79,70,229,0.45)] dark:hover:border-indigo-500/50`;
   if (product.href && product.native) {
     return (
       <a href={product.href} className={linked}>
@@ -259,14 +268,23 @@ function Card({ product }: { product: Product }) {
   );
 }
 
+function sectionId(title: string) {
+  return title.toLowerCase().replace(/[^a-z]+/g, "-");
+}
+
 function Section({ title, items }: { title: string; items: Product[] }) {
-  const id = title.toLowerCase().replace(/[^a-z]+/g, "-");
+  const id = sectionId(title);
   return (
-    <section aria-labelledby={id}>
-      <h2 id={id} className="mt-14 text-xl font-semibold">
-        {title}
-      </h2>
-      <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <section aria-labelledby={id} id={`${id}section`} className="scroll-mt-24 pt-20">
+      <div className="home-reveal flex items-baseline justify-between gap-4 border-b border-black/[.08] pb-5 dark:border-white/10">
+        <h2 id={id} className="font-[family-name:var(--font-display)] text-3xl font-bold tracking-[-0.03em] sm:text-4xl">
+          {title}
+        </h2>
+        <span className="font-mono text-sm tabular-nums text-black/40 dark:text-white/40">
+          {items.length} {items.length === 1 ? "product" : "products"}
+        </span>
+      </div>
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((p) => (
           <Card key={p.title} product={p} />
         ))}
@@ -275,42 +293,97 @@ function Section({ title, items }: { title: string; items: Product[] }) {
   );
 }
 
+const sections = [
+  { title: "Learning and schools", items: learning },
+  { title: "Business", items: business },
+  { title: "Banking and finance", items: finance },
+  { title: "Services", items: services },
+];
+
+const featuredLook: Record<string, string> = {
+  BankMates: "bg-[linear-gradient(150deg,#78350f,#1c0f05)] hover:ring-amber-400/60",
+  DailyDo: "bg-[linear-gradient(150deg,#1e3a8a,#0b1530)] hover:ring-blue-400/60",
+};
+
 export default function ProductsPage() {
   return (
-    <div className="mx-auto max-w-5xl px-6 py-16">
-      <h1 className="text-3xl font-semibold">Products</h1>
-      <p className="mt-2 text-black/60 dark:text-white/60">What we sell.</p>
+    <div className="font-sans">
+      <PageHero
+        eyebrow="Products"
+        title={
+          <>
+            What we <Accent onDark>sell.</Accent>
+          </>
+        }
+        lede="Apps for learners, schools, small businesses and banks."
+      >
+        <nav aria-label="Product categories" className="mt-12">
+          <ul className="flex flex-wrap gap-2">
+            {sections.map((s) => (
+              <li key={s.title}>
+                <a
+                  href={`#${sectionId(s.title)}section`}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/80 backdrop-blur transition hover:border-white/30 hover:bg-white/10"
+                >
+                  {s.title}
+                  <span className="rounded-full bg-white/10 px-1.5 text-xs tabular-nums text-white/60">
+                    {s.items.length}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </PageHero>
 
-      <div className="mt-10 grid gap-6 sm:grid-cols-2">
-        {featured.map((p) => (
-          <Link
-            key={p.title}
-            href={p.href ?? "#"}
-            className="rounded-xl border border-black/10 p-6 transition-colors hover:bg-black/[.03] dark:border-white/15 dark:hover:bg-white/[.06]"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <Icon emoji={p.emoji} color={p.color} />
-              <span
-                className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${p.badgeClass}`}
+      <div className="mx-auto max-w-6xl px-6 pb-24 pt-16">
+        <div className="grid gap-4 md:grid-cols-2">
+          {featured.map((p) => (
+            <Link
+              key={p.title}
+              href={p.href ?? "#"}
+              className={`home-reveal group relative flex flex-col overflow-hidden rounded-[1.75rem] p-8 text-white ring-1 ring-white/10 transition duration-300 hover:-translate-y-1 sm:p-10 ${featuredLook[p.title] ?? "bg-zinc-900"}`}
+            >
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-16 -top-16 text-[12rem] leading-none opacity-15 transition duration-700 group-hover:rotate-12 group-hover:scale-110"
               >
-                {p.badge}
+                {p.emoji}
+              </div>
+              <div className="relative flex items-start justify-between gap-4">
+                <Icon emoji={p.emoji} color="bg-white/15" />
+                <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${p.badgeClass}`}>
+                  {p.badge}
+                </span>
+              </div>
+              <h2 className="relative mt-8 font-[family-name:var(--font-display)] text-4xl font-bold tracking-[-0.03em]">
+                {p.title}
+              </h2>
+              <p className="relative mt-3 max-w-md text-white/75">{p.desc}</p>
+              <span className="relative mt-auto pt-8 text-sm font-semibold">
+                Learn more{" "}
+                <span aria-hidden="true" className="inline-block transition-transform group-hover:translate-x-1">
+                  →
+                </span>
               </span>
-            </div>
-            <h2 className="mt-4 text-lg font-medium">{p.title}</h2>
-            <p className="mt-2 text-sm text-black/60 dark:text-white/60">
-              {p.desc}
-            </p>
-            <span className="mt-4 inline-block text-sm font-medium underline underline-offset-2">
-              Learn more →
-            </span>
-          </Link>
+            </Link>
+          ))}
+        </div>
+
+        {sections.map((s) => (
+          <Section key={s.title} title={s.title} items={s.items} />
         ))}
       </div>
 
-      <Section title="Learning and schools" items={learning} />
-      <Section title="Business" items={business} />
-      <Section title="Banking and finance" items={finance} />
-      <Section title="Services" items={services} />
+      <CtaPanel
+        title={
+          <>
+            Need something <Accent onDark>custom?</Accent>
+          </>
+        }
+        lede="We build web apps, mobile apps and SaaS products for clients too."
+        secondary={{ href: "/services", label: "View services" }}
+      />
     </div>
   );
 }

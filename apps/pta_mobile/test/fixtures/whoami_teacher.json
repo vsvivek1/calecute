@@ -1,0 +1,20 @@
+{
+ "email": "anitha@example.com",
+ "staff": [
+  {
+   "name": "Anitha K",
+   "role": "teacher",
+   "school": "Calecutech Demo School",
+   "school_id": "00000000-0000-4000-a000-000000000001"
+  }
+ ],
+ "classes": [
+  {
+   "id": "00000000-0000-4000-a000-0000000000c5",
+   "name": "Grade 5 A",
+   "students": 2,
+   "school_id": "00000000-0000-4000-a000-000000000001"
+  }
+ ],
+ "children": []
+}
