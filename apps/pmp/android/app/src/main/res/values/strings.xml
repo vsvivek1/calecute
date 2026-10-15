@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">PMP Prep</string>
+    <string name="title_activity_main">PMP Prep</string>
+    <string name="package_name">com.calecutech.pmpprep</string>
+    <string name="custom_url_scheme">com.calecutech.pmpprep</string>
+</resources>

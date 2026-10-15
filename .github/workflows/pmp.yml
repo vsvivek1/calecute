@@ -1,0 +1,53 @@
+name: PMP prep
+
+on:
+  pull_request:
+    paths:
+      - "apps/pmp/**"
+      - ".github/workflows/pmp.yml"
+  push:
+    branches: [main]
+    paths:
+      - "apps/pmp/**"
+      - ".github/workflows/pmp.yml"
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run check:bank --workspace=apps/pmp
+      - run: npm test --workspace=apps/pmp
+      - run: npm run build --workspace=apps/pmp
+        env:
+          STRIPE_SECRET_KEY: sk_test_ci_placeholder
+          LICENSE_SECRET: ci-placeholder-not-a-secret
+
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - run: npm ci
+      - run: npm run build:android --workspace=apps/pmp
+        env:
+          NEXT_PUBLIC_API_ORIGIN: https://pmp.calecutech.com
+      - run: ./gradlew assembleDebug --no-daemon
+        working-directory: apps/pmp/android
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pmp-prep-debug-apk
+          path: apps/pmp/android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 14
