@@ -1,15 +1,25 @@
-import { company } from "@/lib/company";
+import type { Metadata } from "next";
 import { malayalam } from "@/lib/fonts";
+import { CAREERS_URL, SITE_ORIGIN } from "@/lib/careers";
 import { Accent, PageHero, SectionHeading, primaryButton } from "@/components/site/Bold";
+import ApplyForm from "@/components/careers/ApplyForm";
+import ShareButton from "@/components/careers/ShareButton";
 
-export const metadata = {
+const title = "We're hiring a Coordinator (work from home) | Calecutech";
+const description =
+  "Calecute Technologies is hiring a work-from-home Coordinator in Kerala: engineering graduates with strong marks. Base pay plus sales commission, with shares as the company grows. Apply online.";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_ORIGIN),
   title: "Careers | Calecutech",
-  description:
-    "Open roles at Calecute Technologies. We're hiring a work-from-home Coordinator in Kerala.",
+  description,
+  alternates: { canonical: CAREERS_URL },
+  openGraph: { title, description, url: CAREERS_URL, siteName: "Calecutech", type: "website" },
+  twitter: { card: "summary_large_image", title, description },
 };
 
-const applySubject = "Application: Coordinator";
-const applyHref = `mailto:${company.email}?subject=${encodeURIComponent(applySubject)}`;
+const shareText =
+  "Calecutech is hiring a Coordinator (work from home). കോർഡിനേറ്റർ ഒഴിവ്, വർക്ക് ഫ്രം ഹോം. Apply here:";
 
 /** The Coordinator listing, in Malayalam as written for the audience. */
 const requirements = [
@@ -49,10 +59,13 @@ export default function CareersPage() {
         }
         lede="We're an early-stage startup in Kerala. If you want to grow with the company, and own the results like an owner would, we'd like to hear from you."
       >
-        <a href="#coordinator" className={`${primaryButton} mt-10`}>
-          See open roles
-          <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">↓</span>
-        </a>
+        <div className="mt-10 flex flex-wrap items-center gap-3">
+          <a href="#coordinator" className={primaryButton}>
+            See open roles
+            <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">↓</span>
+          </a>
+          <ShareButton url={CAREERS_URL} title={title} text={shareText} onDark />
+        </div>
       </PageHero>
 
       <section className="mx-auto max-w-6xl px-6 py-24">
@@ -107,19 +120,34 @@ export default function CareersPage() {
               ))}
             </ul>
             <div className="mt-auto pt-10">
-              <a href={applyHref} className={primaryButton}>
-                Apply by email
-                <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">→</span>
+              <a href="#apply" className={primaryButton}>
+                Apply now
+                <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">↓</span>
               </a>
-              <p className="mt-4 font-sans text-sm text-white/55">
-                Send your CV and SSLC and degree mark lists to{" "}
-                <a className="underline underline-offset-4" href={applyHref}>
-                  {company.email}
-                </a>
-                .
-              </p>
             </div>
           </div>
+        </div>
+
+        <div className="home-reveal mt-6 flex flex-wrap items-center justify-between gap-4 rounded-[1.5rem] border border-black/[.08] px-6 py-5 dark:border-white/10">
+          <p className="font-[family-name:var(--font-geist-sans),var(--font-malayalam),sans-serif] text-[15px] text-black/70 dark:text-white/70">
+            Know someone who fits? <span lang="ml">ഈ ജോലി ഷെയർ ചെയ്യൂ.</span>
+          </p>
+          <ShareButton url={CAREERS_URL} title={title} text={shareText} />
+        </div>
+      </section>
+
+      <section id="apply" className="mx-auto max-w-6xl scroll-mt-24 px-6 pb-24">
+        <SectionHeading
+          eyebrow="Apply"
+          title={
+            <>
+              Apply for <Accent>Coordinator.</Accent>
+            </>
+          }
+          lede="Fill this in and attach your CV. We read every application and will call you if you're shortlisted."
+        />
+        <div className="mt-10 font-[family-name:var(--font-geist-sans),var(--font-malayalam),sans-serif]">
+          <ApplyForm role="Coordinator" />
         </div>
       </section>
     </div>
