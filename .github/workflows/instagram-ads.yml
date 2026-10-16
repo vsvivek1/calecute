@@ -1,23 +1,19 @@
-name: Instagram ads
+name: Instagram posts
 
 # Run by hand from the Actions tab. Dry run unless "live" is ticked.
-# Paid ads are always created PAUSED; switch them on in Ads Manager.
+# Free (organic) posts only: nothing here creates paid ads or spends money.
 on:
   workflow_dispatch:
     inputs:
       command:
-        description: "post (feed), story, reel, or ads (paused paid ads)"
+        description: "post (feed), story or reel"
         type: choice
-        options: [post, story, reel, ads]
+        options: [post, story, reel]
         default: post
       ad:
-        description: "Creative id for post/story: countdown, quiz, plan, malayalam. For ads, a comma list (blank = all)"
+        description: "Creative id for post/story: countdown, quiz, plan, malayalam"
         type: string
         default: quiz
-      daily:
-        description: "ads only: daily budget per ad set in rupees"
-        type: string
-        default: "400"
       live:
         description: "Actually send to Meta (unticked = dry run)"
         type: boolean
@@ -38,17 +34,11 @@ jobs:
         env:
           META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
-          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
-          META_AD_ACCOUNT_ID: ${{ secrets.META_AD_ACCOUNT_ID }}
           COMMAND: ${{ inputs.command }}
           AD: ${{ inputs.ad }}
-          DAILY: ${{ inputs.daily }}
           LIVE: ${{ inputs.live }}
         run: |
           args=("$COMMAND")
-          case "$COMMAND" in
-            post|story) args+=("$AD") ;;
-            ads) [ -n "$AD" ] && args+=(--ids "$AD"); args+=(--daily "$DAILY") ;;
-          esac
+          case "$COMMAND" in post|story) args+=("$AD") ;; esac
           [ "$LIVE" = "true" ] && args+=(--live)
           node marketing/instagram-ads/publish.mjs "${args[@]}"
