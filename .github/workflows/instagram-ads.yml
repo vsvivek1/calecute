@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       command:
-        description: "post (feed), story or reel"
+        description: "check (read-only test), post (feed), story or reel"
         type: choice
-        options: [post, story, reel]
+        options: [check, post, story, reel]
         default: post
       ad:
         description: "Creative id for post/story: countdown, quiz, plan, malayalam"
