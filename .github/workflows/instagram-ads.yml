@@ -20,8 +20,8 @@ on:
         default: false
   # Two free posts a day, approved by vivek on 17 Oct 2026. Rotation is in ads.json "schedule".
   schedule:
-    - cron: "30 2 * * *" # 08:00 IST: feed post or reel
-    - cron: "30 13 * * *" # 19:00 IST: story
+    - cron: "30 2 * * *" # 08:00 IST: story ("am")
+    - cron: "30 13 * * *" # 19:00 IST, evening peak: reel or feed post ("pm")
 
 jobs:
   publish:
@@ -40,6 +40,6 @@ jobs:
           LIVE: ${{ github.event_name == 'schedule' || inputs.live }}
         run: |
           args=("$COMMAND")
-          case "$COMMAND" in post|story|auto) args+=("$AD") ;; esac
+          case "$COMMAND" in post|story|auto) args+=("$AD") ;; reel) [ "$AD" != quiz ] && args+=("$AD") ;; esac
           [ "$LIVE" = "true" ] && args+=(--live)
           node marketing/instagram-ads/publish.mjs "${args[@]}"

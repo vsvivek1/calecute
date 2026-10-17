@@ -35,10 +35,10 @@ From GitHub, Actions, "Instagram posts", Run workflow:
 - `check`: read-only test that the secrets work. Prints the account name; never posts.
 - `post` + `quiz`: feed post of the quiz creative, then the answer as the first comment.
 - `story` + `countdown`: posts the countdown story.
-- `reel`: posts the reel and shares it to the feed.
+- `reel`: posts the quiz reel and shares it to the feed. With `ad` set to `countdown` or `plan`, posts that concept's 8 s reel.
 - `auto` + `am` or `pm`: the next item in the schedule.
 
-The workflow also runs on its own twice a day (08:00 IST feed post, 19:00 IST story) and posts live. The order is the `schedule` block in `ads.json`; to pause it, disable the workflow in the Actions tab.
+The workflow also runs on its own twice a day (08:00 IST story, 19:00 IST reel or feed post at the evening peak) and posts live. Feed slots are mostly reels, because Instagram shows reels to non-followers far more than photos. The order is the `schedule` block in `ads.json`; to pause it, disable the workflow in the Actions tab.
 
 Leave "live" unticked first: the run prints every request it would send, and sends nothing.
 

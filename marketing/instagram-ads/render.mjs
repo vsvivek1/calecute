@@ -168,3 +168,15 @@ if (existsSync(reveal)) {
   execFileSync("ffmpeg", args, { stdio: ["ignore", "ignore", "inherit"] });
   console.log("wrote", join(outDir, "reel-story.mp4"));
 }
+
+// One short reel per concept (slow zoom on its story frame). Reels are shown to
+// non-followers far more than photos, so the feed schedule posts these.
+for (const ad of cfg.ads.filter((a) => a.reel)) {
+  const out = join(outDir, `${ad.id}-reel.mp4`);
+  execFileSync("ffmpeg", ["-y", "-loglevel", "error",
+    "-loop", "1", "-i", join(outDir, `${ad.id}-story.png`),
+    "-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo",
+    "-vf", "scale=2160:3840,zoompan=z='min(zoom+0.0004,1.08)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=240:s=1080x1920:fps=30",
+    "-t", "8", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", "-movflags", "+faststart", out], { stdio: ["ignore", "ignore", "inherit"] });
+  console.log("wrote", out);
+}
