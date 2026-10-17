@@ -80,7 +80,6 @@ const T = {
   countdown: (s) => `${brand}<div class="grow">
     <div class="eyebrow">Kerala PSC · Geological Assistant</div>
     <h1 style="font-size:${s ? 116 : 92}px">Exam on <span class="date">2 December.</span><br>Start <em>today.</em></h1>
-    <p class="sub ml" style="font-size:${s ? 40 : 34}px;color:var(--fg)">പരീക്ഷ ഡിസംബർ 2-ന്. ഇന്നുതന്നെ തുടങ്ങൂ.</p>
     <div class="stats">
       <div class="stat"><b>1,609</b><span>candidates</span></div>
       <div class="stat"><b>6</b><span>posts</span></div>
@@ -115,16 +114,6 @@ const T = {
     ${s ? `<div class="stats"><div class="stat"><b>1,854</b><span>fact cards</span></div><div class="stat"><b>1,212</b><span>MCQs</span></div><div class="stat"><b>5</b><span>units + mocks</span></div></div>` : ""}
     ${cta(`Join course · ${C.price}`, s)}${storyUrl(s)}`,
 
-  malayalam: (s) => `${brand}<div class="grow">
-    <div class="eyebrow ml" style="letter-spacing:0">കേരള PSC · ജിയോളജിക്കൽ അസിസ്റ്റന്റ്</div>
-    <h1 class="ml" style="font-family:var(--ml);font-weight:800;line-height:1.3;font-size:${s ? 84 : 66}px">ദിവസവും <em>20 മിനിറ്റ്</em> മതി, സിലബസ് മുഴുവൻ പഠിക്കാൻ.</h1>
-    <div class="stats ml">
-      <div class="stat"><b>1,854</b><span class="ml">ഫാക്റ്റ് കാർഡുകൾ</span></div>
-      <div class="stat"><b>1,212</b><span class="ml">ചോദ്യങ്ങൾ</span></div>
-      <div class="stat"><b>${s ? "5" : "5"}</b><span class="ml">യൂണിറ്റുകൾ + മോക്ക്</span></div>
-    </div>
-    <p class="sub ml" style="font-size:${s ? 36 : 30}px">ഒറ്റത്തവണ ${C.price} · ആജീവനാന്ത ആക്സസ് · UPI</p>
-    </div><div class="cta"><div class="btn ml">കോഴ്സിൽ ചേരൂ</div>${s ? "" : `<div class="url">${C.shortUrl.replace("/", "<br>/")}</div>`}</div>${storyUrl(s)}`,
 };
 
 function page(inner, [w, h]) {

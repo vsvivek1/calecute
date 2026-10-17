@@ -49,7 +49,7 @@ async function api(method, path, params = {}) {
   return json;
 }
 
-const caption = (c) => `${c.caption_en}\n\n${c.caption_ml}\n\n${cfg.hashtags}`;
+const caption = (c) => `${c.caption_en}\n\n${cfg.hashtags}`;
 const adById = (x) => {
   const ad = cfg.ads.find((a) => a.id === x);
   if (!ad) throw new Error(`Unknown ad id "${x}". Known: ${cfg.ads.map((a) => a.id).join(", ")}`);

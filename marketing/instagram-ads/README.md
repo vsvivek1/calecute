@@ -4,7 +4,7 @@ Ad creatives and copy for the Kerala PSC Geological Assistant course, plus a scr
 
 | File | What it is |
 | --- | --- |
-| `ads.json` | The four concepts with English and Malayalam captions and hashtags |
+| `ads.json` | The three concepts with English captions, hashtags and the posting schedule |
 | `render.mjs` | Renders each concept to 1080x1080 (feed) and 1080x1920 (story) PNGs, and stitches a 13.5 s 1080x1920 reel |
 | `publish.mjs` | Posts to Instagram through the Graph API. Dry run unless `--live` |
 | `../../.github/workflows/instagram-ads.yml` | Runs `publish.mjs` by hand from the GitHub Actions tab, with the tokens kept as repository secrets |
@@ -45,4 +45,4 @@ Leave "live" unticked first: the run prints every request it would send, and sen
 ## Notes
 
 - The Graph API version defaults to `v23.0`; set `META_GRAPH_VERSION` if Meta has retired it.
-- Organic posts cannot carry a clickable link, so their captions say "link in bio". Put `calecutech.com/geological-assistant` in the Instagram bio.
+- Organic posts cannot carry a clickable link, so their captions say "link in bio". Put `https://calecutech.com/geological-assistant/study?course=geological-assistant&utm_source=instagram` in the Instagram bio: it opens sign-in and then the ₹3,000 checkout.
