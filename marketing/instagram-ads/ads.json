@@ -7,7 +7,7 @@
     "examDate": "2 December 2026"
   },
   "schedule": {
-    "start": "2026-10-18T00:00:00Z",
+    "start": "2026-10-17T00:00:00Z",
     "am": [
       "story:countdown",
       "story:quiz",
