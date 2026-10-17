@@ -6,6 +6,11 @@
     "shortUrl": "calecutech.com/geological-assistant",
     "examDate": "2 December 2026"
   },
+  "schedule": {
+    "start": "2026-10-18T00:00:00Z",
+    "am": ["reel", "post:countdown", "post:plan", "post:malayalam", "post:quiz"],
+    "pm": ["story:countdown", "story:quiz", "story:plan", "story:malayalam"]
+  },
   "hashtags": "#KeralaPSC #GeologicalAssistant #KeralaPSCGeology #PSCExam #Geology #KeralaJobs #PSCPreparation #MScGeology #GeologyStudents #Hydrogeology #KeralaPSCCoaching #കേരളപിഎസ്‌സി",
   "ads": [
     {
