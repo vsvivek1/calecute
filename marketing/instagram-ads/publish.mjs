@@ -85,9 +85,19 @@ async function reel() {
   await publish({ media_type: "REELS", video_url: `${MEDIA}/reel-story.mp4`, caption: caption(cfg.reel), share_to_feed: "true" });
 }
 
-const run = { post: () => post(id), story: () => story(id), reel }[cmd];
+// Read-only: confirms the token and account id work. Always talks to Meta, never posts.
+async function check() {
+  if (!env.META_ACCESS_TOKEN || !env.IG_USER_ID) throw new Error("Missing secrets: META_ACCESS_TOKEN and/or IG_USER_ID");
+  const params = new URLSearchParams({ fields: "username,name,media_count,followers_count", access_token: env.META_ACCESS_TOKEN });
+  const res = await fetch(`${GRAPH}/${env.IG_USER_ID}?${params}`);
+  const json = await res.json();
+  if (!res.ok || json.error) throw new Error(`Check failed: ${JSON.stringify(json.error || json)}`);
+  console.log(`OK: connected to @${json.username} (${json.media_count} posts, ${json.followers_count} followers). Nothing was posted.`);
+}
+
+const run = { post: () => post(id), story: () => story(id), reel, check }[cmd];
 if (!run) {
-  console.error("Usage: publish.mjs post|story <id> | reel [--live]");
+  console.error("Usage: publish.mjs check | post|story <id> | reel [--live]");
   process.exit(2);
 }
 await run();

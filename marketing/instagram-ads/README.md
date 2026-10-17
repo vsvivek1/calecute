@@ -32,6 +32,7 @@ node marketing/instagram-ads/render.mjs        # needs ffmpeg on PATH for the re
 
 From GitHub, Actions, "Instagram posts", Run workflow:
 
+- `check`: read-only test that the secrets work. Prints the account name; never posts.
 - `post` + `quiz`: feed post of the quiz creative, then the answer as the first comment.
 - `story` + `countdown`: posts the countdown story.
 - `reel`: posts the reel and shares it to the feed.
