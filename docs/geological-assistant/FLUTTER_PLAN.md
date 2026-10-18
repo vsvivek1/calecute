@@ -6,7 +6,7 @@ Package id: `com.calecutech.geologicalassistant`. Own design (earth/strata look 
 Reuse `uss-recallio` (Flutter, Supabase, spaced repetition, billing screen). Do not rebuild.
 - Keep: sign-in, card scheduler, offline sync, quiz screens, reminders.
 - Change: course id `geological-assistant`, English only, adult flow (no parent consent / child profile), new theme, new strings, no Season-Pass-until-March wording.
-- Add: topic quizzes by unit, mock test (100 Q, 75 min, 1/3 negative), "verify before exam" badge, priority filter, past-paper tag on cards.
+- Add: topic quizzes by unit, mock test (100 Q, 75 min, 1/4 negative), "verify before exam" badge, priority filter, past-paper tag on cards.
 - Content from Supabase (`cards`, `questions`) with local cache so it works offline.
 
 ## Payments: pick one (decision needed)
