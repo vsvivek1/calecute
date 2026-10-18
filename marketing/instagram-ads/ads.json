@@ -4,7 +4,9 @@
     "price": "₹3,000",
     "url": "https://calecutech.com/geological-assistant/study",
     "shortUrl": "calecutech.com/geological-assistant/study",
-    "examDate": "2 December 2026"
+    "examDate": "2 December 2026",
+    "signupUrl": "https://calecutech.com/geological-assistant",
+    "signupShort": "calecutech.com/geological-assistant"
   },
   "schedule": {
     "start": "2026-10-17T00:00:00Z",
@@ -44,5 +46,15 @@
   "reel": {
     "id": "reel",
     "caption_en": "One question, 20 minutes a day, the whole Geological Assistant syllabus. Kerala PSC exam on 2 December 2026. Can you answer this before the reveal? 👀\n\nGeological Assistant Prep: 1,854 fact cards, 1,212 questions, full mocks. ₹3,000 once, lifetime access. Link in bio.\n\n📤 Tag a friend writing the exam on 2 December."
+  },
+  "daily": {
+    "start": "2026-10-18",
+    "cardsPerDay": 5,
+    "reelsPerDay": 3,
+    "reelSeconds": {
+      "question": 5,
+      "answer": 5,
+      "end": 3
+    }
   }
 }
