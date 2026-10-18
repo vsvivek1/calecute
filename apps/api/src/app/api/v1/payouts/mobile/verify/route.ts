@@ -7,6 +7,7 @@
 import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { handler, preflight } from "@/lib/http";
+import { ApiError } from "@/lib/errors";
 import { authedRoute, ok } from "@/lib/route";
 import { parseBody } from "@/lib/validation";
 import { RULES } from "@/lib/ratelimit";
@@ -29,6 +30,7 @@ export const POST = handler(
       .where(eq(agents.id, agent.id))
       .limit(1);
 
+    if (!row?.mobile) throw new ApiError("UNPROCESSABLE", "No mobile number on this application");
     await checkVerification(agent.id, row.mobile, body.code);
 
     await ctx.tx

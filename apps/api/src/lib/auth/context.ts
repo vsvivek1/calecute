@@ -8,11 +8,11 @@
 import type { NextRequest } from "next/server";
 import { ApiError } from "../errors";
 import { verifyAccessToken, type AccessClaims } from "./tokens";
-import { PUBLIC_ACTOR, type Actor, type ActorRole } from "@/db/rls";
+import { PUBLIC_ACTOR, type Actor, type UserRole } from "@/db/rls";
 
 export interface AuthedActor extends Actor {
   userId: number;
-  role: Exclude<ActorRole, "PUBLIC">;
+  role: UserRole;
   agentId: number | null;
   claims: AccessClaims;
 }
@@ -65,7 +65,7 @@ export async function optionalActor(
  */
 export async function requireRole(
   request: NextRequest,
-  roles: ReadonlyArray<Exclude<ActorRole, "PUBLIC">>,
+  roles: ReadonlyArray<UserRole>,
 ): Promise<AuthedActor> {
   const actor = await requireActor(request);
   if (!roles.includes(actor.role)) {

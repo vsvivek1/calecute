@@ -5,12 +5,15 @@ import { eq, sql } from "drizzle-orm";
 import type { ScopedDb } from "@/db/rls";
 import { agents } from "@/db/schema";
 import { ApiError } from "./errors";
+import { webOrigin } from "./referral";
 
 export interface AgentIdentity {
   id: number;
   agentCode: string;
   status: string;
-  districtId: number;
+  tier: "USER" | "SELLER";
+  /** Null for a USER-tier referrer, who has no geography. */
+  districtId: number | null;
   /** Null while the agent's local body is not seeded — see migration 0006. */
   localBodyId: number | null;
   mobileVerifiedAt: Date | null;
@@ -32,6 +35,7 @@ export async function currentAgent(
       id: agents.id,
       agentCode: agents.agentCode,
       status: agents.status,
+      tier: agents.tier,
       districtId: agents.districtId,
       localBodyId: agents.localBodyId,
       mobileVerifiedAt: agents.mobileVerifiedAt,
@@ -86,12 +90,12 @@ export async function earningsFor(
   };
 }
 
-/** The referral link an agent shares. Built from a configured public origin. */
+/**
+ * The referral link a SELLER shares. USER-tier members get a product-specific
+ * link instead — see lib/referral.ts `userReferralLink`.
+ */
 export function referralLink(agentCode: string): string {
-  const base =
-    process.env.PUBLIC_WEB_ORIGIN?.replace(/\/$/, "") ??
-    "https://calecutech.com";
-  return `${base}/agents?ref=${encodeURIComponent(agentCode)}`;
+  return `${webOrigin()}/agents?ref=${encodeURIComponent(agentCode)}`;
 }
 
 /** Pre-filled WhatsApp share. Malayalam first, matching the public page. */

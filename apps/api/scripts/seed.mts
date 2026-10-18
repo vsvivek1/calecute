@@ -55,12 +55,42 @@ const INITIAL_TERMS_VERSION = "2026-09-01";
  * The marketing page at apps/web/src/app/(site)/products/page.tsx lists the same
  * products for the public. Keep the two in step.
  */
-const PRODUCTS = [
+interface SeedProduct {
+  slug: string;
+  name: string;
+  summary: string;
+  /**
+   * Referral facts. `free: true` seeds fee_paise as NULL (members earn
+   * diamonds); `feePaise` seeds a paid fee. Neither is overwritten on re-run:
+   * an administrator sets fees and rates through PATCH /admin/products/{id}
+   * and the seed must never undo that. Omitting both leaves the fee unknown,
+   * which the database treats as free until an administrator sets it.
+   */
+  free?: boolean;
+  feePaise?: number;
+  webUrl?: string;
+  playUrl?: string;
+  androidPackage?: string;
+}
+
+const playUrl = (pkg: string) => `https://play.google.com/store/apps/details?id=${pkg}`;
+
+const PRODUCTS: SeedProduct[] = [
   {
     slug: "recallio-uss",
     name: "Recallio: USS Kerala Exam Prep",
     summary:
       "Short daily study cards for the Class 7 USS scholarship exam, in Malayalam and English.",
+    // From uss-recallio/app/android/app/build.gradle.kts.
+    androidPackage: "com.calecutech.ussrecallio",
+  },
+  {
+    slug: "recallio-hss",
+    name: "Recallio: HSS Kerala Exam Prep",
+    summary:
+      "Short daily study cards for Kerala Higher Secondary exams, in Malayalam and English.",
+    // From uss-recallio/hss/app/android/app/build.gradle.kts.
+    androidPackage: "com.calecutech.hssrecallio",
   },
   {
     slug: "recallio-lss",
@@ -168,6 +198,52 @@ const PRODUCTS = [
     name: "DailyDo",
     summary:
       "Task management for individuals and teams: offices, projects, assignments, and real-time status.",
+  },
+  {
+    slug: "quizkerala",
+    name: "QuizKerala",
+    summary: "Daily Kerala general knowledge quizzes in Malayalam and English, free to play.",
+    free: true,
+    webUrl: "https://quiz.calecutech.com",
+  },
+  {
+    slug: "spaced-loop-psc",
+    name: "Spaced Loop: Kerala PSC",
+    summary:
+      "Spaced-repetition revision for Kerala PSC: short loops over the syllabus that come back just before you forget.",
+    // From psc-app/android/app/build.gradle.kts; listed on Play as "Recallio".
+    androidPackage: "com.calecutech.recallio",
+    playUrl: playUrl("com.calecutech.recallio"),
+  },
+  {
+    slug: "ksebea",
+    name: "KSEBEA Engineers Association",
+    summary:
+      "The members' app of the KSEB Engineers' Association: directory, circulars, and office bearers.",
+    androidPackage: "com.calecutech.ksebea",
+    playUrl: playUrl("com.calecutech.ksebea"),
+  },
+  {
+    slug: "recallio-energy-manager",
+    name: "Recallio Energy Manager",
+    summary:
+      "Spaced-repetition preparation for the BEE Certified Energy Manager and Auditor examinations.",
+    // Paid. The fee is not yet decided, so fee_paise stays NULL until an
+    // administrator sets it with PATCH /admin/products/{id}; until then the
+    // referral system treats it as free.
+  },
+  {
+    slug: "pmp-prep",
+    name: "PMP Prep",
+    summary:
+      "PMP examination preparation: practice questions, mock exams, and progress by knowledge area.",
+    // Paid, priced in USD cents in its own system. fee_paise stays NULL until
+    // an INR fee is set by an administrator.
+  },
+  {
+    slug: "pta",
+    name: "PTA",
+    summary: "Parent-teacher association management: members, meetings, notices, and collections.",
   },
 ];
 
@@ -282,19 +358,30 @@ async function seedTerms() {
 }
 
 /**
- * Upserts the catalogue. Descriptions are corrected here on re-run — an
- * administrator never edits them, so the repository is the source of truth —
- * but `active` is left alone, since retiring a product is an admin decision.
+ * Upserts the catalogue. Names and descriptions are corrected here on re-run —
+ * an administrator never edits them, so the repository is the source of truth.
+ * Everything an administrator CAN edit is left alone once set: `active`,
+ * `fee_paise`, the two rates, and the three URL columns are only filled where
+ * the row still has NULL, so re-seeding never undoes a change made through
+ * PATCH /admin/products/{id}.
  */
 async function seedProducts() {
   for (const product of PRODUCTS) {
+    const fee = product.free ? null : (product.feePaise ?? null);
     await sql`
-      INSERT INTO products (slug, name_en, name_ml, summary_en)
-      VALUES (${product.slug}, ${product.name}, ${product.name}, ${product.summary})
+      INSERT INTO products (slug, name_en, name_ml, summary_en, fee_paise, web_url, play_url, android_package)
+      VALUES (
+        ${product.slug}, ${product.name}, ${product.name}, ${product.summary},
+        ${fee}, ${product.webUrl ?? null}, ${product.playUrl ?? null}, ${product.androidPackage ?? null}
+      )
       ON CONFLICT (slug) DO UPDATE SET
         name_en = EXCLUDED.name_en,
         name_ml = EXCLUDED.name_ml,
-        summary_en = EXCLUDED.summary_en
+        summary_en = EXCLUDED.summary_en,
+        fee_paise = COALESCE(products.fee_paise, EXCLUDED.fee_paise),
+        web_url = COALESCE(products.web_url, EXCLUDED.web_url),
+        play_url = COALESCE(products.play_url, EXCLUDED.play_url),
+        android_package = COALESCE(products.android_package, EXCLUDED.android_package)
     `;
   }
 }

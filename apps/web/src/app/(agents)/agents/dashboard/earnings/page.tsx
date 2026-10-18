@@ -38,7 +38,9 @@ export default async function EarningsPage() {
   const summary = earnings.summary ?? {};
   const terms = earnings.terms ?? {};
   const rate = terms.rateBps != null ? terms.rateBps / 100 : null;
+  const maxRate = terms.maxRateBps != null ? terms.maxRateBps / 100 : rate;
   const tds = terms.tdsRateBps != null ? terms.tdsRateBps / 100 : null;
+  const rates = terms.rates ?? [];
 
   return (
     <div className="app-shell">
@@ -77,7 +79,8 @@ export default async function EarningsPage() {
 
           {rate != null && (
             <p className="chips-note">
-              {rate}% of every payment a customer you referred makes
+              {maxRate != null && maxRate !== rate ? `${rate}% to ${maxRate}%` : `${rate}%`} of
+              every payment a customer you referred makes, depending on the product
               {terms.basis ? `, ${terms.basis.toLowerCase()}` : ""}
               {tds != null
                 ? `. ${tds}% TDS is deducted under section ${terms.tdsSection ?? "194H"} and paid to the Income Tax Department against your PAN`
@@ -86,6 +89,39 @@ export default async function EarningsPage() {
             </p>
           )}
         </section>
+
+        {rates.length > 0 && (
+          <section>
+            <h2>Your rate per product</h2>
+            <div className="table-scroll">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>You earn</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rates.map((row) => (
+                    <tr key={row.productId}>
+                      <td>{row.nameEn}</td>
+                      <td>
+                        {row.reward === "DIAMOND"
+                          ? "1 diamond per friend who joins (free product)"
+                          : `${row.rateBps / 100}% of each payment`}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="chips-note">
+              Rates are set per product and can change for new payments; a commission
+              already accrued keeps the rate it was accrued at.{" "}
+              <a href="/rewards">See the public leaderboard</a>.
+            </p>
+          </section>
+        )}
 
         <section>
           <h2>Commission ledger</h2>
