@@ -61,6 +61,12 @@ export const STATIC_APPS: StaticApp[] = [
     image: "/ramayanam/assets/icon-192.png",
   },
   {
+    name: "Bhagavatham Wallpapers",
+    tagline: "A Bhagavatam painting and its story as your wallpaper, a new one every day",
+    href: "/bhagavatham",
+    image: "/bhagavatham/assets/icon-192.png",
+  },
+  {
     name: "Muhurtham Clock",
     tagline: "The Kerala panchangam as a live clock: kalams, horas, Abhijit",
     href: "/muhurtham-clock",
