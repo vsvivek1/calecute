@@ -390,10 +390,17 @@ async function seedSuperAdmins() {
   for (const admin of SUPER_ADMINS) {
     // google_sub is filled in on first sign-in; a placeholder keeps the NOT
     // NULL constraint satisfied and is replaced by the real subject then.
+    // Match on email, not google_sub: once the admin has signed in the row
+    // carries their real subject, and inserting the placeholder again would
+    // trip the unique email index.
+    const updated = await sql`
+      UPDATE users SET role = 'SUPER_ADMIN'
+      WHERE lower(email) = lower(${admin.email})
+    `;
+    if (updated.count > 0) continue;
     await sql`
       INSERT INTO users (google_sub, email, name, role, email_verified)
       VALUES (${`pending:${admin.email}`}, ${admin.email}, ${admin.name}, 'SUPER_ADMIN', false)
-      ON CONFLICT (google_sub) DO UPDATE SET role = 'SUPER_ADMIN'
     `;
   }
 }
