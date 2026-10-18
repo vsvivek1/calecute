@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Calecute — Commission Agent Programme API",
-    "description": "REST API for the Kerala commission agent programme.\n\n**This document is the contract.** Two clients consume it — the web frontend\nat calecutech.com and an Android app — and neither may depend on behaviour\nthat is not described here. The web frontend generates its TypeScript types\nfrom this file.\n\n## Authentication\n\nGoogle Sign-In only; there are no passwords and no OTP login. A client\nobtains a Google credential (an ID token natively, or an authorization code\non the web), posts it to `/auth/google`, and receives our own JWT pair. A\nGoogle token is never accepted as a session.\n\nSend the access token as `Authorization: Bearer <token>`. It is stateless:\nevery endpoint authorises from its claims. Refresh tokens are single-use and\nrotate; presenting a rotated one revokes all sessions for that user.\n\n## Authorisation\n\nRoles live on the user row: `AGENT`, `DISTRICT_ADMIN`, `SUPER_ADMIN`. Call\n`GET /me` and render whatever role comes back — do not infer it from an\nemail address or any client-side list.\n\nDistrict admins are scoped to assigned districts, and that scoping is\nenforced by Postgres row-level security rather than by query filters. A\nmodified client asking for another district's rows receives an empty set,\nnot an error.\n\n## Conventions\n\n- Errors always use the `Error` envelope. Branch on `error.code`.\n- Every list endpoint is cursor paginated. Offsets are not supported.\n- All money is integer **paise**. Never a float.\n- Geography is referenced by stable numeric id, never by name.\n- Endpoints that write money require an `Idempotency-Key` header.\n- Rate limits are reported in `RateLimit-Limit`, `RateLimit-Remaining` and\n  `RateLimit-Reset`; a 429 also carries `Retry-After`.\n\n## Using this collection\n\n1. Set `baseUrl` (defaults to local development).\n2. Run **auth → Exchange a Google credential**. Its test script stores\n   the access token, and every other request picks it up automatically.\n3. Requests that write money need an `Idempotency-Key`; those already\n   carry `{{$guid}}`, which Postman regenerates per send. To test a\n   replay, paste a fixed value instead.\n\nOptional query parameters are included but disabled, so the options are\nvisible without breaking the default request.\n\nGENERATED FILE — regenerate with `npm run postman --workspace=apps/api`.",
+    "description": "REST API for the Kerala commission agent programme.\n\n**This document is the contract.** Two clients consume it — the web frontend\nat calecutech.com and an Android app — and neither may depend on behaviour\nthat is not described here. The web frontend generates its TypeScript types\nfrom this file.\n\n## Authentication\n\nGoogle Sign-In only; there are no passwords and no OTP login. A client\nobtains a Google credential (an ID token natively, or an authorization code\non the web), posts it to `/auth/google`, and receives our own JWT pair. A\nGoogle token is never accepted as a session.\n\nSend the access token as `Authorization: Bearer <token>`. It is stateless:\nevery endpoint authorises from its claims. Refresh tokens are single-use and\nrotate; presenting a rotated one revokes all sessions for that user.\n\n## Authorisation\n\nRoles live on the user row: `AGENT`, `DISTRICT_ADMIN`, `SUPER_ADMIN`. Call\n`GET /me` and render whatever role comes back — do not infer it from an\nemail address or any client-side list.\n\nDistrict admins are scoped to assigned districts, and that scoping is\nenforced by Postgres row-level security rather than by query filters. A\nmodified client asking for another district's rows receives an empty set,\nnot an error.\n\n## Product systems (API keys)\n\nA Calecute app — the thing a referred customer actually joins — calls the\nreferral endpoints with an API key in `X-Api-Key`, not a user token. A\n`client` key (`ck_live_…`) ships inside an app and may register members,\nclaim attributions and log clicks; a `server` key (`sk_live_…`) is held\nby the product's backend and may additionally record payments. Keys are\nminted by a SUPER_ADMIN at `POST /admin/products/{id}/api-keys` and scope\nevery call to that one product. See docs/referral-architecture.md.\n\n## Conventions\n\n- Errors always use the `Error` envelope. Branch on `error.code`.\n- Every list endpoint is cursor paginated. Offsets are not supported.\n- All money is integer **paise**. Never a float.\n- Geography is referenced by stable numeric id, never by name.\n- Endpoints that write money require an `Idempotency-Key` header.\n- Rate limits are reported in `RateLimit-Limit`, `RateLimit-Remaining` and\n  `RateLimit-Reset`; a 429 also carries `Retry-After`.\n\n## Using this collection\n\n1. Set `baseUrl` (defaults to local development).\n2. Run **auth → Exchange a Google credential**. Its test script stores\n   the access token, and every other request picks it up automatically.\n3. Requests that write money need an `Idempotency-Key`; those already\n   carry `{{$guid}}`, which Postman regenerates per send. To test a\n   replay, paste a fixed value instead.\n\nOptional query parameters are included but disabled, so the options are\nvisible without breaking the default request.\n\nGENERATED FILE — regenerate with `npm run postman --workspace=apps/api`.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -697,7 +697,7 @@
                 }
               ]
             },
-            "description": "Pending, paid and lifetime totals, plus the individual commission rows behind them so an agent can see which payment each came from. The published terms are returned alongside, so no client hardcodes the 10% or the 2% TDS.\n\n**Requires role:** AGENT"
+            "description": "Pending, paid and lifetime totals, plus the individual commission rows behind them so an agent can see which payment each came from. The terms that apply to this agent are returned alongside as `terms` (see CommissionTerms): the rate is per product and per tier, so no client hardcodes a percentage or the 2% TDS.\n\n**Requires role:** AGENT"
           },
           "response": []
         },
@@ -998,7 +998,7 @@
               ],
               "query": []
             },
-            "description": "Agents see active products; admins see all. No products are seeded — the brief did not name them."
+            "description": "Agents see active products; admins see all. The catalogue is seeded from scripts/seed.mts, so it is the same everywhere and cannot drift."
           },
           "response": []
         }
@@ -1265,6 +1265,122 @@
               "query": []
             },
             "description": "How a new product reaches a district without clicking through a thousand agents. The filter resolves inside the scoped transaction, so a DISTRICT_ADMIN submitting an empty filter reaches only their own districts. `maxAgents` is a deliberate safety catch: a run that would exceed it is refused rather than executed.\n\n**Requires role:** DISTRICT_ADMIN or SUPER_ADMIN"
+          },
+          "response": []
+        },
+        {
+          "name": "Set a product's fee, referral rates and links",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/products/{id}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products",
+                ":id"
+              ],
+              "query": []
+            },
+            "description": "`feePaise: null` makes the product FREE: a member's friends then earn them\ndiamonds rather than cash. `sellerRateBps` is the seller band, 1000 to\n3000. `userRateBps` is what a member earns on a paid product, default 100.\n`webUrl` and `playUrl` are where `/r/{code}?app=slug` sends a visitor.\n\nSUPER_ADMIN only: the rates are a company-wide decision, and the products\nwrite policy admits nobody else.\n\n**Requires role:** SUPER_ADMIN"
+          },
+          "response": []
+        },
+        {
+          "name": "List a product's API keys",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/products/{id}/api-keys",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products",
+                ":id",
+                "api-keys"
+              ],
+              "query": []
+            },
+            "description": "Never the hash, never the plaintext. Revoked keys are listed with `revokedAt` set.\n\n**Requires role:** SUPER_ADMIN"
+          },
+          "response": []
+        },
+        {
+          "name": "Mint an API key for a product system",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/products/{id}/api-keys",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products",
+                ":id",
+                "api-keys"
+              ],
+              "query": []
+            },
+            "description": "The plaintext is in this response and nowhere else, ever: only its\nSHA-256 is stored. A `client` key ships inside an app and may call\n`/members`, `/attribution/claim` and the click log; a `server` key is\nheld by the product's backend and may additionally call `/payments`.\nThe same can be done offline with `scripts/mint-api-key.mts`.\n\n**Requires role:** SUPER_ADMIN"
+          },
+          "response": []
+        },
+        {
+          "name": "Revoke an API key",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/products/{id}/api-keys/{keyId}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "products",
+                ":id",
+                "api-keys",
+                ":keyId"
+              ],
+              "query": []
+            },
+            "description": "The row stays, stamped, for the audit trail; the next request with the key gets 401.\n\n**Requires role:** SUPER_ADMIN"
           },
           "response": []
         },
@@ -1677,7 +1793,7 @@
     },
     {
       "name": "attribution",
-      "description": "Referral attribution. First code wins, permanently.",
+      "description": "Referral attribution and payments, called by product systems. First code wins, permanently.",
       "item": [
         {
           "name": "Claim a customer for an agent code",
@@ -1704,7 +1820,7 @@
               ],
               "query": []
             },
-            "description": "**First code wins, permanently.** With ten agents per panchayat, two\nagents claiming the same customer is certain, so the rule is decided in\nthe schema: one attribution row per customer, a unique constraint on\n`customer_id`, and no UPDATE policy on the table at all. There is no\nreassignment path in this API.\n\nEvery attempt is recorded, accepted or rejected, with the code as\npresented and the reason. That log is the entire basis for settling a\ndispute from data. A losing claim receives `heldBy` so the caller can see\nwho holds it without a second request.\n\nCalled by a product system, not by an agent or a browser.\n\n**Requires role:** SUPER_ADMIN (service credential)"
+            "description": "**First code wins, permanently.** With ten agents per panchayat, two\nagents claiming the same customer is certain, so the rule is decided in\nthe schema: one attribution row per customer, a unique constraint on\n`customer_id`, and no UPDATE policy on the table at all. There is no\nreassignment path in this API.\n\nEvery attempt is recorded, accepted or rejected, with the code as\npresented and the reason. That log is the entire basis for settling a\ndispute from data. A losing claim receives `heldBy` so the caller can see\nwho holds it without a second request.\n\nCalled by a product system with its API key (client or server), or by a\nSUPER_ADMIN naming `productSlug`. The customer reference is stored as\n`<product slug>:<customerExternalRef>`, so send the app's own user id —\nthe same value sent to `POST /members` for that user.\n\nThe code may be a seller's `CA-…` or a member's `RF-…`; both live in one\nnamespace. A member cannot claim themselves (`SELF_REFERRAL`). On a FREE\nproduct a member earns one diamond when the claim is accepted; on a PAID\nproduct nothing is earned until the friend pays (`POST /payments`).\n\n**Requires role:** API key (client or server), or SUPER_ADMIN"
           },
           "response": []
         },
@@ -1737,7 +1853,243 @@
               ],
               "query": []
             },
-            "description": "Creates money, so: an `Idempotency-Key` is mandatory, `externalRef` is\nunique as a second line of defence, and the arithmetic is re-checked by a\ndatabase constraint so a bug here cannot write an inconsistent ledger row.\n\nCommission is 10% of the amount net of GST and gateway charges, less 2%\nTDS under Section 194H. It accrues only for an APPROVED agent holding the\nattribution; an unattributed payment is recorded with\n`commissionAccrued: false` rather than rejected.\n\n**Requires role:** SUPER_ADMIN (service credential)"
+            "description": "Creates money, so: an `Idempotency-Key` is mandatory, `externalRef` is\nunique as a second line of defence, and the arithmetic is re-checked by a\ndatabase constraint so a bug here cannot write an inconsistent ledger row.\n\nCommission is a percentage of the amount net of GST and gateway charges,\nless 2% TDS under Section 194H. The percentage depends on who holds the\nattribution: a SELLER earns the product's `sellerRateBps` (10% to 30%),\na USER-tier member earns the product's `userRateBps` (default 1%). It\naccrues only for an APPROVED referrer; an unattributed payment is recorded\nwith `commissionAccrued: false` rather than rejected.\n\nOnly a SERVER key may call this — a client key ships inside an app. The\ncustomer reference is namespaced exactly as in `/attribution/claim`.\n\n**Requires role:** API key (server only), or SUPER_ADMIN"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "referral",
+      "description": "Invite codes for every app user, the public leaderboard, QR and click logging.",
+      "item": [
+        {
+          "name": "Find or create a user's invite code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/members",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "members"
+              ],
+              "query": []
+            },
+            "description": "Call this when a user signs in to your app. The first call creates the\nmember and their immutable `RF-…` code; every later call returns the same\ncode with fresh stats. Idempotent, so calling it on every sign-in is the\nintended usage.\n\n`externalRef` is your own user id. It is namespaced per product, and it is\nthe same value you send as `customerExternalRef` when this user joins\nthrough somebody else's code.\n\n**Requires role:** API key (client or server)"
+          },
+          "response": []
+        },
+        {
+          "name": "A member's code and stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/members/{externalRef}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "members",
+                ":externalRef"
+              ],
+              "query": []
+            },
+            "description": "The same shape as POST /members, for refreshing stats without re-sending the profile. 404 until POST /members has been called for that user.\n\n**Requires role:** API key (client or server)"
+          },
+          "response": []
+        },
+        {
+          "name": "Public leaderboard of referral earnings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/public/leaderboard?app=&limit=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "public",
+                "leaderboard"
+              ],
+              "query": [
+                {
+                  "key": "app",
+                  "value": "",
+                  "description": "Product slug. Omit for every product.",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Rows to return.",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Who has earned the most from referrals, both tiers, across every app or\nfiltered to one. Names are masked to first name and last initial and\nnothing identifying is returned. Cached for 60 seconds.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Active products and what a referrer earns on each",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/public/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "public",
+                "products"
+              ],
+              "query": []
+            },
+            "description": "Public. Used by the rewards page filter and by the /r/{code} redirect on the website.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "One product's public referral facts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/public/products/{slug}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "public",
+                "products",
+                ":slug"
+              ],
+              "query": []
+            },
+            "description": "Free or paid, the rates, and the web and Play URLs a referral link resolves to.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "QR image for an invite link",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/public/qr?code=&app=&format=png",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "public",
+                "qr"
+              ],
+              "query": [
+                {
+                  "key": "code",
+                  "value": "",
+                  "description": "The invite code.",
+                  "disabled": false
+                },
+                {
+                  "key": "app",
+                  "value": "",
+                  "description": "Product slug.",
+                  "disabled": false
+                },
+                {
+                  "key": "format",
+                  "value": "png",
+                  "description": "Image format.",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Encodes `https://<web>/r/{code}?app={app}`. Public and cacheable; no app ships a QR library.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Log a click on an invite link",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/public/referral-clicks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "public",
+                "referral-clicks"
+              ],
+              "query": []
+            },
+            "description": "Fired by the website's /r/{code} redirect before it sends the visitor on. No user id and no full IP is stored. Returns 202; never wait on it.",
+            "auth": {
+              "type": "noauth"
+            }
           },
           "response": []
         }
