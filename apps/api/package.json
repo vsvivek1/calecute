@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --port 3001",
     "build": "npm run openapi && npm run postman && next build",
+    "vercel-build": "sh scripts/vercel-build.sh",
     "start": "next start --port 3001",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
