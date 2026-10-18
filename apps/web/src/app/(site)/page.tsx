@@ -382,6 +382,37 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Geological Assistant course (static page, so a plain link) */}
+            <div className="home-reveal relative mt-4 overflow-hidden rounded-[1.75rem] bg-[linear-gradient(150deg,#1c1408,#3d2a12_55%,#5c3d17)] p-8 ring-1 ring-[#e0b872]/20 sm:p-10">
+              <div className="flex flex-wrap items-center justify-between gap-6">
+                <div className="max-w-2xl">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-green-400/15 px-2.5 py-0.5 text-xs font-medium text-green-300">
+                    <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
+                    Live
+                  </span>
+                  <h3 className="mt-4 font-[family-name:var(--font-display)] text-2xl font-bold tracking-tight text-white sm:text-3xl">
+                    <a
+                      href="/geological-assistant"
+                      className="hover:underline hover:underline-offset-4"
+                    >
+                      Kerala PSC Geological Assistant Exam Preparation
+                    </a>
+                  </h3>
+                  <p className="mt-3 text-white/70">
+                    Daily fact cards, past-paper MCQs and mock tests for the
+                    Kerala PSC Geological Assistant exam, built on the same
+                    engine as our quiz apps.
+                  </p>
+                </div>
+                <a
+                  href="/geological-assistant"
+                  className="inline-flex min-h-11 items-center rounded-full bg-[#e0b872] px-6 text-sm font-semibold text-[#1c1408] transition hover:bg-[#ecc98a]"
+                >
+                  See the course →
+                </a>
+              </div>
+            </div>
+
             <p className="mt-10 text-sm text-white/55">
               We currently work with clients across India and international
               markets on web, mobile, and SaaS projects. Want to see work
