@@ -14,7 +14,7 @@ const SUPABASE_KEY = 'sb_publishable_8yQLCPZV55NwBKI5ybeRAg__UggFFK_';
 const COURSE = 'geological-assistant';
 const PREFIX = COURSE + '-';
 const NEW_PER_DAY = 25;
-const MOCK = { count: 100, minutes: 75, negative: 1 / 3 };
+const MOCK = { count: 100, minutes: 75, negative: 1 / 4 };
 const HOME = location.origin + '/geological-assistant/study';
 
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
@@ -568,7 +568,7 @@ async function today() {
   if (plan.mockDue) {
     return show(
       h('h1', {}, 'One more step today: a mock test'),
-      h('p', { class: 'lead' }, `${score} Now a full mock test: ${MOCK.count} questions, ${MOCK.minutes} minutes, one third of a mark off for each wrong answer. It shows you where you stand.`),
+      h('p', { class: 'lead' }, `${score} Now a full mock test: ${MOCK.count} questions, ${MOCK.minutes} minutes, a quarter mark off for each wrong answer. It shows you where you stand.`),
       h('div', { class: 'row' },
         h('a', { class: 'btn', href: 'study#/mock' }, 'I am ready'),
         h('a', { class: 'btn ghost', href: 'study#/' }, 'Later today')));
@@ -612,7 +612,7 @@ async function mock() {
   show(
     h('h1', {}, 'Mock test'),
     h('div', { class: 'panel' },
-      h('p', {}, `${MOCK.count} questions from all five units. ${MOCK.minutes} minutes. +1 for a right answer, −⅓ for a wrong one, 0 if you leave it blank.`),
+      h('p', {}, `${MOCK.count} questions from all five units. ${MOCK.minutes} minutes. +1 for a right answer, −¼ for a wrong one, 0 if you leave it blank.`),
       h('p', { class: 'small' }, 'The test submits itself when time runs out. Do not close this tab.'),
       h('button', { class: 'btn', onclick: runMock }, 'Start now')),
   );
