@@ -21,14 +21,17 @@ for old in out.glob("cards-*.sql"):
     old.unlink()
 
 chunks, cur, size = [], [], 0
+cur_paper = cards[0]["paper"]
 for c in cards:
     s = json.dumps(c, ensure_ascii=False, separators=(",", ":"))
     assert "$cards$" not in s
-    if cur and size + len(s.encode()) > limit:
+    if cur and (size + len(s.encode()) > limit or c["paper"] != cur_paper):
         chunks.append(cur); cur, size = [], 0
-    cur.append(s); size += len(s.encode())
+    cur.append(s); size += len(s.encode()); cur_paper = c["paper"]
 chunks.append(cur)
 for n, chunk in enumerate(chunks, 1):
     (out / f"cards-{n:02d}.sql").write_text(
         "select energy_manager.load_cards($cards$[\n" + ",\n".join(chunk) + "\n]$cards$::jsonb);\n")
 print(f"{len(cards)} cards in {len(chunks)} files")
+for n, chunk in enumerate(chunks, 1):
+    print(f"cards-{n:02d}.sql paper {json.loads(chunk[0])['paper']}: {len(chunk)} cards")
