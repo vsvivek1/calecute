@@ -10,6 +10,7 @@
     "db:test": "sh supabase/tests/run.sh"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.135.0",
     "@electric-sql/pglite": "^0.5.10",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.58.0",
