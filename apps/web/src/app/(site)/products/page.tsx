@@ -70,6 +70,14 @@ const learning: Product[] = [
     native: true,
   },
   {
+    title: "Recallio: Energy Manager",
+    desc: "Daily study plan for the BEE Energy Manager and Energy Auditor exam. Enrol in the papers you need; the app sets each day's cards, solved problems and revision.",
+    emoji: "⚡",
+    color: "bg-lime-100 dark:bg-lime-900/30",
+    href: "https://energy.recallio.calecutech.com",
+    native: true,
+  },
+  {
     title: "Recallio: LSS Kerala Exam Prep",
     desc: "Short daily study cards for the Class 4 LSS scholarship exam, in Malayalam and English. Coming soon.",
     emoji: "🏅",
