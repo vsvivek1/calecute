@@ -72,6 +72,11 @@ PTA_DEMO=1 npm run dev --workspace=apps/pta    # localhost:3200
    `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
    Suggested host: `pta.calecutech.com` (CNAME to `cname.vercel-dns.com`).
    A second project with `PTA_DEMO=1` makes a public demo.
+5. **Photo import (optional).** Set `ANTHROPIC_API_KEY` on the Vercel project
+   to turn on Office → Students → "Add students from a photo", which reads
+   names off a photo of an attendance or admission register with Claude. The
+   office checks every row before anything is saved. Without the key the page
+   says the feature is off.
 
 ## Checks
 

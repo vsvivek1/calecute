@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import { addClass, addGuardian, addStaff, addStudent } from '@/app/actions';
 import BackField from '@/components/BackField';
 import Flash from '@/components/Flash';
@@ -22,6 +24,7 @@ export default async function Students({ searchParams }: { searchParams: Promise
       <Flash searchParams={searchParams} />
       <h1>Students & staff</h1>
       <p className="sub">Parents and teachers sign in with the email address you enter here.</p>
+      <p><Link href="/office/students/scan" className="btn btn-primary">📷 Add students from a photo of the register</Link></p>
 
       <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
         <details className="card" open={d.students.length === 0}>
