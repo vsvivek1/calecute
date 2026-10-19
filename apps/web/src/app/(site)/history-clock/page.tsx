@@ -4,10 +4,11 @@ import { Builder, ClockMascot, Emperor, Globe, Poet, SliderDoodle, Thinker } fro
 import s from "@/components/history-clock/sketch.module.css";
 import { SITE_ORIGIN, historyClock, policyLinks } from "@/lib/history-clock/content";
 import { regions } from "@/lib/history-clock/regions";
+import { GooglePlayBadge } from "@/components/site/GooglePlayBadge";
 
 const title = "History Clock: spin the clock, watch empires rise and fall | Calecutech";
 const description =
-  "History Clock is an interactive world history map by Calecutech. Pick a place, slide through time, and meet the dynasties, monuments, thinkers, arts and literature of that place and period.";
+  "History Clock is an interactive world history map by Calecutech. Pick a place, slide through time, and meet the dynasties, monuments, thinkers, arts and literature of that place and period. Free on the web and on Android: get it on Google Play.";
 
 export const metadata: Metadata = {
   title,
@@ -104,6 +105,7 @@ export default function HistoryClockPage() {
               <Link href={historyClock.quizPath} className={`${s.btn} ${s.btnTeal} text-lg`}>
                 Try now: Kerala quiz
               </Link>
+              <GooglePlayBadge androidPackage="com.calecutech.historyclock" appName="History Clock" tone="light" />
             </div>
             <p className="mt-5 text-sm text-[#4a4f5e]">
               {regions.length} regions · {entryCount} hand-picked entries · 5,000 years · no sign-in

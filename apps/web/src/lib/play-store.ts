@@ -8,10 +8,23 @@
  * listing. Nothing else needs to change.
  */
 
-/** Package ids whose Play listing is public (production track). */
+/**
+ * Package ids whose Play listing is public (Production in the Play Console).
+ * Checked against the console on 19 Oct 2026.
+ */
 export const LIVE_ON_PLAY = new Set<string>([
+  "com.calecutech.bankmates",
   "com.calecutech.goldlelam", // Bankers Gold
-  "com.calecutech.quizkerala",
+  "com.calecutech.dentalmart",
+  "com.calecutech.doplando",
+  "com.calecutech.historyclock",
+  "com.calecutech.ksebea",
+  "com.calecutech.muhurthamclock",
+  "com.calecutech.recallio",
+  "com.calecutech.ussrecallio",
+  "com.calecutech.voffer",
+  "com.calecutech.workforce",
+  "com.calecutech.sparex",
 ]);
 
 export function playStoreUrl(androidPackage: string): string {
@@ -100,6 +113,7 @@ export const PLAY_PRODUCTS: PlayProduct[] = [
     href: "/plus-two-science",
     native: true,
     image: "/plus-two-science/assets/logo.svg",
+    androidPackage: "com.calecutech.hssrecallio",
     category: "Learning",
     description:
       "Kerala Higher Secondary Plus Two Science revision for the board exam and entrance prep, as short daily cards in Malayalam and English.",
@@ -110,11 +124,21 @@ export const PLAY_PRODUCTS: PlayProduct[] = [
     href: "/geological-assistant",
     native: true,
     image: "/geological-assistant/assets/logo.svg",
-    androidPackage: "com.calecutech.geologicalassistant",
+    androidPackage: "com.calecutech.geologist",
     category: "Learning",
     description:
       "The complete Kerala PSC Geological Assistant (Ground Water Department) syllabus: fact cards, practice questions, previous papers and timed mock tests.",
     keywords: ["Geological Assistant Kerala PSC", "Ground Water Department exam", "geology PSC questions"],
+  },
+
+  {
+    name: "History Clock",
+    href: "/history-clock",
+    androidPackage: "com.calecutech.historyclock",
+    category: "Learning",
+    description:
+      "Spin the clock and watch empires rise and fall on a world map, then test yourself with the Kerala history quiz: Muziris, the Zamorins, Travancore and more.",
+    keywords: ["world history map", "Kerala history quiz", "history timeline app", "empires map"],
   },
 
   // Banking and finance
@@ -217,7 +241,7 @@ export const PLAY_PRODUCTS: PlayProduct[] = [
     href: "/farmconnect",
     native: true,
     image: "/farmconnect/assets/icon-192.png",
-    androidPackage: "com.calecutech.farmconnect",
+    androidPackage: "com.calecutech.fpo",
     category: "Business",
     description:
       "A digital mall for Kerala's farmers. Every farmer and FPO opens their own shop, and buyers order fresh produce straight from the farm.",

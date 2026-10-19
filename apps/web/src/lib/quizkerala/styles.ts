@@ -213,6 +213,9 @@ section.block.alt { background: var(--panel); }
 .play-badge { display: inline-flex; border-radius: 9px; }
 .play-badge:hover { filter: brightness(1.15); }
 .play-badge img { display: block; height: 52px; width: auto; }
+.play-soon { display: inline-flex; flex-direction: column; justify-content: center; min-height: 52px; padding: 0.3rem 1.1rem; border: 1.5px dashed currentColor; border-radius: 9px; opacity: 0.75; line-height: 1.15; }
+.play-soon small { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.play-soon strong { font-size: 1.05rem; }
 
 .faq-item { border-bottom: 1px solid var(--hairline); padding: 0.4rem 0; }
 .faq-item summary { cursor: pointer; font-weight: 600; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; list-style: none; }
