@@ -241,6 +241,11 @@ export default function HistoryClockPage() {
               Kerala quiz
             </Link>
           </div>
+          <p className="mt-6">
+            <Link href={historyClock.supportPath} className="underline underline-offset-2 hover:text-[#d9653b]">
+              Like it? Support History Clock
+            </Link>
+          </p>
           <p className="mt-8 text-sm text-[#4a4f5e]">
             {policyLinks.map((link, i) => (
               <span key={link.href}>
