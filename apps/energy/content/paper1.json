@@ -1,0 +1,1380 @@
+[
+ {
+  "id": "p1-001",
+  "paper": 1,
+  "topic": "Energy scenario",
+  "kind": "fact",
+  "front": "What is the difference between commercial and non-commercial energy? Give an example of each.",
+  "back": "Commercial energy is traded at a market price (coal, oil, natural gas, grid electricity); non-commercial energy is not normally bought and sold (firewood, cattle dung, agricultural waste).",
+  "explain": "Commercial sources power industry, transport and urban households and are the basis of national energy statistics. Non-commercial sources are gathered free, mainly in rural areas, and are often left out of official consumption figures. Solar energy used for water heating is also treated as non-commercial in BEE questions.",
+  "flash": false,
+  "source": "BEE 2024 P1 S7; BEE 2025 P1 Q44"
+ },
+ {
+  "id": "p1-002",
+  "paper": 1,
+  "topic": "Energy scenario",
+  "kind": "fact",
+  "front": "Distinguish primary and secondary energy sources.",
+  "back": "Primary energy is found or stored in nature (coal, crude oil, natural gas, biomass, solar, wind, hydro, nuclear fuel); secondary energy is produced by converting primary energy (electricity, steam, petrol/diesel from refining).",
+  "explain": "Primary sources are mostly converted in industrial utilities into secondary forms before end use. For example, coal is burnt in a power station to make electricity, and crude oil is refined into transport fuels. Every conversion step has losses, so saving one unit of secondary energy saves more than one unit of primary energy.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p1-003",
+  "paper": 1,
+  "topic": "Energy scenario",
+  "kind": "fact",
+  "front": "Distinguish renewable and non-renewable energy, with an example of each.",
+  "back": "Renewable energy comes from sources that are naturally replenished and practically inexhaustible (solar, wind, hydro, biomass, geothermal); non-renewable energy comes from finite stocks that run out over time (coal, oil, natural gas, nuclear fuel).",
+  "explain": "Renewables are generally low-carbon and do not deplete. Fossil fuels took millions of years to form and are being used up much faster than they form. Coal is the standard 'non-renewable' answer in BEE objective questions.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q43, S7"
+ },
+ {
+  "id": "p1-004",
+  "paper": 1,
+  "topic": "Energy scenario",
+  "kind": "fact",
+  "front": "How is the Reserves-to-Production (R/P) ratio calculated, and what does it tell you?",
+  "back": "R/P = reserves remaining at the end of the year ÷ production in that year. It gives the number of years the remaining reserves would last if production continued at that rate.",
+  "explain": "India's coal R/P ratio is much higher than its oil and gas R/P ratios. That is why coal is seen as the fuel that can give secure domestic supply for decades, while oil and gas depend heavily on imports. The ratio changes as new reserves are found or production rises.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q34; BEE 2025 P1 Q34"
+ },
+ {
+  "id": "p1-005",
+  "paper": 1,
+  "topic": "Energy scenario",
+  "kind": "fact",
+  "front": "Define energy intensity.",
+  "back": "Energy intensity = Energy consumption ÷ GDP (for example, toe per million US$ of GDP). It shows how much energy the economy uses to produce one unit of economic output.",
+  "explain": "High energy intensity means energy is being turned into GDP inefficiently, or that the economy relies on energy-heavy industry. Low energy intensity usually means energy is being turned into GDP efficiently. It is a macro indicator used to compare countries over time.",
+  "flash": true,
+  "source": "BEE 2024 P1 Q23; BEE 2025 P1 S2"
+ },
+ {
+  "id": "p1-006",
+  "paper": 1,
+  "topic": "Energy scenario",
+  "kind": "fact",
+  "front": "Why does a lower energy intensity not necessarily mean higher energy efficiency?",
+  "back": "Energy intensity also depends on economic structure (share of services against heavy industry), climate, geography, lifestyle, exchange rates and how much non-commercial energy is counted. It is not only technical efficiency.",
+  "explain": "A service-led economy can have low energy intensity even with inefficient equipment. A country with a large steel or cement base can show high intensity even with efficient plants. Energy intensity is therefore only a rough proxy for efficiency.",
+  "flash": false,
+  "source": "BEE 2024 P1 S6"
+ },
+ {
+  "id": "p1-007",
+  "paper": 1,
+  "topic": "Energy scenario",
+  "kind": "fact",
+  "front": "Why is GDP converted using Purchasing Power Parity (PPP) when comparing energy intensity across countries?",
+  "back": "PPP values every country's GDP at a uniform price level. The comparison then reflects differences in real economic volume, not market exchange-rate distortions.",
+  "explain": "Market exchange rates undervalue the output of developing countries, where many goods and services are cheaper. GDP at market exchange rates therefore makes their energy intensity look much higher than it really is. PPP-based GDP gives a fairer comparison.",
+  "flash": false,
+  "source": "BEE 2024 P1 S6; BEE 2025 P1 Q35"
+ },
+ {
+  "id": "p1-008",
+  "paper": 1,
+  "topic": "Energy scenario",
+  "kind": "fact",
+  "front": "How are energy conservation and energy efficiency related?",
+  "back": "Energy efficiency means using less energy for the same output or service (lower energy per unit). Energy conservation means reducing overall energy consumption, which can include behaviour change or doing without.",
+  "explain": "Efficiency is about technology and how well equipment performs, such as an efficient motor doing the same work with less input. Conservation is broader: it includes efficiency and also avoiding waste, such as switching off idle equipment. Both cut demand, and efficiency does not require reducing comfort or output.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q36"
+ },
+ {
+  "id": "p1-009",
+  "paper": 1,
+  "topic": "Energy scenario",
+  "kind": "fact",
+  "front": "Why is energy saved through Demand Side Management (DSM) treated like new supply-side capacity?",
+  "back": "Each MW of demand avoided by DSM does the same job as adding a MW of generation (a 'negawatt'), and it costs much less than building new power plants.",
+  "explain": "DSM programmes run by utilities or DISCOMs shift or reduce load, especially at peak, through efficient appliances, time-of-day tariffs and load management. The aims are to lower peak demand, defer capital spending on capacity, and improve the load factor. Increasing generator load to meet the peak is NOT a DSM objective.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q1; BEE 2024 P1 Q10"
+ },
+ {
+  "id": "p1-010",
+  "paper": 1,
+  "topic": "Energy scenario",
+  "kind": "fact",
+  "front": "What was the main aim of India's Accelerated Power Development and Reform Programme (APDRP)?",
+  "back": "To reduce Aggregate Technical & Commercial (AT&C) losses in distribution through energy accounting and audits, metering, and strengthening of the sub-transmission and distribution network.",
+  "explain": "AT&C losses combine technical losses (I²R in lines and transformers) with commercial losses (theft, unmetered supply, billing and collection gaps). APDRP and its restructured successor (R-APDRP) funded IT-based energy accounting and network upgrades for state utilities.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q2"
+ },
+ {
+  "id": "p1-011",
+  "paper": 1,
+  "topic": "Energy scenario",
+  "kind": "fact",
+  "front": "Why was Availability Based Tariff (ABT) introduced in India?",
+  "back": "To improve grid discipline and frequency control. It does this with a tariff of three parts: a capacity (fixed) charge, an energy (variable) charge, and an Unscheduled Interchange (UI) charge linked to frequency.",
+  "explain": "Under ABT, a generator is paid its capacity charge for the availability it declares, and its energy charge for energy actually scheduled. Deviations from schedule are priced by grid frequency: over-drawing at low frequency is expensive. This rewards keeping to schedule and supporting frequency.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q32"
+ },
+ {
+  "id": "p1-012",
+  "paper": 1,
+  "topic": "Energy scenario",
+  "kind": "problem",
+  "front": "Country X consumes 500 Mtoe of energy and has a GDP of US$ 2.5 trillion. Country Y consumes 300 Mtoe and has a GDP of US$ 1.2 trillion. Calculate the energy intensity of each in toe per million US$ and state which uses energy more productively.",
+  "back": "X: 200 toe per million US$; Y: 250 toe per million US$. Country X has the lower energy intensity.",
+  "explain": "Energy intensity = energy ÷ GDP, so a lower value means more GDP per unit of energy. Before concluding that X is more energy efficient, remember that economic structure, climate and PPP effects also affect intensity.",
+  "steps": [
+   {
+    "prompt": "Express GDP in million US$.",
+    "answer": "X: 2.5 trillion = 2,500,000 million US$; Y: 1.2 trillion = 1,200,000 million US$.",
+    "explain": "1 trillion = 10⁶ million."
+   },
+   {
+    "prompt": "Express energy in toe.",
+    "answer": "X: 500 × 10⁶ toe; Y: 300 × 10⁶ toe.",
+    "explain": "1 Mtoe = 10⁶ toe."
+   },
+   {
+    "prompt": "Compute energy intensity = energy ÷ GDP.",
+    "answer": "X: 500×10⁶ ÷ 2.5×10⁶ = 200 toe/million US$; Y: 300×10⁶ ÷ 1.2×10⁶ = 250 toe/million US$.",
+    "explain": "EI = Energy consumption ÷ GDP."
+   },
+   {
+    "prompt": "Interpret the result.",
+    "answer": "X has the lower EI, so it produces more GDP per toe.",
+    "explain": "Lower intensity suggests better productivity of energy use, but is not by itself proof of technical efficiency."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2025 P1 S2 (modified)"
+ },
+ {
+  "id": "p1-013",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "1 tonne of oil equivalent (toe) equals how many kcal and MJ?",
+  "back": "1 toe = 10⁷ kcal = 41,868 MJ (41.868 GJ).",
+  "explain": "toe is the common unit BEE uses to add up different fuels; for example Designated Consumer thresholds and PAT targets are in toe. Convert each fuel to kcal (quantity × GCV) and divide by 10⁷. For example, 2,500 kg of coal at 4,000 kcal/kg = 10⁷ kcal = 1 toe.",
+  "flash": true,
+  "source": "BEE 2025 P1 Q6; BEE 2024 P1 Q33"
+ },
+ {
+  "id": "p1-014",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "What are the energy equivalents of 1 kWh and 1 kcal?",
+  "back": "1 kWh = 860 kcal = 3,600 kJ (3.6 MJ); 1 kcal = 4.187 kJ.",
+  "explain": "These conversions are used in almost every Paper 1 numerical. To convert a thermal load in kcal/h to electrical kW, divide by 860. To convert electrical energy to toe, multiply kWh by 860 and divide by 10⁷.",
+  "flash": true,
+  "source": "BEE 2024 P1 S5, S8"
+ },
+ {
+  "id": "p1-015",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "Which of these is NOT equal to 1 atm: 101.3 kPa, 10,332 mmWC, 14.7 psi, 0.98 kg/cm²?",
+  "back": "0.98 kg/cm² is wrong. 1 atm ≈ 1.033 kg/cm² (101.325 kPa = 10,332 mmWC = 14.7 psi = 760 mmHg).",
+  "explain": "1 kg/cm² ≈ 0.98 bar, which is easy to confuse. Remember 1 atm = 1.01325 bar ≈ 1.033 kg/cm², slightly more than 1 kg/cm².",
+  "flash": false,
+  "source": "BEE 2024 P1 Q2"
+ },
+ {
+  "id": "p1-016",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "State the relation between gauge pressure, absolute (system) pressure and atmospheric pressure.",
+  "back": "Gauge pressure = Absolute (system) pressure − Atmospheric pressure, i.e. pg = ps − pa.",
+  "explain": "Pressure gauges read relative to the surrounding atmosphere, so a gauge open to air reads zero. Steam tables use absolute pressure, so add about 1.013 bar to a gauge reading before looking up properties.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q31"
+ },
+ {
+  "id": "p1-017",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "What property does 'Redwood seconds' measure?",
+  "back": "Viscosity. It is the time in seconds for a fixed volume of oil to flow through a standard orifice of the Redwood viscometer.",
+  "explain": "Viscosity matters for fuel oils because it sets the pumping and atomisation temperature. Furnace oil is preheated to bring its viscosity down to the level the burner needs.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q3"
+ },
+ {
+  "id": "p1-018",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "Which common substance has the highest specific heat, and what is its value?",
+  "back": "Water, at about 1 kcal/kg°C (4.187 kJ/kg·K). It is far higher than metals such as iron (~0.11), mercury (~0.033) or lead (~0.03).",
+  "explain": "Water's high specific heat makes it an excellent heat-transfer and storage medium, used in cooling towers, hot-water systems and chilled water. Heating 500 litres of water (500 kg) by 6°C needs 500 × 1 × 6 = 3,000 kcal, which is about 12,560 kJ.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q7, Q10; BEE 2024 P1 Q8"
+ },
+ {
+  "id": "p1-019",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "What is the formula for sensible heat, and how does latent heat differ?",
+  "back": "Sensible heat Q = m × Cp × ΔT, which changes temperature without a change of phase. Latent heat Q = m × L, which changes phase (e.g. boiling or condensing) at constant temperature.",
+  "explain": "Example: cooling 2,000 kg of water by 10°C removes 2,000 × 1 × 10 = 20,000 kcal of sensible heat. Condensing steam releases its latent heat (about 540 kcal/kg at atmospheric pressure), which is why steam is such an effective heating medium.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q10"
+ },
+ {
+  "id": "p1-020",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "What is the dryness fraction (x) of dry saturated steam, and what does x < 1 mean?",
+  "back": "x = 1 for dry saturated steam (BEE also gives x = 1 for superheated steam). x < 1 means wet steam that carries water droplets: x = mass of dry steam ÷ total mass.",
+  "explain": "Wet steam has less usable enthalpy per kg (hf + x·hfg). It also causes erosion and poorer heat transfer, so steam traps and separators are used to keep steam dry.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q39"
+ },
+ {
+  "id": "p1-021",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "How do you calculate the number of moles in a given mass? (e.g. 72 g or 54 g of water)",
+  "back": "Moles = mass ÷ molecular weight. Water (H₂O) has a molecular weight of 18, so 72 g = 4 mol and 54 g = 3 mol.",
+  "explain": "Mole calculations underpin combustion stoichiometry. For example, C + O₂ → CO₂ means 12 kg of carbon gives 44 kg of CO₂, so emissions = carbon × 44/12.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q9; BEE 2025 P1 Q46"
+ },
+ {
+  "id": "p1-022",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "What is the mean molecular weight of air (77% N₂, 23% O₂ by weight)?",
+  "back": "About 28.8 (≈ 29) g/mol. Calculation: 1 ÷ (0.77/28 + 0.23/32) ≈ 28.8.",
+  "explain": "When composition is given by weight, use the harmonic mean: M = 1 ÷ Σ(wᵢ/Mᵢ). By volume, air is about 79% N₂ and 21% O₂, and the mole-weighted average gives the same ≈ 28.8–29.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q50"
+ },
+ {
+  "id": "p1-023",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "Which fuel has the largest difference between GCV and NCV, and why?",
+  "back": "Natural gas. Its high hydrogen content forms a lot of water vapour on combustion, and the latent heat of that vapour is counted in GCV but not in NCV.",
+  "explain": "GCV (HHV) assumes the water vapour in flue gas is condensed and its latent heat recovered. NCV (LHV) assumes it leaves as vapour. Fuels rich in hydrogen (natural gas, LPG) or moisture show the biggest gap. BEE efficiency calculations conventionally use GCV.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q27"
+ },
+ {
+  "id": "p1-024",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "Rank LPG, diesel, furnace oil and bagasse by calorific value. Which is lowest?",
+  "back": "Bagasse is lowest (roughly 2,200–2,300 kcal/kg as fired, because of about 50% moisture). LPG is highest (~11,000+ kcal/kg). Diesel and furnace oil are about 10,000–10,800 kcal/kg.",
+  "explain": "Biomass fuels such as bagasse and rice husk have low calorific value because of moisture and ash. They still matter as low-cost renewable fuels for sugar mills and cogeneration.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q11"
+ },
+ {
+  "id": "p1-025",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "What two measurements are needed to find the relative humidity of air with a psychrometer?",
+  "back": "Dry Bulb Temperature (DBT) and Wet Bulb Temperature (WBT). RH is then read from a psychrometric chart. A sling psychrometer measures both.",
+  "explain": "DBT indicates the sensible heat content of the air-water vapour mixture. The wet-bulb depression (DBT − WBT) shows how dry the air is. When the depression is zero, no evaporation is possible and RH = 100%.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q14, Q21, Q32"
+ },
+ {
+  "id": "p1-026",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "What happens to the relative humidity when air is heated without changing its moisture content (absolute humidity)?",
+  "back": "RH decreases, because warmer air can hold more moisture at saturation while the actual moisture stays the same.",
+  "explain": "This is the principle of pre-heating air before a dryer: it lowers RH and increases the air's capacity to pick up moisture. Cooling air at constant moisture raises RH until it reaches 100% at the dew point.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q26"
+ },
+ {
+  "id": "p1-027",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "Define power factor. What is the PF of a circuit with resistive and inductive load?",
+  "back": "PF = kW ÷ kVA = cos φ. A resistive + inductive (R-L) circuit has a lagging PF of less than 1. Also, kVA² = kW² + kVAr².",
+  "explain": "Inductive loads such as motors and transformers draw reactive power (kVAr) for their magnetic fields. That raises kVA and current for the same kW, which increases I²R losses and kVA-based demand charges. Capacitors supply kVAr locally to improve PF. Only a pure resistance gives unity PF.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q24"
+ },
+ {
+  "id": "p1-028",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "An induction motor nameplate says 30 kW, 85% efficiency. How much power does it draw at full load?",
+  "back": "35.29 kW. The nameplate kW is shaft output, so input = 30 ÷ 0.85 = 35.29 kW.",
+  "explain": "Motor ratings always state mechanical output. Electrical input = output ÷ efficiency. Audits compare measured input kW with rated input to estimate percentage loading.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q30"
+ },
+ {
+  "id": "p1-029",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "How does wind turbine power vary with wind speed, and what is the formula?",
+  "back": "P = ½ ρ A V³, so power varies with the cube of wind speed: tripling the speed gives 27× the power.",
+  "explain": "For example, ρ = 1.2 kg/m³, A = 200 m² and V = 8 m/s gives 0.5 × 1.2 × 200 × 512 ≈ 61.4 kW available in the wind. A turbine captures only part of this, with the Betz limit at 59.3%. Yaw control turns the rotor to face the wind, and pitch control adjusts the blade angle.",
+  "flash": true,
+  "source": "BEE 2024 P1 Q16, Q25; BEE 2025 P1 L3"
+ },
+ {
+  "id": "p1-030",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "Roughly what voltage does a single silicon PV cell produce, and what is its working principle?",
+  "back": "About 0.5 V. It works by the photovoltaic effect: photons create electron-hole pairs at a p-n junction, which produces DC current.",
+  "explain": "Cells are connected in series and parallel in modules to reach usable voltage and power. Cell efficiency = maximum power output ÷ (insolation × cell area), so it does not depend on the inverter. An inverter converts DC to AC.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q20, Q22; BEE 2025 P1 L3"
+ },
+ {
+  "id": "p1-031",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "What are the reactants and by-product in a hydrogen fuel cell?",
+  "back": "Hydrogen combines electrochemically with oxygen to generate electricity, and water is the by-product (plus heat).",
+  "explain": "A fuel cell converts chemical energy directly into electricity without combustion, so it is not limited by Carnot efficiency. Hydrogen is oxidised at the anode, and oxygen is reduced at the cathode.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q35"
+ },
+ {
+  "id": "p1-032",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "What is the composition of producer gas, and how is gasifier efficiency calculated?",
+  "back": "Producer gas is mainly CO, H₂ and CH₄ (combustible), diluted with N₂ and CO₂. Gasifier efficiency = (gas volume × gas CV) ÷ (biomass mass × biomass CV).",
+  "explain": "Example: 1 kg of wood at 4,000 kcal/kg giving 2 m³ of gas at 1,000 kcal/m³ → 2,000/4,000 = 50% efficiency. Producer gas has a low CV (about 1,000–1,200 kcal/Nm³) because it contains a lot of nitrogen from the air.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q21, Q49"
+ },
+ {
+  "id": "p1-033",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "fact",
+  "front": "Solar radiation reaching the earth consists of which bands?",
+  "back": "Ultraviolet, visible and infrared radiation.",
+  "explain": "Roughly half of solar energy is in the infrared and most of the rest is visible light. A small part is ultraviolet, most of which is absorbed by stratospheric ozone.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q25"
+ },
+ {
+  "id": "p1-034",
+  "paper": 1,
+  "topic": "Basics of energy",
+  "kind": "problem",
+  "front": "A plant uses in one year: 12 million kWh of grid electricity; 1,500 kL of furnace oil (density 0.93 kg/L, GCV 10,200 kcal/kg); and 8,000 t of coal (GCV 4,000 kcal/kg). It produces 20,000 t of product. Find the total annual energy use in toe and the specific energy consumption in toe/t. Take 1 kWh = 860 kcal.",
+  "back": "Total ≈ 5,655 toe per year; SEC ≈ 0.283 toe/t of product.",
+  "explain": "Converting every energy source to toe through kcal is exactly how a plant checks whether it qualifies as a Designated Consumer, and how SEC is reported under PAT. Coal is the biggest share here, about 57% of the total.",
+  "steps": [
+   {
+    "prompt": "Convert electricity to toe.",
+    "answer": "12×10⁶ kWh × 860 = 1.032×10¹⁰ kcal → ÷10⁷ = 1,032 toe",
+    "explain": "1 kWh = 860 kcal; 1 toe = 10⁷ kcal."
+   },
+   {
+    "prompt": "Convert furnace oil to toe.",
+    "answer": "1,500 kL × 1,000 L × 0.93 = 13,95,000 kg; × 10,200 = 1.4229×10¹⁰ kcal → 1,422.9 toe",
+    "explain": "Mass = volume × density; energy = mass × GCV."
+   },
+   {
+    "prompt": "Convert coal to toe.",
+    "answer": "8,000 t = 8×10⁶ kg × 4,000 = 3.2×10¹⁰ kcal → 3,200 toe",
+    "explain": "Energy = mass × GCV."
+   },
+   {
+    "prompt": "Add up and compute SEC.",
+    "answer": "Total = 1,032 + 1,422.9 + 3,200 = 5,654.9 toe; SEC = 5,654.9 ÷ 20,000 = 0.283 toe/t",
+    "explain": "SEC = total energy ÷ production."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2024 P1 L4 (modified)"
+ },
+ {
+  "id": "p1-035",
+  "paper": 1,
+  "topic": "Energy Conservation Act",
+  "kind": "fact",
+  "front": "When was the Energy Conservation Act enacted, and when did BEE come into existence?",
+  "back": "The EC Act was enacted in 2001 (in force from 1 March 2002). The Bureau of Energy Efficiency (BEE) was set up under it on 1 March 2002, under the Ministry of Power.",
+  "explain": "BEE is the statutory body responsible for implementing the EC Act. Its mission is to develop policies and strategies, with emphasis on self-regulation and market principles, to reduce the energy intensity of the Indian economy. It does not set tariffs or give renewable capital subsidies.",
+  "flash": true,
+  "source": "BEE 2024 P1 Q40; BEE 2025 P1 Q40"
+ },
+ {
+  "id": "p1-036",
+  "paper": 1,
+  "topic": "Energy Conservation Act",
+  "kind": "fact",
+  "front": "Who are 'Designated Consumers' (DCs) under the EC Act, and what must they do?",
+  "back": "Large energy users in energy-intensive industries and establishments notified in the Act's Schedule. They must appoint or designate a certified energy manager, get mandatory energy audits done by an accredited energy auditor, report energy consumption, and meet the specified energy consumption norms.",
+  "explain": "Scheduled sectors include thermal power, cement, iron & steel, aluminium, fertilizer, pulp & paper, textile, chlor-alkali, petroleum refineries, railways and DISCOMs, among others. The threshold for each sector is notified in tonnes of oil equivalent per year. Non-compliance attracts penalties.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q37; BEE 2024 P1 L4"
+ },
+ {
+  "id": "p1-037",
+  "paper": 1,
+  "topic": "Energy Conservation Act",
+  "kind": "fact",
+  "front": "What data do you need to check whether a plant qualifies as a Designated Consumer?",
+  "back": "Annual consumption of every energy source (grid electricity in kWh, coal in t, furnace oil and HSD in litres or kL, LPG or natural gas in kg or m³) together with each fuel's calorific value (and density for liquids). Convert everything to toe and compare with the notified threshold for that sector.",
+  "explain": "Total toe = Σ(quantity × GCV) ÷ 10⁷ kcal. Electricity is converted using 860 kcal/kWh. Include all purchased and self-generated energy inputs.",
+  "flash": false,
+  "source": "BEE 2024 P1 L4"
+ },
+ {
+  "id": "p1-038",
+  "paper": 1,
+  "topic": "Energy Conservation Act",
+  "kind": "fact",
+  "front": "Name the main measures empowered by the Energy Conservation Act 2001.",
+  "back": "Standards & Labelling of appliances, mandatory energy audits and energy managers for Designated Consumers, energy consumption norms, the Energy Conservation Building Code, and creation of BEE, State Designated Agencies and Energy Conservation Funds.",
+  "explain": "The Central Government acts through BEE, and State Governments act through State Designated Agencies (SDAs), which enforce the Act at state level. Energy Saving Certificates were added by the 2010 amendment and form the basis of PAT.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q41"
+ },
+ {
+  "id": "p1-039",
+  "paper": 1,
+  "topic": "Energy Conservation Act",
+  "kind": "fact",
+  "front": "What were the key changes made by the Energy Conservation (Amendment) Act 2022?",
+  "back": "Power to set up a Carbon Credit Trading Scheme; mandatory minimum share of non-fossil (green hydrogen, biomass, renewable) energy for designated consumers; extension of the building code to large residential buildings as the Energy Conservation and Sustainable Building Code; Standards & Labelling extended to vehicles and vessels; enlarged BEE Governing Council; SERCs to adjudicate penalties.",
+  "explain": "The amendment moved the Act from energy efficiency alone towards decarbonisation and India's climate commitments. It gives the legal basis for the Indian Carbon Market, which issues carbon credit certificates.",
+  "flash": true,
+  "source": "syllabus"
+ },
+ {
+  "id": "p1-040",
+  "paper": 1,
+  "topic": "Energy Conservation Act",
+  "kind": "fact",
+  "front": "What penalty applies for non-compliance with EC Act provisions, as amended?",
+  "back": "Up to ₹10 lakh, plus up to ₹10,000 for each day the failure continues. A Designated Consumer that fails its energy consumption norms is also liable to an additional penalty linked to the price of each excess metric toe consumed.",
+  "explain": "These penalties are meant to make compliance cheaper than violation. Under the 2022 amendment, penalties are adjudicated by the State Electricity Regulatory Commission.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p1-041",
+  "paper": 1,
+  "topic": "Energy Conservation Act",
+  "kind": "fact",
+  "front": "What is the objective of BEE's Standards & Labelling (S&L) programme?",
+  "back": "To give consumers an informed choice about the energy and cost-saving potential of appliances, through star labels (1 to 5 stars; more stars means more efficient).",
+  "explain": "Launched in 2006, S&L covers appliances such as ACs, refrigerators, motors, distribution transformers and LED lamps, some under mandatory labelling. It pushes the market towards efficient products, and thresholds are tightened over time.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q29"
+ },
+ {
+  "id": "p1-042",
+  "paper": 1,
+  "topic": "Energy Conservation Act",
+  "kind": "fact",
+  "front": "What is the purpose of the Energy Conservation Building Code (ECBC)?",
+  "back": "To set minimum energy-performance standards for new commercial buildings (connected load ≥ 100 kW or contract demand ≥ 120 kVA), covering envelope, HVAC, lighting, hot water and electrical systems.",
+  "explain": "ECBC was first launched in 2007 and revised in 2017. A residential code (Eco-Niwas Samhita) followed, and the 2022 amendment renamed it the Energy Conservation and Sustainable Building Code. Daylight harvesting means automatically dimming artificial lighting according to available daylight, and is a typical ECBC measure.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q41, Q42"
+ },
+ {
+  "id": "p1-043",
+  "paper": 1,
+  "topic": "Energy management & audit",
+  "kind": "fact",
+  "front": "How does the EC Act define an energy audit?",
+  "back": "The verification, monitoring and analysis of energy use, including a technical report with recommendations for improving energy efficiency, a cost-benefit analysis, and an action plan to reduce energy consumption.",
+  "explain": "The definition has three parts: measurement/analysis, recommendations with economics, and an action plan. An audit is only useful if it leads to implementation, which is why the report must quantify savings and costs.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p1-044",
+  "paper": 1,
+  "topic": "Energy management & audit",
+  "kind": "fact",
+  "front": "What is the difference between a preliminary and a detailed energy audit?",
+  "back": "A preliminary (walk-through) audit is quick and uses existing data to set the consumption baseline, find obvious savings and no-cost or low-cost measures, and set priorities. A detailed audit is a comprehensive, instrument-based study of all major systems, with a full energy balance and costed projects.",
+  "explain": "A detailed audit is done in three phases: pre-audit, audit and post-audit. It gives the most accurate estimate of savings and costs, and includes a detailed project implementation plan.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p1-045",
+  "paper": 1,
+  "topic": "Energy management & audit",
+  "kind": "fact",
+  "front": "What are the three phases of a detailed energy audit?",
+  "back": "Phase I: pre-audit (planning, walk-through, data collection plan). Phase II: audit (detailed measurement, analysis, energy and material balance, identifying options). Phase III: post-audit (implementing recommendations and following up on results).",
+  "explain": "Typical steps include a kick-off meeting with management, collecting historical data, preparing process flow charts, measurements, techno-economic evaluation of options, and the report with an action plan. Data collection, analysis and reporting are all steps of an audit.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q45"
+ },
+ {
+  "id": "p1-046",
+  "paper": 1,
+  "topic": "Energy management & audit",
+  "kind": "fact",
+  "front": "Which energy audit instruments measure what: Fyrite, stroboscope, sling psychrometer, Pitot tube, ultrasonic flow meter, lux meter?",
+  "back": "Fyrite: O₂ or CO₂ in flue gas. Stroboscope: rotational speed without contact. Sling psychrometer: DBT and WBT (→ RH). Pitot tube: velocity pressure in ducts (→ air velocity and flow). Ultrasonic flow meter: liquid flow (transit-time or Doppler method). Lux meter: illuminance.",
+  "explain": "A power analyser measures kW, kVA, kVAr, PF, harmonics and other quantities directly. A plain ammeter or wattmeter does not give PF on its own. Choosing the right instrument is a frequent objective question.",
+  "flash": true,
+  "source": "BEE 2024 P1 Q6, Q46, S8; BEE 2025 P1 Q39"
+ },
+ {
+  "id": "p1-047",
+  "paper": 1,
+  "topic": "Energy management & audit",
+  "kind": "fact",
+  "front": "Define Specific Energy Consumption (SEC).",
+  "back": "SEC = Energy consumed ÷ Production in the same period, e.g. kWh/t or kcal/kg of product. Example: 5 t of coal at 4,000 kcal/kg for 25 t of cement → 20×10⁶ ÷ 25,000 kg = 800 kcal/kg.",
+  "explain": "SEC is the main plant-level energy performance indicator used for benchmarking and for PAT targets. Compare SEC only at similar capacity utilisation and product mix, because fixed energy is spread over output.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q36"
+ },
+ {
+  "id": "p1-048",
+  "paper": 1,
+  "topic": "Energy management & audit",
+  "kind": "fact",
+  "front": "How is plant energy performance calculated?",
+  "back": "Production factor = current year production ÷ reference year production. Reference year equivalent = reference year energy × production factor. Plant energy performance (%) = (reference year equivalent − current year energy) ÷ reference year equivalent × 100.",
+  "explain": "A positive value means the plant used less energy than expected for its output, so efficiency improved. A negative value means it got worse. The calculation needs current and reference year production and the reference year energy; capacity utilisation is not needed.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q4, L4"
+ },
+ {
+  "id": "p1-049",
+  "paper": 1,
+  "topic": "Energy management & audit",
+  "kind": "fact",
+  "front": "What is benchmarking in energy management?",
+  "back": "Comparing a plant's energy performance (SEC or other indicators) with its own past performance (internal) or with similar plants or best practice (external), to find improvement potential.",
+  "explain": "Fair benchmarking needs comparable boundaries, product mix, capacity utilisation, raw material quality, technology vintage and climate. PAT targets are set by benchmarking each plant's SEC against others in its sector.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p1-050",
+  "paper": 1,
+  "topic": "Energy management & audit",
+  "kind": "fact",
+  "front": "What does a Sankey diagram show, and why is it useful?",
+  "back": "It shows energy flows through a system as arrows whose widths are proportional to the energy quantity, so inputs, useful output and losses can be seen at a glance.",
+  "explain": "Large loss streams stand out visually, which helps the energy manager prioritise where to act. It is a qualitative and quantitative presentation of an energy balance; it does not replace calculations or audits.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q38"
+ },
+ {
+  "id": "p1-051",
+  "paper": 1,
+  "topic": "Energy management & audit",
+  "kind": "problem",
+  "front": "Reference year (2023) data: production 50,000 t, energy use 30,000 toe. Current year (2024): production 55,000 t, energy use 31,500 toe. Calculate the plant energy performance for 2024 and interpret it.",
+  "back": "Plant energy performance = +4.55%, so the plant used 4.55% less energy than expected for its production (an improvement).",
+  "explain": "The production factor scales reference-year energy to what the plant would have used at this year's output. A positive result means the plant performed better than the reference year. A negative result, as in the BEE 2024 question (−5.56%), means performance got worse.",
+  "steps": [
+   {
+    "prompt": "Calculate the production factor.",
+    "answer": "PF = 55,000 ÷ 50,000 = 1.10",
+    "explain": "PF = current year production ÷ reference year production."
+   },
+   {
+    "prompt": "Calculate the reference year equivalent energy.",
+    "answer": "30,000 × 1.10 = 33,000 toe",
+    "explain": "Expected energy at current output = reference energy × PF."
+   },
+   {
+    "prompt": "Calculate plant energy performance.",
+    "answer": "(33,000 − 31,500) ÷ 33,000 × 100 = +4.55%",
+    "explain": "PEP = (Ref. eq. − Current energy) ÷ Ref. eq. × 100."
+   },
+   {
+    "prompt": "Interpret the result.",
+    "answer": "Positive value: the plant saved 1,500 toe compared with expected consumption.",
+    "explain": "A negative value would mean worse performance."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2024 P1 L4(b) (modified)"
+ },
+ {
+  "id": "p1-052",
+  "paper": 1,
+  "topic": "Material & energy balance",
+  "kind": "fact",
+  "front": "What principle underlies material and energy balances?",
+  "back": "Conservation of mass and energy: Input = Output + Accumulation (stored) + Losses. At steady state with nothing stored, Input = Output.",
+  "explain": "Example: 1,000 kg/h raw material in, with 700 kg product, 200 kg waste and 50 kg stored out → unaccounted loss = 1,000 − 950 = 50 kg/h. Draw a boundary around the process, list every stream crossing it, and balance one component (e.g. solids or fat) at a time.",
+  "flash": true,
+  "source": "BEE 2025 P1 Q4, Q5"
+ },
+ {
+  "id": "p1-053",
+  "paper": 1,
+  "topic": "Material & energy balance",
+  "kind": "fact",
+  "front": "In concentration and drying problems, what quantity is the 'tie element' for the material balance?",
+  "back": "The non-volatile component (dissolved solids, bone-dry solids or fat), whose mass is the same in feed and product. Example: 100 kg of feed at 6% solids → 6 kg solids → product at 30% = 20 kg, so water evaporated = 80 kg.",
+  "explain": "Balance the conserved component first to get the product mass, then find the water removed by difference. Moisture on a wet basis = water ÷ (water + solids). The same logic gives salt concentration: 25 kg salt in 100 kg water = 25/125 = 20% by weight.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q11; BEE 2024 P1 Q37"
+ },
+ {
+  "id": "p1-054",
+  "paper": 1,
+  "topic": "Material & energy balance",
+  "kind": "fact",
+  "front": "In an energy balance, how is equipment efficiency calculated by the direct method?",
+  "back": "Efficiency = useful energy output ÷ energy input × 100. Example: boiler with 100 MJ fuel input and 70 MJ in steam → 70%. The losses (flue gas 20 MJ + radiation/unaccounted 10 MJ) make up the other 30 MJ.",
+  "explain": "In the indirect (loss) method, efficiency = 100 − Σ losses %. A complete energy balance must close: input = useful output + all losses. A large unaccounted figure points to measurement errors or a missed stream.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q5"
+ },
+ {
+  "id": "p1-055",
+  "paper": 1,
+  "topic": "Material & energy balance",
+  "kind": "problem",
+  "front": "A dryer receives 2,000 kg/h of wet material at 40% moisture (wet basis) and dries it to 5% moisture (wet basis). Latent heat of evaporation is 540 kcal/kg. Ignore the sensible heat of the solids. Find (a) the product rate, (b) the water evaporated, (c) the heat needed for evaporation, and (d) the steam needed if steam gives 520 kcal/kg and the dryer thermal efficiency is 60%.",
+  "back": "(a) 1,263.2 kg/h; (b) 736.8 kg/h; (c) ≈ 3.98 lakh kcal/h; (d) ≈ 1,275 kg/h of steam.",
+  "explain": "Bone-dry solids pass through unchanged, so they tie the feed and product together. The water removed is the difference between the feed and product masses. Heat for evaporation is then divided by the useful heat delivered per kg of steam.",
+  "steps": [
+   {
+    "prompt": "Find the bone-dry solids.",
+    "answer": "2,000 × (1 − 0.40) = 1,200 kg/h",
+    "explain": "Solids fraction = 1 − moisture (wet basis)."
+   },
+   {
+    "prompt": "Find the product mass at 5% moisture.",
+    "answer": "Product = 1,200 ÷ 0.95 = 1,263.2 kg/h",
+    "explain": "Solids are 95% of the product."
+   },
+   {
+    "prompt": "Find the water evaporated.",
+    "answer": "2,000 − 1,263.2 = 736.8 kg/h",
+    "explain": "Mass balance: feed = product + vapour."
+   },
+   {
+    "prompt": "Find the heat for evaporation.",
+    "answer": "736.8 × 540 = 3,97,895 kcal/h",
+    "explain": "Q = m × latent heat."
+   },
+   {
+    "prompt": "Find the steam required.",
+    "answer": "3,97,895 ÷ (0.60 × 520) = 1,275 kg/h",
+    "explain": "Steam = heat needed ÷ (efficiency × heat per kg of steam)."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2025 P1 S7 (modified)"
+ },
+ {
+  "id": "p1-056",
+  "paper": 1,
+  "topic": "Material & energy balance",
+  "kind": "problem",
+  "front": "An evaporator is fed 4,000 kg/h of solution containing 2% solids, which is concentrated to 8% solids. Enthalpies: feed 40 kcal/kg, concentrated product 100 kcal/kg, vapour 640 kcal/kg. The heating steam gives up 540 kcal/kg (its condensate leaves at saturation). Find the vapour formed and the steam required per hour, and the steam economy.",
+  "back": "Vapour = 3,000 kg/h; steam ≈ 3,444 kg/h; steam economy ≈ 0.87 kg vapour per kg steam.",
+  "explain": "The solids balance gives the product and vapour flows. The heat balance (heat from steam + heat in feed = heat in vapour + heat in product) gives the steam needed. A single-effect evaporator has a steam economy below 1; multiple effects raise it.",
+  "steps": [
+   {
+    "prompt": "Solids balance to find the product.",
+    "answer": "Solids = 4,000 × 0.02 = 80 kg/h; product = 80 ÷ 0.08 = 1,000 kg/h",
+    "explain": "Solids in = solids out."
+   },
+   {
+    "prompt": "Find the vapour formed.",
+    "answer": "4,000 − 1,000 = 3,000 kg/h",
+    "explain": "Feed = product + vapour."
+   },
+   {
+    "prompt": "Write the heat balance.",
+    "answer": "Steam heat + 4,000×40 = 3,000×640 + 1,000×100 → Steam heat = 19,20,000 + 1,00,000 − 1,60,000 = 18,60,000 kcal/h",
+    "explain": "Heat in = heat out."
+   },
+   {
+    "prompt": "Find the steam required.",
+    "answer": "18,60,000 ÷ 540 = 3,444 kg/h",
+    "explain": "Steam = heat ÷ heat given per kg of steam."
+   },
+   {
+    "prompt": "Find the steam economy.",
+    "answer": "3,000 ÷ 3,444 = 0.87",
+    "explain": "Economy = kg vapour ÷ kg steam."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2024 P1 L6 (modified)"
+ },
+ {
+  "id": "p1-057",
+  "paper": 1,
+  "topic": "Energy action planning",
+  "kind": "fact",
+  "front": "What is the first step in an energy action plan?",
+  "back": "Getting top management commitment, usually by forming an energy management cell and appointing an energy manager, with the backing of a written energy policy.",
+  "explain": "BEE's sequence is: make a commitment, assess performance and opportunities, set goals and targets, create an action plan, implement it, evaluate progress, and recognise achievements. Without management backing, resources and authority for projects never arrive.",
+  "flash": true,
+  "source": "BEE 2025 P1 Q9"
+ },
+ {
+  "id": "p1-058",
+  "paper": 1,
+  "topic": "Energy action planning",
+  "kind": "fact",
+  "front": "What is force field analysis in energy action planning, and which approach is usually more effective?",
+  "back": "It lists the positive (driving) and negative (restraining) forces acting on a goal. Minimising the negative forces (barriers) is usually more effective than strengthening the positive ones.",
+  "explain": "Pushing harder on driving forces tends to provoke more resistance. Removing barriers such as lack of funds, skills or ownership lets change happen with less friction. The analysis is used when planning energy-saving changes in an organisation.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q13; BEE 2025 P1 Q12"
+ },
+ {
+  "id": "p1-059",
+  "paper": 1,
+  "topic": "Energy action planning",
+  "kind": "fact",
+  "front": "What are the essential elements of a written energy policy?",
+  "back": "A statement of management commitment, clear objectives and targets for energy performance, responsibilities and accountability (energy manager or cell), allocation of resources, and a commitment to monitor, report and continually improve.",
+  "explain": "The policy is signed by top management and communicated to all staff. Under ISO 50001 it must also commit to legal compliance and to supporting procurement of efficient products and design for energy performance.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p1-060",
+  "paper": 1,
+  "topic": "Energy action planning",
+  "kind": "fact",
+  "front": "Why is an Energy Management System (EnMS) such as ISO 50001 adopted?",
+  "back": "To manage energy use systematically through a Plan-Do-Check-Act cycle (policy, baseline, EnPIs, objectives and targets, action plans, monitoring, review), so that energy performance improves continually.",
+  "explain": "Cost savings and efficiency follow from the system, but the defining reason is systematic management rather than one-off projects. Key ISO 50001 terms: energy review, significant energy uses (SEUs), energy baseline (EnB) and energy performance indicators (EnPIs).",
+  "flash": false,
+  "source": "BEE 2024 P1 Q28, L3"
+ },
+ {
+  "id": "p1-061",
+  "paper": 1,
+  "topic": "Energy action planning",
+  "kind": "fact",
+  "front": "In Total Productive Maintenance (TPM), what are the 'six big losses'?",
+  "back": "Breakdowns, setup and adjustment losses, idling and minor stoppages, reduced speed, process defects, and reduced yield at start-up. Excessive overtime is NOT one of them.",
+  "explain": "The six losses fall into three groups: availability (breakdowns, setup), performance (minor stops, reduced speed) and quality (defects, start-up yield). Overall Equipment Effectiveness (OEE) = Availability × Performance × Quality.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q16"
+ },
+ {
+  "id": "p1-062",
+  "paper": 1,
+  "topic": "Financial management",
+  "kind": "fact",
+  "front": "What is simple payback period and what are its limitations?",
+  "back": "Simple payback = First cost (investment) ÷ Net annual cash savings. It does not account for the time value of money or for savings after the payback period.",
+  "explain": "It is quick and easy to understand, which makes it useful for screening low-cost energy measures. Two projects with the same payback can have very different lifetime value, so use NPV or IRR for larger investments.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q47"
+ },
+ {
+  "id": "p1-063",
+  "paper": 1,
+  "topic": "Financial management",
+  "kind": "fact",
+  "front": "How is Return on Investment (ROI) calculated?",
+  "back": "ROI (%) = Annual net cash flow ÷ Capital cost × 100. Example: ₹20,000 per year on ₹1,00,000 → 20%.",
+  "explain": "ROI is the reciprocal of simple payback (×100). Like payback, it ignores the time value of money. For a project to be worthwhile, ROI should exceed the interest rate on borrowed money or the cost of capital.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q48"
+ },
+ {
+  "id": "p1-064",
+  "paper": 1,
+  "topic": "Financial management",
+  "kind": "fact",
+  "front": "Define Net Present Value (NPV).",
+  "back": "NPV = Σ CFₜ ÷ (1 + i)ᵗ for t = 0 to n, the sum of all cash flows discounted to today at the discount rate i, with the investment entered as a negative cash flow at t = 0. Accept the project if NPV > 0.",
+  "explain": "The present value factor 1/(1+i)ᵗ converts future savings into today's money. NPV tells you how much value the project adds beyond the required return. Among mutually exclusive projects with no capital limit, choose the highest NPV.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q49"
+ },
+ {
+  "id": "p1-065",
+  "paper": 1,
+  "topic": "Financial management",
+  "kind": "fact",
+  "front": "Define Internal Rate of Return (IRR).",
+  "back": "IRR is the discount rate at which the NPV of a project's cash flows equals zero. Accept the project if IRR > cost of capital.",
+  "explain": "IRR is found by trial and interpolation: IRR = r₁ + NPV₁ × (r₂ − r₁) ÷ (NPV₁ − NPV₂), where NPV₁ > 0 at the lower rate r₁ and NPV₂ < 0 at r₂. Both NPV and IRR account for the time value of money; simple payback and ROI do not.",
+  "flash": true,
+  "source": "BEE 2024 P1 Q5, Q18"
+ },
+ {
+  "id": "p1-066",
+  "paper": 1,
+  "topic": "Financial management",
+  "kind": "fact",
+  "front": "Two projects of equal life: X has IRR 40%, NPV ₹50,000; Y has IRR 30%, NPV ₹1,20,000. With no capital limit, which do you choose?",
+  "back": "Project Y, because it has the higher NPV.",
+  "explain": "When NPV and IRR rankings conflict for mutually exclusive projects and funds are not limited, NPV is preferred: it measures the absolute value added. IRR is a percentage and favours small projects, and it assumes cash is reinvested at the IRR.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q14; BEE 2024 P1 L3"
+ },
+ {
+  "id": "p1-067",
+  "paper": 1,
+  "topic": "Financial management",
+  "kind": "fact",
+  "front": "What do these terms mean: net operating cash inflow, economic life, salvage value, depreciation?",
+  "back": "Net operating cash inflow: annual savings minus operating and maintenance costs (after tax where applicable). Economic life: the period over which the project gives useful savings. Salvage value: what the asset can be sold for at the end of its life (a cash inflow in the final year). Depreciation: the decrease in an asset's value over time.",
+  "explain": "Depreciation is not a cash outflow, but it lowers taxable profit and so affects after-tax cash flows. Include salvage in the last year's cash flow and any mid-life reinvestment in the year it happens.",
+  "flash": false,
+  "source": "BEE 2024 P1 L3; BEE 2025 P1 Q15"
+ },
+ {
+  "id": "p1-068",
+  "paper": 1,
+  "topic": "Financial management",
+  "kind": "fact",
+  "front": "What is sensitivity analysis in project financial evaluation?",
+  "back": "Testing how NPV, IRR or payback change when key assumptions change: energy price, fuel cost, savings achieved, capital cost, project life, discount rate, or tax rate (a macro factor).",
+  "explain": "It shows which variables the project's viability depends on most, and how robust the decision is. Energy price escalation and the level of savings achieved are usually the most influential variables in energy projects.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q31"
+ },
+ {
+  "id": "p1-069",
+  "paper": 1,
+  "topic": "Financial management",
+  "kind": "fact",
+  "front": "What are the options for financing energy efficiency projects?",
+  "back": "Debt financing (loans), equity, retained earnings (internal funds), capital lease, true (operating) lease, and performance contracting through ESCOs.",
+  "explain": "In performance contracting, the ESCO's payment is tied to the energy savings achieved, which lowers the client's risk. A stock buyback is not a financing option. Public schemes such as EEFP under NMEEE help channel finance to energy efficiency.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q48; BEE 2025 P1 Q13, L4"
+ },
+ {
+  "id": "p1-070",
+  "paper": 1,
+  "topic": "Financial management",
+  "kind": "fact",
+  "front": "How do 'guaranteed savings' and 'shared savings' ESCO contracts differ?",
+  "back": "Guaranteed savings: the client arranges the finance, and the ESCO designs and implements the project and guarantees a level of savings. Shared savings: the ESCO finances the project and is repaid from an agreed share of the savings.",
+  "explain": "In guaranteed savings, the ESCO carries the performance risk and the client carries the credit risk. In shared savings, the ESCO carries both. Measurement & Verification (M&V) checks that the guaranteed or shared savings were actually achieved.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q33, Q47"
+ },
+ {
+  "id": "p1-071",
+  "paper": 1,
+  "topic": "Financial management",
+  "kind": "fact",
+  "front": "Why is life-cycle costing better than comparing purchase prices?",
+  "back": "It includes the operating (energy), maintenance and disposal costs over the asset's whole life, not just the first cost.",
+  "explain": "For motors, pumps and compressors, energy cost over the life can be many times the purchase price. A cheaper but inefficient unit can therefore cost far more in total.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q20"
+ },
+ {
+  "id": "p1-072",
+  "paper": 1,
+  "topic": "Financial management",
+  "kind": "problem",
+  "front": "A 37 kW pump motor runs at 70% load with 90% efficiency for 20 h/day, 330 days/year. A VFD costing ₹2,50,000 is expected to cut its energy use by 15%. Power costs ₹8/kWh. Find the annual energy use, savings, simple payback and ROI.",
+  "back": "Energy ≈ 1,89,933 kWh/yr; savings ≈ 28,490 kWh = ₹2,27,920/yr; payback ≈ 1.1 years (~13 months); ROI ≈ 91%.",
+  "explain": "Input power = rated output × load ÷ efficiency. Savings are a percentage of current consumption. Payback and ROI are reciprocals; a payback near one year makes this an attractive low-risk measure.",
+  "steps": [
+   {
+    "prompt": "Find the motor input power.",
+    "answer": "37 × 0.70 ÷ 0.90 = 28.78 kW",
+    "explain": "Input = output × loading ÷ efficiency."
+   },
+   {
+    "prompt": "Find the annual energy use.",
+    "answer": "28.78 × 20 × 330 = 1,89,933 kWh/yr",
+    "explain": "Energy = power × operating hours (6,600 h)."
+   },
+   {
+    "prompt": "Find the energy and cost savings.",
+    "answer": "1,89,933 × 0.15 = 28,490 kWh; × ₹8 = ₹2,27,920/yr",
+    "explain": "Savings = % reduction × energy × tariff."
+   },
+   {
+    "prompt": "Find the simple payback.",
+    "answer": "2,50,000 ÷ 2,27,920 = 1.10 years",
+    "explain": "Payback = investment ÷ annual savings."
+   },
+   {
+    "prompt": "Find the ROI.",
+    "answer": "2,27,920 ÷ 2,50,000 × 100 = 91.2%",
+    "explain": "ROI = annual savings ÷ investment × 100."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2025 P1 S6 (modified)"
+ },
+ {
+  "id": "p1-073",
+  "paper": 1,
+  "topic": "Financial management",
+  "kind": "problem",
+  "front": "Two mutually exclusive projects each have a 5-year life. Project A costs ₹5 lakh and saves ₹1.6 lakh/yr. Project B costs ₹9 lakh and saves ₹2.75 lakh/yr. At a 12% discount rate, compare them by simple payback and by NPV. Which should be chosen if funds are not limited?",
+  "back": "Payback: A 3.13 yr, B 3.27 yr. NPV: A ≈ ₹0.77 lakh, B ≈ ₹0.91 lakh. Choose B (higher NPV).",
+  "explain": "Simple payback favours A, but payback ignores the time value of money and the absolute value created. NPV shows that B adds more wealth. With no capital constraint, NPV decides.",
+  "steps": [
+   {
+    "prompt": "Compute the simple paybacks.",
+    "answer": "A: 5 ÷ 1.6 = 3.13 yr; B: 9 ÷ 2.75 = 3.27 yr",
+    "explain": "Payback = cost ÷ annual savings."
+   },
+   {
+    "prompt": "Find the cumulative PV factor at 12% for 5 years.",
+    "answer": "1/1.12 + 1/1.12² + … + 1/1.12⁵ = 0.893+0.797+0.712+0.636+0.567 = 3.605",
+    "explain": "Uniform annual savings: PV = savings × Σ 1/(1+i)ᵗ."
+   },
+   {
+    "prompt": "Compute NPV of A.",
+    "answer": "1.6 × 3.605 − 5 = 5.768 − 5 = ₹0.77 lakh",
+    "explain": "NPV = PV of inflows − investment."
+   },
+   {
+    "prompt": "Compute NPV of B.",
+    "answer": "2.75 × 3.605 − 9 = 9.913 − 9 = ₹0.91 lakh",
+    "explain": ""
+   },
+   {
+    "prompt": "Decide.",
+    "answer": "NPV(B) > NPV(A), so choose B, even though its payback is longer.",
+    "explain": "With no capital limit, select the project with the higher NPV."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2025 P1 L5 (modified)"
+ },
+ {
+  "id": "p1-074",
+  "paper": 1,
+  "topic": "Financial management",
+  "kind": "problem",
+  "front": "An energy-efficiency project costs ₹10 lakh and gives net savings of ₹3 lakh per year for 5 years, with no salvage value. Find the IRR by interpolation between 15% and 16%.",
+  "back": "IRR ≈ 15.24%.",
+  "explain": "IRR is the rate at which NPV = 0. Calculate NPV at two rates either side of zero and interpolate linearly. If the company's cost of capital is below 15.24%, the project is acceptable.",
+  "steps": [
+   {
+    "prompt": "NPV at 15%.",
+    "answer": "PV factor sum (5 yr, 15%) = 3.3522; NPV = 3 × 3.3522 − 10 = +₹0.0565 lakh",
+    "explain": "NPV = Σ CF/(1+r)ᵗ − investment."
+   },
+   {
+    "prompt": "NPV at 16%.",
+    "answer": "PV factor sum (5 yr, 16%) = 3.2743; NPV = 3 × 3.2743 − 10 = −₹0.1771 lakh",
+    "explain": "The sign has changed, so the IRR lies between 15% and 16%."
+   },
+   {
+    "prompt": "Interpolate.",
+    "answer": "IRR = 15 + 0.0565 × (16 − 15) ÷ (0.0565 + 0.1771) = 15 + 0.24 = 15.24%",
+    "explain": "IRR = r₁ + NPV₁ (r₂ − r₁) ÷ (NPV₁ − NPV₂)."
+   },
+   {
+    "prompt": "Decide.",
+    "answer": "Accept if the cost of capital is below 15.24%.",
+    "explain": "IRR > cost of capital → project adds value."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2024 P1 L2, S4 (modified)"
+ },
+ {
+  "id": "p1-075",
+  "paper": 1,
+  "topic": "Project management",
+  "kind": "fact",
+  "front": "What is a Work Breakdown Structure (WBS)?",
+  "back": "A hierarchical breakdown of a complex project into smaller, manageable tasks or work packages that can be scheduled, costed and assigned.",
+  "explain": "The WBS is the basis for estimating time and cost and for building network diagrams. The lowest level should be a work package that one person or team can own.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q22"
+ },
+ {
+  "id": "p1-076",
+  "paper": 1,
+  "topic": "Project management",
+  "kind": "fact",
+  "front": "What is the main limitation of a Gantt chart?",
+  "back": "It does not clearly show logical dependencies between activities, so it cannot identify the critical path.",
+  "explain": "Gantt (bar) charts show each activity's start, duration and finish against a calendar, which makes them good for communicating progress. Network methods (CPM/PERT) are needed to analyse dependencies and float.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q23"
+ },
+ {
+  "id": "p1-077",
+  "paper": 1,
+  "topic": "Project management",
+  "kind": "fact",
+  "front": "How does CPM differ from PERT?",
+  "back": "CPM is deterministic: each activity has one fixed duration, and the method is often used for time-cost trade-offs. PERT is probabilistic: it uses three time estimates per activity, te = (a + 4m + b) ÷ 6, with variance ((b − a)/6)².",
+  "explain": "PERT suits R&D or new projects where durations are uncertain. It gives the probability of finishing by a target date. CPM suits repetitive projects such as construction where durations are well known. Both identify the critical path.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q27, S3"
+ },
+ {
+  "id": "p1-078",
+  "paper": 1,
+  "topic": "Project management",
+  "kind": "fact",
+  "front": "What is the critical path, and which common statement about it is false?",
+  "back": "The critical path is the longest-duration path through the network. Its length is the minimum time needed to complete the project, and its activities have zero float. False statement: 'it is the maximum time required to complete the project'.",
+  "explain": "Any delay to a critical activity delays the whole project, so management attention goes there. There can be more than one critical path, and the critical path can shift as activities progress.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q15"
+ },
+ {
+  "id": "p1-079",
+  "paper": 1,
+  "topic": "Project management",
+  "kind": "fact",
+  "front": "How is slack (float) of an activity calculated? Is an activity with ES = 8 and LS = 10 critical?",
+  "back": "Slack = LS − ES = LF − EF. Here slack = 10 − 8 = 2 days, so the activity is NOT critical (critical activities have zero slack).",
+  "explain": "Example: LS = 8, LF = 12, EF = 9 → slack = LF − EF = 12 − 9 = 3 weeks. The forward pass gives ES/EF (take the maximum of predecessors' EF); the backward pass gives LS/LF (take the minimum of successors' LS).",
+  "flash": false,
+  "source": "BEE 2024 P1 Q17; BEE 2025 P1 Q28, Q30"
+ },
+ {
+  "id": "p1-080",
+  "paper": 1,
+  "topic": "Project management",
+  "kind": "fact",
+  "front": "Why is a dummy activity used in a project network (activity-on-arrow) diagram?",
+  "back": "To show a logical dependency, or to keep two activities that share the same start and end nodes distinct. A dummy has zero duration and uses no resources.",
+  "explain": "Dummies are drawn as dashed arrows. They only preserve correct precedence logic; they do not change the project duration.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q24"
+ },
+ {
+  "id": "p1-081",
+  "paper": 1,
+  "topic": "Project management",
+  "kind": "problem",
+  "front": "Activities (duration in weeks; predecessors): A 4 (–), B 6 (–), C 3 (A), D 5 (A), E 4 (B, C), F 2 (D, E). Find ES, EF, LS, LF and slack for each activity, the critical path, and the project duration.",
+  "back": "Critical path A–C–E–F, duration 13 weeks. Slack: B = 1 week, D = 2 weeks; all others 0.",
+  "explain": "The forward pass gives the earliest times (take the maximum EF of predecessors). The backward pass from the project end gives the latest times (take the minimum LS of successors). Activities with zero slack form the critical path, the longest path through the network.",
+  "steps": [
+   {
+    "prompt": "Forward pass for A, B, C, D.",
+    "answer": "A: ES 0, EF 4; B: ES 0, EF 6; C: ES 4, EF 7; D: ES 4, EF 9",
+    "explain": "EF = ES + duration; ES = maximum EF of predecessors."
+   },
+   {
+    "prompt": "Forward pass for E and F.",
+    "answer": "E: ES = max(6, 7) = 7, EF 11; F: ES = max(9, 11) = 11, EF 13 → project = 13 weeks",
+    "explain": "Project duration = EF of the last activity."
+   },
+   {
+    "prompt": "Backward pass.",
+    "answer": "F: LF 13, LS 11; E: LF 11, LS 7; D: LF 11, LS 6; C: LF 7, LS 4; B: LF 7, LS 1; A: LF = min(4, 6) = 4, LS 0",
+    "explain": "LS = LF − duration; LF = minimum LS of successors."
+   },
+   {
+    "prompt": "Find slack and the critical path.",
+    "answer": "Slack (LS − ES): A 0, B 1, C 0, D 2, E 0, F 0 → critical path A–C–E–F = 4+3+4+2 = 13 weeks",
+    "explain": "Zero-slack activities are critical."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2025 P1 L1; BEE 2024 P1 L5 (modified)"
+ },
+ {
+  "id": "p1-082",
+  "paper": 1,
+  "topic": "Project management",
+  "kind": "problem",
+  "front": "PERT time estimates in weeks (optimistic a, most likely m, pessimistic b): A (start) 2-4-6; B (after A) 3-5-13; C (start) 4-6-8; D (after C) 2-3-4; E (after B and D) 1-2-3. Find the expected time of each activity, the critical path, the expected project duration, and its standard deviation.",
+  "back": "te: A 4, B 6, C 6, D 3, E 2. Critical path A–B–E = 12 weeks; σ ≈ 1.83 weeks.",
+  "explain": "PERT uses a beta-distribution approximation: te = (a + 4m + b)/6 and variance = ((b − a)/6)². Add up the variances along the critical path and take the square root to get the project's standard deviation, which is used to estimate the probability of meeting a deadline.",
+  "steps": [
+   {
+    "prompt": "Expected times.",
+    "answer": "A (2+16+6)/6 = 4; B (3+20+13)/6 = 6; C (4+24+8)/6 = 6; D (2+12+4)/6 = 3; E (1+8+3)/6 = 2",
+    "explain": "te = (a + 4m + b) ÷ 6."
+   },
+   {
+    "prompt": "Path lengths.",
+    "answer": "A–B–E = 4+6+2 = 12; C–D–E = 6+3+2 = 11",
+    "explain": "The critical path is the longest path."
+   },
+   {
+    "prompt": "Variances on the critical path.",
+    "answer": "A (4/6)² = 0.444; B (10/6)² = 2.778; E (2/6)² = 0.111; total = 3.333",
+    "explain": "σ² = ((b − a)/6)²."
+   },
+   {
+    "prompt": "Project standard deviation.",
+    "answer": "σ = √3.333 = 1.83 weeks; expected duration = 12 weeks",
+    "explain": "Add variances (not standard deviations), then take the square root."
+   }
+  ],
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p1-083",
+  "paper": 1,
+  "topic": "Energy monitoring & targeting",
+  "kind": "fact",
+  "front": "What principle is energy Monitoring & Targeting (M&T) based on?",
+  "back": "'You can't manage what you don't measure.' Energy use is related to its driver (production, degree-days), and actual consumption is compared with expected consumption so that deviations can be found and acted on.",
+  "explain": "The M&T elements are recording (measuring), analysing (correlating with production), comparing (against a baseline or target), setting targets, monitoring, reporting and controlling. M&T turns energy from an overhead into a managed variable cost.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q50"
+ },
+ {
+  "id": "p1-084",
+  "paper": 1,
+  "topic": "Energy monitoring & targeting",
+  "kind": "fact",
+  "front": "How is fixed (non-production) energy consumption found from data?",
+  "back": "Plot energy (y) against production (x) on an XY scatter chart and fit E = m·P + c. The intercept c is the fixed energy consumption, and the slope m is the variable energy per unit of production.",
+  "explain": "Fixed energy (lighting, HVAC, idle running, losses) is used regardless of output. That is why SEC rises at low capacity utilisation. Reducing c is often the cheapest saving.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q17"
+ },
+ {
+  "id": "p1-085",
+  "paper": 1,
+  "topic": "Energy monitoring & targeting",
+  "kind": "fact",
+  "front": "Why is an energy baseline established in M&T?",
+  "back": "To fix a reference point (expected energy for a given production) against which later energy performance improvements are measured.",
+  "explain": "The baseline is usually a regression E = mP + c from a representative period before the energy-saving measures. The baseline and energy performance indicators are core requirements of ISO 50001 and of M&V for ESCO contracts.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q19"
+ },
+ {
+  "id": "p1-086",
+  "paper": 1,
+  "topic": "Energy monitoring & targeting",
+  "kind": "fact",
+  "front": "What is CUSUM, and how do you interpret its graph?",
+  "back": "CUSUM = cumulative sum of (actual − predicted) energy, period by period. A falling line means savings (actual below predicted). A rising line means excess consumption. A horizontal line means actual = predicted (no change in performance).",
+  "explain": "Predicted energy comes from the baseline equation, e.g. E = 2.2·P + 10,000. The final CUSUM value gives the total savings (if negative) over the period. Changes in slope mark when performance changed, for example when a measure was implemented or a fault appeared.",
+  "flash": true,
+  "source": "BEE 2025 P1 Q43, L4; BEE 2024 P1 L1"
+ },
+ {
+  "id": "p1-087",
+  "paper": 1,
+  "topic": "Energy monitoring & targeting",
+  "kind": "problem",
+  "front": "The baseline relationship for a plant is E = 120·P + 20,000 (E in kWh, P in tonnes). After an energy-saving programme, the monthly data (production in t / actual energy in kWh) are: Apr 400/66,000; May 420/70,000; Jun 380/63,000; Jul 450/73,500; Aug 410/67,000; Sep 390/64,500. Build the CUSUM table and find the total savings.",
+  "back": "CUSUM after six months = −10,000 kWh, i.e. 10,000 kWh saved.",
+  "explain": "For each month, predicted energy comes from the baseline equation. The monthly difference (actual − predicted) is added up cumulatively. A steadily falling CUSUM line confirms sustained savings; a flat stretch would mean performance had returned to baseline.",
+  "steps": [
+   {
+    "prompt": "Predicted energy each month (120P + 20,000).",
+    "answer": "Apr 68,000; May 70,400; Jun 65,600; Jul 74,000; Aug 69,200; Sep 66,800 kWh",
+    "explain": "Use the baseline regression."
+   },
+   {
+    "prompt": "Difference (actual − predicted).",
+    "answer": "Apr −2,000; May −400; Jun −2,600; Jul −500; Aug −2,200; Sep −2,300",
+    "explain": "Negative = consumed less than expected."
+   },
+   {
+    "prompt": "Cumulative sum.",
+    "answer": "−2,000; −2,400; −5,000; −5,500; −7,700; −10,000",
+    "explain": "CUSUMₙ = CUSUMₙ₋₁ + (Eₐ − Eₚ)."
+   },
+   {
+    "prompt": "Interpret.",
+    "answer": "Total savings over 6 months = 10,000 kWh; the CUSUM line slopes down throughout.",
+    "explain": "A downward slope means savings; a horizontal line means no change."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2025 P1 L4; BEE 2024 P1 L1 (modified)"
+ },
+ {
+  "id": "p1-088",
+  "paper": 1,
+  "topic": "Energy & environment",
+  "kind": "fact",
+  "front": "Which six greenhouse gases are covered by the Kyoto Protocol?",
+  "back": "Carbon dioxide (CO₂), methane (CH₄), nitrous oxide (N₂O), hydrofluorocarbons (HFCs), perfluorocarbons (PFCs) and sulphur hexafluoride (SF₆).",
+  "explain": "CO₂ is the largest contributor by volume. The fluorinated gases have very high Global Warming Potentials. Emissions are reported in tonnes of CO₂-equivalent (tCO₂e) = mass × GWP.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p1-089",
+  "paper": 1,
+  "topic": "Energy & environment",
+  "kind": "fact",
+  "front": "Which greenhouse gas has the longest atmospheric lifetime and very high GWP?",
+  "back": "Sulphur hexafluoride (SF₆), with an atmospheric lifetime of about 3,200 years and a GWP in the tens of thousands relative to CO₂.",
+  "explain": "SF₆ is used as an insulating gas in high-voltage switchgear, so leak prevention and recovery matter. PFCs also last thousands of years. CO₂ has no single lifetime, because it is removed by several processes over very different timescales.",
+  "flash": false,
+  "source": "BEE 2024 P1 Q7"
+ },
+ {
+  "id": "p1-090",
+  "paper": 1,
+  "topic": "Energy & environment",
+  "kind": "fact",
+  "front": "What causes stratospheric ozone depletion, and what does the ozone layer filter?",
+  "back": "Mainly chlorofluorocarbons (CFCs) and other halogenated compounds. The ozone layer absorbs harmful UV-B radiation.",
+  "explain": "Chlorine released from CFCs by UV light destroys ozone catalytically. The Montreal Protocol (1987) phased out CFCs and is phasing out HCFCs, and the Kigali Amendment covers HFCs. Ozone depletion and global warming are separate problems, but some gases contribute to both.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q8; BEE 2024 P1 Q29"
+ },
+ {
+  "id": "p1-091",
+  "paper": 1,
+  "topic": "Energy & environment",
+  "kind": "fact",
+  "front": "What are the basic objectives of sustainable development?",
+  "back": "Economic security and prosperity, social development and advancement, and environmental sustainability, all three together.",
+  "explain": "The Brundtland definition: development that meets the needs of the present without compromising the ability of future generations to meet their own needs. Energy efficiency supports all three objectives.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q26"
+ },
+ {
+  "id": "p1-092",
+  "paper": 1,
+  "topic": "Energy & environment",
+  "kind": "fact",
+  "front": "What is carbon sequestration?",
+  "back": "Capturing CO₂ from point sources (e.g. power plants) or the atmosphere and storing it long term, for example in geological formations, oceans, or biomass and soils.",
+  "explain": "Carbon Capture, Utilisation and Storage (CCUS) handles point sources. Forests and soils act as natural carbon sinks.",
+  "flash": false,
+  "source": "BEE 2025 P1 Q18"
+ },
+ {
+  "id": "p1-093",
+  "paper": 1,
+  "topic": "Energy & environment",
+  "kind": "fact",
+  "front": "How do you convert fuel carbon content to CO₂ emissions?",
+  "back": "CO₂ (kg) = mass of carbon burnt (kg) × 44/12. Each kg of carbon gives 3.67 kg of CO₂.",
+  "explain": "The 44/12 comes from molecular weights: CO₂ = 44, C = 12. Example: 1,000 kg of natural gas with 74% carbon → 740 × 3.67 ≈ 2,713 kg CO₂. For electricity, multiply the kWh saved by the grid emission factor, e.g. 1,000 kWh × 0.8 kg/kWh = 800 kg CO₂.",
+  "flash": true,
+  "source": "BEE 2025 P1 L6; BEE 2024 P1 Q1"
+ },
+ {
+  "id": "p1-094",
+  "paper": 1,
+  "topic": "Energy & environment",
+  "kind": "fact",
+  "front": "What are India's updated NDC targets under the Paris Agreement (submitted 2022), and its net-zero year?",
+  "back": "Reduce the emissions intensity of GDP by 45% by 2030 from the 2005 level; reach about 50% of cumulative installed electric power capacity from non-fossil sources by 2030; net-zero emissions by 2070.",
+  "explain": "The Paris Agreement (COP21, 2015) aims to keep warming well below 2°C and to pursue 1.5°C, using nationally determined contributions. It followed the Kyoto Protocol (1997), which set binding targets only for developed countries and created the Clean Development Mechanism.",
+  "flash": true,
+  "source": "syllabus"
+ },
+ {
+  "id": "p1-095",
+  "paper": 1,
+  "topic": "Energy & environment",
+  "kind": "problem",
+  "front": "A 50 MW coal-fired power plant raises its efficiency from 30% to 33% through renovation and modernisation. Coal GCV is 3,600 kcal/kg, the plant runs 8,000 h/year at full load, and the emission factor is 1.5 kg CO₂ per kg of coal. Find the annual coal saving and the CO₂ avoided.",
+  "back": "Coal saving ≈ 28,956 t/yr; CO₂ avoided ≈ 43,434 t/yr.",
+  "explain": "Heat rate (kcal/kWh) = 860 ÷ efficiency, and specific coal consumption = heat rate ÷ GCV. The fall in specific coal consumption multiplied by generation gives the coal saved, and the emission factor converts that to CO₂ avoided. A 3-point efficiency gain cuts fuel use by about 9%.",
+  "steps": [
+   {
+    "prompt": "Specific coal consumption before.",
+    "answer": "Heat rate = 860/0.30 = 2,866.7 kcal/kWh; SCC = 2,866.7/3,600 = 0.7963 kg/kWh",
+    "explain": "SCC = 860 ÷ (η × GCV)."
+   },
+   {
+    "prompt": "Specific coal consumption after.",
+    "answer": "860/0.33 = 2,606.1 kcal/kWh; SCC = 0.7239 kg/kWh",
+    "explain": ""
+   },
+   {
+    "prompt": "Annual generation.",
+    "answer": "50,000 kW × 8,000 h = 4×10⁸ kWh",
+    "explain": "Energy = capacity × hours."
+   },
+   {
+    "prompt": "Coal saved.",
+    "answer": "(0.7963 − 0.7239) × 4×10⁸ = 2.896×10⁷ kg ≈ 28,956 t/yr",
+    "explain": "Saving = ΔSCC × generation."
+   },
+   {
+    "prompt": "CO₂ avoided.",
+    "answer": "28,956 × 1.5 = 43,434 t CO₂/yr",
+    "explain": "CO₂ = coal saved × emission factor."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2024 P1 S2 (modified)"
+ },
+ {
+  "id": "p1-096",
+  "paper": 1,
+  "topic": "PAT scheme & carbon market",
+  "kind": "fact",
+  "front": "What is the PAT scheme, and under which mission was it launched?",
+  "back": "Perform, Achieve and Trade: a market-based mechanism under the National Mission for Enhanced Energy Efficiency (NMEEE), one of the 8 missions of the National Action Plan on Climate Change (NAPCC, 2008). It sets mandatory SEC-reduction targets for Designated Consumers.",
+  "explain": "Plants that beat their target are issued Energy Saving Certificates (ESCerts). Plants that fall short must buy ESCerts or pay a penalty. ESCerts are traded on the power exchanges (IEX and PXIL).",
+  "flash": true,
+  "source": "syllabus"
+ },
+ {
+  "id": "p1-097",
+  "paper": 1,
+  "topic": "PAT scheme & carbon market",
+  "kind": "fact",
+  "front": "What is one ESCert worth?",
+  "back": "1 Energy Saving Certificate (ESCert) = 1 tonne of oil equivalent (toe) of energy saved beyond the PAT target.",
+  "explain": "Number of ESCerts = (target SEC − achieved SEC) × production in the baseline year, expressed in toe. PAT Cycle I (2012–15) covered 478 DCs in 8 sectors with a target of about 6.686 Mtoe, and achieved about 8.67 Mtoe.",
+  "flash": true,
+  "source": "syllabus"
+ },
+ {
+  "id": "p1-098",
+  "paper": 1,
+  "topic": "PAT scheme & carbon market",
+  "kind": "fact",
+  "front": "Name the four initiatives under the National Mission for Enhanced Energy Efficiency (NMEEE).",
+  "back": "1. PAT (Perform, Achieve and Trade). 2. MTEE (Market Transformation for Energy Efficiency). 3. EEFP (Energy Efficiency Financing Platform). 4. FEEED (Framework for Energy Efficient Economic Development).",
+  "explain": "PAT sets and trades efficiency targets. MTEE speeds up the shift to efficient appliances. EEFP helps finance institutions fund EE projects. FEEED provides fiscal instruments such as risk guarantee and venture funds.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p1-099",
+  "paper": 1,
+  "topic": "PAT scheme & carbon market",
+  "kind": "fact",
+  "front": "What is the Carbon Credit Trading Scheme (CCTS) 2023 for the Indian Carbon Market?",
+  "back": "Notified in 2023 under the EC (Amendment) Act 2022. It has a compliance mechanism, where obligated entities get GHG-emission-intensity targets, and an offset mechanism for voluntary projects. 1 carbon credit certificate = 1 tCO₂e reduced or removed.",
+  "explain": "BEE is the administrator. Grid Controller of India acts as the registry, CERC regulates trading on power exchanges, and a National Steering Committee for the Indian Carbon Market (NSC-ICM) oversees it. Obligated sectors largely carry over from PAT, moving from energy (toe) targets to emission-intensity (tCO₂e per unit of product) targets.",
+  "flash": false,
+  "source": "syllabus"
+ }
+]
