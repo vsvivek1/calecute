@@ -20,7 +20,7 @@ The application ID is permanent once the first build reaches Google Play.
 - **Unlock:** `geological_assistant.has_active_subscription('geological-assistant')`. Purchases happen on the website only. The app sells nothing, shows no price and has no link to buy, to stay within Google Play's payments policy. An account without the course sees "Course not active on this account".
 - **Today:** due reviews first, then new cards (25 a day by default, high-priority first, same as the website). Review cards are tested with one of their linked past-paper questions when they have one. Tags on each card: high priority (tier 1), past paper (`source_ref`), verify before exam (`verified = false`).
 - **Practice:** 20-question unit quizzes with the answer and the fact behind it after each question; "Read cards" per unit with filters; retry your mistakes.
-- **Mock test:** 100 questions (20 per unit), 75 minutes, 1 mark right, minus 1/3 wrong, auto-submit at time out, question palette, mark for review, per-unit result and answer review. Values come from the `courses` row.
+- **Mock test:** 100 questions (20 per unit), 75 minutes, 1 mark right, minus 1/4 wrong (same as the website since 18 Oct), auto-submit at time out, question palette, mark for review, per-unit result and answer review. Question count and time come from the `courses` row; the 1/4 penalty is fixed in `lib/models.dart` because the row still says 1/3.
 - **Offline:** the course is cached on the phone after the first load. Reviews and attempts are saved on the phone and synced to `user_card_state` and `quiz_attempts`, so progress is shared with the website.
 
 ## Data
@@ -28,7 +28,7 @@ The application ID is permanent once the first build reaches Google Play.
 Schema `geological_assistant` in the USS Supabase project. Tables used: `courses`, `modules`, `cards`, `questions`, `question_cards` (read), `user_card_state` (upsert on `user_id,card_id`), `quiz_attempts` (insert). Conventions:
 
 - SM-2: ease starts 2.5 (min 1.3), interval 1 day, then 6, then interval × ease. Ratings again/hard/good/easy = quality 0/3/4/5. A lapse is counted when a learned card is rated again.
-- `quiz_attempts.score` = correct − wrong × `negative_mark_fraction`. `answers` = `[{q: question_id, a: 'a'..'d' | null}]` (the website writes `{question_id: 'a'}`; the app reads both). `kind` is `unit` (with `module_id`, or null for a mistakes retry) or `mock`.
+- `quiz_attempts.score` = correct − wrong × 1/4. `answers` = `[{q: question_id, a: 'a'..'d' | null}]` (the website writes `{question_id: 'a'}`; the app reads both). `kind` is `unit` (with `module_id`, or null for a mistakes retry) or `mock`.
 - A question's unit is the unit most of its linked cards belong to.
 
 ## Settings

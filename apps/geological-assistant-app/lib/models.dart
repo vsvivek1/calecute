@@ -3,6 +3,10 @@ library;
 
 const courseId = 'geological-assistant';
 
+/// Marks lost per wrong answer. Set to 1/4 on 18 Oct 2026 to match the
+/// website (web PR #56); `courses.negative_mark_fraction` still says 1/3.
+const wrongAnswerPenalty = 0.25;
+
 class Account {
   const Account({required this.id, required this.email, required this.name});
 
@@ -40,7 +44,7 @@ class Course {
     department: 'Ground Water Department, Kerala',
     mockQuestionCount: 100,
     mockDurationMinutes: 75,
-    negativeMarkFraction: 1 / 3,
+    negativeMarkFraction: wrongAnswerPenalty,
     defaultPlanDays: 60,
   );
 
@@ -51,8 +55,8 @@ class Course {
     department: j['department'] as String? ?? '',
     mockQuestionCount: j['mock_question_count'] as int? ?? 100,
     mockDurationMinutes: j['mock_duration_minutes'] as int? ?? 75,
-    negativeMarkFraction:
-        (j['negative_mark_fraction'] as num?)?.toDouble() ?? 1 / 3,
+    // Fixed, not read from the row: see [wrongAnswerPenalty].
+    negativeMarkFraction: wrongAnswerPenalty,
     defaultPlanDays: j['default_plan_days'] as int? ?? 60,
   );
 

@@ -159,14 +159,24 @@ void main() {
   });
 
   group('quizzes', () {
-    test('negative marking: 1 per right, minus a third per wrong', () {
+    test('negative marking: 1 per right, minus a quarter per wrong', () {
+      final course = Course.fromJson({
+        'id': courseId,
+        'name': 'Geological Assistant',
+        'negative_mark_fraction': 0.3333,
+      });
+      expect(course.negativeMarkFraction, 0.25);
       final qs = [question('1', 0), question('2', 1), question('3', 2)];
-      final s = scoreQuiz(qs, {'1': 0, '2': 0, '3': null}, 1 / 3);
+      final s = scoreQuiz(qs, {
+        '1': 0,
+        '2': 0,
+        '3': null,
+      }, course.negativeMarkFraction);
       expect(s.correct, 1);
       expect(s.wrong, 1);
       expect(s.unattempted, 1);
-      expect(s.score, closeTo(2 / 3, 1e-9));
-      expect(formatScore(s.score), '0.67');
+      expect(s.score, 0.75);
+      expect(formatScore(s.score), '0.75');
       expect(formatScore(3), '3');
     });
 
