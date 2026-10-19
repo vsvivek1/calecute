@@ -428,7 +428,7 @@ const BASE: Omit<AppEntry, 'slug'|'name'|'androidPackage'|'iosBundleId'|'isDemo'
       "When you invite a colleague by email, you give us that person's address. We use it once, to send a single invitation naming you as the sender, and we record whether it was accepted. We never send a reminder, never add the address to a mailing list, and never share it. If someone does not accept, their address is removed when you delete your account, and sooner on request to the address below. Only invite people you actually know and who would expect to hear from you.",
     iconSrc: "/bankmates/icon.png",
     availabilityNote:
-      "BankMates is not on Google Play yet — the first internal-testing build is on its way, and this page will carry the store link when the listing goes live. The QR code above already points here, so anything printed now keeps working afterwards.",
+      "BankMates is on Google Play. The QR code above points to this page, so anything printed with it keeps working.",
     qr: {
       svg: "/bankmates/qr.svg",
       png: "/bankmates/qr.png",
@@ -613,7 +613,7 @@ const BASE: Omit<AppEntry, 'slug'|'name'|'androidPackage'|'iosBundleId'|'isDemo'
       target: "https://calecutech.com/apps/recallio",
     },
     availabilityNote:
-      "Recallio is not on Google Play yet. This page carries the store link once the listing is live, and it is already the address printed on anything we hand out, so nothing has to be reprinted later.",
+      "Recallio is on Google Play. This page is the address printed on anything we hand out, and it carries the store link.",
     features: [
       "The official syllabus broken into small fact cards — a statement, why it is true, the trick the exam plays with it, and where it comes from.",
       "Spaced repetition tuned for an exam date: every interval is capped so nothing is ever scheduled after the day you sit the paper, and every card is shown at least once in the final ten days.",
@@ -881,7 +881,7 @@ const BASE: Omit<AppEntry, 'slug'|'name'|'androidPackage'|'iosBundleId'|'isDemo'
       { src: "/workforce/screen-login.jpg", alt: "Sign-in screen asking for a mobile number to receive a one-time code" },
     ],
     availabilityNote:
-      "Work Force is in testing on Google Play and is not yet publicly listed. This page will carry the store link once it is live. The QR code above already points here, so anything printed now keeps working afterwards.",
+      "Work Force is on Google Play. The QR code above points to this page, so anything printed with it keeps working.",
     qr: {
       svg: "/workforce/qr.svg",
       png: "/workforce/qr.png",

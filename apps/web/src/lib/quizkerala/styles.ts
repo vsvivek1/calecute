@@ -210,13 +210,12 @@ section.block.alt { background: var(--panel); }
 .cta-panel h2 { color: #fff; font-size: clamp(1.4rem, 3vw, 1.9rem); }
 .cta-panel p { color: rgba(255,255,255,0.9); max-width: 34rem; margin: 0.75rem auto 1.5rem; }
 
-.store-badge {
-  display: inline-flex; align-items: center; gap: 0.6rem; min-height: 52px; padding: 0.4rem 1.1rem;
-  border-radius: 12px; background: #000; color: #fff; font-size: 0.75rem; line-height: 1.2;
-}
-.store-badge:hover { text-decoration: none; filter: brightness(1.2); }
-.store-badge strong { display: block; font-size: 1.05rem; }
-.store-badge svg { width: 24px; height: 24px; }
+.play-badge { display: inline-flex; border-radius: 9px; }
+.play-badge:hover { filter: brightness(1.15); }
+.play-badge img { display: block; height: 52px; width: auto; }
+.play-soon { display: inline-flex; flex-direction: column; justify-content: center; min-height: 52px; padding: 0.3rem 1.1rem; border: 1.5px dashed currentColor; border-radius: 9px; opacity: 0.75; line-height: 1.15; }
+.play-soon small { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.play-soon strong { font-size: 1.05rem; }
 
 .faq-item { border-bottom: 1px solid var(--hairline); padding: 0.4rem 0; }
 .faq-item summary { cursor: pointer; font-weight: 600; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; list-style: none; }
