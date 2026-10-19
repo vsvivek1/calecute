@@ -1,0 +1,1399 @@
+[
+ {
+  "id": "p4-001",
+  "paper": 4,
+  "topic": "Boiler efficiency",
+  "kind": "fact",
+  "front": "What is the direct-method (input-output) formula for boiler efficiency?",
+  "back": "η = [Q × (hg − hf)] / (q × GCV) × 100, where Q = steam flow, hg = steam enthalpy, hf = feed-water enthalpy, q = fuel flow.",
+  "explain": "The direct method compares useful heat added to the steam with the heat in the fuel fired, both on the same time basis (e.g. kg/h). Feed-water enthalpy in kcal/kg is roughly equal to its temperature in °C. It is quick but gives no clue as to where the losses occur, which is why the indirect method is preferred for diagnosis.",
+  "flash": true,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-002",
+  "paper": 4,
+  "topic": "Boiler efficiency",
+  "kind": "fact",
+  "front": "What is the evaporation ratio (ER) of a boiler, and what are typical values?",
+  "back": "ER = kg of steam generated per kg of fuel fired. Typical: coal-fired ≈ 6, oil-fired ≈ 13.",
+  "explain": "ER links straight to efficiency: η = ER × (hg − hf) / GCV. Because ER uses only measured steam and fuel quantities, it does not depend on whether efficiency is later stated on a GCV or NCV basis (BEE 2025 T/F: True). A falling ER at the same steam conditions is an early sign of falling efficiency.",
+  "flash": true,
+  "source": "BEE 2025 P4 Q1"
+ },
+ {
+  "id": "p4-003",
+  "paper": 4,
+  "topic": "Boiler efficiency",
+  "kind": "fact",
+  "front": "If a boiler produces wet steam, does a high evaporation ratio prove high efficiency?",
+  "back": "No. Wet steam has a lower enthalpy, so kg of 'steam' per kg of fuel looks high while the useful heat per kg is low.",
+  "explain": "Water carried over with the steam is counted in the steam flow, which inflates the ER. Always compare ER together with the steam enthalpy (pressure, temperature, dryness). BEE 2025 asked this as a True/False item (answer: False).",
+  "flash": false,
+  "source": "BEE 2025 P4 Q7"
+ },
+ {
+  "id": "p4-004",
+  "paper": 4,
+  "topic": "Boiler efficiency",
+  "kind": "fact",
+  "front": "Does the direct method of boiler efficiency need the steam generation pressure?",
+  "back": "Yes. You need pressure (and temperature for superheated steam) to read the steam enthalpy hg from steam tables.",
+  "explain": "The direct method needs steam flow, fuel flow, fuel GCV, feed-water temperature, and steam pressure/temperature. Without pressure you cannot fix hg, so you cannot compute the useful heat. BEE 2023 asked this as a True/False item (answer: False).",
+  "flash": false,
+  "source": "BEE 2023 P4 Q10"
+ },
+ {
+  "id": "p4-005",
+  "paper": 4,
+  "topic": "Boiler efficiency",
+  "kind": "fact",
+  "front": "Which losses are counted in the indirect (heat-loss) method of boiler efficiency, and is blowdown loss among them?",
+  "back": "Dry flue gas, H₂ in fuel, moisture in fuel, moisture in air, partial combustion (CO), surface radiation & convection, and unburnt in fly ash & bottom ash. Blowdown loss is NOT included.",
+  "explain": "Efficiency = 100 − (sum of losses). The method follows BS 845 / ASME PTC-4-1 practice and is done on a GCV basis. Blowdown is treated as a separate consideration, not as a loss in the standard indirect calculation (BEE 2025 T/F: False). The indirect method's advantage is that it shows where the losses are.",
+  "flash": false,
+  "source": "BEE 2025 P4 Q5"
+ },
+ {
+  "id": "p4-006",
+  "paper": 4,
+  "topic": "Combustion",
+  "kind": "fact",
+  "front": "What is the formula for the theoretical (stoichiometric) air needed to burn a fuel, from its ultimate analysis?",
+  "back": "Theoretical air (kg/kg fuel) = [11.6 C + 34.8 (H − O/8) + 4.35 S] / 100, with C, H, O, S in % by mass.",
+  "explain": "The constants come from the oxygen needed to burn each element, divided by 0.23 (the mass fraction of O₂ in air). The O/8 term takes off hydrogen that is already 'bound' to the fuel's own oxygen. Typical results: about 14 kg/kg for fuel oil, 4–6 kg/kg for coal and biomass.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-007",
+  "paper": 4,
+  "topic": "Combustion",
+  "kind": "fact",
+  "front": "How do you estimate excess air from the measured O₂ in flue gas?",
+  "back": "Excess air % = O₂% / (21 − O₂%) × 100. Actual air = theoretical air × (1 + EA/100).",
+  "explain": "For example, 3% O₂ gives 3/18 = 16.7% excess air and 6% O₂ gives 40%. Too much excess air raises the dry-flue-gas loss. Too little gives CO and unburnt fuel. O₂ is the preferred measurement because it depends less on fuel type than CO₂.",
+  "flash": true,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-008",
+  "paper": 4,
+  "topic": "Boiler efficiency",
+  "kind": "fact",
+  "front": "Give the formulas for the dry-flue-gas loss and the mass of dry flue gas.",
+  "back": "L1 = m_dfg × Cp × (Tf − Ta) / GCV × 100. m_dfg = C×44/12 + S×64/32 + N + 0.77×AAS + 0.23×(AAS − TA)  (or ≈ AAS + 1 − 9H − M).",
+  "explain": "C, S, N, H, M are kg per kg of fuel; AAS = actual air supplied and TA = theoretical air. The CO₂, SO₂, nitrogen and unused O₂ make up the dry gas, and water vapour is dealt with separately. Cp of flue gas is usually taken as 0.23–0.29 kcal/kg°C, as the question gives it. This is normally the largest single boiler loss.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-009",
+  "paper": 4,
+  "topic": "Boiler efficiency",
+  "kind": "fact",
+  "front": "Give the boiler loss formulas for hydrogen in fuel, moisture in fuel, and moisture in air.",
+  "back": "L2 = 9H[584 + Cp_s(Tf − Ta)]/GCV ×100; L3 = M[584 + Cp_s(Tf − Ta)]/GCV ×100; L4 = AAS × humidity × Cp_s × (Tf − Ta)/GCV ×100.",
+  "explain": "Each kg of hydrogen forms 9 kg of water. That water, like the fuel's own moisture, takes latent heat (584 kcal/kg) plus superheat out of the stack. Moisture in the combustion air is already vapour, so only its sensible heat counts. Cp_s (superheated vapour) is about 0.43–0.45 kcal/kg°C.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-010",
+  "paper": 4,
+  "topic": "Boiler efficiency",
+  "kind": "fact",
+  "front": "What is the formula for the heat loss from partial combustion of carbon to CO?",
+  "back": "Loss (kcal/kg fuel) = [%CO × C / (%CO + %CO₂)] × 5654; % loss = that ÷ GCV × 100. (CO in ppm ÷ 10,000 = %.)",
+  "explain": "C is kg of carbon per kg of fuel, and 5654 kcal/kg is the heat lost per kg of carbon that burns only to CO. Lower CO in the flue gas means better combustion efficiency (BEE 2024 T/F: True). Example: 5000 ppm = 0.5% CO.",
+  "flash": false,
+  "source": "BEE 2023 P4 L2"
+ },
+ {
+  "id": "p4-011",
+  "paper": 4,
+  "topic": "Boiler blowdown",
+  "kind": "fact",
+  "front": "What fraction of high-pressure blowdown flashes to steam in a flash vessel?",
+  "back": "Flash fraction = (S1 − S2) / L2, where S1 = sensible heat of the blowdown at boiler pressure, S2 = sensible heat at flash pressure, and L2 = latent heat at flash pressure.",
+  "explain": "The extra sensible heat the water holds above saturation at the lower pressure can only go into evaporating part of it. Example: (352 − 120)/526 ≈ 0.44 kg of flash steam per kg of blowdown. The flash steam can feed the deaerator or LP process heating.",
+  "flash": false,
+  "source": "BEE 2023 P4 N3"
+ },
+ {
+  "id": "p4-012",
+  "paper": 4,
+  "topic": "Boiler blowdown",
+  "kind": "fact",
+  "front": "What is the formula for the blowdown percentage of a boiler?",
+  "back": "Blowdown % = (Feed-water TDS × % make-up water) / (Maximum permissible TDS in boiler water).",
+  "explain": "Blowdown keeps dissolved solids in the drum below the limit that causes foaming and carry-over. Too much blowdown wastes heat and treated water. Too little causes scaling and carry-over. Better condensate return lowers feed TDS and so lowers blowdown.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-013",
+  "paper": 4,
+  "topic": "Boiler efficiency",
+  "kind": "problem",
+  "front": "A coal-fired boiler generates 120 TPH of steam (enthalpy 790 kcal/kg) from feed water at 130 °C. Coal GCV is 4000 kcal/kg and the measured evaporation ratio is 4.8. Find (a) the boiler efficiency, (b) the coal consumption in TPH, and (c) the coal saved per day if efficiency improves by 2% relative to its present value.",
+  "back": "η = 79.2%; coal = 25.0 TPH; new η = 80.78%; saving ≈ 0.49 TPH ≈ 11.8 tonnes/day.",
+  "explain": "Direct-method questions in BEE papers often hide the efficiency inside the evaporation ratio. 'Relative' improvement means multiply by 1.02, not add 2 percentage points. The useful heat output stays the same, so coal varies inversely with efficiency.",
+  "steps": [
+   {
+    "prompt": "Heat added per kg of steam",
+    "answer": "790 − 130 = 660 kcal/kg",
+    "explain": "Feed-water enthalpy ≈ its temperature in °C."
+   },
+   {
+    "prompt": "Boiler efficiency from ER",
+    "answer": "η = 4.8 × 660 / 4000 = 0.792 → 79.2%",
+    "explain": "η = ER × (hg − hf)/GCV."
+   },
+   {
+    "prompt": "Present coal consumption",
+    "answer": "120 / 4.8 = 25.0 TPH",
+    "explain": "Coal = steam / ER."
+   },
+   {
+    "prompt": "Improved efficiency (2% relative)",
+    "answer": "79.2 × 1.02 = 80.78%",
+    "explain": "Relative improvement multiplies the existing value."
+   },
+   {
+    "prompt": "New coal and daily saving",
+    "answer": "Coal = 120,000×660/(0.80784×4000) = 24,510 kg/h; saving = 490 kg/h × 24 ≈ 11.8 t/day",
+    "explain": "Same heat output divided by the new efficiency × GCV."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2025 P4 N3(ii)"
+ },
+ {
+  "id": "p4-014",
+  "paper": 4,
+  "topic": "Boiler efficiency",
+  "kind": "problem",
+  "front": "Two boilers burn the same fuel oil and both run at an evaporation ratio of 13.5. The LP boiler makes saturated steam (enthalpy 665 kcal/kg) from 70 °C feed water at 80% efficiency. The HP boiler makes superheated steam (enthalpy 740 kcal/kg) from 110 °C feed water. Find the HP boiler efficiency.",
+  "back": "≈ 84.7%",
+  "explain": "At the same ER and fuel, efficiency is proportional to the heat added per kg of steam (hg − hf). So η_HP = η_LP × (740 − 110)/(665 − 70). You can also back-calculate the fuel GCV first, which gives the same answer.",
+  "steps": [
+   {
+    "prompt": "Back-calculate fuel GCV from the LP boiler",
+    "answer": "GCV = 13.5 × (665 − 70)/0.80 = 10,041 kcal/kg",
+    "explain": "η = ER(hg − hf)/GCV, rearranged."
+   },
+   {
+    "prompt": "Heat added per kg of steam in HP boiler",
+    "answer": "740 − 110 = 630 kcal/kg",
+    "explain": "hg − hf."
+   },
+   {
+    "prompt": "HP boiler efficiency",
+    "answer": "η = 13.5 × 630 / 10,041 = 0.847 → 84.7%",
+    "explain": "Same ER, so efficiency rises with heat added per kg."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2025 P4 L1"
+ },
+ {
+  "id": "p4-015",
+  "paper": 4,
+  "topic": "Boiler efficiency",
+  "kind": "problem",
+  "front": "Flue gas from a boiler has 3000 ppm CO and 13% CO₂. The fuel has 40 kg of carbon per 100 kg and a GCV of 4500 kcal/kg. Estimate the % heat loss due to incomplete combustion of carbon to CO.",
+  "back": "≈ 51 kcal/kg of fuel ≈ 1.13% loss",
+  "explain": "The partial-combustion loss uses the share of carbon that ends up as CO, times 5654 kcal per kg of such carbon. Convert ppm to % by dividing by 10,000. CO losses are usually small but signal poor burner tuning or too little air.",
+  "steps": [
+   {
+    "prompt": "Convert CO to %",
+    "answer": "3000 ppm / 10,000 = 0.3%",
+    "explain": "1% = 10,000 ppm."
+   },
+   {
+    "prompt": "Heat lost per kg of fuel",
+    "answer": "[0.3 × 0.40/(0.3 + 13)] × 5654 = 51.0 kcal/kg",
+    "explain": "Loss = %CO × C/(%CO + %CO₂) × 5654."
+   },
+   {
+    "prompt": "Percentage loss",
+    "answer": "51.0/4500 × 100 = 1.13%",
+    "explain": "Divide by GCV."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2023 P4 L2"
+ },
+ {
+  "id": "p4-016",
+  "paper": 4,
+  "topic": "Boiler efficiency",
+  "kind": "problem",
+  "front": "An oil-fired boiler burns fuel with ultimate analysis C 84%, H 11.5%, S 3%, O 0.5%, N 0.5%, moisture 0.5%; GCV 10,200 kcal/kg. Flue gas O₂ = 3%, flue gas temperature 210 °C, ambient 30 °C. Take Cp of flue gas 0.24 and of superheated vapour 0.45 kcal/kg°C, humidity 0.025 kg/kg dry air, and radiation plus unaccounted loss 1.5%. Find the boiler efficiency by the indirect method.",
+  "back": "Efficiency ≈ 84.6% (L1 6.83%, L2 6.75%, L3 0.03%, L4 0.32%, others 1.5%)",
+  "explain": "This is the standard BEE indirect-method sequence: theoretical air → excess air → actual air → dry flue gas → each loss → 100 − Σlosses. For oil the hydrogen loss is nearly as large as the dry-flue-gas loss, because H is high. Both past papers (pet coke 2023, rice husk 2024) follow exactly these steps.",
+  "steps": [
+   {
+    "prompt": "Theoretical air",
+    "answer": "[11.6×84 + 34.8×(11.5 − 0.5/8) + 4.35×3]/100 = 13.85 kg/kg fuel",
+    "explain": "Stoichiometric air formula."
+   },
+   {
+    "prompt": "Excess air and actual air",
+    "answer": "EA = 3/(21−3) = 16.7%; AAS = 13.85 × 1.167 = 16.16 kg/kg",
+    "explain": "EA% = O₂/(21 − O₂)."
+   },
+   {
+    "prompt": "Mass of dry flue gas",
+    "answer": "0.84×44/12 + 0.03×64/32 + 0.005 + 0.77×16.16 + 0.23×(16.16−13.85) = 16.12 kg/kg",
+    "explain": "CO₂ + SO₂ + fuel N₂ + air N₂ + excess O₂."
+   },
+   {
+    "prompt": "Dry flue gas loss L1",
+    "answer": "16.12 × 0.24 × 180/10,200 × 100 = 6.83%",
+    "explain": "m × Cp × ΔT / GCV."
+   },
+   {
+    "prompt": "Moisture-related losses",
+    "answer": "L2 = 9×0.115×(584 + 0.45×180)/10,200 = 6.75%; L3 = 0.005×665/10,200 = 0.03%; L4 = 16.16×0.025×0.45×180/10,200 = 0.32%",
+    "explain": "Latent + superheat for H₂ and fuel moisture; sensible only for air humidity."
+   },
+   {
+    "prompt": "Efficiency",
+    "answer": "100 − (6.83 + 6.75 + 0.03 + 0.32 + 1.5) = 84.6%",
+    "explain": "Indirect method: 100 − Σ losses."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2023 P4 N3"
+ },
+ {
+  "id": "p4-017",
+  "paper": 4,
+  "topic": "Furnaces",
+  "kind": "fact",
+  "front": "How is the direct efficiency of a reheating furnace calculated?",
+  "back": "η = Heat taken up by stock / Heat in fuel = [m × Cp × (T_final − T_initial)] / (fuel × GCV) × 100.",
+  "explain": "Use the stock's mean specific heat (about 0.12–0.13 kcal/kg°C for steel billets). For oil, convert litres to kg with density first. Specific fuel consumption (litres or kg per tonne) is the everyday KPI derived from the same data.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-018",
+  "paper": 4,
+  "topic": "Furnaces",
+  "kind": "fact",
+  "front": "Should the heating zone of a reheating furnace be kept at a slight negative or slight positive pressure?",
+  "back": "Slight positive pressure, so cold air is not drawn in through doors and openings.",
+  "explain": "Negative pressure lets in cold air, which cools the stock surface, causes uneven heating and scaling, and wastes fuel. Too much positive pressure pushes flames and hot gas out of the openings. BEE 2023 T/F: 'negative pressure for uniform heating' is False.",
+  "flash": false,
+  "source": "BEE 2023 P4 Q1"
+ },
+ {
+  "id": "p4-019",
+  "paper": 4,
+  "topic": "Furnaces",
+  "kind": "problem",
+  "front": "An oil-fired billet reheating furnace uses 800 litres/h of furnace oil (density 0.93 kg/l, GCV 10,200 kcal/kg) to heat 20 TPH of billets from 30 °C to 1200 °C (mean Cp 0.13 kcal/kg°C). Oil costs ₹55/kg. An electric furnace of 92% efficiency is proposed, with power at ₹9/kWh. Find the oil furnace efficiency and the energy cost per tonne in both cases.",
+  "back": "Oil furnace η ≈ 40.1%, ₹2046/t; electric ≈ 192 kWh/t, ₹1730/t, so the electric furnace is cheaper.",
+  "explain": "Heat to stock is the same in both cases. The oil furnace wastes about 60% in flue gas and openings, while the electric furnace wastes only 8%. The decision depends on tariff vs fuel price, so compare cost per tonne, not just efficiency. Use 860 kcal = 1 kWh.",
+  "steps": [
+   {
+    "prompt": "Heat absorbed by billets",
+    "answer": "20,000 × 0.13 × (1200 − 30) = 30.42 lakh kcal/h",
+    "explain": "m Cp ΔT."
+   },
+   {
+    "prompt": "Heat input from oil",
+    "answer": "800 × 0.93 = 744 kg/h; × 10,200 = 75.89 lakh kcal/h",
+    "explain": "Litres → kg via density."
+   },
+   {
+    "prompt": "Oil furnace efficiency and cost/t",
+    "answer": "η = 30.42/75.89 = 40.1%; SEC = 744/20 = 37.2 kg/t → ₹2046/t",
+    "explain": "Efficiency = output/input."
+   },
+   {
+    "prompt": "Electric furnace energy",
+    "answer": "30.42 lakh/860/0.92 = 3845 kWh/h → 192.2 kWh/t → ₹1730/t",
+    "explain": "1 kWh = 860 kcal; divide by furnace efficiency."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2024 P4 L2"
+ },
+ {
+  "id": "p4-020",
+  "paper": 4,
+  "topic": "Heat exchangers",
+  "kind": "fact",
+  "front": "What is the formula for the log mean temperature difference (LMTD)?",
+  "back": "LMTD = (ΔT1 − ΔT2) / ln(ΔT1/ΔT2), with ΔT1, ΔT2 the terminal temperature differences. Then Q = U × A × LMTD.",
+  "explain": "For counterflow, ΔT1 = Th,in − Tc,out and ΔT2 = Th,out − Tc,in. For parallel flow, use the inlet-to-inlet and outlet-to-outlet differences. Counterflow gives a higher LMTD and so needs less area for the same duty. If ΔT1 = ΔT2, LMTD equals that value.",
+  "flash": true,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-021",
+  "paper": 4,
+  "topic": "Heat exchangers",
+  "kind": "fact",
+  "front": "How is heat exchanger effectiveness defined?",
+  "back": "ε = actual heat transferred / maximum possible = C(ΔT of either stream) / [C_min × (Th,in − Tc,in)].",
+  "explain": "C = m × Cp is the heat-capacity rate. The fluid with the smaller C (C_min) could at best change temperature by the full inlet difference. A simple form is ε = (Tc,out − Tc,in)/(Th,in − Tc,in) when the cold fluid is C_min. Falling effectiveness at the same flows points to fouling.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-022",
+  "paper": 4,
+  "topic": "Heat exchangers",
+  "kind": "fact",
+  "front": "Does the overall heat-transfer coefficient (U) of a shell-and-tube exchanger fall only because the fluid temperatures change?",
+  "back": "No. U falls mainly because of fouling (scale, deposits) and changes in flow velocity, not just temperature changes.",
+  "explain": "1/U = sum of film resistances + wall resistance + fouling resistances. Fouling factors build up with time, which is why U is trended to plan cleaning. BEE 2024 T/F: False.",
+  "flash": false,
+  "source": "BEE 2024 P4 Q9"
+ },
+ {
+  "id": "p4-023",
+  "paper": 4,
+  "topic": "Heat exchangers",
+  "kind": "problem",
+  "front": "In a counterflow plate heat exchanger, process water (150 m³/h) is cooled from 21 °C to 15 °C by chilled water (180 m³/h) entering at 7 °C and leaving at 12 °C. U = 2.5 kW/m²°C, Cp = 4.18 kJ/kg°C. Find the heat duty, LMTD, required area and effectiveness.",
+  "back": "Q ≈ 1045 kW; LMTD ≈ 8.49 °C; A ≈ 49.2 m²; ε ≈ 42.9%",
+  "explain": "Check the energy balance first: 150 × 6 = 180 × 5, so both sides carry the same duty. Process water has the smaller heat-capacity rate, so it is C_min and its ΔT goes in the effectiveness numerator.",
+  "steps": [
+   {
+    "prompt": "Heat duty",
+    "answer": "(150 × 1000/3600) × 4.18 × (21 − 15) = 1045 kW",
+    "explain": "Q = m Cp ΔT; 1 m³ water ≈ 1000 kg."
+   },
+   {
+    "prompt": "Terminal differences (counterflow)",
+    "answer": "ΔT1 = 21 − 12 = 9 °C; ΔT2 = 15 − 7 = 8 °C",
+    "explain": "Hot in vs cold out; hot out vs cold in."
+   },
+   {
+    "prompt": "LMTD",
+    "answer": "(9 − 8)/ln(9/8) = 8.49 °C",
+    "explain": "LMTD formula."
+   },
+   {
+    "prompt": "Area",
+    "answer": "A = 1045/(2.5 × 8.49) = 49.2 m²",
+    "explain": "Q = U A LMTD."
+   },
+   {
+    "prompt": "Effectiveness",
+    "answer": "ε = (21 − 15)/(21 − 7) = 6/14 = 42.9%",
+    "explain": "Hot side is C_min (150 < 180 m³/h)."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2025 P4 N1"
+ },
+ {
+  "id": "p4-024",
+  "paper": 4,
+  "topic": "Electric motors",
+  "kind": "fact",
+  "front": "How is three-phase input power calculated from measured values?",
+  "back": "P (kW) = √3 × V_L × I × cosφ / 1000.",
+  "explain": "V_L is line voltage, I is line current, cosφ is power factor. A power analyser gives kW directly. Motor output = input × efficiency (or input − losses), and this output is the pump/fan shaft power.",
+  "flash": true,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-025",
+  "paper": 4,
+  "topic": "Electric motors",
+  "kind": "fact",
+  "front": "How are synchronous speed and slip defined, and how does slip vary with load?",
+  "back": "Ns = 120f/P; slip = (Ns − N)/Ns. Slip rises roughly in proportion to load, so higher slip means higher motor loading.",
+  "explain": "For a 4-pole 50 Hz motor, Ns = 1500 rpm. Load can be estimated as (Ns − N_measured)/(Ns − N_rated) × 100%, which is handy when power cannot be measured. Slip is also affected by voltage, so treat this as an estimate. BEE 2023 T/F: 'higher slip, higher loading' is True.",
+  "flash": false,
+  "source": "BEE 2023 P4 Q3"
+ },
+ {
+  "id": "p4-026",
+  "paper": 4,
+  "topic": "Electric motors",
+  "kind": "fact",
+  "front": "Is the power factor of an induction motor high when it runs at rated voltage and frequency with no shaft load?",
+  "back": "No. At no load the power factor is very low (often 0.1–0.3), because the current is mostly magnetising (reactive) current.",
+  "explain": "Magnetising kVAr stays almost constant while the active power at no load only covers core and friction losses. This is why under-loaded motors drag down plant power factor. BEE 2023 T/F: False.",
+  "flash": false,
+  "source": "BEE 2023 P4 Q6"
+ },
+ {
+  "id": "p4-027",
+  "paper": 4,
+  "topic": "Electric motors",
+  "kind": "fact",
+  "front": "How is the percentage loading of a motor estimated from input power?",
+  "back": "Load % = (Measured input kW × motor efficiency) / Rated output kW × 100.",
+  "explain": "Rated (nameplate) kW is shaft output, so input must be multiplied by efficiency before comparing. Motors loaded below about 50% run at lower efficiency and power factor, which makes them candidates for downsizing or star-delta / VFD operation.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-028",
+  "paper": 4,
+  "topic": "Electric motors",
+  "kind": "problem",
+  "front": "A 75 kW, 4-pole, 50 Hz motor has a nameplate speed of 1475 rpm and a full-load efficiency of 93%. In operation it runs at 1484 rpm and draws 88 A at 415 V with a PF of 0.82. Estimate the loading by the slip method and by the input-power method.",
+  "back": "Slip method ≈ 64%; input-power method ≈ 64.3% (input ≈ 51.9 kW)",
+  "explain": "The two methods agree closely here, which is a good check on the measurements. Using full-load efficiency at 64% load is a slight approximation, since efficiency changes little between 50% and 100% load.",
+  "steps": [
+   {
+    "prompt": "Synchronous speed",
+    "answer": "Ns = 120 × 50/4 = 1500 rpm",
+    "explain": "Ns = 120f/P."
+   },
+   {
+    "prompt": "Load by slip",
+    "answer": "(1500 − 1484)/(1500 − 1475) = 16/25 = 64%",
+    "explain": "Slip is roughly proportional to load."
+   },
+   {
+    "prompt": "Measured input power",
+    "answer": "√3 × 415 × 88 × 0.82 / 1000 = 51.87 kW",
+    "explain": "Three-phase power."
+   },
+   {
+    "prompt": "Load by input power",
+    "answer": "51.87 × 0.93/75 = 64.3%",
+    "explain": "Output = input × η; compare with rated output."
+   }
+  ],
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-029",
+  "paper": 4,
+  "topic": "Pumps",
+  "kind": "fact",
+  "front": "What is the formula for pump hydraulic power?",
+  "back": "P_h (kW) = Q (m³/s) × H (m) × ρ (kg/m³) × g / 1000.",
+  "explain": "H is total head: discharge head minus suction head, both measured, plus any velocity-head correction. With water, 1 kg/cm² ≈ 10 m. Pump efficiency = P_h / shaft power, and overall (pump-set) efficiency = P_h / motor input.",
+  "flash": true,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-030",
+  "paper": 4,
+  "topic": "Pumps",
+  "kind": "fact",
+  "front": "How do pump efficiency and overall pump-set efficiency differ?",
+  "back": "Pump efficiency = hydraulic power / shaft input (motor input × motor efficiency). Overall efficiency = hydraulic power / motor electrical input.",
+  "explain": "Motor output can also be found as motor input minus motor losses. Exams often give motor losses in kW instead of efficiency. Always say which efficiency you are quoting.",
+  "flash": false,
+  "source": "BEE 2024 P4 L1"
+ },
+ {
+  "id": "p4-031",
+  "paper": 4,
+  "topic": "Pumps & fans",
+  "kind": "fact",
+  "front": "State the affinity laws for centrifugal pumps and fans.",
+  "back": "Flow ∝ N, Head (pressure) ∝ N², Power ∝ N³ (speed N; similar laws hold for impeller diameter).",
+  "explain": "A 20% speed cut can lower power by about 49% (0.8³ = 0.512). This cube law is why VFDs save so much on variable-flow fans and pumps. The laws hold strictly only for a system curve with no static head.",
+  "flash": true,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-032",
+  "paper": 4,
+  "topic": "Pumps",
+  "kind": "fact",
+  "front": "Do the affinity laws apply to a pump on a VFD running at low speed against a high static head?",
+  "back": "No. With a large static head the operating point moves along the system curve, so flow and power do not follow the N, N², N³ ratios.",
+  "explain": "Affinity laws relate similar operating points on a system curve that passes through the origin (friction-only). With high static head, a small speed reduction can cut flow sharply and push the pump into a low-efficiency region. BEE 2024 T/F: True.",
+  "flash": false,
+  "source": "BEE 2024 P4 Q2"
+ },
+ {
+  "id": "p4-033",
+  "paper": 4,
+  "topic": "Pumps",
+  "kind": "fact",
+  "front": "For the same head and flow, does a pump use more power on water or on kerosene?",
+  "back": "More power on water. Hydraulic power ∝ density, and kerosene (≈800 kg/m³) is lighter than water.",
+  "explain": "P = ρ g Q H. Head in metres of liquid is the same, but the mass lifted per second is smaller for kerosene. BEE 2023 T/F: 'water consumes less' is False.",
+  "flash": false,
+  "source": "BEE 2023 P4 Q7"
+ },
+ {
+  "id": "p4-034",
+  "paper": 4,
+  "topic": "Pumps",
+  "kind": "fact",
+  "front": "How does pipe friction head depend on velocity and diameter?",
+  "back": "h_f = 4 f L v² / (2 g D) (Fanning f). For a fixed flow, h_f ∝ 1/D⁵, so a slightly larger pipe cuts friction power sharply.",
+  "explain": "Because v = Q/A ∝ 1/D², v²/D ∝ 1/D⁵. BEE compared two 500 mm lines with one 750 mm line for 1000 l/s: the larger single line had about half the friction head. Total head = static head + friction head.",
+  "flash": false,
+  "source": "BEE 2023 P4 N2"
+ },
+ {
+  "id": "p4-035",
+  "paper": 4,
+  "topic": "Pumps",
+  "kind": "problem",
+  "front": "A cooling water pump delivers 1200 m³/h. Suction gauge reads 0.5 kg/cm² and discharge gauge reads 4.5 kg/cm² (gauges at the same level). The motor draws 190 kW and its efficiency is 94%. Find the hydraulic power, pump efficiency and overall pump-set efficiency.",
+  "back": "Hydraulic power ≈ 130.8 kW; pump η ≈ 73.2%; overall η ≈ 68.8%",
+  "explain": "The pump adds the difference between discharge and suction pressure. 1 kg/cm² ≈ 10 m of water. Shaft power is motor output, not motor input.",
+  "steps": [
+   {
+    "prompt": "Total head",
+    "answer": "(4.5 − 0.5) × 10 = 40 m",
+    "explain": "1 kg/cm² ≈ 10 m water column."
+   },
+   {
+    "prompt": "Hydraulic power",
+    "answer": "(1200/3600) × 1000 × 9.81 × 40/1000 = 130.8 kW",
+    "explain": "P = Q ρ g H."
+   },
+   {
+    "prompt": "Shaft power",
+    "answer": "190 × 0.94 = 178.6 kW",
+    "explain": "Motor output = input × motor efficiency."
+   },
+   {
+    "prompt": "Pump and overall efficiency",
+    "answer": "Pump η = 130.8/178.6 = 73.2%; overall = 130.8/190 = 68.8%",
+    "explain": "Overall uses electrical input."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2024 P4 L1"
+ },
+ {
+  "id": "p4-036",
+  "paper": 4,
+  "topic": "Pumps",
+  "kind": "problem",
+  "front": "0.4 m³/s of water is to be pumped through a 2.5 km pipeline against a static head of 20 m. Compare a 450 mm pipe with a 600 mm pipe (Fanning friction factor 0.005, h_f = 4fLv²/2gD). Pump efficiency 80%, motor 94%, 8000 h/yr, ₹8/kWh. Find the annual energy saving from the larger pipe.",
+  "back": "450 mm: ≈ 291 kW; 600 mm: ≈ 149 kW; saving ≈ 11.4 lakh kWh/yr ≈ ₹91 lakh/yr",
+  "explain": "Friction head falls from about 35.8 m to 8.5 m because it varies with 1/D⁵. Static head is the same in both cases. The extra capital cost of the larger pipe is usually repaid quickly when flow is large and runs continuously.",
+  "steps": [
+   {
+    "prompt": "Velocities",
+    "answer": "A₄₅₀ = 0.159 m² → v = 2.52 m/s; A₆₀₀ = 0.283 m² → v = 1.41 m/s",
+    "explain": "v = Q/A, A = πD²/4."
+   },
+   {
+    "prompt": "Friction heads",
+    "answer": "450 mm: 4×0.005×2500×2.515²/(2×9.81×0.45) = 35.8 m; 600 mm: 8.5 m",
+    "explain": "Fanning-form Darcy equation."
+   },
+   {
+    "prompt": "Total heads",
+    "answer": "450 mm: 55.8 m; 600 mm: 28.5 m",
+    "explain": "Static 20 m + friction."
+   },
+   {
+    "prompt": "Motor input power",
+    "answer": "450 mm: 0.4×55.8×9.81/(0.8×0.94) = 291.3 kW; 600 mm: 148.7 kW",
+    "explain": "Hydraulic power / (η_pump × η_motor)."
+   },
+   {
+    "prompt": "Annual saving",
+    "answer": "(291.3 − 148.7) × 8000 = 11.41 lakh kWh → ₹91.2 lakh",
+    "explain": "kW × hours × tariff."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2023 P4 N2"
+ },
+ {
+  "id": "p4-037",
+  "paper": 4,
+  "topic": "Fans & blowers",
+  "kind": "fact",
+  "front": "What is the formula for fan air power when pressure is in mmWC?",
+  "back": "Air power (kW) = Q (m³/s) × ΔP (mmWC) / 102. (With Pa: Q × ΔP / 1000.)",
+  "explain": "1 mmWC = 9.81 Pa, so dividing by 102 converts mmWC × m³/s to kW. Use the static pressure rise for static efficiency, or the total pressure rise for total (mechanical) efficiency. Fan efficiency = air power / shaft power (motor input × motor efficiency).",
+  "flash": true,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-038",
+  "paper": 4,
+  "topic": "Fans & blowers",
+  "kind": "fact",
+  "front": "How is gas velocity in a duct found from a Pitot-tube reading?",
+  "back": "v (m/s) = Cp × √(2 × 9.81 × Δp × γ) / γ, with Δp = velocity pressure in mmWC, γ = gas density = 1.293 × 273/(273 + t) kg/m³, Cp = Pitot constant.",
+  "explain": "The density correction matters for hot gases: air at 60 °C is about 1.06 kg/m³ instead of 1.293. Velocity is not uniform across a duct, so readings are taken at several traverse points and averaged (BEE 2024 T/F: 'velocity is uniform' is False). Flow = average velocity × duct area.",
+  "flash": false,
+  "source": "BEE 2024 P4 Q1"
+ },
+ {
+  "id": "p4-039",
+  "paper": 4,
+  "topic": "Fans & blowers",
+  "kind": "fact",
+  "front": "Is a roof exhaust fan on an industrial shed an axial or a centrifugal fan?",
+  "back": "Axial flow. It moves large volumes at very low pressure, with air moving parallel to the shaft.",
+  "explain": "Axial fans (propeller, tube-axial, vane-axial) suit high-flow, low-pressure duties such as roof exhausters, cooling towers and ventilation. Centrifugal fans (forward-curved, backward-curved, radial) suit higher pressures, such as ID/FD fans. BEE 2023 T/F: True.",
+  "flash": false,
+  "source": "BEE 2023 P4 Q4"
+ },
+ {
+  "id": "p4-040",
+  "paper": 4,
+  "topic": "Fans & blowers",
+  "kind": "problem",
+  "front": "An ID fan handles flue gas at 60 °C in a 1.4 m diameter duct. A Pitot traverse (S-type Pitot, Cp = 0.85) gives an average velocity pressure of 18 mmWC. Static pressures are −150 mmWC at the fan suction and +30 mmWC at the discharge. The motor draws 85 kW at 93% efficiency. Find gas flow and fan static efficiency (take gas density at 0 °C as 1.293 kg/m³).",
+  "back": "Flow ≈ 23.9 m³/s; static air power ≈ 42.1 kW; fan static efficiency ≈ 53%",
+  "explain": "Static pressure rise = discharge − suction = 30 − (−150) = 180 mmWC. A static efficiency in the low 50s points to a poorly matched or worn fan, or one heavily throttled by its damper. A VFD or impeller trim should be studied.",
+  "steps": [
+   {
+    "prompt": "Gas density at 60 °C",
+    "answer": "γ = 1.293 × 273/333 = 1.060 kg/m³",
+    "explain": "Density correction for temperature."
+   },
+   {
+    "prompt": "Velocity",
+    "answer": "v = 0.85 × √(2×9.81×18×1.06)/1.06 = 15.5 m/s",
+    "explain": "Pitot formula."
+   },
+   {
+    "prompt": "Volume flow",
+    "answer": "A = π×1.4²/4 = 1.539 m² → Q = 15.51 × 1.539 = 23.9 m³/s",
+    "explain": "Q = v × A."
+   },
+   {
+    "prompt": "Static air power",
+    "answer": "23.9 × 180/102 = 42.1 kW",
+    "explain": "ΔP_static = 30 − (−150) = 180 mmWC."
+   },
+   {
+    "prompt": "Fan static efficiency",
+    "answer": "Shaft = 85 × 0.93 = 79.05 kW; η = 42.1/79.05 = 53.3%",
+    "explain": "Air power / shaft power."
+   }
+  ],
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-041",
+  "paper": 4,
+  "topic": "Compressed air",
+  "kind": "fact",
+  "front": "What is the pump-up (receiver filling) formula for compressor free air delivery (FAD)?",
+  "back": "Q (Nm³/min) = [(P2 − P1)/P0] × (V/T) × [(273 + t1)/(273 + t2)], where V = receiver + pipe volume, T = fill time in minutes, P in absolute units.",
+  "explain": "P0 is atmospheric pressure. The temperature ratio corrects for the air in the receiver being hotter than intake air. Comparing the result with rated FAD shows wear (valves, rings, or the screw element). 1 m³/min = 35.31 cfm.",
+  "flash": true,
+  "source": "BEE 2023 P4 N1"
+ },
+ {
+  "id": "p4-042",
+  "paper": 4,
+  "topic": "Compressed air",
+  "kind": "fact",
+  "front": "What are the formulas for compressor isothermal power and isothermal efficiency?",
+  "back": "Isothermal power (kW) = P1 × Q1 × ln(r) / 36.7 (P1 in kg/cm² abs, Q1 FAD in m³/h, r = P2/P1). Isothermal efficiency = isothermal power / actual measured input power.",
+  "explain": "Isothermal compression is the ideal minimum-work case, so isothermal efficiency is a fair measure of how close a compressor is to ideal. Values around 55–70% are common. Some exam solutions divide by shaft power instead of input power. Use whichever the question states and say which you used.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-043",
+  "paper": 4,
+  "topic": "Compressed air",
+  "kind": "fact",
+  "front": "How is the volumetric efficiency of a reciprocating compressor calculated?",
+  "back": "η_v = FAD / Swept volume; Swept volume (m³/min) = (π/4) D² × L × S × χ × n, with D bore, L stroke, S rpm, χ = 1 (single acting) or 2 (double acting), n = number of cylinders.",
+  "explain": "Volumetric efficiency is below 100% because of clearance-volume re-expansion, heated intake air, and valve and ring leakage. A falling η_v over time means valve or ring wear.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-044",
+  "paper": 4,
+  "topic": "Compressed air",
+  "kind": "fact",
+  "front": "How is compressed-air leakage quantified by the on-load/off-load test?",
+  "back": "Leakage (m³/min) = [T / (T + t)] × Q, where T = on-load time, t = off-load time, Q = compressor FAD, with all air consumers shut.",
+  "explain": "With no consumption, the compressor loads only to replace leaked air, so its duty cycle equals the leak fraction. Take several load/unload cycles and average them. Leakage of 5–10% or more of capacity is a common, cheap saving.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-045",
+  "paper": 4,
+  "topic": "Compressed air",
+  "kind": "fact",
+  "front": "If a screw compressor designed for 7 bar is run at 5 bar, does its FAD go up or down, and what happens to power?",
+  "back": "FAD increases slightly and specific power (kW per m³/min) falls, because less internal leakage and compression work are needed at lower pressure.",
+  "explain": "Generating air at the lowest pressure the end use needs is a basic saving measure. BEE material puts the saving at roughly 6–10% of power for each 1 bar of pressure reduction. BEE 2023 T/F: 'FAD will decrease' is False.",
+  "flash": false,
+  "source": "BEE 2023 P4 Q5"
+ },
+ {
+  "id": "p4-046",
+  "paper": 4,
+  "topic": "Compressed air",
+  "kind": "fact",
+  "front": "How does intake air temperature affect compressor power?",
+  "back": "Every 4 °C rise in intake air temperature raises power consumption by about 1% for the same output. Draw cool air from outside the compressor house.",
+  "explain": "Warmer air is less dense, so each stroke or rotation delivers less mass. Ducting intake air from a shaded outdoor location is a low-cost measure.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-047",
+  "paper": 4,
+  "topic": "Compressed air",
+  "kind": "problem",
+  "front": "A 2-cylinder, single-acting reciprocating compressor (bore 250 mm, stroke 200 mm, 750 rpm) is tested by pump-up. Receiver 8 m³ + piping 0.4 m³ is filled from 1.0 to 8.0 kg/cm² (abs) in 4.5 min. Atmospheric pressure is 1.0 kg/cm² (abs). Intake air is at 30 °C and receiver air at 42 °C. Loaded input power is 75 kW. Find FAD, isothermal power, isothermal efficiency and volumetric efficiency.",
+  "back": "FAD ≈ 12.57 m³/min (≈ 444 cfm); isothermal power ≈ 42.7 kW; isothermal η ≈ 57%; volumetric η ≈ 85%",
+  "explain": "The temperature correction (303/315) lowers FAD by about 4%. Isothermal efficiency is taken here on measured electrical input, as in the BEE guidebook. On shaft power it would be higher.",
+  "steps": [
+   {
+    "prompt": "Free air delivery",
+    "answer": "(8 − 1)/1 × 8.4/4.5 × 303/315 = 12.57 m³/min",
+    "explain": "Pump-up formula with temperature correction."
+   },
+   {
+    "prompt": "Isothermal power",
+    "answer": "1 × (12.57×60) × ln(8)/36.7 = 42.7 kW",
+    "explain": "P1 Q1 ln r / 36.7, Q1 in m³/h."
+   },
+   {
+    "prompt": "Isothermal efficiency",
+    "answer": "42.7/75 = 57.0%",
+    "explain": "Isothermal power / actual input."
+   },
+   {
+    "prompt": "Swept volume",
+    "answer": "(π/4)×0.25²×0.2×1×2×750 = 14.73 m³/min",
+    "explain": "2 single-acting cylinders."
+   },
+   {
+    "prompt": "Volumetric efficiency",
+    "answer": "12.57/14.73 = 85.4%",
+    "explain": "FAD / swept volume."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2023 P4 N1"
+ },
+ {
+  "id": "p4-048",
+  "paper": 4,
+  "topic": "Refrigeration & AC",
+  "kind": "fact",
+  "front": "What is 1 TR (ton of refrigeration) in kcal/h, kW and Btu/h?",
+  "back": "1 TR = 3024 kcal/h = 3.516 kW = 12,000 Btu/h.",
+  "explain": "TR = m × Cp × ΔT (kcal/h) / 3024. With chilled water: TR = flow (m³/h) × 1000 × ΔT / 3024. In kW: kW_r = Q (kg/s) × 4.18 × ΔT, and TR = kW_r / 3.516.",
+  "flash": true,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-049",
+  "paper": 4,
+  "topic": "Refrigeration & AC",
+  "kind": "fact",
+  "front": "How are kW/TR and COP related?",
+  "back": "COP = refrigeration effect / power input = 3.516 / (kW/TR). Example: 0.7 kW/TR ≈ COP 5.0.",
+  "explain": "Lower kW/TR (higher COP) is better. Compressor-only kW/TR is often 0.6–0.8 for water-cooled centrifugal or screw chillers. Adding chilled-water pump, condenser pump and cooling-tower fan power gives the overall system kW/TR.",
+  "flash": true,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-050",
+  "paper": 4,
+  "topic": "Refrigeration & AC",
+  "kind": "fact",
+  "front": "Is kW/TR of an AC plant with an air-cooled condenser lower than one with a water-cooled condenser?",
+  "back": "No. An air-cooled condenser has a higher kW/TR, because it condenses near ambient dry-bulb temperature, which is much higher than the wet-bulb temperature a cooling tower can approach.",
+  "explain": "Higher condensing temperature means higher lift, which means more compressor work. BEE 2023 T/F: False.",
+  "flash": false,
+  "source": "BEE 2023 P4 Q9"
+ },
+ {
+  "id": "p4-051",
+  "paper": 4,
+  "topic": "Refrigeration & AC",
+  "kind": "fact",
+  "front": "How are the main components of a building cooling load calculated (CLTD/CLF method)?",
+  "back": "Conduction = U × A × CLTD; solar through glass = A × SC × SCL; people sensible = n × SHG × CLF (latent without CLF); lighting = W × ballast factor × CLF; infiltration sensible = 1210 × Q × ΔT, latent = 3010 × Q × Δw (Q in m³/s, Δw in g/kg).",
+  "explain": "Total load = sum of sensible and latent parts, in W; divide by 3516 for TR. A higher solar cooling load (SCL) factor means a higher AC load (BEE 2024 T/F: 'lower load' is False). Roof insulation lowers U, which cuts the roof conduction term directly.",
+  "flash": false,
+  "source": "BEE 2023 P4 N4A"
+ },
+ {
+  "id": "p4-052",
+  "paper": 4,
+  "topic": "Refrigeration & AC",
+  "kind": "problem",
+  "front": "A water-cooled screw chiller cools 150 m³/h of chilled water from 12 °C to 7 °C. Compressor input is 175 kW. Auxiliaries: chilled water pump 15 kW, condenser water pump 22 kW, cooling tower fan 8 kW. Find TR, chiller kW/TR, COP and system kW/TR.",
+  "back": "≈ 248 TR; chiller 0.706 kW/TR; COP ≈ 4.98; system ≈ 0.887 kW/TR",
+  "explain": "Auxiliaries add about 25% to the chiller's own specific power here. That is why pump and fan optimisation (VFDs, right-sizing, lower head) is part of every chiller audit. BEE 2025 asked for both 'chiller SEC' and 'overall SEC' in kWh/TR.",
+  "steps": [
+   {
+    "prompt": "Refrigeration load",
+    "answer": "150 × 1000 × 5/3024 = 248.0 TR",
+    "explain": "TR = m Cp ΔT / 3024 (kcal basis)."
+   },
+   {
+    "prompt": "Chiller kW/TR",
+    "answer": "175/248.0 = 0.706 kW/TR",
+    "explain": "Compressor power / TR."
+   },
+   {
+    "prompt": "COP",
+    "answer": "3.516/0.706 = 4.98",
+    "explain": "COP = 3.516 / (kW/TR)."
+   },
+   {
+    "prompt": "System kW/TR",
+    "answer": "(175 + 15 + 22 + 8)/248.0 = 220/248 = 0.887 kW/TR",
+    "explain": "Add pumps and tower fan."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2025 P4 N1"
+ },
+ {
+  "id": "p4-053",
+  "paper": 4,
+  "topic": "Refrigeration & AC",
+  "kind": "problem",
+  "front": "A steam-fired vapour absorption chiller cools 0.12 m³/s of chilled water from 12 °C to 7 °C (Cp 4.18 kJ/kg K). It uses 1.5 kg/s of steam (enthalpy 2760 kJ/kg) and condensate leaves at 100 °C. Find the refrigeration effect in TR, the heat input and the COP.",
+  "back": "≈ 2508 kW = 713 TR; heat input ≈ 3513 kW; COP ≈ 0.71",
+  "explain": "Condensate enthalpy ≈ 4.18 × 100 = 418 kJ/kg. A COP near 0.7 is typical of a single-effect VAM. Double-effect machines reach about 1.2–1.4. VAMs make sense where waste heat or cheap low-pressure steam is available.",
+  "steps": [
+   {
+    "prompt": "Refrigeration effect",
+    "answer": "0.12 × 1000 × 4.18 × 5 = 2508 kW",
+    "explain": "m Cp ΔT."
+   },
+   {
+    "prompt": "Convert to TR",
+    "answer": "2508/3.516 = 713 TR",
+    "explain": "1 TR = 3.516 kW."
+   },
+   {
+    "prompt": "Heat input",
+    "answer": "1.5 × (2760 − 418) = 3513 kW",
+    "explain": "Steam enthalpy − condensate enthalpy."
+   },
+   {
+    "prompt": "COP",
+    "answer": "2508/3513 = 0.71",
+    "explain": "Refrigeration effect / heat input."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2023 P4 L1"
+ },
+ {
+  "id": "p4-054",
+  "paper": 4,
+  "topic": "Cooling towers",
+  "kind": "fact",
+  "front": "Define range, approach and effectiveness of a cooling tower.",
+  "back": "Range = hot water in − cold water out; Approach = cold water out − ambient WBT; Effectiveness = Range / (Range + Approach) × 100.",
+  "explain": "Range + Approach = hot water temperature − WBT, which is the maximum possible cooling. Approach is the better indicator of tower performance, because range is set by the process heat load. Cold water can never be cooled below WBT.",
+  "flash": true,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-055",
+  "paper": 4,
+  "topic": "Cooling towers",
+  "kind": "fact",
+  "front": "What is the formula for evaporation loss in a cooling tower?",
+  "back": "Evaporation loss (m³/h) = 0.00085 × 1.8 × circulation rate (m³/h) × Range (°C).",
+  "explain": "Roughly 1% of circulating water evaporates for every 7 °C of range. Make-up = evaporation + blowdown + drift. Heat rejected (kcal/h) = flow (kg/h) × range.",
+  "flash": true,
+  "source": "BEE 2024 P4 N3"
+ },
+ {
+  "id": "p4-056",
+  "paper": 4,
+  "topic": "Cooling towers",
+  "kind": "fact",
+  "front": "How are cycles of concentration (COC) and blowdown related in a cooling tower?",
+  "back": "COC = TDS (or chlorides) of circulating water / TDS of make-up water. Blowdown = Evaporation loss / (COC − 1).",
+  "explain": "Raising COC (with better water treatment) cuts blowdown and so make-up water. Going from COC 2 to 4 cuts blowdown from 1.0E to 0.33E. Drift loss is small in towers with good drift eliminators.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-057",
+  "paper": 4,
+  "topic": "Cooling towers",
+  "kind": "problem",
+  "front": "A cooling tower circulates 3000 m³/h. Hot water enters at 40 °C and leaves at 32 °C; ambient WBT is 27 °C. TDS is 2000 ppm in circulating water and 500 ppm in make-up. Find range, approach, effectiveness, heat rejected, evaporation loss, blowdown and make-up (ignore drift).",
+  "back": "Range 8 °C; approach 5 °C; ε ≈ 61.5%; heat rejected 240 lakh kcal/h (≈ 7937 TR); evaporation ≈ 36.7 m³/h; blowdown ≈ 12.2 m³/h; make-up ≈ 49 m³/h",
+  "explain": "BEE 2024 built a sump-level/time problem on these flows, so get the mass balance right: make-up in = evaporation + blowdown out. If effectiveness and approach are given, back-solve range = ε × approach / (1 − ε).",
+  "steps": [
+   {
+    "prompt": "Range and approach",
+    "answer": "Range = 40 − 32 = 8 °C; Approach = 32 − 27 = 5 °C",
+    "explain": "Definitions."
+   },
+   {
+    "prompt": "Effectiveness",
+    "answer": "8/(8 + 5) = 61.5%",
+    "explain": "Range / (range + approach)."
+   },
+   {
+    "prompt": "Heat rejected",
+    "answer": "3000 × 1000 × 8 = 24 × 10⁶ kcal/h ÷ 3024 = 7937 TR",
+    "explain": "m × ΔT, water Cp ≈ 1."
+   },
+   {
+    "prompt": "Evaporation loss",
+    "answer": "0.00085 × 1.8 × 3000 × 8 = 36.7 m³/h",
+    "explain": "BEE evaporation formula."
+   },
+   {
+    "prompt": "Blowdown and make-up",
+    "answer": "COC = 2000/500 = 4 → BD = 36.72/3 = 12.24 m³/h; make-up = 48.96 m³/h",
+    "explain": "BD = E/(COC − 1); make-up = E + BD."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2024 P4 N3"
+ },
+ {
+  "id": "p4-058",
+  "paper": 4,
+  "topic": "Lighting",
+  "kind": "fact",
+  "front": "How are Installed Load Efficacy (ILE) and the Installed Load Efficacy Ratio (ILER) assessed?",
+  "back": "ILE (lux/W/m²) = average maintained lux / (total input W / floor area). ILER = actual ILE / target ILE. ILER ≥ 0.75: satisfactory to good; 0.51–0.74: review suggested; ≤ 0.5: urgent action required.",
+  "explain": "Target ILE depends on room index and application. Input watts must include ballast or driver losses. Room index = (L × W) / [Hm × (L + W)], where Hm is the luminaire mounting height above the work plane.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-059",
+  "paper": 4,
+  "topic": "DG sets",
+  "kind": "fact",
+  "front": "What are the key performance indicators of a diesel generator set?",
+  "back": "Specific energy generation (kWh/litre) = kWh generated / litres of fuel; thermal efficiency = kWh × 860 / (fuel kg × GCV). Loading % = kW / (kVA × PF rating).",
+  "explain": "kWh/litre is the everyday KPI and it falls sharply at low loading. DG sets run most efficiently at about 60–80% load. Exhaust gas (often 400–500 °C) and jacket water are waste-heat recovery opportunities.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-060",
+  "paper": 4,
+  "topic": "DG sets",
+  "kind": "problem",
+  "front": "A 500 kVA (0.8 PF) DG set generates 1500 kWh in 5 hours using 420 litres of HSD (density 0.83 kg/l, GCV 10,800 kcal/kg). Find average loading, specific energy generation, thermal efficiency, and generation cost at ₹90/litre.",
+  "back": "Load ≈ 75%; ≈ 3.57 kWh/litre; thermal efficiency ≈ 34.3%; ≈ ₹25.2/kWh",
+  "explain": "Average kW = 1500/5 = 300 kW against 400 kW rated (500 kVA × 0.8). Fuel cost per kWh is often 2–3 times the grid tariff, so DG output should be kept to essential or backup loads.",
+  "steps": [
+   {
+    "prompt": "Average loading",
+    "answer": "300 kW / (500 × 0.8) = 75%",
+    "explain": "kW / rated kW."
+   },
+   {
+    "prompt": "Specific energy generation",
+    "answer": "1500/420 = 3.57 kWh/litre",
+    "explain": "kWh ÷ litres."
+   },
+   {
+    "prompt": "Fuel heat input",
+    "answer": "420 × 0.83 × 10,800 = 37.65 lakh kcal",
+    "explain": "litres × density × GCV."
+   },
+   {
+    "prompt": "Thermal efficiency",
+    "answer": "1500 × 860/37.65 lakh = 34.3%",
+    "explain": "Output heat-equivalent / input."
+   },
+   {
+    "prompt": "Cost of generation",
+    "answer": "90/3.57 = ₹25.2/kWh",
+    "explain": "Fuel price ÷ kWh per litre."
+   }
+  ],
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-061",
+  "paper": 4,
+  "topic": "Power plant / turbines",
+  "kind": "fact",
+  "front": "How are heat rate and efficiency related, and how do gross and net heat rate differ?",
+  "back": "Efficiency % = 860 / Heat rate (kcal/kWh) × 100. Unit gross HR = turbine HR / boiler efficiency; Net HR = Gross HR / (1 − aux power fraction).",
+  "explain": "Example: turbine HR 2045 and boiler efficiency 87.5% give gross HR 2338. With 7% auxiliary consumption, net HR is 2514 kcal/kWh, which is 34.2% efficiency. Under PAT, net heat-rate reduction × generation gives the toe saved.",
+  "flash": true,
+  "source": "BEE 2023 P4 N4B"
+ },
+ {
+  "id": "p4-062",
+  "paper": 4,
+  "topic": "Power plant / turbines",
+  "kind": "fact",
+  "front": "What is the formula for turbine cycle heat rate in a reheat unit?",
+  "back": "THR = [M_ms (h_ms − h_fw) + M_rh (h_hrh − h_crh)] / Gross generation (kWh), in kcal/kWh.",
+  "explain": "M in kg/h and generation in kW. The first term is heat added in the boiler to main steam, and the second is heat added in the reheater. Boiler efficiency is not part of THR (BEE 2023 T/F: 'boiler efficiency affects turbine HR' is False). It only enters when converting to unit heat rate.",
+  "flash": false,
+  "source": "BEE 2023 P4 Q2"
+ },
+ {
+  "id": "p4-063",
+  "paper": 4,
+  "topic": "Power plant / turbines",
+  "kind": "fact",
+  "front": "Define TTD and DCA of a feed-water heater. Is lower or higher better?",
+  "back": "TTD = saturation temperature of extraction steam − feed-water outlet temperature. DCA = drain outlet temperature − feed-water inlet temperature. Lower TTD and DCA mean better heater performance and a better cycle heat rate.",
+  "explain": "A higher TTD means the feed water leaves cooler, so the boiler must add more heat. A higher DCA means drains carry heat to the next heater down. BEE gives rules such as 0.014% HR per 0.56 °C TTD deviation and 0.005% per 0.56 °C DCA deviation (BEE 2023 T/F False; BEE 2025 T/F True).",
+  "flash": false,
+  "source": "BEE 2025 P4 Q6"
+ },
+ {
+  "id": "p4-064",
+  "paper": 4,
+  "topic": "Power plant / turbines",
+  "kind": "fact",
+  "front": "How do condenser vacuum and cooling water temperature affect heat rate?",
+  "back": "A better vacuum (lower back pressure) and colder cooling water both improve (lower) the heat rate. Vacuum (mmHg) = barometric pressure (≈760 mmHg) − absolute back pressure (mmHg).",
+  "explain": "Lower exhaust pressure increases the enthalpy drop across the LP turbine, so more kWh come from the same steam. Fouled condenser tubes, air ingress and poor cooling-tower approach all raise back pressure (BEE 2024: 'increasing vacuum increases HR' is False; BEE 2025: 'colder CW improves HR' is True).",
+  "flash": false,
+  "source": "BEE 2024 P4 Q5"
+ },
+ {
+  "id": "p4-065",
+  "paper": 4,
+  "topic": "Cogeneration",
+  "kind": "fact",
+  "front": "For a 20 MW cogeneration plant, does a back-pressure turbine have a lower steam rate (kg/kWh) than an extraction-condensing turbine?",
+  "back": "No. A back-pressure turbine has a higher steam rate, because steam leaves at process pressure with a smaller enthalpy drop per kg.",
+  "explain": "Steam rate = steam flow / power = 860/(Δh × η). Extraction-condensing machines expand part of the steam down to vacuum and get more kWh per kg. Back-pressure systems still have the highest overall fuel utilisation when all exhaust heat is used in process. BEE 2024 T/F: False.",
+  "flash": false,
+  "source": "BEE 2024 P4 Q8"
+ },
+ {
+  "id": "p4-066",
+  "paper": 4,
+  "topic": "Cogeneration",
+  "kind": "fact",
+  "front": "Define Energy Utilisation Factor (EUF) and heat-to-power ratio for a cogeneration plant.",
+  "back": "EUF = (electrical output + useful thermal output) / fuel energy input. Heat-to-power ratio = useful thermal output (kWth) / electrical output (kWe).",
+  "explain": "Express all terms in the same unit (kW or kcal/h; 1 kW = 860 kcal/h). Back-pressure steam turbine plants have high heat-to-power ratios (often 4–10). Gas turbine plus HRSG plants have much lower ratios. Matching the plant's ratio to the site's demand is the key cogeneration selection criterion.",
+  "flash": false,
+  "source": "BEE 2024 P4 N2"
+ },
+ {
+  "id": "p4-067",
+  "paper": 4,
+  "topic": "Power plant / turbines",
+  "kind": "problem",
+  "front": "A reheat unit has main-steam flow 1450 TPH (h = 805 kcal/kg), feed water enthalpy 245 kcal/kg, and reheat flow 1310 TPH (CRH 731, HRH 845 kcal/kg). Gross output is 470 MW, boiler efficiency 87.5%, auxiliary consumption 7%. Find turbine heat rate, unit gross heat rate, net heat rate and net efficiency, and the coal burnt per hour (GCV 4000 kcal/kg).",
+  "back": "THR ≈ 2045 kcal/kWh; gross HR ≈ 2338; net HR ≈ 2514 kcal/kWh; net η ≈ 34.2%; coal ≈ 275 t/h",
+  "explain": "Keep units consistent: flows in kg/h and power in kW give kcal/kWh directly. Coal burnt = gross HR × gross kWh / GCV, because gross HR already includes boiler losses.",
+  "steps": [
+   {
+    "prompt": "Heat added to main steam",
+    "answer": "1,450,000 × (805 − 245) = 8120 × 10⁵ kcal/h",
+    "explain": "M_ms (h_ms − h_fw)."
+   },
+   {
+    "prompt": "Heat added in reheater",
+    "answer": "1,310,000 × (845 − 731) = 1493 × 10⁵ kcal/h",
+    "explain": "M_rh (h_hrh − h_crh)."
+   },
+   {
+    "prompt": "Turbine heat rate",
+    "answer": "(8120 + 1493.4) × 10⁵ / 470,000 = 2045 kcal/kWh",
+    "explain": "Total heat / kWh."
+   },
+   {
+    "prompt": "Gross and net heat rate",
+    "answer": "Gross = 2045/0.875 = 2338; Net = 2338/0.93 = 2514 kcal/kWh",
+    "explain": "Divide by boiler efficiency, then by (1 − aux)."
+   },
+   {
+    "prompt": "Net efficiency and coal",
+    "answer": "η = 860/2514 = 34.2%; coal = 2338 × 470,000/4000 = 274.7 t/h",
+    "explain": "Efficiency = 860/HR."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2023 P4 N4B"
+ },
+ {
+  "id": "p4-068",
+  "paper": 4,
+  "topic": "Cogeneration",
+  "kind": "problem",
+  "front": "A back-pressure cogeneration plant takes 60 TPH of steam to the turbine at 820 kcal/kg. Steam exhausts at 680 kcal/kg (actual) to process, and condensate returns at 100 °C. Gearbox × alternator efficiency is 95%. The boiler makes this steam at 825 kcal/kg from 105 °C feed water at 70% efficiency, firing bagasse (GCV 2270 kcal/kg). Find power, steam rate, heat-to-power ratio, bagasse consumption and EUF.",
+  "back": "Power ≈ 9279 kW; steam rate ≈ 6.47 kg/kWh; H/P ≈ 4.36; bagasse ≈ 27.2 TPH; EUF ≈ 69%",
+  "explain": "This mirrors the BEE 2024 sugar cogeneration question. Raising inlet steam pressure and temperature increases Δh, which gives more power from the same process steam. That is why high-pressure boiler upgrades raise power export.",
+  "steps": [
+   {
+    "prompt": "Power output",
+    "answer": "60,000 × (820 − 680)/860 × 0.95 = 9279 kW",
+    "explain": "m Δh / 860 × η(gearbox × alternator)."
+   },
+   {
+    "prompt": "Steam rate",
+    "answer": "60,000/9279 = 6.47 kg/kWh",
+    "explain": "Steam flow / power."
+   },
+   {
+    "prompt": "Useful process heat",
+    "answer": "60,000 × (680 − 100)/860 = 40,465 kWth",
+    "explain": "Heat given up to process."
+   },
+   {
+    "prompt": "Heat-to-power ratio",
+    "answer": "40,465/9279 = 4.36",
+    "explain": "kWth / kWe."
+   },
+   {
+    "prompt": "Bagasse use and EUF",
+    "answer": "Bagasse = 60,000×(825 − 105)/(0.70×2270) = 27,187 kg/h → input 71,761 kW; EUF = (9279 + 40,465)/71,761 = 69.3%",
+    "explain": "Fuel = steam heat / (η × GCV); EUF = useful out / fuel in."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2024 P4 N2"
+ },
+ {
+  "id": "p4-069",
+  "paper": 4,
+  "topic": "Cogeneration",
+  "kind": "problem",
+  "front": "A gas turbine burns 1200 Sm³/h of natural gas (LHV 8500 kcal/Sm³) and generates 3.0 kWh/Sm³. Exhaust of 14 kg/s enters the HRSG at 515 °C and leaves at 150 °C (Cp 0.26 kcal/kg°C, HRSG efficiency 80%). Steam enthalpy is 663 kcal/kg and feed water is at 105 °C. Find power, steam generation and EUF, and the extra steam if HRSG exit is lowered to 110 °C.",
+  "back": "Power 3600 kW; steam ≈ 6.86 TPH; EUF ≈ 67.9%; at 110 °C exit steam ≈ 7.61 TPH (+0.75 TPH), EUF ≈ 72%",
+  "explain": "Heat picked up in the HRSG = m × Cp × (T_in − T_out) × η_HRSG. Lowering the exit temperature is limited by the acid dew point for sulphur-bearing fuels, but natural gas allows quite low stack temperatures.",
+  "steps": [
+   {
+    "prompt": "Power output",
+    "answer": "1200 × 3.0 = 3600 kW",
+    "explain": "Fuel rate × specific generation."
+   },
+   {
+    "prompt": "Heat recovered in HRSG",
+    "answer": "14 × 3600 × 0.26 × (515 − 150) × 0.8 = 38.26 lakh kcal/h",
+    "explain": "m Cp ΔT × η_HRSG."
+   },
+   {
+    "prompt": "Steam generated",
+    "answer": "38.26 lakh/(663 − 105) = 6857 kg/h",
+    "explain": "Heat / (h_s − h_fw)."
+   },
+   {
+    "prompt": "EUF",
+    "answer": "Fuel = 1200×8500/860 = 11,860 kW; steam heat = 4449 kW; EUF = (3600 + 4449)/11,860 = 67.9%",
+    "explain": "All in kW."
+   },
+   {
+    "prompt": "Lower exit temperature (110 °C)",
+    "answer": "Heat = 42.46 lakh kcal/h → 7609 kg/h (+752 kg/h); EUF = (3600 + 4937)/11,860 = 72.0%",
+    "explain": "Repeat with ΔT = 405 °C."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2025 P4 N3(i)"
+ },
+ {
+  "id": "p4-070",
+  "paper": 4,
+  "topic": "Renewable energy",
+  "kind": "fact",
+  "front": "What is the formula for wind turbine power, and what is the Betz limit?",
+  "back": "P = ½ × ρ × A × V³ × Cp (× drive-train efficiency). Betz limit: Cp,max = 16/27 ≈ 59.3%.",
+  "explain": "Power varies with the cube of wind speed, so a 10% higher wind speed gives about 33% more power, and with the square of rotor diameter. Air density ≈ 1.225 kg/m³ at sea level. Practical rotors reach Cp of about 0.40–0.48.",
+  "flash": true,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-071",
+  "paper": 4,
+  "topic": "Renewable energy",
+  "kind": "fact",
+  "front": "How is the annual energy yield of a solar PV plant estimated?",
+  "back": "Energy (kWh/yr) = kWp × peak sun hours (kWh/m²/day) × performance ratio × 365. CUF = annual kWh / (kWp × 8760).",
+  "explain": "Peak sun hours equal daily insolation in kWh/m², because 1 kW/m² is standard test irradiance. The performance ratio (often 0.75–0.80) covers temperature, inverter, cable, soiling and mismatch losses. Indian fixed-tilt plants typically show a CUF of about 16–20%.",
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-072",
+  "paper": 4,
+  "topic": "Renewable energy",
+  "kind": "problem",
+  "front": "A 500 kWp rooftop solar PV plant gets an average of 5.2 kWh/m²/day of irradiation, with a performance ratio of 0.78. Find daily and annual generation and CUF. If grid power costs ₹8/kWh and the plant costs ₹3.5 crore, find the simple payback.",
+  "back": "≈ 2028 kWh/day; ≈ 7.40 lakh kWh/yr; CUF ≈ 16.9%; savings ≈ ₹59.2 lakh/yr; payback ≈ 5.9 years",
+  "explain": "This is a simplified estimate: real yield also depends on tilt, orientation, shading and degradation (about 0.5–0.7% per year). CUF is a quick check: a value much above 20% for fixed-tilt PV in India should be questioned.",
+  "steps": [
+   {
+    "prompt": "Daily generation",
+    "answer": "500 × 5.2 × 0.78 = 2028 kWh/day",
+    "explain": "kWp × PSH × PR."
+   },
+   {
+    "prompt": "Annual generation",
+    "answer": "2028 × 365 = 7,40,220 kWh",
+    "explain": "× 365 days."
+   },
+   {
+    "prompt": "CUF",
+    "answer": "7,40,220/(500 × 8760) = 16.9%",
+    "explain": "Actual / maximum possible."
+   },
+   {
+    "prompt": "Savings and payback",
+    "answer": "7,40,220 × 8 = ₹59.2 lakh/yr; payback = 350/59.2 = 5.9 years",
+    "explain": "Simple payback = investment / annual savings."
+   }
+  ],
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-073",
+  "paper": 4,
+  "topic": "Renewable energy",
+  "kind": "problem",
+  "front": "A wind turbine has an 80 m rotor diameter. At a wind speed of 8 m/s (air density 1.225 kg/m³), its power coefficient is 0.40 and drive-train × generator efficiency is 0.90. Find the power in the wind, the electrical output, and the output if wind speed rises by 10%.",
+  "back": "Wind power ≈ 1576 kW; electrical ≈ 567 kW; at 8.8 m/s ≈ 755 kW",
+  "explain": "The cube law dominates: 1.1³ = 1.331, so a 10% higher wind gives 33% more output. This is why hub height and site selection matter so much. Cp × η = 0.36 here, well below the 0.593 Betz limit.",
+  "steps": [
+   {
+    "prompt": "Swept area",
+    "answer": "π × 80²/4 = 5027 m²",
+    "explain": "A = πD²/4."
+   },
+   {
+    "prompt": "Power in the wind",
+    "answer": "0.5 × 1.225 × 5027 × 8³ = 1576 kW",
+    "explain": "½ρAV³."
+   },
+   {
+    "prompt": "Electrical output",
+    "answer": "1576 × 0.40 × 0.90 = 567 kW",
+    "explain": "× Cp × η."
+   },
+   {
+    "prompt": "Effect of +10% wind speed",
+    "answer": "567 × 1.1³ = 755 kW",
+    "explain": "Power ∝ V³."
+   }
+  ],
+  "flash": false,
+  "source": "syllabus"
+ },
+ {
+  "id": "p4-074",
+  "paper": 4,
+  "topic": "Textile processing",
+  "kind": "fact",
+  "front": "How is the drying heat load of a stenter calculated?",
+  "back": "Bone-dry cloth = output × (1 − outlet moisture); wet inlet = bone-dry/(1 − inlet moisture); water evaporated = inlet − outlet; heat = evaporated × [(T_out − T_in) + 540] kcal/h. Stenter efficiency = this heat / heat supplied.",
+  "explain": "Moisture percentages are on a wet basis, so always go through the bone-dry weight. 540 kcal/kg is the latent heat used in BEE solutions. The heat supplied traces back through the thermic-fluid heater or boiler efficiency to fuel.",
+  "flash": false,
+  "source": "BEE 2024 P4 N4B"
+ },
+ {
+  "id": "p4-075",
+  "paper": 4,
+  "topic": "Textile processing",
+  "kind": "problem",
+  "front": "A stenter delivers 1200 kg/h of cloth at 5% moisture. Cloth enters at 60% moisture (wet basis) and is heated from 30 °C to 85 °C. Stenter efficiency is 50%. Heat comes from a thermic fluid heater (75% efficient) firing furnace oil (GCV 10,000 kcal/kg, density 0.92 kg/l). Find water evaporated, heat load and oil consumption in litres/h.",
+  "back": "Evaporation ≈ 1650 kg/h; heat load ≈ 9.82 lakh kcal/h; oil ≈ 262 kg/h ≈ 285 litres/h",
+  "explain": "Efficiency improvements multiply through: better stenter efficiency (more chambers, exhaust humidity control) and better heater efficiency both cut oil. Mechanical dewatering (padding/squeezing) before the stenter is the cheapest saving, because each kg of water removed mechanically saves about 600 kcal of thermal energy.",
+  "steps": [
+   {
+    "prompt": "Bone-dry cloth",
+    "answer": "1200 × 0.95 = 1140 kg/h",
+    "explain": "Outlet × (1 − moisture)."
+   },
+   {
+    "prompt": "Wet inlet and water evaporated",
+    "answer": "Inlet = 1140/0.40 = 2850 kg/h; evaporated = 2850 − 1200 = 1650 kg/h",
+    "explain": "Wet-basis moisture."
+   },
+   {
+    "prompt": "Drying heat load",
+    "answer": "1650 × [(85 − 30) + 540] = 9,81,750 kcal/h",
+    "explain": "Sensible + latent."
+   },
+   {
+    "prompt": "Heat into stenter and heater",
+    "answer": "9,81,750/0.50 = 19,63,500; /0.75 = 26,18,000 kcal/h",
+    "explain": "Divide by each efficiency in series."
+   },
+   {
+    "prompt": "Oil consumption",
+    "answer": "26,18,000/10,000 = 261.8 kg/h ÷ 0.92 = 284.6 l/h",
+    "explain": "kg = heat/GCV; litres = kg/density."
+   }
+  ],
+  "flash": false,
+  "source": "BEE 2025 P4 N4D"
+ },
+ {
+  "id": "p4-076",
+  "paper": 4,
+  "topic": "Cement",
+  "kind": "fact",
+  "front": "What is the formula for the heat of formation of cement clinker (loss-free basis)?",
+  "back": "ΔH (kcal/kg clinker) = 2.22 Al₂O₃ + 6.48 MgO + 7.646 CaO − 5.116 SiO₂ − 0.59 Fe₂O₃ (oxides in %).",
+  "explain": "Typical ordinary clinker gives about 380–420 kcal/kg. This theoretical heat is the 'useful output' in a kiln heat balance. The real specific thermal energy consumption (often 700–800 kcal/kg in modern plants) is compared against it. Asked in both BEE 2023 and BEE 2024.",
+  "flash": false,
+  "source": "BEE 2024 P4 N4C"
+ },
+ {
+  "id": "p4-077",
+  "paper": 4,
+  "topic": "Cement",
+  "kind": "fact",
+  "front": "In a cement rotary kiln, is the largest heat loss through hot clinker discharge?",
+  "back": "No. The largest losses are with the preheater exhaust gases and cooler vent air. Sensible heat in discharged clinker is comparatively small.",
+  "explain": "That is why waste-heat recovery boilers are fitted on preheater (PH) and air-quenching cooler (AQC) exhausts for power generation. BEE 2025 T/F: False.",
+  "flash": false,
+  "source": "BEE 2025 P4 Q10"
+ },
+ {
+  "id": "p4-078",
+  "paper": 4,
+  "topic": "Steam systems",
+  "kind": "fact",
+  "front": "Is reducing make-up water the only reason to install a condensate recovery system?",
+  "back": "No. Condensate recovery also saves fuel (hot feed water), water-treatment chemicals and blowdown, and it improves feed-water quality.",
+  "explain": "Each 6 °C rise in feed-water temperature saves about 1% fuel, and condensate is often returned at 80–100 °C. Lower feed TDS means less blowdown and its heat loss. BEE 2025 T/F: False.",
+  "flash": false,
+  "source": "BEE 2025 P4 Q8"
+ },
+ {
+  "id": "p4-079",
+  "paper": 4,
+  "topic": "PAT / benchmarking",
+  "kind": "fact",
+  "front": "How are energy savings converted to ESCerts under PAT for a thermal power plant?",
+  "back": "ESCerts = (baseline net HR − assessment net HR) (kcal/kWh) × baseline generation (kWh) / 10⁷, since 1 ESCert = 1 toe = 10⁷ kcal.",
+  "explain": "Example from BEE 2025: gross HR 2300 with 9% aux → net 2527.5. Against a baseline of 2600, the saving is 72.5 kcal/kWh. On 5000 MU that is about 36,264 ESCerts. Always convert gross HR to net HR first.",
+  "flash": false,
+  "source": "BEE 2025 P4 L2"
+ },
+ {
+  "id": "p4-080",
+  "paper": 4,
+  "topic": "Waste minimisation",
+  "kind": "fact",
+  "front": "What are the main waste minimisation techniques?",
+  "back": "Source reduction (good housekeeping, input-material change, better process control, equipment modification, technology change), recycling (on-site recovery and reuse, useful by-products), and product modification.",
+  "explain": "Source reduction is preferred because it avoids the waste being generated at all. Recycling recovers value from waste already made. Each technique also cuts the energy embedded in the lost material.",
+  "flash": false,
+  "source": "syllabus"
+ }
+]
