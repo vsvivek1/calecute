@@ -158,6 +158,9 @@ h1, h2, h3 { font-family: var(--font-display), Georgia, serif; line-height: 1.12
 .badge svg { width: 24px; height: 24px; flex-shrink: 0; }
 .badge small { display: block; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.03em; opacity: 0.8; }
 a.badge:hover { transform: translateY(-2px); border-color: var(--gold); box-shadow: 0 10px 28px rgba(242, 196, 109, 0.25); }
+.play-badge { display: inline-flex; border-radius: 9px; transition: transform 0.2s; }
+.play-badge:hover { transform: translateY(-2px); }
+.play-badge img { display: block; height: 52px; width: auto; }
 .badge.is-soon { opacity: 0.6; border-style: dashed; cursor: default; }
 
 /* ------------------------------------------------------- 3D jewel */

@@ -2,6 +2,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { APPS, CONTACT, appBySlug } from "@/lib/apps";
+import { GooglePlayBadge } from "@/components/site/GooglePlayBadge";
+import { livePlayUrl, productByHref } from "@/lib/play-store";
 
 export function generateStaticParams() {
   return APPS.map((a) => ({ slug: a.slug }));
@@ -14,16 +16,27 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const app = appBySlug((await params).slug);
   if (!app) return { title: "Not found" };
+  const product = productByHref(`/apps/${app.slug}`);
+  const onPlay = livePlayUrl(app.androidPackage) !== null;
+  const description = `${product?.description ?? app.summary} ${
+    onPlay ? "Get it on Google Play." : "Coming soon on Google Play."
+  }`;
+  const url = `https://calecutech.com/apps/${app.slug}`;
   return {
-    title: `${app.name} | Calecutech`,
-    description: app.tagline,
-    ...(app.ogImage && {
-      openGraph: {
-        title: app.name,
-        description: app.tagline,
+    title: `${app.name}: ${app.tagline} | Android app by Calecutech`,
+    description,
+    keywords: [app.name, ...(product?.keywords ?? []), "Android app", "Google Play", "Calecutech", "Kerala"],
+    alternates: { canonical: url },
+    openGraph: {
+      title: app.name,
+      description,
+      url,
+      siteName: "Calecutech",
+      type: "website",
+      ...(app.ogImage && {
         images: [{ url: `https://calecutech.com${app.ogImage}`, width: 1200, height: 630 }],
-      },
-    }),
+      }),
+    },
   };
 }
 
@@ -65,6 +78,7 @@ export default async function AppHomePage({
           <p className="mt-2 text-lg text-black/60 dark:text-white/60">
             {app.tagline}
           </p>
+          <GooglePlayBadge androidPackage={app.androidPackage} appName={app.name} className="mt-5" />
         </div>
       </div>
 

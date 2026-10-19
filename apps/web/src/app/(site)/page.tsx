@@ -254,13 +254,9 @@ export default function Home() {
                   EMD and bid live. Banks keep full control of their auctions.
                 </p>
                 <div className="mt-8 flex flex-wrap items-center gap-3">
-                  <a
-                    href={BANKERS_GOLD.playStoreUrl}
-                    target="_blank"
-                    rel="noopener"
-                    className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-[#e3b19a]/50 bg-black px-4 text-sm font-semibold text-white hover:border-[#f2c46d]"
-                  >
-                    <span aria-hidden="true">▶</span> Get it on Google Play
+                  <a href={BANKERS_GOLD.playStoreUrl} target="_blank" rel="noopener" className="inline-block rounded-[9px]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/badges/google-play-en.svg" alt="Get it on Google Play" className="h-12 w-auto" />
                   </a>
                   {BANKERS_GOLD.appStoreUrl ? (
                     <a

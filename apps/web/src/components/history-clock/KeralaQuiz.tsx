@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import s from "./sketch.module.css";
+import { OurProducts } from "@/components/site/OurProducts";
 import { ROUND_SIZE, keralaQuestions, rankFor } from "@/lib/history-clock/kerala-quiz";
 
 type Asked = { q: string; options: string[]; answer: string; why: string };
@@ -55,6 +56,7 @@ export default function KeralaQuiz({ mapPath }: { mapPath: string }) {
   if (index >= round.length) {
     const rank = rankFor(score, round.length);
     return (
+      <>
       <div className={`${s.card} p-6 text-center sm:p-10`} aria-live="polite">
         <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#4a4f5e]">Your score</p>
         <h2 ref={headingRef} tabIndex={-1} className={`${s.hand} mt-2 text-6xl outline-none`}>
@@ -71,6 +73,13 @@ export default function KeralaQuiz({ mapPath }: { mapPath: string }) {
           </Link>
         </div>
       </div>
+      <OurProducts
+        tone="light"
+        className="mt-14"
+        heading="Our products"
+        intro="Enjoyed the quiz? Calecute Technologies makes apps for learners and families in Kerala: exam prep for PSC, USS, LSS and Plus One and Two, live quizzes, bus tracking, panchangam and more. Here is everything we publish."
+      />
+      </>
     );
   }
 
