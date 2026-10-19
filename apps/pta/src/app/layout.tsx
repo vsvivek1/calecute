@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from 'next';
+import '@fontsource-variable/plus-jakarta-sans';
+import '@fontsource-variable/noto-sans-malayalam';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -8,7 +10,14 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export const viewport: Viewport = { themeColor: '#0163bb', width: 'device-width', initialScale: 1 };
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f4f6fb' },
+    { media: '(prefers-color-scheme: dark)', color: '#0b0f1a' },
+  ],
+  width: 'device-width',
+  initialScale: 1,
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

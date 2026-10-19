@@ -3,7 +3,9 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-export type NavItem = { href: string; label: string; icon: string; count?: number; bottom?: boolean };
+import Icon, { type IconName } from './Icon';
+
+export type NavItem = { href: string; label: string; icon: IconName; count?: number; bottom?: boolean };
 
 function active(path: string, href: string) {
   if (href === '/' || href === '/teach' || href === '/office') return path === href;
@@ -13,14 +15,17 @@ function active(path: string, href: string) {
 export function SideNav({ items }: { items: NavItem[] }) {
   const path = usePathname();
   return (
-    <nav className="side">
-      {items.map((i) => (
-        <Link key={i.href} href={i.href} className={active(path, i.href) ? 'on' : ''}>
-          <span aria-hidden>{i.icon}</span>
-          {i.label}
-          {!!i.count && <span className="count">{i.count}</span>}
-        </Link>
-      ))}
+    <nav className="side-nav">
+      {items.map((i) => {
+        const on = active(path, i.href);
+        return (
+          <Link key={i.href} href={i.href} className={on ? 'on' : ''} aria-current={on ? 'page' : undefined}>
+            <Icon name={i.icon} />
+            <span>{i.label}</span>
+            {!!i.count && <span className="count">{i.count}</span>}
+          </Link>
+        );
+      })}
     </nav>
   );
 }
@@ -32,15 +37,18 @@ export function BottomNav({ items, more }: { items: NavItem[]; more: string }) {
   const inMore = !shown.some((i) => active(path, i.href));
   return (
     <nav className="bottom">
-      {shown.map((i) => (
-        <Link key={i.href} href={i.href} className={active(path, i.href) ? 'on' : ''}>
-          <span className="i" aria-hidden>{i.icon}</span>
-          {i.label}
-        </Link>
-      ))}
+      {shown.map((i) => {
+        const on = active(path, i.href);
+        return (
+          <Link key={i.href} href={i.href} className={on ? 'on' : ''} aria-current={on ? 'page' : undefined}>
+            <span className="i"><Icon name={i.icon} size={22} />{!!i.count && <span className="dot-count" />}</span>
+            <span className="lbl">{i.label}</span>
+          </Link>
+        );
+      })}
       <Link href={more} className={inMore ? 'on' : ''}>
-        <span className="i" aria-hidden>☰</span>
-        More
+        <span className="i"><Icon name="menu" size={22} /></span>
+        <span className="lbl">More</span>
       </Link>
     </nav>
   );
