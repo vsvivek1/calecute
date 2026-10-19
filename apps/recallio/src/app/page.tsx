@@ -4,11 +4,22 @@ import SignIn from '@/components/SignIn';
 import UserHome from '@/components/UserHome';
 import AdminHome from '@/components/AdminHome';
 
-export default async function Page() {
+// Course ids are slugs. Anything else is dropped rather than echoed anywhere.
+function cleanCourse(v: string | string[] | undefined): string | null {
+  const x = Array.isArray(v) ? v[0] : v;
+  return x && /^[a-z0-9-]{1,64}$/.test(x) ? x : null;
+}
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const focus = cleanCourse((await searchParams).course);
   const view = await requestedView();
   const session = await getSession();
 
-  if (!session) return <SignIn view={view} />;
+  if (!session) return <SignIn view={view} course={focus} />;
 
   if (view === 'admin') {
     // The host asked for the admin view; the role decides whether it is given.
@@ -33,5 +44,5 @@ export default async function Page() {
     return <AdminHome session={session} />;
   }
 
-  return <UserHome session={session} />;
+  return <UserHome session={session} focusCourse={focus} />;
 }

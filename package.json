@@ -18,6 +18,8 @@
     "openapi": "npm run openapi --workspace=apps/api",
     "api:types": "npm run api:types --workspace=apps/web",
     "dev:recallio": "npm run dev --workspace=apps/recallio",
+    "dev:pta": "npm run dev --workspace=apps/pta",
+    "build:pta": "npm run build --workspace=apps/pta",
     "build:recallio": "npm run build --workspace=apps/recallio"
   },
   "devDependencies": {

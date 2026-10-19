@@ -1,4 +1,4 @@
-import { company, officeLines } from "@/lib/company";
+import { company, entities, officeLines } from "@/lib/company";
 
 export const metadata = {
   title: "Refund & Cancellation Policy | Calecutech",
@@ -110,6 +110,10 @@ export default function RefundPolicyPage() {
 
         <section>
           <h2 className="text-xl font-medium">Contact</h2>
+          <p className="mt-2">
+            Purchases made through our apps on Google Play are sold by{" "}
+            {entities[0].legalName}, {entities[0].addressLines.join(", ")}.
+          </p>
           <p className="mt-2">
             {company.legalName}
             <br />

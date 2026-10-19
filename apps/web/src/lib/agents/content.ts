@@ -89,7 +89,7 @@ export const page = {
      * Do not soften, summarise, or move below the fold.
      */
     points: [
-      "10% of every payment the referred customer makes",
+      "10% to 30% of every payment the referred customer makes, depending on the product",
       "For as long as that customer keeps paying",
       "Calculated after GST and payment gateway charges",
       "Paid monthly",

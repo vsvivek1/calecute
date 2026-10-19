@@ -7,6 +7,7 @@
  */
 import { eq } from "drizzle-orm";
 import { handler, preflight } from "@/lib/http";
+import { ApiError } from "@/lib/errors";
 import { authedRoute, ok } from "@/lib/route";
 import { RULES } from "@/lib/ratelimit";
 import { agents } from "@/db/schema";
@@ -25,6 +26,8 @@ export const POST = handler(
       .where(eq(agents.id, agent.id))
       .limit(1);
 
+    // Only a seller reaches payouts, and a seller row always carries a mobile.
+    if (!row?.mobile) throw new ApiError("UNPROCESSABLE", "No mobile number on this application");
     const { expiresInSeconds } = await startVerification(agent.id, row.mobile);
 
     return ok(ctx, {

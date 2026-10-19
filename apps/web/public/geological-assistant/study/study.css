@@ -1,0 +1,35 @@
+.app{padding:28px 20px 40px;min-height:60vh}
+.app h1{font-size:clamp(26px,4vw,36px);margin:4px 0 10px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:14px 0}
+.panel h2{font-size:22px;margin:0 0 8px}
+.big{font:800 34px/1.1 system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.small{font:14px/1.5 system-ui,sans-serif;color:var(--mut)}
+.err{font:15px system-ui,sans-serif;color:#b3261e;margin:8px 0}
+.okmsg{font:15px system-ui,sans-serif;color:var(--ok);margin:8px 0}
+.bar-out{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin:8px 0 4px}
+.bar-in{height:100%;background:var(--ok);border-radius:99px}
+.unit .row{margin-top:10px}
+.btn.sm{padding:8px 14px;font-size:14px}
+.fact{font:600 20px/1.5 system-ui,sans-serif;margin:10px 0 6px}
+.sub{font:13px system-ui,sans-serif;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+.why{font-size:17px;color:var(--fg);border-left:4px solid var(--s2);padding:4px 14px;margin:14px 0}
+.flag{display:inline-block;font:700 12px system-ui,sans-serif;color:#8a5a00;background:#fff3cd;border-radius:6px;padding:2px 8px;margin-left:6px}
+.rate{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.rate .btn{text-align:center;padding:12px 8px}
+.rate .again{background:#8b2d22}
+.rate .easy{background:var(--ok)}
+.timer{font:700 18px system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.qnav{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.qnav button{width:36px;height:32px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:6px;font:13px system-ui,sans-serif;cursor:pointer}
+.qnav button.done{background:var(--s1);color:#2a2118}
+.qnav button.cur{outline:2px solid var(--acc)}
+.quiz button.o.pick{border-color:var(--acc);background:rgba(180,83,31,.12)}
+.linked{margin:10px 0 0;padding-left:18px;font-size:16px;color:var(--mut)}
+table.res{border-collapse:collapse;width:100%;font:15px system-ui,sans-serif}
+table.res td,table.res th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left}
+@media(max-width:560px){.rate{grid-template-columns:1fr}}
+.plan{margin:6px 0 16px;padding-left:22px;font-size:17px;line-height:1.6}
+.tag{display:inline-block;font:700 11px system-ui,sans-serif;color:var(--acct);background:var(--acc);border-radius:6px;padding:2px 7px;letter-spacing:.04em}
+.tag.rev{background:var(--ok)}
+input.date{display:block;font:17px system-ui,sans-serif;padding:10px 12px;margin:6px 0;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}

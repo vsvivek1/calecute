@@ -1,0 +1,42 @@
+{
+ "id": "00000000-0000-4000-a000-0000000000f1",
+ "title": "Fractions quick check",
+ "subject": "Maths",
+ "due_date": "2026-10-18",
+ "published": true,
+ "questions": [
+  {
+   "id": "00000000-0000-4000-a000-00000000f101",
+   "prompt": "What is 1/2 + 1/4?",
+   "options": [
+    "3/4",
+    "2/6",
+    "1/8",
+    "2/4"
+   ],
+   "position": 1
+  },
+  {
+   "id": "00000000-0000-4000-a000-00000000f102",
+   "prompt": "Which is larger?",
+   "options": [
+    "2/3",
+    "3/5",
+    "1/2",
+    "4/9"
+   ],
+   "position": 2
+  },
+  {
+   "id": "00000000-0000-4000-a000-00000000f103",
+   "prompt": "Simplify 6/8",
+   "options": [
+    "3/4",
+    "2/3",
+    "6/8",
+    "1/2"
+   ],
+   "position": 3
+  }
+ ]
+}

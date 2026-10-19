@@ -1,3 +1,5 @@
+import { company as opc } from "@/lib/agents/content";
+
 /**
  * Company identity for the INTERNATIONAL-facing site.
  *
@@ -32,6 +34,42 @@ export const company = {
     country: "India",
   },
 } as const;
+
+/**
+ * Both legal entities, for pages that list who operates what.
+ *
+ * The OPC is the Google Play merchant and developer of record (Play Console
+ * identity was moved to the OPC on 2026-10-12 so it matches the payments
+ * profile and BillDesk merchant verification). The site must name it, with
+ * its full registered address, or merchant checks see a mismatch.
+ */
+export const entities = [
+  {
+    key: "in",
+    legalName: opc.legalName,
+    role: "Publishes our apps on Google Play and serves customers in India.",
+    addressLines: [
+      "11/698A, Poolakadavu, Marikkunnu (PO)",
+      `Kozhikode ${opc.postalCode}, Kerala, India`,
+    ],
+    ids: [
+      opc.cin ? `CIN: ${opc.cin}` : null,
+      opc.gstin ? `GSTIN: ${opc.gstin}` : null,
+    ].filter(Boolean) as string[],
+    phone: "+91 85479 85289",
+  },
+  {
+    key: "us",
+    legalName: "Calecute Technologies LLC",
+    role: "Sister company. Serves international clients.",
+    addressLines: ["1621 Central Ave", "Cheyenne, WY 82001-4531, USA"],
+    ids: [] as string[],
+    phone: null,
+  },
+] as const;
+
+export const copyrightHolders =
+  "Calecute Technologies (OPC) Private Limited and Calecute Technologies LLC";
 
 export const officeLines = [
   company.office.city,

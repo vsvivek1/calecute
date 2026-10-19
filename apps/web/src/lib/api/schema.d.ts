@@ -1196,6 +1196,434 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/products/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Set a product's fee, referral rates and links
+         * @description `feePaise: null` makes the product FREE: a member's friends then earn them
+         *     diamonds rather than cash. `sellerRateBps` is the seller band, 1000 to
+         *     3000. `userRateBps` is what a member earns on a paid product, default 100.
+         *     `webUrl` and `playUrl` are where `/r/{code}?app=slug` sends a visitor.
+         *
+         *     SUPER_ADMIN only: the rates are a company-wide decision, and the products
+         *     write policy admits nobody else.
+         *
+         *     **Requires role:** SUPER_ADMIN
+         */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Product id. */
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ProductSettingsRequest"];
+                };
+            };
+            responses: {
+                /** @description Success. */
+                200: {
+                    headers: {
+                        /** @description Requests allowed per window. */
+                        "RateLimit-Limit"?: number;
+                        /** @description Requests left in this window. */
+                        "RateLimit-Remaining"?: number;
+                        /** @description Seconds until the window resets. */
+                        "RateLimit-Reset"?: number;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            product: components["schemas"]["AdminProduct"];
+                        };
+                    };
+                };
+                /** @description Validation failed, or a geography id was not recognised. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Missing, malformed or expired access token. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Authenticated but not permitted, or outside district scope. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unknown product. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Rate limit exceeded. See RateLimit-* and Retry-After headers. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unexpected error. The requestId identifies it in the logs. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/admin/products/{id}/api-keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List a product's API keys
+         * @description Never the hash, never the plaintext. Revoked keys are listed with `revokedAt` set.
+         *
+         *     **Requires role:** SUPER_ADMIN
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Product id. */
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Success. */
+                200: {
+                    headers: {
+                        /** @description Requests allowed per window. */
+                        "RateLimit-Limit"?: number;
+                        /** @description Requests left in this window. */
+                        "RateLimit-Remaining"?: number;
+                        /** @description Seconds until the window resets. */
+                        "RateLimit-Reset"?: number;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data: components["schemas"]["ApiKey"][];
+                        };
+                    };
+                };
+                /** @description Validation failed, or a geography id was not recognised. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Missing, malformed or expired access token. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Authenticated but not permitted, or outside district scope. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Rate limit exceeded. See RateLimit-* and Retry-After headers. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unexpected error. The requestId identifies it in the logs. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /**
+         * Mint an API key for a product system
+         * @description The plaintext is in this response and nowhere else, ever: only its
+         *     SHA-256 is stored. A `client` key ships inside an app and may call
+         *     `/members`, `/attribution/claim` and the click log; a `server` key is
+         *     held by the product's backend and may additionally call `/payments`.
+         *     The same can be done offline with `scripts/mint-api-key.mts`.
+         *
+         *     **Requires role:** SUPER_ADMIN
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Product id. */
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ApiKeyMintRequest"];
+                };
+            };
+            responses: {
+                /** @description Minted. */
+                201: {
+                    headers: {
+                        /** @description Requests allowed per window. */
+                        "RateLimit-Limit"?: number;
+                        /** @description Requests left in this window. */
+                        "RateLimit-Remaining"?: number;
+                        /** @description Seconds until the window resets. */
+                        "RateLimit-Reset"?: number;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            key: components["schemas"]["ApiKey"] & {
+                                /** @description Product slug. */
+                                product?: string;
+                            };
+                            /**
+                             * @description Shown once.
+                             * @example ck_live_7k2m9qx4w3e8r5t6y1u0p9a2s3d4f5g6
+                             */
+                            plaintext: string;
+                        };
+                    };
+                };
+                /** @description Validation failed, or a geography id was not recognised. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Missing, malformed or expired access token. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Authenticated but not permitted, or outside district scope. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unknown product. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Rate limit exceeded. See RateLimit-* and Retry-After headers. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unexpected error. The requestId identifies it in the logs. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/products/{id}/api-keys/{keyId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Revoke an API key
+         * @description The row stays, stamped, for the audit trail; the next request with the key gets 401.
+         *
+         *     **Requires role:** SUPER_ADMIN
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Product id. */
+                    id: number;
+                    /** @description Key id. */
+                    keyId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Success. */
+                200: {
+                    headers: {
+                        /** @description Requests allowed per window. */
+                        "RateLimit-Limit"?: number;
+                        /** @description Requests left in this window. */
+                        "RateLimit-Remaining"?: number;
+                        /** @description Seconds until the window resets. */
+                        "RateLimit-Reset"?: number;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            key?: components["schemas"]["ApiKey"];
+                            revoked: boolean;
+                        };
+                    };
+                };
+                /** @description Validation failed, or a geography id was not recognised. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Missing, malformed or expired access token. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Authenticated but not permitted, or outside district scope. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description No active key with that id for this product. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Rate limit exceeded. See RateLimit-* and Retry-After headers. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unexpected error. The requestId identifies it in the logs. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/products/bulk-assign": {
         parameters: {
             query?: never;
@@ -2100,7 +2528,7 @@ export interface paths {
         };
         /**
          * Earnings summary and commission ledger
-         * @description Pending, paid and lifetime totals, plus the individual commission rows behind them so an agent can see which payment each came from. The published terms are returned alongside, so no client hardcodes the 10% or the 2% TDS.
+         * @description Pending, paid and lifetime totals, plus the individual commission rows behind them so an agent can see which payment each came from. The terms that apply to this agent are returned alongside as `terms` (see CommissionTerms): the rate is per product and per tier, so no client hardcodes a percentage or the 2% TDS.
          *
          *     **Requires role:** AGENT
          */
@@ -2132,7 +2560,33 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": Record<string, unknown>;
+                        "application/json": {
+                            data: {
+                                /** Format: date-time */
+                                accruedAt?: string;
+                                basePaise?: number;
+                                customerName?: string;
+                                financialYear?: string;
+                                grossCommissionPaise?: number;
+                                id?: number;
+                                netCommissionPaise?: number;
+                                /** Format: date-time */
+                                paidAt?: string | null;
+                                /** Format: date-time */
+                                paymentPaidAt?: string;
+                                productName?: string | null;
+                                productSlug?: string | null;
+                                rateBps?: number;
+                                /** @enum {string} */
+                                status?: "ACCRUED" | "APPROVED" | "PAID" | "CANCELLED" | "FORFEITED";
+                                tdsPaise?: number;
+                                /** @enum {string|null} */
+                                tier?: "USER" | "SELLER" | null;
+                            }[];
+                            pageInfo: components["schemas"]["PageInfo"];
+                            summary: components["schemas"]["EarningsSummary"];
+                            terms: components["schemas"]["CommissionTerms"];
+                        };
                     };
                 };
                 /** @description Validation failed, or a geography id was not recognised. */
@@ -2758,9 +3212,17 @@ export interface paths {
          *     dispute from data. A losing claim receives `heldBy` so the caller can see
          *     who holds it without a second request.
          *
-         *     Called by a product system, not by an agent or a browser.
+         *     Called by a product system with its API key (client or server), or by a
+         *     SUPER_ADMIN naming `productSlug`. The customer reference is stored as
+         *     `<product slug>:<customerExternalRef>`, so send the app's own user id —
+         *     the same value sent to `POST /members` for that user.
          *
-         *     **Requires role:** SUPER_ADMIN (service credential)
+         *     The code may be a seller's `CA-…` or a member's `RF-…`; both live in one
+         *     namespace. A member cannot claim themselves (`SELF_REFERRAL`). On a FREE
+         *     product a member earns one diamond when the claim is accepted; on a PAID
+         *     product nothing is earned until the friend pays (`POST /payments`).
+         *
+         *     **Requires role:** API key (client or server), or SUPER_ADMIN
          */
         post: {
             parameters: {
@@ -2775,7 +3237,7 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description Not attributed. See `reason`: UNKNOWN_CODE, AGENT_NOT_APPROVED or ALREADY_ATTRIBUTED. */
+                /** @description Not attributed. See `reason`: UNKNOWN_CODE, AGENT_NOT_APPROVED, SELF_REFERRAL or ALREADY_ATTRIBUTED. */
                 200: {
                     headers: {
                         /** @description Requests allowed per window. */
@@ -2787,10 +3249,10 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": Record<string, unknown>;
+                        "application/json": components["schemas"]["AttributionResult"];
                     };
                 };
-                /** @description Attribution locked to this agent. */
+                /** @description Attribution locked to this code. */
                 201: {
                     headers: {
                         /** @description Requests allowed per window. */
@@ -2802,7 +3264,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": Record<string, unknown>;
+                        "application/json": components["schemas"]["AttributionResult"];
                     };
                 };
                 /** @description Validation failed, or a geography id was not recognised. */
@@ -4015,6 +4477,228 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Find or create a user's invite code
+         * @description Call this when a user signs in to your app. The first call creates the
+         *     member and their immutable `RF-…` code; every later call returns the same
+         *     code with fresh stats. Idempotent, so calling it on every sign-in is the
+         *     intended usage.
+         *
+         *     `externalRef` is your own user id. It is namespaced per product, and it is
+         *     the same value you send as `customerExternalRef` when this user joins
+         *     through somebody else's code.
+         *
+         *     **Requires role:** API key (client or server)
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["MemberRequest"];
+                };
+            };
+            responses: {
+                /** @description Existing member. */
+                200: {
+                    headers: {
+                        /** @description Requests allowed per window. */
+                        "RateLimit-Limit"?: number;
+                        /** @description Requests left in this window. */
+                        "RateLimit-Remaining"?: number;
+                        /** @description Seconds until the window resets. */
+                        "RateLimit-Reset"?: number;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Member"];
+                    };
+                };
+                /** @description Member created. */
+                201: {
+                    headers: {
+                        /** @description Requests allowed per window. */
+                        "RateLimit-Limit"?: number;
+                        /** @description Requests left in this window. */
+                        "RateLimit-Remaining"?: number;
+                        /** @description Seconds until the window resets. */
+                        "RateLimit-Reset"?: number;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Member"];
+                    };
+                };
+                /** @description Validation failed, or a geography id was not recognised. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Missing, malformed or expired access token. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Authenticated but not permitted, or outside district scope. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Rate limit exceeded. See RateLimit-* and Retry-After headers. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unexpected error. The requestId identifies it in the logs. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/members/{externalRef}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A member's code and stats
+         * @description The same shape as POST /members, for refreshing stats without re-sending the profile. 404 until POST /members has been called for that user.
+         *
+         *     **Requires role:** API key (client or server)
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Your own user id, as sent to POST /members. */
+                    externalRef: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Success. */
+                200: {
+                    headers: {
+                        /** @description Requests allowed per window. */
+                        "RateLimit-Limit"?: number;
+                        /** @description Requests left in this window. */
+                        "RateLimit-Remaining"?: number;
+                        /** @description Seconds until the window resets. */
+                        "RateLimit-Reset"?: number;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Member"];
+                    };
+                };
+                /** @description Validation failed, or a geography id was not recognised. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Missing, malformed or expired access token. */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Authenticated but not permitted, or outside district scope. */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description No member with that reference. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Rate limit exceeded. See RateLimit-* and Retry-After headers. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unexpected error. The requestId identifies it in the logs. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/openapi.json": {
         parameters: {
             query?: never;
@@ -4102,12 +4786,17 @@ export interface paths {
          *     unique as a second line of defence, and the arithmetic is re-checked by a
          *     database constraint so a bug here cannot write an inconsistent ledger row.
          *
-         *     Commission is 10% of the amount net of GST and gateway charges, less 2%
-         *     TDS under Section 194H. It accrues only for an APPROVED agent holding the
-         *     attribution; an unattributed payment is recorded with
-         *     `commissionAccrued: false` rather than rejected.
+         *     Commission is a percentage of the amount net of GST and gateway charges,
+         *     less 2% TDS under Section 194H. The percentage depends on who holds the
+         *     attribution: a SELLER earns the product's `sellerRateBps` (10% to 30%),
+         *     a USER-tier member earns the product's `userRateBps` (default 1%). It
+         *     accrues only for an APPROVED referrer; an unattributed payment is recorded
+         *     with `commissionAccrued: false` rather than rejected.
          *
-         *     **Requires role:** SUPER_ADMIN (service credential)
+         *     Only a SERVER key may call this — a client key ships inside an app. The
+         *     customer reference is namespaced exactly as in `/attribution/claim`.
+         *
+         *     **Requires role:** API key (server only), or SUPER_ADMIN
          */
         post: {
             parameters: {
@@ -4125,7 +4814,22 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description Success. */
+                /** @description Already recorded under this externalRef; nothing changed. */
+                200: {
+                    headers: {
+                        /** @description Requests allowed per window. */
+                        "RateLimit-Limit"?: number;
+                        /** @description Requests left in this window. */
+                        "RateLimit-Remaining"?: number;
+                        /** @description Seconds until the window resets. */
+                        "RateLimit-Reset"?: number;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PaymentResult"];
+                    };
+                };
+                /** @description Recorded. `commissionAccrued` says whether a commission row was written. */
                 201: {
                     headers: {
                         /** @description Requests allowed per window. */
@@ -4137,7 +4841,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": Record<string, unknown>;
+                        "application/json": components["schemas"]["PaymentResult"];
                     };
                 };
                 /** @description Validation failed, or a geography id was not recognised. */
@@ -4160,6 +4864,15 @@ export interface paths {
                 };
                 /** @description Authenticated but not permitted, or outside district scope. */
                 403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unknown customer reference — call /attribution/claim first, or the customer joined with no code. */
+                404: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -4593,7 +5306,7 @@ export interface paths {
         };
         /**
          * Product catalogue
-         * @description Agents see active products; admins see all. No products are seeded — the brief did not name them.
+         * @description Agents see active products; admins see all. The catalogue is seeded from scripts/seed.mts, so it is the same everywhere and cannot drift.
          */
         get: {
             parameters: {
@@ -4668,6 +5381,395 @@ export interface paths {
         };
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/leaderboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Public leaderboard of referral earnings
+         * @description Who has earned the most from referrals, both tiers, across every app or
+         *     filtered to one. Names are masked to first name and last initial and
+         *     nothing identifying is returned. Cached for 60 seconds.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Product slug. Omit for every product. */
+                    app?: string;
+                    /** @description Rows to return. */
+                    limit?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Success. */
+                200: {
+                    headers: {
+                        /** @description Requests allowed per window. */
+                        "RateLimit-Limit"?: number;
+                        /** @description Requests left in this window. */
+                        "RateLimit-Remaining"?: number;
+                        /** @description Seconds until the window resets. */
+                        "RateLimit-Reset"?: number;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Leaderboard"];
+                    };
+                };
+                /** @description Validation failed, or a geography id was not recognised. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Rate limit exceeded. See RateLimit-* and Retry-After headers. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unexpected error. The requestId identifies it in the logs. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/products": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Active products and what a referrer earns on each
+         * @description Public. Used by the rewards page filter and by the /r/{code} redirect on the website.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Success. */
+                200: {
+                    headers: {
+                        /** @description Requests allowed per window. */
+                        "RateLimit-Limit"?: number;
+                        /** @description Requests left in this window. */
+                        "RateLimit-Remaining"?: number;
+                        /** @description Seconds until the window resets. */
+                        "RateLimit-Reset"?: number;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            data: components["schemas"]["PublicProduct"][];
+                        };
+                    };
+                };
+                /** @description Validation failed, or a geography id was not recognised. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Rate limit exceeded. See RateLimit-* and Retry-After headers. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unexpected error. The requestId identifies it in the logs. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/products/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * One product's public referral facts
+         * @description Free or paid, the rates, and the web and Play URLs a referral link resolves to.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Product slug. */
+                    slug: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Success. */
+                200: {
+                    headers: {
+                        /** @description Requests allowed per window. */
+                        "RateLimit-Limit"?: number;
+                        /** @description Requests left in this window. */
+                        "RateLimit-Remaining"?: number;
+                        /** @description Seconds until the window resets. */
+                        "RateLimit-Reset"?: number;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PublicProduct"];
+                    };
+                };
+                /** @description Validation failed, or a geography id was not recognised. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unknown or inactive product. */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Rate limit exceeded. See RateLimit-* and Retry-After headers. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unexpected error. The requestId identifies it in the logs. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/qr": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * QR image for an invite link
+         * @description Encodes `https://<web>/r/{code}?app={app}`. Public and cacheable; no app ships a QR library.
+         */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Product slug. */
+                    app: string;
+                    /** @description The invite code. */
+                    code: string;
+                    /** @description Image format. */
+                    format?: "png" | "svg";
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The QR image. */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "image/png": string;
+                        "image/svg+xml": string;
+                    };
+                };
+                /** @description Validation failed, or a geography id was not recognised. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Rate limit exceeded. See RateLimit-* and Retry-After headers. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unexpected error. The requestId identifies it in the logs. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/referral-clicks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Log a click on an invite link
+         * @description Fired by the website's /r/{code} redirect before it sends the visitor on. No user id and no full IP is stored. Returns 202; never wait on it.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReferralClickRequest"];
+                };
+            };
+            responses: {
+                /** @description Accepted. */
+                202: {
+                    headers: {
+                        /** @description Requests allowed per window. */
+                        "RateLimit-Limit"?: number;
+                        /** @description Requests left in this window. */
+                        "RateLimit-Remaining"?: number;
+                        /** @description Seconds until the window resets. */
+                        "RateLimit-Reset"?: number;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            accepted?: boolean;
+                        };
+                    };
+                };
+                /** @description Validation failed, or a geography id was not recognised. */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Rate limit exceeded. See RateLimit-* and Retry-After headers. */
+                429: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+                /** @description Unexpected error. The requestId identifies it in the logs. */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -5076,6 +6178,11 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AdminProduct: components["schemas"]["PublicProduct"] & {
+            active?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+        };
         AgentDashboard: {
             agent: {
                 agentCode?: string;
@@ -5123,11 +6230,56 @@ export interface components {
             /** @enum {string} */
             status?: "PENDING_REVIEW" | "APPROVED" | "REJECTED" | "SUSPENDED" | "WAITLISTED" | "WITHDRAWN";
         } | null;
+        ApiKey: {
+            /** Format: date-time */
+            createdAt: string;
+            id: number;
+            /** @enum {string} */
+            kind: "client" | "server";
+            label: string;
+            productId: number;
+            /** Format: date-time */
+            revokedAt: string | null;
+        };
+        ApiKeyMintRequest: {
+            /**
+             * @description `client` ships inside an app: members, claims, clicks. `server` is held by the product backend and may also record payments.
+             * @enum {string}
+             */
+            kind: "client" | "server";
+            /** @description Where this key lives, e.g. "Android 2.4" or "billing worker". */
+            label: string;
+        };
         AttributionClaimRequest: {
+            /** @description A seller's `CA-…` code or a member's `RF-…` invite code. Case-insensitive. */
             agentCode: string;
+            /** @description The customer's id in the calling app — the same value the app sends as `externalRef` to POST /members for that user. Stored namespaced as `<product slug>:<customerExternalRef>`. */
             customerExternalRef: string;
             customerName: string;
+            /** @description Only for a SUPER_ADMIN caller. A service key's product is implied and this field is ignored. */
+            productSlug?: string;
+            /** @description Where the code came from: "referral_link", "typed", "qr", "install_referrer". */
             source?: string;
+        };
+        AttributionResult: {
+            /** @description The code that now holds the customer. */
+            agentCode?: string;
+            agentStatus?: string;
+            attributed: boolean;
+            customerId?: number;
+            /** @description True when a USER-tier member just earned a diamond for this join (free product). */
+            diamondAwarded?: boolean;
+            /** @description On ALREADY_ATTRIBUTED: the code that won. */
+            heldBy?: string | null;
+            /** Format: date-time */
+            heldSince?: string | null;
+            /**
+             * @description Present when `attributed` is false.
+             * @enum {string}
+             */
+            reason?: "UNKNOWN_CODE" | "AGENT_NOT_APPROVED" | "SELF_REFERRAL" | "ALREADY_ATTRIBUTED";
+            /** @enum {string} */
+            tier?: "USER" | "SELLER";
         };
         Availability: {
             /** @description Applications received for this local body. */
@@ -5144,18 +6296,36 @@ export interface components {
             state: "OPEN" | "CLOSED";
             waitlisted?: number;
         };
-        /** @description The published commission terms, served so no client hardcodes them. */
+        /** @description The commission terms that apply to this agent, served so no client hardcodes them. The rate is per product: a SELLER earns the product's seller rate (10% to 30%), a USER-tier member earns the product's member rate (default 1%) on paid products and diamonds on free ones. */
         CommissionTerms: {
             /** @description Net of GST and payment gateway charges. */
-            basis?: string;
+            basis: string;
+            /** @description The highest. */
+            maxRateBps?: number;
             /** @enum {string} */
-            payoutFrequency?: "MONTHLY";
-            /** @description 1000 = 10% of every payment. */
-            rateBps?: number;
+            payoutFrequency: "MONTHLY";
+            /** @description The lowest cash rate that applies to this agent across active products. See `rates`. */
+            rateBps: number;
+            /** @description One entry per active product. */
+            rates: {
+                isFree: boolean;
+                nameEn: string;
+                productId: number;
+                /** @description 0 when the reward is DIAMOND. */
+                rateBps: number;
+                /**
+                 * @description DIAMOND only for a USER-tier agent on a free product.
+                 * @enum {string}
+                 */
+                reward: "CASH" | "DIAMOND";
+                slug: string;
+            }[];
             /** @description 200 = 2%. */
-            tdsRateBps?: number;
+            tdsRateBps: number;
             /** @description 194H. */
-            tdsSection?: string;
+            tdsSection: string;
+            /** @enum {string} */
+            tier: "USER" | "SELLER";
         };
         District: {
             /** @description District token used in agent codes, e.g. "KKD". */
@@ -5227,6 +6397,26 @@ export interface components {
             /** Format: uri */
             redirectUri: string;
         };
+        Leaderboard: {
+            /** @description The product filter applied, or null for every product. */
+            app: string | null;
+            /** @enum {string} */
+            currency: "INR";
+            limit: number;
+            rows: components["schemas"]["LeaderboardRow"][];
+        };
+        LeaderboardRow: {
+            diamonds: number;
+            /** @description Masked: first name and last initial, e.g. "Vivek S." */
+            displayName: string;
+            /** @description Net commission not cancelled or forfeited, in paise. */
+            earnedNetPaise: number;
+            friendsJoined: number;
+            payingFriends: number;
+            rank: number;
+            /** @enum {string} */
+            tier: "USER" | "SELLER";
+        };
         LocalBody: {
             blockPanchayatId?: number | null;
             districtId: number;
@@ -5248,6 +6438,57 @@ export interface components {
             waitlisted?: number;
             /** @enum {string} */
             wardData?: "COMPLETE" | "PARTIAL" | "PENDING";
+        };
+        Member: {
+            /**
+             * @description The member's invite code. Immutable.
+             * @example RF-7K2M9Q
+             */
+            code: string;
+            /**
+             * @description Share this. The website resolves it to the product's web URL or Play listing with the code attached.
+             * @example https://calecutech.com/r/RF-7K2M9Q?app=quizkerala
+             */
+            link: string;
+            product: {
+                /** @description True: friends who join earn the member a diamond. False: 1% of what friends pay. */
+                isFree: boolean;
+                name: string;
+                slug: string;
+                userRateBps: number;
+            };
+            /** @description Absolute URL of a PNG QR encoding `link`. Append `&format=svg` for SVG. */
+            qrUrl: string;
+            stats: components["schemas"]["MemberStats"];
+            /** @description APPROVED unless an administrator suspended the member. */
+            status: string;
+            /** @enum {string} */
+            tier: "USER";
+            /** @description A wa.me link with a pre-written message, Malayalam first. */
+            whatsappShareUrl: string;
+        };
+        MemberRequest: {
+            email?: string | null;
+            /** @description The app's own user id. Namespaced server-side as `<product slug>:<externalRef>`. */
+            externalRef: string;
+            /** @description Display name. Masked to first name and last initial on the public leaderboard. */
+            name: string;
+            pictureUrl?: string | null;
+        };
+        MemberStats: {
+            /** @description Recognition for friends who joined free products. Never money. */
+            diamonds: number;
+            earnings: {
+                /** @enum {string} */
+                currency: "INR";
+                lifetimePaise: number;
+                paidPaise: number;
+                pendingPaise: number;
+            };
+            /** @description Customers attributed to this code, across every product. */
+            friendsJoined: number;
+            /** @description Of those, how many have paid at least once. */
+            payingFriends: number;
         };
         MeResponse: {
             agent: components["schemas"]["AgentSummary"];
@@ -5274,7 +6515,9 @@ export interface components {
             nextCursor: string | null;
         };
         PaymentRequest: {
+            /** @description The customer's id in the calling app, exactly as sent to /attribution/claim. */
             customerExternalRef: string;
+            /** @description The payment's id in the product system. Unique. */
             externalRef: string;
             /** @default 0 */
             gatewayFeePaise: number;
@@ -5284,7 +6527,38 @@ export interface components {
             gstPaise: number;
             /** @description ISO 8601 timestamp. */
             paidAt: string;
+            /** @description Only for a SUPER_ADMIN caller; ignored with a service key. */
             productId?: number | null;
+            /** @description Only for a SUPER_ADMIN caller; ignored with a service key. */
+            productSlug?: string | null;
+        };
+        PaymentResult: {
+            agentCode?: string;
+            breakdown?: {
+                basePaise?: number;
+                grossCommissionPaise?: number;
+                netCommissionPaise?: number;
+                /** @description The product's seller or member rate, whichever applied. */
+                rateBps?: number;
+                tdsPaise?: number;
+                tdsRateBps?: number;
+            };
+            commissionAccrued?: boolean;
+            commissionId?: number;
+            externalRef?: string;
+            paymentId?: number;
+            /** @description Product slug. */
+            product?: string | null;
+            /**
+             * @description Why no commission accrued, when none did.
+             * @enum {string}
+             */
+            reason?: "PAYMENT_ALREADY_RECORDED" | "NO_ATTRIBUTION" | "AGENT_NOT_APPROVED" | "AGENT_NOT_PLACED";
+            recorded: boolean;
+            /** @description True when this response was replayed from the Idempotency-Key. */
+            replayed: boolean;
+            /** @enum {string} */
+            tier?: "USER" | "SELLER";
         };
         PayoutProfile: {
             bankAccount?: string | null;
@@ -5319,6 +6593,34 @@ export interface components {
             panStatus?: "NOT_SUBMITTED" | "PENDING_VERIFICATION" | "VERIFIED" | "REJECTED" | "DUPLICATE_CANCELLED";
             withdrawalBlocked?: boolean;
         };
+        ProductSettingsRequest: {
+            active?: boolean;
+            androidPackage?: string | null;
+            /** @description The product's fee in paise. `null` makes it FREE: members then earn diamonds instead of cash. */
+            feePaise?: number | null;
+            playUrl?: string | null;
+            /** @description What a seller earns: 1000 (10%) to 3000 (30%). */
+            sellerRateBps?: number;
+            /** @description What a member earns on a paid product. Default 100 (1%). */
+            userRateBps?: number;
+            webUrl?: string | null;
+        };
+        PublicProduct: {
+            androidPackage?: string | null;
+            /** @description Null means free. */
+            feePaise?: number | null;
+            id: number;
+            isFree: boolean;
+            nameEn: string;
+            nameMl: string;
+            playUrl?: string | null;
+            /** @description 1000..3000. */
+            sellerRateBps: number;
+            slug: string;
+            summaryEn?: string | null;
+            userRateBps: number;
+            webUrl?: string | null;
+        };
         QualificationsRequest: {
             computerLiteracy?: ("YES" | "BASIC" | "NO") | null;
             education?: ("SSLC" | "PLUS_TWO" | "DEGREE" | "PG" | "DIPLOMA" | "ITI" | "OTHER") | null;
@@ -5327,6 +6629,13 @@ export interface components {
             hasVehicle?: boolean | null;
             hoursPerDay?: ("ONE" | "TWO_TO_THREE" | "FOUR_PLUS" | "FULL_TIME") | null;
             reach?: ("BANK_EMPLOYEES" | "CONTRACTORS" | "STUDENTS" | "SHOP_OWNERS" | "GOVERNMENT_OFFICES" | "OTHERS")[] | null;
+        };
+        ReferralClickRequest: {
+            /** @description Product slug, when the link named one. */
+            app?: string;
+            code: string;
+            /** @description e.g. "web", "android". */
+            source?: string;
         };
         ReportCatalogue: {
             data: {
@@ -5407,8 +6716,8 @@ export interface components {
             privacyConsent: true;
             /** @description Version of the terms actually shown to the applicant. */
             termsVersion: string;
-            /** @description Optional: ward data is incomplete for some local bodies. Cannot be given without a local body. */
-            wardId?: number | null;
+            /** @description Required. The applicant's ward NUMBER within their local body, not a ward id — ward names are not loaded, so there is no list to choose from. The ward row is created on demand the first time someone in that ward applies. For an applicant using pendingLocalBodyName the number is held until an administrator places them. */
+            wardNumber: number;
         };
         SignupResponse: {
             agent: {

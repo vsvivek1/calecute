@@ -37,6 +37,12 @@ export const STATIC_APPS: StaticApp[] = [
     image: "/plus-two-science/assets/logo.svg",
   },
   {
+    name: "Geological Assistant Prep",
+    tagline: "Kerala PSC Geological Assistant (Ground Water Dept) exam prep",
+    href: "/geological-assistant",
+    image: "/geological-assistant/assets/logo.svg",
+  },
+  {
     name: "Find My Bus",
     tagline: "Live bus tracking for riders and bus owners",
     href: "/findmybus",
@@ -47,6 +53,18 @@ export const STATIC_APPS: StaticApp[] = [
     tagline: "Jathakam, porutham and muhurtham with classical sources",
     href: "/jathakam",
     image: "/jathakam/assets/icon-192.png",
+  },
+  {
+    name: "Ramayanam Wallpapers",
+    tagline: "A Ramayana painting and its story as your wallpaper, a new one every day",
+    href: "/ramayanam",
+    image: "/ramayanam/assets/icon-192.png",
+  },
+  {
+    name: "Bhagavatham Wallpapers",
+    tagline: "A Bhagavatam painting and its story as your wallpaper, a new one every day",
+    href: "/bhagavatham",
+    image: "/bhagavatham/assets/icon-192.png",
   },
   {
     name: "Muhurtham Clock",
