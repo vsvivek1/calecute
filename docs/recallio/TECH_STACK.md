@@ -15,7 +15,9 @@ Checked on pub.dev on 2026-10-22.
 
 ## Not built yet
 
-- Home-screen quota widget (`home_widget`) — needs an Android widget layout; next step after the first device test.
+- Home-screen quota widget (`home_widget`) — needs an Android widget layout; next step after the first device test. Not a dependency yet.
 - AI help (Edge Function proxy) — needs the Anthropic key set as a Supabase secret.
 - Weekly report email — the report card shows in the feed; email needs a mail provider.
 - Quick checks (focus and level).
+- Honesty checks use the recall view with a "Quick check" label; multiple-choice checks need distractors in the content.
+- Play release signing (upload key) and the fastlane internal-track upload.
