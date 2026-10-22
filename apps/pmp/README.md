@@ -1,6 +1,6 @@
 # PMP Prep by Calecutech
 
-PMP exam prep for US candidates: a free 15-question sample test, a $100
+PMP exam prep for US candidates: a free 15-question sample test, a $39
 one-time Stripe checkout, and then the full original question bank with
 spaced-repetition review, weak-area drills and timed mock exams. One Next.js
 codebase builds both the website and the Android app.
@@ -18,7 +18,7 @@ There are no accounts. Paying produces a **licence key**, an HMAC-signed
 statement that a Stripe Checkout session was paid, stored in the buyer's
 browser.
 
-1. `POST /api/checkout` creates a Checkout session for $100 (or `STRIPE_PRICE_ID`).
+1. `POST /api/checkout` creates a Checkout session for $39 (or `STRIPE_PRICE_ID`).
 2. Stripe returns the buyer to `/unlock?session_id=…`, which calls
    `POST /api/license/claim`. The server retrieves the session from Stripe,
    checks it is paid, and signs a key.

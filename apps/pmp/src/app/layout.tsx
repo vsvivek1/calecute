@@ -5,7 +5,7 @@ import Header from '@/components/Header';
 export const metadata: Metadata = {
   title: 'PMP Exam Prep by Calecutech: mock exams, spaced review, weak-area drills',
   description:
-    'Pass the PMP with original, PMP-certified-reviewed practice questions, full-length timed mock exams, spaced repetition and drills that target your weakest areas. One-time $100.',
+    'Pass the PMP with original, PMP-certified-reviewed practice questions, full-length timed mock exams, spaced repetition and drills that target your weakest areas. One-time $39.',
   metadataBase: new URL(process.env.PUBLIC_SITE_ORIGIN ?? 'https://pmp.calecutech.com'),
 };
 

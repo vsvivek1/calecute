@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import Flash from '@/components/Flash';
+import Icon from '@/components/Icon';
 import { Percent, StatusPill } from '@/components/Pill';
 import { childToday } from '@/lib/data';
 import { dayTime, relative, rupees } from '@/lib/format';
@@ -38,19 +39,33 @@ export default async function Today({ searchParams }: { searchParams: Promise<Re
   return (
     <>
       <Flash searchParams={searchParams} />
-      <h1>{first}’s day</h1>
-      <p className="sub">{d.student.class} · {new Date().toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', weekday: 'long', day: 'numeric', month: 'long' })}</p>
+      <section className="hero">
+        <div className="eyebrow">{new Date().toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', weekday: 'long', day: 'numeric', month: 'long' })}</div>
+        <h1>{first}’s day</h1>
+        <p className="sub">{d.student.class}</p>
+        <div className="chips">
+          {needs.length === 0
+            ? <span className="chip"><Icon name="check" size={15} />{t('Nothing needs you today')}</span>
+            : <span className="chip"><Icon name="alert" size={15} />{needs.length} need{needs.length > 1 ? '' : 's'} your reply</span>}
+          {d.homework_due.length > 0 && (
+            <Link href="/homework" className="chip"><Icon name="book" size={15} />{d.homework_due.length} homework due</Link>
+          )}
+          {d.events.length > 0 && (
+            <Link href="/activities" className="chip"><Icon name="sparkles" size={15} />{d.events.length} coming up</Link>
+          )}
+        </div>
+      </section>
 
       <section className="card">
         <h2>{t('Needs your reply')}</h2>
         {needs.length === 0 ? (
-          <p className="muted" style={{ margin: 0 }}>✓ {t('Nothing needs you today')}</p>
+          <p className="muted row" style={{ margin: 0 }}><span className="icon-chip green"><Icon name="check" /></span>{t('Nothing needs you today')}</p>
         ) : (
-          <ul className="list" style={{ margin: '0 -16px -16px' }}>
+          <ul className="list">
             {needs.map((n) => (
               <li key={n.text} className={n.tone}>
                 <span className="grow title">{n.text}</span>
-                <Link href={n.href} className="btn btn-ghost btn-sm">Open</Link>
+                <Link href={n.href} className="btn btn-ghost btn-sm">Open <Icon name="arrow" size={14} /></Link>
               </li>
             ))}
           </ul>
@@ -59,19 +74,19 @@ export default async function Today({ searchParams }: { searchParams: Promise<Re
 
       <div className="grid">
         <Link href="/attendance" className="card stat">
-          <div className="label">{t('Attendance')} today</div>
+          <div className="label"><span className="icon-chip green"><Icon name="calendar" /></span>{t('Attendance')} today</div>
           <div className="value"><StatusPill status={d.attendance_today} label={d.attendance_today ? t(d.attendance_today) : t('Not marked yet')} /></div>
           <div className="hint">This month: {monthPct == null ? '—' : `${monthPct}%`} ({m.absent} absent)</div>
         </Link>
         <Link href="/fees" className="card stat">
-          <div className="label">{t('Fees')} {t('Due').toLowerCase()}</div>
+          <div className="label"><span className={`icon-chip ${d.fees.overdue_paise > 0 ? 'red' : ''}`}><Icon name="wallet" /></span>{t('Fees')} {t('Due').toLowerCase()}</div>
           <div className="value">{rupees(d.fees.due_paise)}</div>
           <div className="hint">
             {!d.fees.next_due_date ? 'All paid' : d.fees.overdue_paise > 0 ? `${rupees(d.fees.overdue_paise)} overdue` : `Next due ${relative(d.fees.next_due_date)}`}
           </div>
         </Link>
         <Link href="/grades" className="card stat">
-          <div className="label">Latest exam</div>
+          <div className="label"><span className="icon-chip violet"><Icon name="chart" /></span>Latest exam</div>
           <div className="value">{d.latest_exam ? <Percent value={d.latest_exam.percent} /> : '—'}</div>
           <div className="hint">{d.latest_exam?.name ?? 'No results published yet'}</div>
         </Link>

@@ -10,7 +10,7 @@ export function stripe() {
   return client;
 }
 
-export const priceCents = () => Number(process.env.PRICE_CENTS ?? 10000);
+export const priceCents = () => Number(process.env.PRICE_CENTS ?? 3900);
 
 export const siteOrigin = (req: Request) =>
   process.env.PUBLIC_SITE_ORIGIN ?? new URL(req.url).origin;
