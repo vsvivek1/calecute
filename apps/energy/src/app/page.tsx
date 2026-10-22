@@ -1,10 +1,10 @@
-import { getCatalog, getFlash, getMe, getToday, getUser } from '@/lib/data';
+import { getCatalog, getExam, getFeed, getFlash, getMe, getUser } from '@/lib/data';
 import { referralEnabled } from '@/lib/referral';
 import Enrol from '@/components/Enrol';
 import FlashBanner from '@/components/FlashBanner';
 import SignIn from '@/components/SignIn';
-import Study from '@/components/Study';
-import type { Flash } from '@/lib/types';
+import Feed from '@/components/Feed';
+import type { Exam, Flash } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,24 +23,32 @@ export default async function Home({
   const flash = await getFlash().catch(() => [] as Flash[]);
 
   if (!user) {
+    const exam = await getExam().catch(() => null as Exam | null);
     return (
       <>
         <section className="hero">
           <p className="eyebrow">BEE National Certification Examination</p>
           <h1>Energy Manager &amp; Energy Auditor, one day at a time</h1>
           <p className="sub">
-            Enrol in the papers you need. Each day Recallio gives you new cards, solved problems
-            step by step, and the revision that is due. You never plan; you just start.
+            Tick the papers you need. Recallio plans every day back from your exam date: short
+            sittings of up to 10 cards at your study times, solved problems one step at a time, and
+            revision that comes back just before you would forget. You never plan; you just rate.
           </p>
+          {exam && (
+            <p className="note">
+              {exam.name}: {new Date(exam.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+              {exam.status === 'estimated' ? ' (estimated, not yet announced)' : ''}.
+            </p>
+          )}
           {error && <div className="err">{error}</div>}
           <SignIn refCode={ref ?? null} />
         </section>
         <section className="grid4">
           {[
-            ['Daily cards', 'Short facts and formulas from the BEE syllabus and past papers.'],
-            ['Step-by-step problems', 'Long numericals one step at a time, with "Explain more" when you need it.'],
-            ['Built-in revision', 'Spaced repetition brings each card back just before you would forget it.'],
-            ['Noon flash', 'One or two high-yield facts per paper at 12 noon IST.'],
+            ['Planned from your exam date', 'Every card is seen before the exam; the last two days switch to cram mode.'],
+            ['Short sittings at set times', 'Up to 10 cards, a few minutes, at the times you choose.'],
+            ['Step-by-step problems', 'Long numericals one step at a time, with "Explain" when you need it.'],
+            ['Built-in revision', 'Rate each card; tough ones come back sooner, simple ones much later.'],
           ].map(([t, d]) => (
             <div className="card mini" key={t}>
               <h3>{t}</h3>
@@ -56,19 +64,12 @@ export default async function Home({
   const [me, catalog] = await Promise.all([getMe(), getCatalog()]);
   const enrolled = me.signedIn ? me.enrolled : [];
   if (enrolled.length === 0) {
-    return <Enrol catalog={catalog} initial={[]} first name={user.name} />;
+    const exam = await getExam().catch(() => null);
+    return <Enrol catalog={catalog} initial={[]} first name={user.name} exam={exam} />;
   }
 
-  const today = await getToday();
+  const feed = await getFeed();
   return (
-    <>
-      <FlashBanner flash={flash} />
-      {referralEnabled() && (
-        <a className="invite-strip" href="/invite">
-          🎁 Invite friends &amp; get rewards <span>Invite now →</span>
-        </a>
-      )}
-      <Study today={today} catalog={catalog} name={user.name} />
-    </>
+    <Feed initial={feed} catalog={catalog} flash={flash} invite={referralEnabled()} name={user.name} />
   );
 }
