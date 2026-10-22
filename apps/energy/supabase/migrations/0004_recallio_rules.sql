@@ -377,6 +377,9 @@ begin
     next_kind := quota_kind;
     if quota_kind in ('cram', 'exam') then
       opens := coalesce(last_done + make_interval(mins => energy_manager.cfg_int('cram_break_min')), now());
+    elsif not exists (select 1 from energy_manager.review_log where user_id = uid) then
+      -- The very first sitting starts straight after enrolment.
+      opens := now();
     elsif quota_n < coalesce(cardinality(prof.study_times), 0) then
       opens := energy_manager.ist(d, prof.study_times[quota_n + 1]);
       if last_done is not null then
@@ -454,10 +457,9 @@ declare
   sid bigint;
   welcome boolean;
 begin
-  -- Welcome back after two or more days away: a short first sitting.
-  welcome := exists (select 1 from energy_manager.review_log where user_id = uid)
-    and not exists (select 1 from energy_manager.review_log
-                     where user_id = uid and reviewed_at >= energy_manager.ist(d - 2, '00:00'));
+  -- The first sitting ever, and the first after two or more days away, are short.
+  welcome := not exists (select 1 from energy_manager.review_log
+                          where user_id = uid and reviewed_at >= energy_manager.ist(d - 2, '00:00'));
   if welcome then slots := 5; end if;
 
   if k = 'bonus' then
