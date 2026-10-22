@@ -336,6 +336,8 @@ class StudyController extends ChangeNotifier {
     s.index++;
     s.screen = 0;
     s.elapsed = 0;
+    // Keep the quota header current card by card.
+    _refresh();
     if (s.finished) {
       if (s.bonus) {
         d.bonusDone++;

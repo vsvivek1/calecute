@@ -77,8 +77,17 @@ class _StudyCardViewState extends State<StudyCardView> {
 
   @override
   void dispose() {
-    _tts.stop();
+    _stopSpeech();
     super.dispose();
+  }
+
+  /// Speech is a nice-to-have: never let it block or break the card.
+  void _stopSpeech() {
+    _tts.stop().then((_) {}, onError: (_) {});
+  }
+
+  void _speak(String text) {
+    _tts.speak(text).then((_) {}, onError: (_) {});
   }
 
   List<_Screen> _screens(T t) {
@@ -275,7 +284,7 @@ class _StudyCardViewState extends State<StudyCardView> {
       return;
     }
     _busy = true;
-    await _tts.stop();
+    _stopSpeech();
     widget.onRate(r, _spent + elapsed - _startElapsed);
   }
 
@@ -294,7 +303,7 @@ class _StudyCardViewState extends State<StudyCardView> {
         topic: c.topic,
         section: widget.sectionName,
         label: t.simpler,
-        onSpeak: () => _tts.speak(text),
+        onSpeak: () => _speak(text),
         body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(c.answer, style: theme.textTheme.titleLarge!.copyWith(fontSize: 22, fontWeight: FontWeight.w700)),
           const SizedBox(height: 16),
@@ -356,7 +365,7 @@ class _StudyCardViewState extends State<StudyCardView> {
           section: widget.sectionName,
           label: s.label,
           dots: screens.length > 2 ? (idx, screens.length) : null,
-          onSpeak: () => _tts.speak(s.speak),
+          onSpeak: () => _speak(s.speak),
           body: s.body(context, _showExplain),
           footer: footer,
         );
