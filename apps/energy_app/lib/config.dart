@@ -14,7 +14,7 @@ const supabaseKey = String.fromEnvironment(
 
 final energyCourse = CourseConfig(
   id: 'energy_manager',
-  appName: 'Energy Manager',
+  appName: 'Energy Auditor',
   tagline: 'BEE National Certification Exam for Energy Managers and Energy Auditors — '
       'all four papers, taught from the BEE guide books.',
   sections: const [
@@ -39,6 +39,16 @@ final energyCourse = CourseConfig(
   termsUrl: 'https://calecutech.com/apps/recallio-energy-manager/terms',
   deleteAccountUrl: 'https://calecutech.com/apps/recallio-energy-manager/delete-account',
   inviteUrl: 'https://calecutech.com/rewards?app=recallio-energy-manager',
+  // Each paper is a one-time Play product at Rs 1,000, or unlocked with a
+  // coupon. The first 20 cards of every paper are free.
+  pricing: const CoursePricing(
+    freeCardsPerSection: 20,
+    productIds: {1: 'paper_1', 2: 'paper_2', 3: 'paper_3', 4: 'paper_4'},
+    priceLabel: '₹1,000',
+    myPapersRpc: 'em_my_papers',
+    redeemRpc: 'em_redeem_coupon',
+    verifyFunction: 'em-play-verify',
+  ),
   examChecklist: const [
     'Admit card and photo ID',
     'Calculator (non-programmable), pens, pencil, eraser',

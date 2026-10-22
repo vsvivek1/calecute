@@ -125,4 +125,70 @@ void main() {
     now = now.add(const Duration(minutes: 91));
     expect(c.bonusOpenNow, isTrue);
   });
+
+  test('a locked paper offers only its free cards until it is unlocked', () async {
+    final store = await LocalStore.open('test');
+    final access = PaperAccess(
+      pricing: const CoursePricing(
+        freeCardsPerSection: 5,
+        productIds: {1: 'paper_1', 2: 'paper_2'},
+        priceLabel: 'Rs 1,000',
+        myPapersRpc: 'a',
+        redeemRpc: 'b',
+        verifyFunction: 'c',
+      ),
+      client: null,
+      storageKey: 'test',
+    );
+    await access.start();
+    final base = _config(DateTime(2026, 11, 20));
+    final config = CourseConfig(
+      id: base.id,
+      appName: base.appName,
+      tagline: base.tagline,
+      sections: base.sections,
+      exam: base.exam,
+      syncRpc: base.syncRpc,
+      deleteRpc: base.deleteRpc,
+      androidRedirect: base.androidRedirect,
+      privacyUrl: base.privacyUrl,
+      termsUrl: base.termsUrl,
+      deleteAccountUrl: base.deleteAccountUrl,
+      inviteUrl: base.inviteUrl,
+      pricing: access.pricing,
+    );
+    final c = StudyController(
+      config: config,
+      library: CourseLibrary(_cards()),
+      store: store,
+      access: access,
+      clock: () => now,
+    );
+    await c.start();
+    await c.finishOnboarding(LearnerSettings(sections: [1]));
+    expect(c.lockedSections, [1]);
+    expect(c.freeLeft(1), 5);
+
+    // Study everything on offer: never more than the 5 free cards.
+    final seen = <String>{};
+    for (var day = 0; day < 5; day++) {
+      now = DateTime(2026, 11, 1 + day, 9);
+      c.resume();
+      for (var k = 0; k < 4 && c.home != HomeKind.quotaComplete; k++) {
+        await c.startSitting();
+        if (c.sitting == null) break;
+        while (c.sitting != null) {
+          seen.add(c.sitting!.current!.cardId);
+          await c.rate(StudyRating.understood, 10);
+        }
+      }
+    }
+    expect(seen.length, lessThanOrEqualTo(5));
+    expect(seen.every((id) => ['p1-0', 'p1-1', 'p1-2', 'p1-3', 'p1-4'].contains(id)), isTrue);
+    expect(c.freeLeft(1), 0);
+
+    await access.setOwnedForTest({1});
+    expect(c.lockedSections, isEmpty);
+    expect(c.freeLeft(1), greaterThan(40));
+  });
 }

@@ -10,6 +10,7 @@ import '../study/study_controller.dart';
 import 'profile_sheet.dart';
 import 'strings.dart';
 import 'study_card_view.dart';
+import 'unlock.dart';
 
 /// The Daily Feed: the app's only menu. One card at a time; the app bar
 /// holds just the referral gift icon and the profile button.
@@ -70,6 +71,12 @@ class _FeedPageState extends State<FeedPage> with WidgetsBindingObserver {
         final t = T.of(context);
         final sitting = c.sitting;
         final card = c.currentCard;
+        final msg = c.access?.takeMessage();
+        if (msg != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+          });
+        }
         return PopScope(
           canPop: false,
           onPopInvokedWithResult: (didPop, _) {
@@ -128,7 +135,7 @@ class _FeedPageState extends State<FeedPage> with WidgetsBindingObserver {
                                     onScreen: c.saveScreen,
                                     onRate: c.rate,
                                   )
-                                : _HomeView(key: ValueKey(c.home), controller: c),
+                                : _HomeView(key: ValueKey(c.home), controller: c, auth: widget.auth),
                           ),
                         ),
                       ],
@@ -172,8 +179,9 @@ class _QuotaHeader extends StatelessWidget {
 }
 
 class _HomeView extends StatelessWidget {
-  const _HomeView({super.key, required this.controller});
+  const _HomeView({super.key, required this.controller, this.auth});
   final StudyController controller;
+  final AuthGateway? auth;
 
   @override
   Widget build(BuildContext context) {
@@ -184,8 +192,11 @@ class _HomeView extends StatelessWidget {
     final title = theme.textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.w700);
     final body = theme.textTheme.bodyLarge!.copyWith(fontSize: 17, height: 1.45);
 
+    // A paper whose free cards are nearly used up gets one unlock card.
+    final runningOut = [for (final s in c.lockedSections) if (c.freeLeft(s) <= 5) s];
     final banners = <Widget>[
       if (c.reportDue) _ReportCard(controller: c),
+      if (runningOut.isNotEmpty) UnlockCard(controller: c, section: runningOut.first, auth: auth),
       if (plan.mode == DayMode.revision) _Banner(icon: Icons.replay, text: t.revisionMode),
       if (plan.mode == DayMode.cram) _Banner(icon: Icons.bolt, text: t.cramMode),
       if (plan.mode == DayMode.cram && DateTime.now().hour >= 20) _Banner(icon: Icons.bedtime_outlined, text: t.sleepNow),

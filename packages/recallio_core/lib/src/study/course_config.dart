@@ -1,3 +1,4 @@
+import '../access/paper_access.dart';
 import '../model/learner.dart';
 
 class CourseSection {
@@ -24,6 +25,7 @@ class CourseConfig {
     required this.inviteUrl,
     this.languages = const ['en', 'ml'],
     this.examChecklist = const [],
+    this.pricing,
   });
 
   /// Storage key and alert channel id, e.g. `energy_manager`.
@@ -45,6 +47,9 @@ class CourseConfig {
 
   /// Exam-morning checklist lines (English).
   final List<String> examChecklist;
+
+  /// Paid papers; null means everything is free.
+  final CoursePricing? pricing;
 
   CourseSection section(int id) => sections.firstWhere((s) => s.id == id, orElse: () => sections.first);
 }
