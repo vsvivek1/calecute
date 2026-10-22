@@ -3,7 +3,7 @@
     <!-- Study-time alerts survive a reboot. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <application
-        android:label="Energy Manager"
+        android:label="Energy Auditor"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
