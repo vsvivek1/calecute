@@ -1,6 +1,11 @@
 import { band } from '@/lib/stats';
 import { DOMAINS } from '@/lib/types';
-import type { PracticeResult } from './Practice';
+import type { Question } from '@/lib/types';
+
+export interface PracticeResult {
+  q: Question;
+  correct: boolean;
+}
 
 export function barClass(pct: number) {
   return pct >= 0.75 ? 'good' : pct >= 0.6 ? 'mid' : 'bad';

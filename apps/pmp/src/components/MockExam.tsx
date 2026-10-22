@@ -3,8 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import QuestionCard from './QuestionCard';
 import Summary from './Summary';
-import { recordAnswer, recordMock } from '@/lib/store';
-import { record, shuffle, type TallyMap } from '@/lib/stats';
+import { shuffle } from '@/lib/stats';
 import type { Question } from '@/lib/types';
 
 // The real exam allows 230 minutes for 180 questions. Shorter mocks keep
@@ -18,7 +17,16 @@ const fmt = (s: number) => {
   return `${h ? `${h}:` : ''}${String(m).padStart(h ? 2 : 1, '0')}:${String(sec).padStart(2, '0')}`;
 };
 
-export default function MockExam({ questions, onExit }: { questions: Question[]; onExit: () => void }) {
+export default function MockExam({
+  questions,
+  onFinish,
+  onExit,
+}: {
+  questions: Question[];
+  /** Called once with the answers when the exam is submitted or time runs out. */
+  onFinish: (answers: (number | null)[], minutes: number) => void;
+  onExit: () => void;
+}) {
   const total = Math.round(questions.length * SECONDS_PER_Q);
   const orders = useMemo(() => questions.map((q) => shuffle(q.options.map((_, i) => i))), [questions]);
   const [answers, setAnswers] = useState<(number | null)[]>(() => questions.map(() => null));
@@ -40,21 +48,7 @@ export default function MockExam({ questions, onExit }: { questions: Question[];
 
   const finish = () => {
     if (done) return;
-    let byDomain: TallyMap = {};
-    questions.forEach((q, k) => {
-      const ok = answers[k] === q.answer;
-      byDomain = record(byDomain, q.domain, ok);
-      // Mock answers count toward weak-area stats, and wrong ones enter the
-      // review schedule; right ones are left to normal practice.
-      recordAnswer(q, ok, false, { schedule: !ok });
-    });
-    recordMock({
-      at: new Date().toISOString(),
-      size: questions.length,
-      correct: questions.filter((q, k) => answers[k] === q.answer).length,
-      byDomain,
-      minutes: Math.round((Date.now() - started.current) / 60000),
-    });
+    onFinish(answers, Math.round((Date.now() - started.current) / 60000));
     setDone(true);
   };
 
@@ -73,7 +67,7 @@ export default function MockExam({ questions, onExit }: { questions: Question[];
           <h2>Mock exam result</h2>
           <Summary results={results} showBands />
           <div className="row" style={{ marginTop: 16 }}>
-            <button className="btn btn-primary" onClick={onExit}>Back to dashboard</button>
+            <button className="btn btn-primary" onClick={onExit}>Back to my feed</button>
           </div>
         </div>
         <div className="card">
