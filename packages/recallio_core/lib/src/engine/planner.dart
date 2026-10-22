@@ -118,15 +118,7 @@ class Planner {
     });
 
     // New cards: syllabus order, papers interleaved so a day mixes subjects.
-    final unseen = <int, List<CourseCard>>{};
-    for (final c in cards) {
-      if (c.kind == CardKind.summary) continue;
-      if (progress[c.id]?.reps case final r? when r > 0) continue;
-      unseen.putIfAbsent(c.section, () => []).add(c);
-    }
-    for (final l in unseen.values) {
-      l.sort((a, b) => a.order.compareTo(b.order));
-    }
+    final unseen = _unseen(cards, progress);
     final newLeft = unseen.values.fold<int>(0, (n, l) => n + l.length);
 
     final learnDays = math.max(1, daysLeft - revisionWindow - 2);
@@ -187,6 +179,28 @@ class Planner {
       behindPlan: behind || seconds > budget,
       minutesNeeded: (seconds / 60).ceil(),
     );
+  }
+
+  /// The next [count] unseen cards in teaching order (bonus sittings take a
+  /// few from tomorrow's plan).
+  List<String> nextNew(List<CourseCard> cards, Map<String, CardProgress> progress, int count,
+          {Set<String> exclude = const {}}) =>
+      [
+        for (final c in _interleave(_unseen(cards, progress), highYieldOnly: false))
+          if (!exclude.contains(c.id)) c.id,
+      ].take(count).toList();
+
+  static Map<int, List<CourseCard>> _unseen(List<CourseCard> cards, Map<String, CardProgress> progress) {
+    final unseen = <int, List<CourseCard>>{};
+    for (final c in cards) {
+      if (c.kind == CardKind.summary) continue;
+      if (progress[c.id]?.reps case final r? when r > 0) continue;
+      unseen.putIfAbsent(c.section, () => []).add(c);
+    }
+    for (final l in unseen.values) {
+      l.sort((a, b) => a.order.compareTo(b.order));
+    }
+    return unseen;
   }
 
   /// Cram mode: every still-tough card, one summary per topic, then the
