@@ -1,8 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { band, pickDrill, pickMock, record, type TallyMap } from './stats.ts';
-import { dailyQueue } from './queue.ts';
-import { newCard } from './srs.ts';
+import { band, pickMock } from './stats.ts';
 import type { Question } from './types.ts';
 
 const mk = (id: string, domain: Question['domain'], topic: string): Question => ({
@@ -26,32 +24,6 @@ test('mock exams follow domain weights and never repeat a question', () => {
   assert.equal(m.filter((q) => q.domain === 'people').length, 20);
   assert.equal(m.filter((q) => q.domain === 'process').length, 25);
   assert.equal(m.filter((q) => q.domain === 'business').length, 15);
-});
-
-test('drills start with the weakest topic and prefer questions last missed', () => {
-  let topics: TallyMap = {};
-  for (let i = 0; i < 4; i++) topics = record(topics, 'process:Risk', i === 0);
-  for (let i = 0; i < 4; i++) topics = record(topics, 'people:Conflict', i < 2);
-  for (let i = 0; i < 4; i++) topics = record(topics, 'process:Scope', true);
-  const d = pickDrill(bank, topics, { r1: false }, 15);
-  assert.equal(d.length, 15);
-  assert.equal(d[0].id, 'r1');
-  assert.ok(d.slice(0, 5).every((q) => q.topic === 'Risk'));
-  assert.ok(d.slice(5, 10).every((q) => q.topic === 'Conflict'));
-  assert.ok(!d.slice(0, 10).some((q) => q.topic === 'Scope'));
-});
-
-test('daily review puts due cards first, then new ones', () => {
-  const now = new Date('2026-10-14T09:00:00');
-  const cards = {
-    p1: { ...newCard('p1'), repetitions: 1, due: '2026-10-10' },
-    p2: { ...newCard('p2'), repetitions: 1, due: '2026-10-13' },
-    p3: { ...newCard('p3'), repetitions: 1, due: '2026-10-30' },
-  };
-  const q = dailyQueue(bank, cards, {}, 20, now);
-  assert.equal(q.length, 20);
-  assert.deepEqual(q.slice(0, 2).map((x) => x.id), ['p1', 'p2']);
-  assert.ok(!q.some((x) => x.id === 'p3'));
 });
 
 test('bands', () => {

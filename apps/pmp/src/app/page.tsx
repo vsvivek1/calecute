@@ -6,19 +6,24 @@ import { IS_APP, PRICE_LABEL } from '@/lib/env';
 
 const FEATURES = [
   {
+    icon: '◎',
+    title: 'The app decides what you study',
+    body: 'No topic lists, no choosing. Every question is picked for you: what you are about to forget, what you found tough, and new material weighted like the exam.',
+  },
+  {
     icon: '⏱',
-    title: 'Full-length timed mocks',
-    body: '180 questions in 230 minutes, weighted like the real exam across People, Process and Business Environment. Flag, navigate and review like test day.',
+    title: '10 questions at a time',
+    body: 'Short sittings at the times you choose, with a reminder at each one. About 12 minutes, a few times a day, beats a weekend cram.',
   },
   {
     icon: '↻',
-    title: 'Spaced repetition',
-    body: 'Every question you miss comes back tomorrow, then in 6 days, then further out. The SM-2 schedule keeps what you learn from fading before exam day.',
+    title: 'Four honest ratings',
+    body: 'After each answer, tap Didn’t get it, Tough, Understood or So simple. The FSRS spaced-repetition engine uses it to decide when the question comes back.',
   },
   {
-    icon: '◎',
-    title: 'Weak-area drills',
-    body: 'We track your accuracy topic by topic and build drills from the ones dragging your score down, so study time goes where it moves the needle.',
+    icon: '▦',
+    title: 'Planned to your exam date',
+    body: 'Set your test date and the daily quota works backwards from it. Nothing is scheduled after exam day, and the last two days switch to cram mode on their own.',
   },
   {
     icon: '✓',
@@ -27,13 +32,8 @@ const FEATURES = [
   },
   {
     icon: '✎',
-    title: 'Explanations that teach',
-    body: 'Every answer explains why the best option wins and why the tempting distractor is wrong. That is how the PMI mindset sticks.',
-  },
-  {
-    icon: '▣',
-    title: 'Web and Android',
-    body: 'Study in the browser or on your phone. Progress lives on your device and the question bank works offline once loaded.',
+    title: 'Weekly report and timed mocks',
+    body: 'Each week: what became easy, what is still tough and gets pushed again. When you have enough covered, a full timed mock shows up in your feed.',
   },
 ];
 
@@ -52,7 +52,15 @@ const FAQ = [
   ],
   [
     'Can I try before I buy?',
-    'Yes. The 15-question sample test is free and needs no sign-up. It uses the same engine and explanations as the full product.',
+    'Yes. A free 10-question sitting needs no sign-up. It works exactly like the full app: one question at a time, explanations, and the four ratings.',
+  ],
+  [
+    'Why can’t I pick a topic or skip a question?',
+    'Because choosing costs energy and we all quietly avoid the hard topics. The app picks for you, one card at a time, and a rating is the only way forward. That is what keeps short daily sittings effective.',
+  ],
+  [
+    'How long does it take each day?',
+    'You set your minutes per day. Most days are two or three sittings of about 12 minutes. Extra sets are allowed, spaced out, never back to back.',
   ],
   [
     'How do I get in after paying?',
@@ -73,14 +81,15 @@ export default function Landing() {
         <div className="wrap hero-grid">
           <div>
             <span className="eyebrow">For the current PMP exam</span>
-            <h1>Walk into the PMP knowing you’re ready.</h1>
+            <h1>10 questions at a time. Ready by exam day.</h1>
             <p className="lead">
-              Timed mock exams, spaced repetition and weak-area drills, built on original questions reviewed by
-              a PMP-certified project manager. One payment of {PRICE_LABEL}. No subscription.
+              Tell us your exam date and when you can study. The app picks every question, brings back what you are
+              about to forget, and plans each day back from your test date. Original questions reviewed by a
+              PMP-certified project manager. One payment of {PRICE_LABEL}.
             </p>
             <div className="cta">
-              <Link href="/sample" className="btn btn-accent">Take the free 15-question test</Link>
-              <a href="#pricing" className="btn btn-ghost">See what’s included</a>
+              <Link href="/sample" className="btn btn-accent">Try a free sitting</Link>
+              <a href="#features" className="btn btn-ghost">How it works</a>
             </div>
           </div>
           <div className="hero-card" aria-hidden>
@@ -99,6 +108,12 @@ export default function Landing() {
             <div className="why">
               Servant leaders understand a conflict before acting on it. Escalating or handing it off skips that step.
             </div>
+            <div className="ratings" style={{ marginTop: 12 }}>
+              <span className="rate rate-again">Didn’t get it</span>
+              <span className="rate rate-hard">Tough</span>
+              <span className="rate rate-good">Understood</span>
+              <span className="rate rate-easy">So simple</span>
+            </div>
           </div>
         </div>
       </section>
@@ -106,10 +121,10 @@ export default function Landing() {
       <section className="section" id="features">
         <div className="wrap">
           <div className="section-head">
-            <h2>Study the way the exam tests you</h2>
+            <h2>Built for busy people, not study marathons</h2>
             <p>
-              The PMP rewards judgement, not memorisation. Every part of this is built to train the judgement
-              and to show you exactly where yours is still off.
+              Most PMP candidates work full time. So there is one screen: your daily feed. Open it, answer the card in
+              front of you, rate it, and the app takes care of the rest.
             </p>
           </div>
           <div className="grid3">
@@ -130,10 +145,10 @@ export default function Landing() {
             <h2>One price. Everything included.</h2>
             <p className="muted" style={{ fontSize: '1.08rem' }}>
               Most PMP courses charge monthly and bury the practice exams behind upgrades. This is one payment
-              for the full question bank, unlimited mocks and every study mode, on web and Android.
+              for the full question bank, the daily plan, timed mocks and weekly reports, on web and Android.
             </p>
             <p className="muted">
-              Not sure yet? <Link href="/sample">Try 15 questions free</Link>, no email needed.
+              Not sure yet? <Link href="/sample">Try a free sitting</Link>, no email needed.
             </p>
           </div>
           <div className="price-card">
@@ -142,9 +157,10 @@ export default function Landing() {
             </div>
             <ul className="ticks">
               <li>Full original question bank, all three domains</li>
-              <li>Unlimited timed mock exams (60 or 180 questions)</li>
-              <li>Spaced-repetition daily review</li>
-              <li>Weak-area drills and topic-level progress</li>
+              <li>Daily plan worked back from your exam date</li>
+              <li>10-question sittings with reminders at your study times</li>
+              <li>FSRS spaced repetition, weekly report, 2-day cram mode</li>
+              <li>Timed mock exams (60 or 180 questions)</li>
               <li>Web and Android app</li>
               <li>14-day money-back guarantee</li>
             </ul>
