@@ -1,0 +1,60 @@
+name: Energy Manager app
+
+on:
+  pull_request:
+    paths:
+      - "apps/energy_app/**"
+      - "packages/recallio_core/**"
+      - ".github/workflows/energy-app.yml"
+  push:
+    branches: [main]
+    paths:
+      - "apps/energy_app/**"
+      - "packages/recallio_core/**"
+      - ".github/workflows/energy-app.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: "3.47.7"
+          cache: true
+      - name: Engine tests
+        working-directory: packages/recallio_core
+        run: |
+          flutter pub get
+          flutter analyze
+          flutter test
+      - name: App checks
+        working-directory: apps/energy_app
+        run: |
+          flutter pub get
+          flutter analyze
+          flutter test
+      # Release build signed with the debug key until a Play upload key is
+      # added; fine for testing on a phone, not for the Play Store.
+      - name: Android APK
+        working-directory: apps/energy_app
+        run: flutter build apk --release
+      - name: Web
+        working-directory: apps/energy_app
+        run: flutter build web --release --no-web-resources-cdn
+      - uses: actions/upload-artifact@v4
+        with:
+          name: energy-manager-apk
+          path: apps/energy_app/build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        with:
+          name: energy-manager-web
+          path: apps/energy_app/build/web
+          retention-days: 30

@@ -1,0 +1,27 @@
+name: recallio_core
+description: Shared Recallio (Spaced Loop) engine for Calecute course apps — scheduler, planner, sitting builder, feed and card widgets.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+  flutter: ">=3.35.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  fsrs: ^2.0.1
+  shared_preferences: ^2.5.3
+  supabase_flutter: ^2.18.3
+  flutter_local_notifications: ^22.3.2
+  timezone: ^0.11.1
+  flutter_timezone: ^5.1.0
+  flutter_tts: ^4.2.5
+  url_launcher: ^6.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
