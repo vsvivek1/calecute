@@ -34,7 +34,7 @@ final energyCourse = CourseConfig(
   ),
   syncRpc: 'em_sync',
   deleteRpc: 'em_delete_my_data',
-  androidRedirect: 'com.calecutech.energymanager://login-callback',
+  androidRedirect: 'com.calecutech.energyauditor://login-callback',
   privacyUrl: 'https://calecutech.com/apps/recallio-energy-manager/privacy',
   termsUrl: 'https://calecutech.com/apps/recallio-energy-manager/terms',
   deleteAccountUrl: 'https://calecutech.com/apps/recallio-energy-manager/delete-account',

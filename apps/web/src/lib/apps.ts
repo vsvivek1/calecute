@@ -1039,8 +1039,8 @@ export const APPS: AppEntry[] = [
     slug: "recallio-energy-manager",
     name: "Recallio: Energy Manager",
     tagline: "BEE energy manager and energy auditor exam prep",
-    androidPackage: "com.calecutech.energymanager",
-    iosBundleId: "com.calecutech.energymanager",
+    androidPackage: "com.calecutech.energyauditor",
+    iosBundleId: "com.calecutech.energyauditor",
     isDemo: false,
     audience: "Adults preparing for the BEE National Certification Examination for Energy Managers and Energy Auditors.",
     summary:
