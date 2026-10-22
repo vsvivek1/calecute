@@ -64,3 +64,12 @@ pattern. Update the row in `energy_manager.exam_info` once BEE publishes the
 - AI explanations through a Supabase Edge Function, with a Report button.
 - Summary cards per topic for cram mode (cram now reuses tough and
   high-yield cards).
+
+## Release steps
+
+1. Apply `supabase/migrations/0004_recallio_rules.sql` to the USS project
+   **before** the new front end deploys (the old app keeps working on it).
+2. Merge the PR; Vercel deploys `apps/energy`.
+3. Later: a small migration drops the old `em_today` and `em_review`.
+
+Engine tests: `supabase/tests/run.sh` against any local Postgres.
