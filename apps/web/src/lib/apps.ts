@@ -1037,7 +1037,7 @@ export const APPS: AppEntry[] = [
   {
     ...BASE[RECALLIO],
     slug: "recallio-energy-manager",
-    name: "Recallio: Energy Manager",
+    name: "Recallio: BEE Energy Auditor",
     tagline: "BEE energy manager and energy auditor exam prep",
     androidPackage: "com.calecutech.energyauditor",
     iosBundleId: "com.calecutech.energyauditor",
@@ -1063,6 +1063,13 @@ export const APPS: AppEntry[] = [
         purpose:
           "This is the study record the daily plan is computed from. It lives on your device; if you sign in, a copy is kept in your account so another device can continue it.",
       },
+      {
+        category: "Purchases",
+        items: ["Which papers you have unlocked", "How each was unlocked (Google Play order id or coupon code)"],
+        purpose:
+          "Unlocking the papers you paid for and restoring them on another phone or on the web. The payment itself is handled entirely by Google Play — we never see your card, UPI or bank details.",
+        optional: true,
+      },
     ],
     permissions: [
       {
@@ -1074,17 +1081,18 @@ export const APPS: AppEntry[] = [
         why: "Signing in and backing up your study record. Studying works offline; the cards are inside the app.",
       },
     ],
-    processors: ["google", "supabase"],
+    processors: ["google", "supabase", "play_billing"],
     qr: undefined,
     iconSrc: undefined,
     availabilityNote:
-      "The web version runs at energy.recallio.calecutech.com. The Android app is not on Google Play yet.",
+      "On Google Play as com.calecutech.energyauditor (Android). The web version runs at energy.recallio.calecutech.com with the same account.",
     features: [
       "Every card comes from the BEE guide books for Papers 1 to 4 and names the page it came from.",
       "The app decides what you study each day, counted back from your exam date, with built-in revision weeks and a two-day cram mode.",
       "Worked numericals one step at a time, with the reason for each step.",
       "Four honest buttons after each card — Didn't get it, Tough, Understood, So simple — and the card comes back when you need it.",
       "Works offline; sign in to use the same progress on phone and web.",
+      "The first 20 cards of every paper are free; unlock a paper for ₹1,000, once, with no subscription.",
     ],
     policyUpdated: "October 22, 2026",
     serviceName: "the Recallio Energy Manager service",
@@ -1095,7 +1103,7 @@ export const APPS: AppEntry[] = [
       "Your entire study record — every card's schedule and every rating",
     ],
     retainsOnDelete:
-      "Nothing identifying your study is kept. Your Google sign-in itself is shared with other Calecute Recallio apps; to remove it as well, write to us from that address.",
+      "Which papers you unlocked, and the Google Play order id or coupon behind each, are kept as a purchase record so a paper you paid for is never lost. Nothing identifying your study is kept. Your Google sign-in itself is shared with other Calecute Recallio apps; to remove it as well, write to us from that address.",
     terms: {
       updated: "October 22, 2026",
       intro:
@@ -1113,6 +1121,14 @@ export const APPS: AppEntry[] = [
           body: [
             "Cards are written from the BEE guide books and checked by people, and people make mistakes. Where a worked example in a guide book has an arithmetic slip, the card keeps the book's figure and says so.",
             "Report anything that looks wrong at info@calecutech.com and we will check it.",
+          ],
+        },
+        {
+          heading: "Free cards, paid papers and refunds",
+          body: [
+            "The first 20 cards of every paper are free, so you can judge the method before paying. A paper is unlocked by a one-time Google Play purchase of ₹1,000 or by a coupon code we issue. There is no subscription and nothing renews.",
+            "An unlocked paper is tied to your Google sign-in and stays unlocked on every phone and on the web. Sign in with the same account to restore it.",
+            "Google is the merchant of record for Play purchases. Refunds follow Google Play's refund policy and are requested through Google; we cannot reverse a Play charge ourselves.",
           ],
         },
         {
