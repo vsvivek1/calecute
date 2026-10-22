@@ -1,4 +1,4 @@
-name: Energy Manager app
+name: Energy Auditor app
 
 on:
   pull_request:
@@ -50,11 +50,11 @@ jobs:
         run: flutter build web --release --no-web-resources-cdn
       - uses: actions/upload-artifact@v4
         with:
-          name: energy-manager-apk
+          name: energy-auditor-apk
           path: apps/energy_app/build/app/outputs/flutter-apk/app-release.apk
           retention-days: 30
       - uses: actions/upload-artifact@v4
         with:
-          name: energy-manager-web
+          name: energy-auditor-web
           path: apps/energy_app/build/web
           retention-days: 30
