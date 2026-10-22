@@ -76,9 +76,23 @@ keyPassword=...
 
 Without it, release builds fall back to the debug key.
 
+## Release to Google Play
+
+fastlane lives in `android/` (`bundle exec fastlane <lane>`):
+
+| Lane | Does |
+|---|---|
+| `build` | signed AAB (`config:` = dart-define file, `build_number:`) |
+| `production_draft` | uploads the AAB to the **production** track as a **draft** |
+| `internal_draft` | uploads the AAB to internal testing as a draft |
+
+The **Geological Assistant release** workflow (`.github/workflows/geological-assistant-release.yml`, run by hand) builds the signed AAB from repository secrets (listed at the top of the file), fails if any config value is empty so a release can never ship in demo mode, checks the AAB is not debug-signed, keeps it as a run artifact for 7 days, and uploads it as a draft. The version code is the run number. A draft never goes live until someone sends it for review in Play Console.
+
+Play only accepts API uploads for an app that already exists in Play Console; if the first API upload is refused, upload the artifact once by hand.
+
 ## Not done yet
 
 - Play Billing (plan option A). The app only unlocks courses bought on the website for now.
 - Daily reminder notifications.
 - Malayalam text (`statement_ml` is in the schema, not filled).
-- Store listing, screenshots and data-safety form.
+- Store listing, screenshots and data-safety form (Play Console, before sending the production draft for review).
