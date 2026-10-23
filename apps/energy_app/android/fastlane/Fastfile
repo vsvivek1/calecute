@@ -1,0 +1,43 @@
+default_platform(:android)
+
+AAB = File.expand_path("../../build/app/outputs/bundle/release/app-release.aab", __dir__)
+
+platform :android do
+  desc "Upload the AAB to Production as a DRAFT. Nothing goes live until it is published by hand in Play Console."
+  lane :production_draft do |o|
+    aab = o[:aab] || AAB
+    UI.user_error!("AAB not found: #{aab}") unless File.exist?(aab)
+    upload_to_play_store(
+      track: "production",
+      aab: aab,
+      release_status: "draft",
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
+  desc "Upload the AAB to Internal testing as a DRAFT."
+  lane :internal do |o|
+    aab = o[:aab] || AAB
+    UI.user_error!("AAB not found: #{aab}") unless File.exist?(aab)
+    upload_to_play_store(
+      track: "internal",
+      aab: aab,
+      release_status: "draft",
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
+  desc "Push store listing text, icon, feature graphic and screenshots (fastlane/metadata/android)."
+  lane :metadata do
+    upload_to_play_store(
+      skip_upload_aab: true,
+      skip_upload_apk: true,
+      skip_upload_changelogs: true,
+      sync_image_upload: true
+    )
+  end
+end

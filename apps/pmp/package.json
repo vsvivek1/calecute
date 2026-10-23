@@ -9,17 +9,23 @@
     "build:android": "node scripts/build-sample.mjs && BUILD_TARGET=android next build && cap sync android",
     "start": "next start -p 3200",
     "typecheck": "tsc --noEmit",
-    "test": "node --test --experimental-strip-types src/lib/*.test.ts",
+    "test": "node --test --experimental-strip-types src/lib/*.test.ts src/lib/engine/*.test.ts",
     "check:bank": "node scripts/check-bank.mjs"
   },
   "dependencies": {
+    "@capacitor-community/text-to-speech": "^6.1.0",
     "@capacitor/android": "^7.4.0",
+    "@capacitor/app": "^7.1.2",
+    "@capacitor/browser": "^7.0.5",
     "@capacitor/core": "^7.4.0",
+    "@capacitor/local-notifications": "^7.0.7",
+    "@supabase/supabase-js": "^2.118.0",
     "next": "16.2.9",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "server-only": "^0.0.1",
-    "stripe": "^18.5.0"
+    "stripe": "^18.5.0",
+    "ts-fsrs": "^5.4.2"
   },
   "devDependencies": {
     "@capacitor/cli": "^7.4.0",

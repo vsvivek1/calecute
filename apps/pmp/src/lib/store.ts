@@ -2,52 +2,20 @@
 
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { API } from './env';
-import { dayKey, newCard, ratingFor, review, type CardState } from './srs';
-import { record, topicKey, type TallyMap } from './stats';
 import type { Question } from './types';
 import sample from '@/data/sample.json';
 
-// Everything a learner has is in localStorage on their own device: the
-// licence key, the cached question bank, and their progress. No account,
-// no server-side profile.
+// The licence key and the cached question bank, in localStorage on the
+// learner's own device. Study progress lives in ./feed.ts. No account, no
+// server-side profile.
 
 const K = {
   license: 'pmp.license',
   email: 'pmp.email',
   bank: 'pmp.bank',
-  progress: 'pmp.progress',
 };
 
-export interface MockResult {
-  at: string;
-  size: number;
-  correct: number;
-  byDomain: TallyMap;
-  minutes: number;
-}
-
-export interface Progress {
-  cards: Record<string, CardState>;
-  topics: TallyMap;
-  domains: TallyMap;
-  last: Record<string, boolean>;
-  answered: number;
-  mocks: MockResult[];
-  /** Local days with at least one answer, YYYY-MM-DD. */
-  days: string[];
-}
-
-const empty: Progress = {
-  cards: {},
-  topics: {},
-  domains: {},
-  last: {},
-  answered: 0,
-  mocks: [],
-  days: [],
-};
-
-const read = <T,>(k: string, fallback: T): T => {
+export const read = <T,>(k: string, fallback: T): T => {
   try {
     const v = localStorage.getItem(k);
     return v ? (JSON.parse(v) as T) : fallback;
@@ -56,17 +24,9 @@ const read = <T,>(k: string, fallback: T): T => {
   }
 };
 
-const write = (k: string, v: unknown) => {
-  try {
-    localStorage.setItem(k, JSON.stringify(v));
-  } catch {
-    /* storage full or blocked: progress just won't persist */
-  }
-  listeners.forEach((l) => l());
-};
-
-const listeners = new Set<() => void>();
-const subscribe = (l: () => void) => {
+export const listeners = new Set<() => void>();
+export const notify = () => listeners.forEach((l) => l());
+export const subscribe = (l: () => void) => {
   listeners.add(l);
   window.addEventListener('storage', l);
   return () => {
@@ -74,53 +34,6 @@ const subscribe = (l: () => void) => {
     window.removeEventListener('storage', l);
   };
 };
-
-let cachedRaw: string | null = null;
-let cachedProgress: Progress = empty;
-const snapshot = () => {
-  const raw = (() => {
-    try {
-      return localStorage.getItem(K.progress);
-    } catch {
-      return null;
-    }
-  })();
-  if (raw !== cachedRaw) {
-    cachedRaw = raw;
-    cachedProgress = raw ? { ...empty, ...(JSON.parse(raw) as Progress) } : empty;
-  }
-  return cachedProgress;
-};
-
-export function useProgress() {
-  return useSyncExternalStore(subscribe, snapshot, () => empty);
-}
-
-export function recordAnswer(q: Question, correct: boolean, guessed: boolean, { schedule = true } = {}) {
-  const p = snapshot();
-  const now = new Date();
-  const today = dayKey(now);
-  const cards = { ...p.cards };
-  if (schedule) cards[q.id] = review(p.cards[q.id] ?? newCard(q.id, now), ratingFor(correct, guessed), now);
-  write(K.progress, {
-    ...p,
-    cards,
-    topics: record(p.topics, topicKey(q), correct),
-    domains: record(p.domains, q.domain, correct),
-    last: { ...p.last, [q.id]: correct },
-    answered: p.answered + 1,
-    days: p.days.includes(today) ? p.days : [...p.days, today],
-  } satisfies Progress);
-}
-
-export function recordMock(m: MockResult) {
-  const p = snapshot();
-  write(K.progress, { ...p, mocks: [...p.mocks, m] });
-}
-
-export function resetProgress() {
-  write(K.progress, empty);
-}
 
 // ---- licence -------------------------------------------------------------
 

@@ -27,6 +27,8 @@ jobs:
         env:
           STRIPE_SECRET_KEY: sk_test_ci_placeholder
           LICENSE_SECRET: ci-placeholder-not-a-secret
+          NEXT_PUBLIC_SUPABASE_URL: https://vspbbwpehvenmxddgbhm.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_8yQLCPZV55NwBKI5ybeRAg__UggFFK_
 
   android:
     runs-on: ubuntu-latest
@@ -43,7 +45,10 @@ jobs:
       - run: npm ci
       - run: npm run build:android --workspace=apps/pmp
         env:
-          NEXT_PUBLIC_API_ORIGIN: https://pmp.calecutech.com
+          # Until pmp.calecutech.com points at Vercel, the app talks to the vercel.app URL.
+          NEXT_PUBLIC_API_ORIGIN: https://calecute-pmp.vercel.app
+          NEXT_PUBLIC_SUPABASE_URL: https://vspbbwpehvenmxddgbhm.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: sb_publishable_8yQLCPZV55NwBKI5ybeRAg__UggFFK_
       - run: ./gradlew assembleDebug --no-daemon
         working-directory: apps/pmp/android
       - uses: actions/upload-artifact@v4
