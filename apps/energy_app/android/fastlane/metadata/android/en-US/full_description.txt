@@ -2,6 +2,11 @@ Pass the BEE National Certification Examination (NCE) for Energy Managers and En
 
 Built for working engineers preparing for the BEE certified energy manager (CEM) and certified energy auditor (CEA) exam: no timetable to make, no chapters to choose. Open the app at your study time and do the cards it gives you.
 
+WHO IT IS FOR
+• Mechanical, electrical and chemical engineers preparing for the BEE energy manager or energy auditor certificate
+• Plant, utility and maintenance engineers who want to revise energy audit and energy conservation basics
+• Energy consultants and ESCO staff brushing up on the Energy Conservation Act, 2001, PAT scheme and energy audit methods
+
 HOW IT WORKS
 • Set your exam date and the papers you are taking. The app decides what to study each day, including revision.
 • At each study time you get an alert: "10 cards, about 6 minutes". Study one card at a time.
@@ -19,7 +24,7 @@ ALL FOUR BEE PAPERS
 
 WHAT IS INSIDE
 • Over 2,000 cards written from the BEE guide books, in chapter order, each naming the page it came from.
-• Energy audit numericals solved one step at a time, with the reason for every step: boiler efficiency, pump and fan laws, motor loading, power factor, heat balance and more.
+• Energy audit and energy efficiency numericals solved one step at a time, with the reason for every step: boiler efficiency, pump and fan laws, motor loading, power factor, heat balance and more.
 • Read-aloud on every card, English and Malayalam app language, works offline.
 • Sign in with Google to use the same progress on your phone and on the web at energy.recallio.calecutech.com.
 
