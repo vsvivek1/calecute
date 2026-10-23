@@ -1,6 +1,6 @@
 # Geological Assistant app (Android)
 
-Flutter app for the Kerala PSC Geological Assistant course (Ground Water Department, Cat. 46/2011). Students sign in with Google and study the course they bought on calecutech.com: daily fact cards with spaced repetition, unit quizzes, and a timed mock test.
+Flutter app for the Kerala PSC Geological Assistant course (Ground Water Department, Cat. 46/2011). Students sign in with Google and buy the course in the app (Google Play) or on calecutech.com: daily fact cards with spaced repetition, unit quizzes, and a timed mock test.
 
 Plan: `docs/geological-assistant/FLUTTER_PLAN.md` (on the `claude/geological-assistant` branch).
 
@@ -17,7 +17,8 @@ The application ID is permanent once the first build reaches Google Play.
 ## What it does
 
 - **Sign-in:** Google, exchanged for a Supabase session (`signInWithIdToken`), the same account as the website.
-- **Unlock:** `geological_assistant.has_active_subscription('geological-assistant')`. Purchases happen on the website only. The app sells nothing, shows no price and has no link to buy, to stay within Google Play's payments policy. An account without the course sees "Course not active on this account".
+- **Unlock:** `geological_assistant.has_active_subscription('geological-assistant')`. Either a Google Play purchase in the app or a Razorpay purchase on calecutech.com with the same Google account unlocks it.
+- **Buy (Google Play Billing):** an account without the course sees "Unlock the full course" with the Play price and **Buy**, plus **Restore purchase**. One non-consumable product, `geological_assistant_lifetime` (`AppConfig.playProductId`, override with `--dart-define=PLAY_PRODUCT_ID=...`). The purchase carries sha256(Supabase user id) as its obfuscated account id. On `purchased`/`restored` the app sends the token to the `ga-play-verify` edge function (signed-in JWT); only when it answers ok does the app call `completePurchase` and re-check access. If the server can't be reached the purchase stays unfinished and Restore (or the quiet restore the app runs once when it opens locked) tries again. Pending payments show a note; cancel and error show a message. No billing in demo mode or off Android. Code: `lib/billing.dart`, `lib/billing_logic.dart`.
 - **Today:** due reviews first, then new cards (25 a day by default, high-priority first, same as the website). Review cards are tested with one of their linked past-paper questions when they have one. Tags on each card: high priority (tier 1), past paper (`source_ref`), verify before exam (`verified = false`).
 - **Practice:** 20-question unit quizzes with the answer and the fact behind it after each question; "Read cards" per unit with filters; retry your mistakes.
 - **Mock test:** 100 questions (20 per unit), 75 minutes, 1 mark right, minus 1/4 wrong (same as the website since 18 Oct), auto-submit at time out, question palette, mark for review, per-unit result and answer review. Question count and time come from the `courses` row; the 1/4 penalty is fixed in `lib/models.dart` because the row still says 1/3.
@@ -63,6 +64,21 @@ flutter build apk --debug --dart-define-from-file=config/prod.json
 
 CI (`.github/workflows/geological-assistant-app.yml`) runs format, analyze, tests and a debug APK build on every pull request that touches this folder, and attaches the APK to the run.
 
+## Google Play in-app purchase setup (owner)
+
+1. **Play Console > Monetize > Products > In-app products:** create `geological_assistant_lifetime` (one-time, managed product), price ₹3,000, and activate it. Play only lists products once an app build with the billing permission is uploaded to a track (the `in_app_purchase` plugin adds it).
+2. **Google Cloud console** (any project, the USS one is fine): enable the **Google Play Android Developer API**, create a service account and a JSON key for it.
+3. **Play Console > Users and permissions:** invite the service account's email, app access to Geological Assistant, with **View financial data, orders and cancellation survey responses** and **Manage orders and subscriptions**. (Older consoles: Setup > API access > link the Cloud project first.) Permissions can take up to a day to start working.
+4. **Supabase USS > Edge Functions > Secrets:** `GOOGLE_PLAY_SERVICE_ACCOUNT` = the whole JSON key file.
+5. Deploy: `supabase functions deploy ga-play-verify` (JWT verified; it answers 503 until the secret is set). Source: `docs/geological-assistant/db/uss/functions/ga-play-verify/`.
+6. Optional, for refunds and chargebacks: deploy `ga-play-rtdn --no-verify-jwt`, set secret `PLAY_RTDN_KEY` (long random string), create a Pub/Sub topic (grant `google-play-developer-notifications@system.gserviceaccount.com` Pub/Sub Publisher) with a push subscription to `https://vspbbwpehvenmxddgbhm.supabase.co/functions/v1/ga-play-rtdn?key=<PLAY_RTDN_KEY>`, and set the topic in Play Console > Monetize > Monetization setup. A voided purchase sets the row to `refunded`, which removes access. Without it, refunds made in Play Console have to be marked in the table by hand.
+7. **Testing:** billing only works in a build installed from Google Play (internal testing track is enough), not a sideloaded APK. Add testers under Play Console > Setup > **License testing** so they are not charged. Test purchases show `test purchase recorded` in the function log.
+
+Notes:
+- Rows written: `subscriptions` with `provider = 'google_play'`, `provider_ref` = Play order id (`GPA....`), `status = 'active'`, `current_period_end = null`. Calling again with the same token changes nothing. A token whose obfuscated account id is another user's hash, or an order already linked to another user, is refused (403).
+- Google keeps a service fee on Play sales (15% for most small developers, on the first $1M a year after enrolling in the 15% tier; otherwise 30%).
+- Web coupons and the spin-wheel discount stay web-only: Play has no percentage coupon codes for one-time products. Play promo codes (free copies) can be made in Play Console if needed.
+
 ## Release signing
 
 `android/app/build.gradle.kts` reads `android/key.properties` (never committed):
@@ -92,7 +108,6 @@ Play only accepts API uploads for an app that already exists in Play Console; if
 
 ## Not done yet
 
-- Play Billing (plan option A). The app only unlocks courses bought on the website for now.
 - Daily reminder notifications.
 - Malayalam text (`statement_ml` is in the schema, not filled).
 - Store listing, screenshots and data-safety form (Play Console, before sending the production draft for review).

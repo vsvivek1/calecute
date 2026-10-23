@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../app_state.dart';
+import '../billing.dart';
 import '../config.dart';
 import '../theme.dart';
 import '../widgets.dart';
@@ -144,36 +145,123 @@ class SignInScreen extends ConsumerWidget {
   }
 }
 
-/// Signed in, but this account doesn't have the course. The app sells
-/// nothing and shows no price, in line with Google Play's payments policy.
+/// Signed in, but this account doesn't have the course. Sells it through
+/// Google Play when this build can; a purchase made on calecutech.com with
+/// the same Google account unlocks the app too.
 class LockedScreen extends ConsumerWidget {
   const LockedScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(appProvider);
+    final billing = ref.watch(billingProvider);
     final controller = ref.read(appProvider.notifier);
+    final store = ref.read(billingProvider.notifier);
+    final email = state.account?.email ?? '';
+    final muted = TextStyle(color: Palette.of(context).muted, fontSize: 13);
+
+    if (!billing.supported) {
+      return _EntryLayout(
+        children: [
+          _Heading(
+            'Course not active on this account',
+            'You are signed in as $email. '
+                'If you already have the Geological Assistant course, sign in with the Google account you used to get it.',
+          ),
+          FilledButton.icon(
+            onPressed: () => controller.reload(refreshContent: true),
+            icon: const Icon(Icons.refresh),
+            label: const Text('Check again'),
+          ),
+          const SizedBox(height: 10),
+          OutlinedButton(
+            onPressed: controller.signOut,
+            child: const Text('Use a different account'),
+          ),
+          const SizedBox(height: 16),
+          TextButton(
+            onPressed: () => openLink(AppConfig.supportUrl),
+            child: const Text('Need help? Contact support'),
+          ),
+        ],
+      );
+    }
+
+    final product = billing.product;
+    final canBuy = product != null && !billing.busy && !billing.pending;
     return _EntryLayout(
       children: [
-        _Heading(
-          'Course not active on this account',
-          'You are signed in as ${state.account?.email ?? ''}. '
-              'If you already have the Geological Assistant course, sign in with the Google account you used to get it.',
+        const _Heading(
+          'Unlock the full course',
+          'All the fact cards, unit quizzes and timed mock tests. '
+              'One-time purchase, lifetime access.',
         ),
         FilledButton.icon(
-          onPressed: () => controller.reload(refreshContent: true),
-          icon: const Icon(Icons.refresh),
-          label: const Text('Check again'),
+          onPressed: canBuy ? store.buy : null,
+          icon: billing.busy || billing.loading
+              ? const SizedBox.square(
+                  dimension: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.lock_open),
+          label: Text(
+            billing.loading
+                ? 'Loading price…'
+                : product == null
+                ? 'Not available'
+                : 'Buy for ${product.price}',
+          ),
         ),
+        if (billing.message != null) ...[
+          const SizedBox(height: 12),
+          Text(
+            billing.message!,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: billing.pending
+                  ? Palette.of(context).muted
+                  : Palette.of(context).bad,
+            ),
+          ),
+        ],
         const SizedBox(height: 10),
         OutlinedButton(
-          onPressed: controller.signOut,
-          child: const Text('Use a different account'),
+          onPressed: billing.busy ? null : store.restore,
+          child: const Text('Restore purchase'),
         ),
-        const SizedBox(height: 16),
-        TextButton(
-          onPressed: () => openLink(AppConfig.supportUrl),
-          child: const Text('Need help? Contact support'),
+        if (product == null && !billing.loading) ...[
+          const SizedBox(height: 4),
+          TextButton(
+            onPressed: billing.busy ? null : store.loadProduct,
+            child: const Text('Try loading the price again'),
+          ),
+        ],
+        const SizedBox(height: 20),
+        Text(
+          'Signed in as $email.\n'
+          'Already bought on calecutech.com? Sign in with the same Google account.',
+          textAlign: TextAlign.center,
+          style: muted,
+        ),
+        const SizedBox(height: 4),
+        Wrap(
+          alignment: WrapAlignment.center,
+          children: [
+            TextButton(
+              onPressed: billing.busy
+                  ? null
+                  : () => controller.reload(refreshContent: true),
+              child: const Text('Check again'),
+            ),
+            TextButton(
+              onPressed: billing.busy ? null : controller.signOut,
+              child: const Text('Use a different account'),
+            ),
+            TextButton(
+              onPressed: () => openLink(AppConfig.supportUrl),
+              child: const Text('Help'),
+            ),
+          ],
         ),
       ],
     );

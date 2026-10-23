@@ -138,7 +138,7 @@ class AppController extends Notifier<AppState> {
     );
   }
 
-  /// Checks access again (after buying on the web) and reloads.
+  /// Checks access again (after a web or Play purchase) and reloads.
   Future<void> reload({bool refreshContent = false}) async {
     final account = state.account ?? _backend.currentAccount;
     if (account == null) {

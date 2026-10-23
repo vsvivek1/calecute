@@ -19,6 +19,19 @@ class AppConfig {
       supabaseKey.isNotEmpty &&
       googleWebClientId.isNotEmpty;
 
+  /// Google Play in-app product (one-time, non-consumable, lifetime access).
+  /// Create it in Play Console > Monetize > In-app products with this id.
+  /// Billing is off in demo mode and when this is empty.
+  static const playProductId = String.fromEnvironment(
+    'PLAY_PRODUCT_ID',
+    defaultValue: 'geological_assistant_lifetime',
+  );
+
+  /// Edge function that checks a Play purchase token and grants access.
+  static const playVerifyFunction = 'ga-play-verify';
+
+  static bool get billingConfigured => isConfigured && playProductId.isNotEmpty;
+
   static const siteUrl = 'https://calecutech.com/geological-assistant';
   static const privacyUrl = '$siteUrl/privacy/';
   static const termsUrl = '$siteUrl/terms/';

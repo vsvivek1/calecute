@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app_state.dart';
 import 'backend.dart';
+import 'billing.dart';
 import 'config.dart';
 import 'local_store.dart';
 import 'screens/entry.dart';
@@ -54,6 +55,8 @@ class Gate extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Listen to Google Play from the start so no purchase update is missed.
+    ref.listen(billingProvider, (_, _) {});
     final phase = ref.watch(appProvider.select((s) => s.phase));
     return switch (phase) {
       Phase.starting || Phase.loading => const LoadingScreen(),

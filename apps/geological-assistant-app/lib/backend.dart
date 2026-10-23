@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'billing_logic.dart';
 import 'config.dart';
 import 'models.dart';
 import 'scheduler.dart';
@@ -19,8 +20,18 @@ abstract class Backend {
 
   Future<Course> fetchCourse();
 
-  /// True when this account bought the course (on the website).
+  /// True when this account bought the course (on the website or through
+  /// Google Play).
   Future<bool> hasAccess();
+
+  /// Asks the server to check a Google Play purchase token with Google and,
+  /// if it is paid, grant this account the course. The server identifies the
+  /// account from the session, never from anything the app sends.
+  /// Throws on network errors.
+  Future<VerifyResult> verifyPlayPurchase({
+    required String productId,
+    required String purchaseToken,
+  });
   Future<CourseContent> fetchContent();
 
   Future<List<CardProgress>> fetchProgress();
@@ -90,6 +101,24 @@ class SupabaseBackend implements Backend {
       params: {'p_course_id': courseId},
     );
     return result == true;
+  }
+
+  @override
+  Future<VerifyResult> verifyPlayPurchase({
+    required String productId,
+    required String purchaseToken,
+  }) async {
+    try {
+      final res = await _client.functions.invoke(
+        AppConfig.playVerifyFunction,
+        body: {'productId': productId, 'purchaseToken': purchaseToken},
+      );
+      final data = res.data;
+      if (data is Map && data['ok'] == true) return const VerifyResult.ok();
+      return verifyFailure(res.status, data);
+    } on FunctionException catch (e) {
+      return verifyFailure(e.status, e.details);
+    }
   }
 
   /// Reads a whole table past the API's row limit, a page at a time.
@@ -249,6 +278,12 @@ class DemoBackend implements Backend {
 
   @override
   Future<bool> hasAccess() async => true;
+
+  @override
+  Future<VerifyResult> verifyPlayPurchase({
+    required String productId,
+    required String purchaseToken,
+  }) async => const VerifyResult.rejected('The demo has nothing to buy.');
 
   @override
   Future<CourseContent> fetchContent() async {
