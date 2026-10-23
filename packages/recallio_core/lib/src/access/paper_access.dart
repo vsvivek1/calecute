@@ -13,6 +13,9 @@ class CoursePricing {
     required this.myPapersRpc,
     required this.redeemRpc,
     required this.verifyFunction,
+    this.applyCouponRpc,
+    this.basePrice = 1000,
+    this.currency = '₹',
   });
 
   /// Cards of a locked section a learner may study for free.
@@ -29,12 +32,32 @@ class CoursePricing {
   /// Edge Function that verifies a Play purchase token.
   final String verifyFunction;
 
+  /// RPC that applies a coupon to the cart (discount) or opens papers.
+  final String? applyCouponRpc;
+
+  /// Full price of one section, for totals before the store answers.
+  final int basePrice;
+  final String currency;
+
+  /// Discount tiers that have their own Play product (`<id>_off<pct>`).
+  static const tiers = [10, 25, 50, 75, 90, 99];
+
+  /// Play product for [section], at [pct]% off (0 = full price).
+  String? productFor(int section, [int pct = 0]) {
+    final base = productIds[section];
+    if (base == null) return null;
+    return pct > 0 ? '${base}_off$pct' : base;
+  }
+
   int? sectionFor(String productId) {
+    final base = productId.replaceFirst(RegExp(r'_off\d+$'), '');
     for (final e in productIds.entries) {
-      if (e.value == productId) return e.key;
+      if (e.value == base) return e.key;
     }
     return null;
   }
+
+  int priceAt(int pct) => (basePrice * (100 - pct) / 100).round();
 }
 
 /// A Play Store purchase the app has received but not yet verified.
@@ -67,10 +90,26 @@ abstract class StoreBilling {
   Stream<String> get errors;
 }
 
-/// Which papers this learner owns, and buying or redeeming more.
+
+/// Result of applying a coupon.
+class CouponResult {
+  const CouponResult({this.error, this.pct, this.unlocked = false});
+  final String? error;
+
+  /// Percent off at checkout, for a discount code.
+  final int? pct;
+
+  /// True when the code opened papers outright (reviewer/admin codes).
+  final bool unlocked;
+}
+
+/// Which papers this learner owns, the cart, and checkout.
 ///
-/// Ownership lives on the server (tied to the signed-in account); the device
-/// keeps a copy so the app works offline.
+/// Every paper costs the full price and opens only after a paid checkout
+/// (Google Play on Android). A coupon gives a discount at checkout; only
+/// special reviewer/admin codes open papers outright. Ownership lives on the
+/// server (tied to the signed-in account); the device keeps a copy so the
+/// app works offline.
 class PaperAccess extends ChangeNotifier {
   PaperAccess({
     required this.pricing,
@@ -85,10 +124,15 @@ class PaperAccess extends ChangeNotifier {
   final String _key;
 
   Set<int> _owned = {};
-  Map<int, String> _prices = {};
+  final Map<String, String> _prices = {};
   bool _storeReady = false;
   int? _buying;
+  bool _checkingOut = false;
   String? _message;
+  final Set<int> _cart = {};
+  int _pct = 0;
+  String? _coupon;
+  Completer<bool>? _waiting;
   StreamSubscription<List<StorePurchase>>? _sub;
   StreamSubscription<String>? _errSub;
 
@@ -98,7 +142,18 @@ class PaperAccess extends ChangeNotifier {
 
   /// True when this device can pay in the app (Android with Play).
   bool get canBuy => _storeReady;
+
+  /// The paper being paid for right now.
   int? get buying => _buying;
+  bool get checkingOut => _checkingOut;
+
+  /// Papers in the cart (never ones already owned).
+  Set<int> get cart => _cart.difference(_owned);
+  bool inCart(int section) => cart.contains(section);
+
+  /// Discount from the applied coupon, 0 when none.
+  int get discountPct => _pct;
+  String? get coupon => _coupon;
 
   /// Last purchase or coupon result, for a snackbar; cleared when read.
   String? takeMessage() {
@@ -107,7 +162,43 @@ class PaperAccess extends ChangeNotifier {
     return m;
   }
 
-  String priceOf(int section) => _prices[section] ?? pricing.priceLabel;
+  String _label(int amount) => '${pricing.currency}${_group(amount)}';
+
+  static String _group(int n) {
+    final s = '$n';
+    if (s.length <= 3) return s;
+    return '${s.substring(0, s.length - 3)},${s.substring(s.length - 3)}';
+  }
+
+  /// Full price of one paper (the store's own text when known).
+  String priceOf(int section) =>
+      _prices[pricing.productFor(section)] ?? _label(pricing.basePrice);
+
+  /// Price of one paper after the applied discount.
+  String cartPriceOf(int section) =>
+      _prices[pricing.productFor(section, _pct)] ?? _label(pricing.priceAt(_pct));
+
+  /// Cart total after discount, and before it.
+  String get cartTotal => _label(pricing.priceAt(_pct) * cart.length);
+  String get cartFullTotal => _label(pricing.basePrice * cart.length);
+
+  void toggleCart(int section) {
+    if (owns(section)) return;
+    if (!_cart.remove(section)) _cart.add(section);
+    notifyListeners();
+  }
+
+  void addToCart(int section) {
+    if (owns(section) || _cart.contains(section)) return;
+    _cart.add(section);
+    notifyListeners();
+  }
+
+  void removeCoupon() {
+    _pct = 0;
+    _coupon = null;
+    notifyListeners();
+  }
 
   Future<void> start() async {
     final prefs = await SharedPreferences.getInstance();
@@ -117,25 +208,28 @@ class PaperAccess extends ChangeNotifier {
     if (b != null) {
       _sub = b.purchases.listen(_onPurchases);
       _errSub = b.errors.listen((e) {
-        _buying = null;
         _message = e;
+        _finishWaiting(false);
         notifyListeners();
       });
       try {
         _storeReady = await b.available();
-        if (_storeReady) {
-          final p = await b.prices(pricing.productIds.values.toSet());
-          _prices = {
-            for (final e in pricing.productIds.entries)
-              if (p[e.value] != null) e.key: p[e.value]!,
-          };
-        }
+        if (_storeReady) await _loadPrices(0);
       } catch (_) {
         _storeReady = false;
       }
       notifyListeners();
     }
     unawaited(refresh());
+  }
+
+  Future<void> _loadPrices(int pct) async {
+    final ids = {
+      for (final s in pricing.productIds.keys) pricing.productFor(s, pct)!,
+    };
+    try {
+      _prices.addAll(await billing!.prices(ids));
+    } catch (_) {}
   }
 
   /// Reads ownership from the server; on Android also re-checks purchases
@@ -156,41 +250,86 @@ class PaperAccess extends ChangeNotifier {
     }
   }
 
-  /// Returns null on success, or a message to show.
-  Future<String?> redeem(String code) async {
+  /// Applies a coupon to the cart.
+  Future<CouponResult> applyCoupon(String code) async {
     final c = client;
-    if (c == null || c.auth.currentUser == null) return 'Sign in first, so the paper stays with your account.';
+    if (c == null || c.auth.currentUser == null) {
+      return const CouponResult(error: 'Sign in first, so the paper stays with your account.');
+    }
     final k = code.trim();
-    if (k.isEmpty) return 'Type the code.';
+    if (k.isEmpty) return const CouponResult(error: 'Type the code.');
+    final rpc = pricing.applyCouponRpc;
     try {
-      final res = await c.rpc(pricing.redeemRpc, params: {'p_code': k});
-      await _save({for (final s in (res as List? ?? const [])) (s as num).toInt()});
-      return null;
+      if (rpc == null) {
+        final res = await c.rpc(pricing.redeemRpc, params: {'p_code': k});
+        await _save({for (final s in (res as List? ?? const [])) (s as num).toInt()});
+        return const CouponResult(unlocked: true);
+      }
+      final res = await c.rpc(rpc, params: {'p_code': k});
+      final m = res is Map ? res : const {};
+      if (m['kind'] == 'unlock') {
+        await _save({for (final s in (m['papers'] as List? ?? const [])) (s as num).toInt()});
+        return const CouponResult(unlocked: true);
+      }
+      final pct = (m['pct'] as num?)?.toInt() ?? 0;
+      if (!CoursePricing.tiers.contains(pct)) return const CouponResult(error: 'That code is not valid.');
+      _pct = pct;
+      _coupon = (m['code'] as String?) ?? k.toUpperCase();
+      if (_storeReady) await _loadPrices(pct);
+      notifyListeners();
+      return CouponResult(pct: pct);
     } on PostgrestException catch (e) {
-      return e.message;
+      return CouponResult(error: e.message);
     } catch (_) {
-      return 'Could not reach the server. Check your internet and try again.';
+      return const CouponResult(error: 'Could not reach the server. Check your internet and try again.');
     }
   }
 
-  /// Starts a Play purchase. Returns a message when it cannot start.
-  Future<String?> buy(int section) async {
+  /// Pays for every paper in the cart through Google Play, one after
+  /// another. Each paper opens only after its payment is verified. Returns
+  /// null when all were paid, or a message.
+  Future<String?> checkout() async {
     final c = client;
     final user = c?.auth.currentUser;
     if (user == null) return 'Sign in first, so the paper stays with your account.';
     final b = billing;
-    final id = pricing.productIds[section];
-    if (b == null || !_storeReady || id == null) return 'Buying works in the Android app from Google Play.';
-    _buying = section;
+    if (b == null || !_storeReady) return 'Buying works in the Android app from Google Play.';
+    final items = cart.toList()..sort();
+    if (items.isEmpty) return 'Add a paper to the cart first.';
+    _checkingOut = true;
     notifyListeners();
     try {
-      await b.buy(id, accountId: user.id);
+      for (final section in items) {
+        final id = pricing.productFor(section, _pct)!;
+        _buying = section;
+        _waiting = Completer<bool>();
+        notifyListeners();
+        try {
+          await b.buy(id, accountId: user.id);
+        } catch (_) {
+          _waiting = null;
+          return 'Google Play could not start the purchase. Try again.';
+        }
+        final ok = await _waiting!.future;
+        if (!ok) return takeMessage() ?? 'Checkout stopped.';
+        _cart.remove(section);
+      }
+      _cart.clear();
+      _pct = 0;
+      _coupon = null;
+      _message = items.length == 1 ? 'Paper unlocked. Happy studying!' : 'Papers unlocked. Happy studying!';
       return null;
-    } catch (_) {
+    } finally {
       _buying = null;
+      _waiting = null;
+      _checkingOut = false;
       notifyListeners();
-      return 'Google Play could not start the purchase. Try again.';
     }
+  }
+
+  void _finishWaiting(bool ok) {
+    final w = _waiting;
+    if (w != null && !w.isCompleted) w.complete(ok);
   }
 
   Future<void> _onPurchases(List<StorePurchase> list) async {
@@ -198,12 +337,9 @@ class PaperAccess extends ChangeNotifier {
       final section = pricing.sectionFor(p.productId);
       if (section == null) continue;
       final ok = await _verify(p);
-      if (ok) {
-        await p.complete();
-        if (_buying == section) _message = 'Paper unlocked. Happy studying!';
-      }
+      if (ok) await p.complete();
+      if (_buying == section) _finishWaiting(ok);
     }
-    _buying = null;
     notifyListeners();
   }
 
@@ -233,6 +369,7 @@ class PaperAccess extends ChangeNotifier {
   Future<void> _save(Set<int> owned) async {
     if (setEquals(owned, _owned)) return;
     _owned = owned;
+    _cart.removeAll(owned);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList(_key, [for (final s in _owned) '$s']);
     notifyListeners();
@@ -244,6 +381,9 @@ class PaperAccess extends ChangeNotifier {
   /// Forget the device copy (signing out of a different account).
   Future<void> clearLocal() async {
     _owned = {};
+    _cart.clear();
+    _pct = 0;
+    _coupon = null;
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_key);
     notifyListeners();
