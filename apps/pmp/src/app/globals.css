@@ -236,3 +236,11 @@ ul.tight { margin: 0; padding-left: 20px; }
 .steps3 { counter-reset: s; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 @media (max-width: 860px) { .steps3 { grid-template-columns: 1fr; } }
 .steps3 .feature h3::before { counter-increment: s; content: counter(s) '. '; color: var(--accent); }
+
+.btn-google {
+  background: #fff;
+  color: #1f1f1f;
+  border: 1px solid #dadce0;
+  gap: 10px;
+}
+.btn-google:hover { background: #f8f9fa; }

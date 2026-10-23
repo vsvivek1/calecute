@@ -81,7 +81,7 @@ export default function Feed() {
           <p className="muted">
             The app picks 10 questions at a time from the full bank, at the times you choose, and plans backwards
             from your exam date.
-            {IS_APP ? ' Already bought on the web? Sign in with the same email.' : ''}
+            {IS_APP ? ' Already bought on the web? Sign in with the same Google account.' : ''}
           </p>
           <div className="stack" style={{ width: '100%' }}>
             {!IS_APP && <BuyButton className="btn btn-accent btn-block" />}
