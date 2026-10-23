@@ -14,9 +14,11 @@ const PATHS: Array<{ path: string; priority: number; changeFrequency: "monthly" 
   { path: "/agents", priority: 0.9, changeFrequency: "weekly" },
   { path: "/agents/terms", priority: 0.5, changeFrequency: "yearly" },
   { path: "/agents/privacy", priority: 0.5, changeFrequency: "yearly" },
+  { path: "/rewards", priority: 0.7, changeFrequency: "weekly" },
   { path: "/about", priority: 0.6, changeFrequency: "monthly" },
   { path: "/services", priority: 0.6, changeFrequency: "monthly" },
   { path: "/products", priority: 0.6, changeFrequency: "monthly" },
+  { path: "/courses", priority: 0.7, changeFrequency: "monthly" },
   { path: "/products/dailydo", priority: 0.5, changeFrequency: "monthly" },
   { path: "/apps", priority: 0.5, changeFrequency: "monthly" },
   // Recallio's own pages are listed explicitly: Google's OAuth review checks

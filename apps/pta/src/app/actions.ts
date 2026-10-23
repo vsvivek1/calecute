@@ -6,7 +6,8 @@ import { redirect } from 'next/navigation';
 
 import { DEMO, DEMO_COOKIE, DEMO_PEOPLE } from '@/lib/mode';
 import { rpc, RpcError } from '@/lib/rpc';
-import { CHILD_COOKIE, LANG_COOKIE } from '@/lib/session';
+import { readRegister, ScanError, type ScanImage, type ScannedStudent } from '@/lib/scan';
+import { CHILD_COOKIE, LANG_COOKIE, requireAdmin } from '@/lib/session';
 import type { RpcName } from '@/lib/rpc-names';
 
 // Every action below is a thin call into one pta.* function. The function runs
@@ -232,6 +233,59 @@ export async function addStudent(f: FormData) {
     p_roll: s(f, 'roll') ? Number(s(f, 'roll')) : null, p_guardian_email: s(f, 'email'),
     p_guardian_name: s(f, 'guardian'), p_relation: s(f, 'relation'),
   }, 'Student added. The parent can sign in with that email now.');
+}
+
+const SCAN_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const;
+const SCAN_MAX_PHOTOS = 4;
+const SCAN_MAX_BYTES = 3_000_000;
+
+/**
+ * Reads the students off photos of a register. Nothing is saved: the office
+ * checks the list on screen and then calls importStudents. Unlike the other
+ * actions this one checks the role itself, because the photo is read before
+ * any database call could refuse it.
+ */
+export async function scanRegister(f: FormData): Promise<{ rows: ScannedStudent[] } | { error: string }> {
+  await requireAdmin();
+  const files = f.getAll('photo').filter((v): v is File => v instanceof File && v.size > 0);
+  if (files.length === 0) return { error: 'Take or choose a photo first.' };
+  if (files.length > SCAN_MAX_PHOTOS) return { error: `Up to ${SCAN_MAX_PHOTOS} photos at a time, please.` };
+  const images: ScanImage[] = [];
+  for (const file of files) {
+    const type = SCAN_TYPES.find((t) => t === file.type);
+    if (!type) return { error: 'Please use a JPEG or PNG photo.' };
+    if (file.size > SCAN_MAX_BYTES) return { error: 'That photo is too large. Please try again.' };
+    images.push({ mediaType: type, data: Buffer.from(await file.arrayBuffer()).toString('base64') });
+  }
+  try {
+    return { rows: await readRegister(images) };
+  } catch (e) {
+    if (e instanceof ScanError) return { error: e.message };
+    console.error('scanRegister', e);
+    return { error: 'Something went wrong reading the photo. Please try again.' };
+  }
+}
+
+/** Adds the students the office confirmed after a scan, one add_student call each. */
+export async function importStudents(school: string, classId: string, rows: ScannedStudent[]) {
+  const failed: { name: string; reason: string }[] = [];
+  let added = 0;
+  for (const r of rows) {
+    const name = r.name.trim();
+    if (!name) continue;
+    try {
+      await rpc('add_student', {
+        p_school: school, p_class: classId || null, p_name: name,
+        p_roll: Number.isInteger(r.roll_no) ? r.roll_no : null, p_guardian_email: r.guardian_email.trim(),
+        p_guardian_name: r.guardian_name.trim(), p_relation: r.relation || (r.guardian_email ? 'guardian' : ''),
+      });
+      added++;
+    } catch (e) {
+      failed.push({ name, reason: e instanceof RpcError ? e.message : 'Something went wrong' });
+    }
+  }
+  revalidatePath('/', 'layout');
+  return { added, failed };
 }
 
 export async function addGuardian(f: FormData) {

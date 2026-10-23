@@ -22,7 +22,7 @@ export async function POST(req: Request) {
               product_data: {
                 name: 'Calecutech PMP Prep: full access',
                 description:
-                  'Full question bank, timed mock exams, spaced review and weak-area drills. One-time payment.',
+                  'Full question bank, a daily plan to your exam date, spaced repetition, weekly reports and timed mocks. One-time payment.',
               },
             },
           },

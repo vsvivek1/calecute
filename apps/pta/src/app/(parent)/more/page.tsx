@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import Icon from '@/components/Icon';
 import { navFor } from '@/components/Shell';
 import { lang } from '@/lib/session';
 
@@ -13,7 +14,7 @@ export default async function More() {
       <ul className="list card tight" style={{ marginTop: 12 }}>
         {items.map((i) => (
           <li key={i.href}>
-            <span aria-hidden style={{ width: 22 }}>{i.icon}</span>
+            <span className="icon-chip"><Icon name={i.icon} /></span>
             <Link href={i.href} className="grow title">{i.label}</Link>
           </li>
         ))}

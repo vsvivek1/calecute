@@ -1035,6 +1035,113 @@ export const APPS: AppEntry[] = [
     isDemo: false,
   },
   {
+    ...BASE[RECALLIO],
+    slug: "recallio-energy-manager",
+    name: "Recallio: BEE Energy Auditor",
+    tagline: "BEE energy manager and energy auditor exam prep",
+    androidPackage: "com.calecutech.energyauditor",
+    iosBundleId: "com.calecutech.energyauditor",
+    isDemo: false,
+    audience: "Adults preparing for the BEE National Certification Examination for Energy Managers and Energy Auditors.",
+    summary:
+      "Recallio Energy Manager teaches all four papers of the BEE National Certification Examination as small cards taken from the BEE guide books. The app plans every day from your exam date: a few cards at your study times, each card coming back just before you would forget it.",
+    collects: [
+      {
+        category: "Personal identifiers",
+        items: ["Name", "Email address", "Profile picture"],
+        purpose:
+          "Only if you sign in. Signing in is optional; it lets your progress follow you between phone and web. All three come from Google Sign-In; we never see your Google password.",
+        optional: true,
+      },
+      {
+        category: "App activity",
+        items: [
+          "The papers you enrolled in, your exam date, study times, minutes per day, quiet hours and language",
+          "How you rated each card (Didn't get it, Tough, Understood, So simple), when, and how long it was on screen",
+          "When each card is next due",
+        ],
+        purpose:
+          "This is the study record the daily plan is computed from. It lives on your device; if you sign in, a copy is kept in your account so another device can continue it.",
+      },
+      {
+        category: "Purchases",
+        items: ["Which papers you have unlocked", "How each was unlocked (Google Play order id or coupon code)"],
+        purpose:
+          "Unlocking the papers you paid for and restoring them on another phone or on the web. The payment itself is handled entirely by Google Play — we never see your card, UPI or bank details.",
+        optional: true,
+      },
+    ],
+    permissions: [
+      {
+        name: "Notifications",
+        why: "A heads-up at each study time you chose and one key fact at noon. They are scheduled by your own phone, need no push token, and never fire in your quiet hours.",
+      },
+      {
+        name: "Internet",
+        why: "Signing in and backing up your study record. Studying works offline; the cards are inside the app.",
+      },
+    ],
+    processors: ["google", "supabase", "play_billing"],
+    qr: undefined,
+    iconSrc: undefined,
+    availabilityNote:
+      "On Google Play as com.calecutech.energyauditor (Android). The web version runs at energy.recallio.calecutech.com with the same account.",
+    features: [
+      "Every card comes from the BEE guide books for Papers 1 to 4 and names the page it came from.",
+      "The app decides what you study each day, counted back from your exam date, with built-in revision weeks and a two-day cram mode.",
+      "Worked numericals one step at a time, with the reason for each step.",
+      "Four honest buttons after each card — Didn't get it, Tough, Understood, So simple — and the card comes back when you need it.",
+      "Works offline; sign in to use the same progress on phone and web.",
+      "The first 20 cards of every paper are free; unlock a paper for ₹1,000, once, with no subscription.",
+    ],
+    policyUpdated: "October 22, 2026",
+    serviceName: "the Recallio Energy Manager service",
+    signInHelp:
+      "Signing in is optional and uses Google only. If sign-in fails, check that the Google account has a verified email address. Progress made before signing in stays on the device and is uploaded when you sign in.",
+    deletes: [
+      "Your settings: papers, exam date, study times and language",
+      "Your entire study record — every card's schedule and every rating",
+    ],
+    retainsOnDelete:
+      "Which papers you unlocked, and the Google Play order id or coupon behind each, are kept as a purchase record so a paper you paid for is never lost. Nothing identifying your study is kept. Your Google sign-in itself is shared with other Calecute Recallio apps; to remove it as well, write to us from that address.",
+    terms: {
+      updated: "October 22, 2026",
+      intro:
+        "These terms apply to the Recallio Energy Manager app and web app. Where they differ from our general terms of service, these take precedence for this app.",
+      sections: [
+        {
+          heading: "Not connected to the Bureau of Energy Efficiency",
+          body: [
+            "Recallio Energy Manager is an independent study app made by Calecute Technologies LLC. We are **not** affiliated with, endorsed by or connected to the Bureau of Energy Efficiency (BEE), the Ministry of Power, or the agency that conducts the National Certification Examination.",
+            "BEE's own notification and prospectus are the only authority on the syllabus, the exam pattern and the dates. The exam date in the app is an estimate until BEE announces it; check the official notice before you rely on it.",
+          ],
+        },
+        {
+          heading: "The study material",
+          body: [
+            "Cards are written from the BEE guide books and checked by people, and people make mistakes. Where a worked example in a guide book has an arithmetic slip, the card keeps the book's figure and says so.",
+            "Report anything that looks wrong at info@calecutech.com and we will check it.",
+          ],
+        },
+        {
+          heading: "Free cards, paid papers and refunds",
+          body: [
+            "The first 20 cards of every paper are free, so you can judge the method before paying. A paper is unlocked by a one-time Google Play purchase of ₹1,000 or by a coupon code we issue. There is no subscription and nothing renews.",
+            "An unlocked paper is tied to your Google sign-in and stays unlocked on every phone and on the web. Sign in with the same account to restore it.",
+            "Google is the merchant of record for Play purchases. Refunds follow Google Play's refund policy and are requested through Google; we cannot reverse a Play charge ourselves.",
+          ],
+        },
+        {
+          heading: "No promise of a result",
+          body: [
+            "A daily plan, a quota and a readiness figure describe what you have revised in this app. They do not predict your result, and nothing here is a promise that you will pass or be certified.",
+            "We are not liable for any loss arising from reliance on the study material.",
+          ],
+        },
+      ],
+    },
+  },
+  {
     ...BASE[KSEBEA],
     slug: "ksebea",
     name: "KSEBEA Engineers Association",

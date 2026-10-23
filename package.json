@@ -20,7 +20,9 @@
     "dev:recallio": "npm run dev --workspace=apps/recallio",
     "dev:pta": "npm run dev --workspace=apps/pta",
     "build:pta": "npm run build --workspace=apps/pta",
-    "build:recallio": "npm run build --workspace=apps/recallio"
+    "build:recallio": "npm run build --workspace=apps/recallio",
+    "dev:energy": "npm run dev --workspace=apps/energy",
+    "build:energy": "npm run build --workspace=apps/energy"
   },
   "devDependencies": {
     "xlsx": "^0.18.5"

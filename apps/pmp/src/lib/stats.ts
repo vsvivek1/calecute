@@ -17,47 +17,6 @@ export function record(map: TallyMap, key: string, correct: boolean): TallyMap {
 
 export const topicKey = (q: Pick<Question, 'domain' | 'topic'>) => `${q.domain}:${q.topic}`;
 
-/**
- * Weak-area drill: questions from topics answered below `threshold`, worst
- * topic first, wrong-before-unseen within a topic. Falls back to unseen
- * topics when there is not yet enough data to call anything weak.
- */
-export function pickDrill(
-  bank: Question[],
-  topics: TallyMap,
-  lastResult: Record<string, boolean>,
-  size: number,
-  threshold = 0.7,
-): Question[] {
-  const byTopic = new Map<string, Question[]>();
-  for (const q of bank) {
-    const k = topicKey(q);
-    byTopic.set(k, [...(byTopic.get(k) ?? []), q]);
-  }
-
-  const scored = [...byTopic.keys()]
-    .map((k) => ({ k, acc: accuracy(topics[k]) }))
-    .filter((x) => x.acc !== null && x.acc < threshold)
-    .sort((a, b) => (a.acc ?? 0) - (b.acc ?? 0));
-
-  const rank = (q: Question) =>
-    lastResult[q.id] === false ? 0 : lastResult[q.id] === undefined ? 1 : 2;
-
-  const out: Question[] = [];
-  for (const { k } of scored) {
-    const qs = [...(byTopic.get(k) ?? [])].sort((a, b) => rank(a) - rank(b));
-    for (const q of qs.slice(0, 5)) if (out.length < size) out.push(q);
-  }
-  if (out.length < size) {
-    const seen = new Set(out.map((q) => q.id));
-    const rest = bank
-      .filter((q) => !seen.has(q.id))
-      .sort((a, b) => rank(a) - rank(b) || Math.random() - 0.5);
-    out.push(...rest.slice(0, size - out.length));
-  }
-  return out;
-}
-
 export function shuffle<T>(xs: T[]): T[] {
   const a = [...xs];
   for (let i = a.length - 1; i > 0; i--) {

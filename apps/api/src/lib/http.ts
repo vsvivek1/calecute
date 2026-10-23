@@ -33,7 +33,7 @@ function corsHeaders(request: Request): Record<string, string> {
     Vary: "Origin",
     "Access-Control-Allow-Methods": "GET,POST,PATCH,PUT,DELETE,OPTIONS",
     "Access-Control-Allow-Headers":
-      "Authorization,Content-Type,Idempotency-Key,X-Client,X-Session-Id",
+      "Authorization,Content-Type,Idempotency-Key,X-Api-Key,X-Client,X-Session-Id",
     "Access-Control-Expose-Headers":
       "X-Request-Id,RateLimit-Limit,RateLimit-Remaining,RateLimit-Reset,Retry-After",
     "Access-Control-Max-Age": "600",

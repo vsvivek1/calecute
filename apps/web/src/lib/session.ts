@@ -14,23 +14,16 @@
  */
 import { cookies } from "next/headers";
 import { api, type Session } from "./api/client";
+import {
+  ACCESS_COOKIE,
+  REFRESH_COOKIE,
+  REFRESH_MAX_AGE,
+  baseCookie,
+} from "./session-cookies";
 
-const ACCESS_COOKIE = "ct_at";
-const REFRESH_COOKIE = "ct_rt";
 const VERIFIER_COOKIE = "ct_pkce";
 const STATE_COOKIE = "ct_state";
 const RETURN_COOKIE = "ct_return";
-
-const secure = process.env.NODE_ENV === "production";
-
-const baseCookie = {
-  httpOnly: true,
-  secure,
-  // Lax rather than Strict: the Google redirect is a top-level navigation from
-  // another origin, and Strict would drop the cookie on arrival.
-  sameSite: "lax" as const,
-  path: "/",
-};
 
 export async function setSessionCookies(session: Session): Promise<void> {
   const jar = await cookies();
@@ -40,7 +33,7 @@ export async function setSessionCookies(session: Session): Promise<void> {
   });
   jar.set(REFRESH_COOKIE, session.refreshToken, {
     ...baseCookie,
-    maxAge: 60 * 60 * 24 * 30,
+    maxAge: REFRESH_MAX_AGE,
   });
 }
 
@@ -63,6 +56,10 @@ export async function readRefreshToken(): Promise<string | null> {
 
 /**
  * The access token to use for this render, refreshing it if it has expired.
+ *
+ * On page loads under /admin and /agents the proxy (src/proxy.ts) refreshes
+ * first, so a render finds a fresh access cookie here. The refresh below is
+ * for server actions and route handlers, which may write cookies.
  *
  * Returns null when there is no usable session, which callers treat as "not
  * signed in" and redirect. A failed refresh clears the cookies rather than

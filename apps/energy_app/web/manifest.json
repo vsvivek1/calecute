@@ -1,0 +1,35 @@
+{
+    "name": "Energy Auditor \u00b7 Recallio",
+    "short_name": "Energy Auditor",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#0F6B5C",
+    "theme_color": "#0F6B5C",
+    "description": "Study for the BEE energy manager and energy auditor exam, a few cards a day.",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}

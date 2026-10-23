@@ -10,7 +10,7 @@
  * constant the frontend or the API can see.
  */
 import { z } from "zod";
-import { desc, eq, inArray } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import { handler, preflight } from "@/lib/http";
 import { authedRoute, ok } from "@/lib/route";
 import { SUPER_ONLY } from "@/lib/auth/context";
@@ -98,7 +98,9 @@ export const POST = handler(
       const existing = await ctx.tx
         .select({ id: users.id, role: users.role })
         .from(users)
-        .where(eq(users.email, body.email))
+        // Never a product user: those rows are app members, not accounts
+        // that can sign in here, and must not be handed an admin role.
+        .where(and(eq(users.email, body.email), isNull(users.externalRef)))
         .limit(1);
 
       let userId: number;

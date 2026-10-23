@@ -110,7 +110,11 @@ export default function AgentTermsPage() {
       <Clause n={4} heading="Commission">
         <p>Where a customer is attributed to you and pays the Company:</p>
         <ul>
-          <li>You earn 10% of every payment that customer makes.</li>
+          <li>
+            You earn between 10% and 30% of every payment that customer makes.
+            The rate is set per product and shown against each product in your
+            dashboard.
+          </li>
           <li>
             Commission is calculated on the amount net of GST and payment
             gateway charges, not on the gross amount.
