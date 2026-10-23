@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 
+import '../access/paper_access.dart';
 import '../alerts/alert_service.dart';
 import '../data/local_store.dart';
 import '../data/sync_service.dart';
@@ -48,12 +49,25 @@ class StudyController extends ChangeNotifier {
     required this.store,
     this.sync,
     this.alerts,
+    this.access,
     SchedulerService? scheduler,
     DateTime Function()? clock,
   })  : scheduler = scheduler ?? SchedulerService(),
         clock = clock ?? DateTime.now {
     planner = Planner(this.scheduler);
     builder = SittingBuilder(this.scheduler);
+    access?.addListener(_onAccess);
+  }
+
+  void _onAccess() {
+    _refresh();
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    access?.removeListener(_onAccess);
+    super.dispose();
   }
 
   final CourseConfig config;
@@ -61,6 +75,7 @@ class StudyController extends ChangeNotifier {
   final LocalStore store;
   final SyncService? sync;
   final AlertService? alerts;
+  final PaperAccess? access;
   final SchedulerService scheduler;
   final DateTime Function() clock;
   late final Planner planner;
@@ -130,7 +145,7 @@ class StudyController extends ChangeNotifier {
 
   void _refresh() {
     final now = clock();
-    _enrolled = library.forSections(settings.sections);
+    _enrolled = _accessible(library.forSections(settings.sections));
     final d = store.today(now);
     plan = planner.plan(
       now: now,
@@ -143,6 +158,33 @@ class StudyController extends ChangeNotifier {
       planStart: store.planStart,
     );
   }
+
+  /// Owned papers in full; a locked paper's first free cards only (in
+  /// chapter order, no topic summaries).
+  List<CourseCard> _accessible(List<CourseCard> cards) {
+    final a = access;
+    final pr = config.pricing;
+    if (a == null || pr == null) return cards;
+    final used = <int, int>{};
+    return [
+      for (final c in cards)
+        if (a.owns(c.section) ||
+            (c.kind != CardKind.summary && (used[c.section] = (used[c.section] ?? 0) + 1) <= pr.freeCardsPerSection))
+          c,
+    ];
+  }
+
+  /// Enrolled papers this learner has not bought.
+  List<int> get lockedSections {
+    final a = access;
+    if (a == null || config.pricing == null) return const [];
+    return [for (final s in settings.sections) if (!a.owns(s)) s];
+  }
+
+  /// Free cards of a locked paper not yet started.
+  int freeLeft(int section) => _enrolled
+      .where((c) => c.section == section && (store.progress[c.id]?.reps ?? 0) == 0)
+      .length;
 
   /// Re-reads the clock: call when the app returns to the foreground.
   void resume() {

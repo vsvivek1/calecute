@@ -1,4 +1,4 @@
-package com.calecutech.energymanager
+package com.calecutech.energyauditor
 
 import io.flutter.embedding.android.FlutterActivity
 

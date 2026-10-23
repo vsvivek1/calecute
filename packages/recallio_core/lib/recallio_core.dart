@@ -1,6 +1,8 @@
 /// Recallio (Spaced Loop) engine shared by Calecute course apps.
 library;
 
+export 'src/access/paper_access.dart';
+export 'src/access/play_billing.dart';
 export 'src/alerts/alert_service.dart';
 export 'src/data/auth.dart';
 export 'src/data/local_store.dart';

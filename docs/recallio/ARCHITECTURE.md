@@ -31,5 +31,5 @@ One screen. One card fills it. No skipping: the sitting (card ids, position, sec
 
 ## Platforms
 
-- **Android**: package `com.calecutech.energymanager`. Alerts use flutter_local_notifications.
+- **Android**: package `com.calecutech.energyauditor`. Alerts use flutter_local_notifications.
 - **Web**: the same Flutter code, built with `flutter build web`. No alerts on web (browsers do not allow scheduled alarms); the feed shows the next sitting time instead.

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:recallio_core/recallio_core.dart';
@@ -19,18 +20,32 @@ Future<void> main() async {
   ];
 
   final store = await LocalStore.open(energyCourse.id);
+  // Google Play Billing on Android; the web unlocks with coupons only.
+  final access = PaperAccess(
+    pricing: energyCourse.pricing!,
+    client: client,
+    storageKey: energyCourse.id,
+    billing: !kIsWeb && defaultTargetPlatform == TargetPlatform.android ? PlayBilling() : null,
+  );
   final controller = StudyController(
     config: energyCourse,
     library: CourseLibrary(cards),
     store: store,
     sync: SyncService(client, rpc: energyCourse.syncRpc),
     alerts: AlertService(channelId: energyCourse.id, appName: energyCourse.appName),
+    access: access,
   );
   final auth = AuthGateway(client, androidRedirect: energyCourse.androidRedirect);
-  // Signing in pulls progress from other devices.
+  // Signing in pulls progress and owned papers from the account.
   client.auth.onAuthStateChange.listen((s) {
-    if (s.event == AuthChangeEvent.signedIn) controller.syncNow();
+    if (s.event == AuthChangeEvent.signedIn) {
+      controller.syncNow();
+      access.refresh();
+    } else if (s.event == AuthChangeEvent.signedOut) {
+      access.clearLocal();
+    }
   });
+  await access.start();
   await controller.start();
 
   runApp(EnergyApp(controller: controller, auth: auth));
@@ -56,7 +71,7 @@ class _EnergyAppState extends State<EnergyApp> {
       builder: (context, _) {
         final lang = c.onboarded ? c.settings.language : (_lang ?? c.settings.language);
         return MaterialApp(
-          title: 'Energy Manager · Recallio',
+          title: 'Energy Auditor · Recallio',
           debugShowCheckedModeBanner: false,
           theme: energyTheme(Brightness.light),
           darkTheme: energyTheme(Brightness.dark),

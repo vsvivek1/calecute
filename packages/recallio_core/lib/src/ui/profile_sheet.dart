@@ -5,6 +5,7 @@ import '../data/auth.dart';
 import '../study/study_controller.dart';
 import 'settings_editors.dart';
 import 'strings.dart';
+import 'unlock.dart';
 
 /// The profile sheet: exam date, papers, study times, quiet hours,
 /// language, account, privacy and data deletion. Nothing here picks what to
@@ -71,6 +72,8 @@ class _Profile extends StatelessWidget {
                     ),
                   ]),
           ),
+        if (c.access != null && c.config.pricing != null)
+          section(t.papersTitle, PapersSection(controller: c, auth: auth)),
         section(
           t.examDate,
           ExamDateField(

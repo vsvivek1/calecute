@@ -112,6 +112,26 @@ class T {
   String get batteryHint => _('On Xiaomi, Vivo, Oppo and similar phones, set battery to "No restrictions" for this app so alerts arrive on time.', 'Xiaomi, Vivo, Oppo പോലുള്ള ഫോണുകളിൽ അറിയിപ്പുകൾ സമയത്ത് കിട്ടാൻ ഈ ആപ്പിന് ബാറ്ററി "No restrictions" ആക്കുക.');
   String get letsGo => _("Let's start", 'തുടങ്ങാം');
   String get howItWorks => _('The app plans every day for you: a few cards at a time, at your study times, until the exam.', 'ഓരോ ദിവസത്തെയും പഠനം ആപ്പ് തീരുമാനിക്കും: പഠനസമയങ്ങളിൽ കുറച്ച് കാർഡുകൾ വീതം, പരീക്ഷ വരെ.');
+
+  // Paid papers
+  String get papersTitle => _('Your papers', 'നിങ്ങളുടെ പേപ്പറുകൾ');
+  String get owned => _('Unlocked', 'തുറന്നു');
+  String freeCards(int n) => _('$n free cards', '$n സൗജന്യ കാർഡുകൾ');
+  String freeLeftLine(int n) => n == 0
+      ? _('Free cards done.', 'സൗജന്യ കാർഡുകൾ കഴിഞ്ഞു.')
+      : _('$n free cards left.', 'ഇനി $n സൗജന്യ കാർഡുകൾ.');
+  String unlockTitle(String paper) => _('Unlock $paper', '$paper തുറക്കാം');
+  String unlockBody(int free) => _(
+      'You can try the first $free cards of each paper free. Unlock a paper once to study all of it until your exam, with revision and cram mode.',
+      'ഓരോ പേപ്പറിലെയും ആദ്യ $free കാർഡുകൾ സൗജന്യമാണ്. ഒരു തവണ പേപ്പർ തുറന്നാൽ പരീക്ഷ വരെ മുഴുവനും, റിവിഷനും ക്രാം മോഡും ഉൾപ്പെടെ പഠിക്കാം.');
+  String buyFor(String price) => _('Unlock for $price', '$price-ന് തുറക്കുക');
+  String get haveCoupon => _('I have a coupon code', 'എനിക്ക് കൂപ്പൺ കോഡ് ഉണ്ട്');
+  String get couponCode => _('Coupon code', 'കൂപ്പൺ കോഡ്');
+  String get redeem => _('Unlock', 'തുറക്കുക');
+  String get couponDone => _('Coupon accepted. Papers unlocked.', 'കൂപ്പൺ സ്വീകരിച്ചു. പേപ്പറുകൾ തുറന്നു.');
+  String get signInToUnlock => _('Sign in first, so the paper stays with your account on phone and web.', 'ആദ്യം സൈൻ ഇൻ ചെയ്യൂ, പേപ്പർ ഫോണിലും വെബിലും നിങ്ങളുടെ അക്കൗണ്ടിൽ ഉണ്ടാകും.');
+  String get buyOnAndroid => _('Buy in the Android app from Google Play, or use a coupon code here.', 'Google Play-യിലെ Android ആപ്പിൽ വാങ്ങാം, അല്ലെങ്കിൽ ഇവിടെ കൂപ്പൺ കോഡ് ഉപയോഗിക്കാം.');
+  String get working => _('Working…', 'ശ്രമിക്കുന്നു…');
 }
 
 class TScope extends InheritedWidget {

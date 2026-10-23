@@ -1,7 +1,7 @@
 # Recallio Energy Manager (Flutter, Android + web)
 
 The Energy Manager course as a Recallio app: one codebase for Android
-(`com.calecutech.energymanager`) and the web. The engine, feed and card
+(`com.calecutech.energyauditor`) and the web. The engine, feed and card
 widgets live in `packages/recallio_core`; this folder is the course shell
 (config, theme, content).
 
@@ -12,6 +12,6 @@ widgets live in `packages/recallio_core`; this folder is the course shell
   (CanvasKit is served from the site, not Google's CDN).
 - Backend: USS Supabase project, schema `energy_manager`, RPC `em_sync`.
   Override with `--dart-define=SUPABASE_URL=… --dart-define=SUPABASE_ANON_KEY=…`.
-- Android sign-in redirect: `com.calecutech.energymanager://login-callback`
+- Android sign-in redirect: `com.calecutech.energyauditor://login-callback`
   must be listed in Supabase Auth → URL configuration.
 - CI: `.github/workflows/energy-app.yml` builds the APK and the web bundle.
