@@ -4,7 +4,8 @@
  * Same contract as psc-app's razorpay-create-order, but reads and writes the
  * `geological_assistant` schema of the USS project, so it never touches USS's
  * own public tables. The client names a course; the price comes from
- * geological_assistant.courses.
+ * geological_assistant.courses, less any coupon (quote_price in 0004_coupons.sql
+ * checks the code and works out the amount; the browser's word never counts).
  *
  * Deploy (USS project):
  *   supabase functions deploy ga-razorpay-create-order
@@ -45,8 +46,9 @@ Deno.serve(async (req) => {
   if (authError || !user) return json({ error: 'Not signed in' }, 401);
 
   let courseId: string;
+  let couponCode: string | undefined;
   try {
-    ({ courseId } = await req.json());
+    ({ courseId, couponCode } = await req.json());
   } catch {
     return json({ error: 'Bad body' }, 400);
   }
@@ -74,6 +76,19 @@ Deno.serve(async (req) => {
     .limit(1);
   if (existing && existing.length > 0) return json({ error: 'Already subscribed' }, 409);
 
+  // The price after any coupon. A bad code is an error, not a silent full price,
+  // so the buyer never pays more than the screen said.
+  let amount = course.price_minor;
+  let coupon: string | null = null;
+  if (couponCode && String(couponCode).trim()) {
+    const { data: quote, error: quoteError } = await admin
+      .rpc('quote_price', { p_course_id: courseId, p_code: String(couponCode), p_user_id: user.id })
+      .maybeSingle<{ code: string; price_minor: number }>();
+    if (quoteError || !quote) return json({ error: quoteError?.message || 'This code is not valid' }, 400);
+    amount = quote.price_minor;
+    coupon = quote.code;
+  }
+
   const currency = course.price_currency ?? 'INR';
   const orderResponse = await fetch('https://api.razorpay.com/v1/orders', {
     method: 'POST',
@@ -82,12 +97,12 @@ Deno.serve(async (req) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      amount: course.price_minor,
+      amount,
       currency,
       receipt: `ga_${user.id.slice(0, 8)}_${Date.now()}`,
       // Echoed back on the webhook; `app` lets the webhook skip payments that
       // belong to other courses on the same Razorpay account.
-      notes: { user_id: user.id, course_id: courseId, app: SCHEMA },
+      notes: { user_id: user.id, course_id: courseId, app: SCHEMA, coupon: coupon ?? '' },
     }),
   });
 
@@ -102,7 +117,9 @@ Deno.serve(async (req) => {
     course_id: courseId,
     provider: 'razorpay',
     provider_ref: order.id,
-    amount_minor: course.price_minor,
+    amount_minor: amount,
+    list_price_minor: course.price_minor,
+    coupon_code: coupon,
     currency,
     status: order.status ?? 'created',
   });
@@ -115,5 +132,7 @@ Deno.serve(async (req) => {
     currency: order.currency,
     keyId: RAZORPAY_KEY_ID,
     courseName: course.name,
+    listPrice: course.price_minor,
+    coupon,
   });
 });

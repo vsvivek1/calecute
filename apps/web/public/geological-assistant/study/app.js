@@ -23,6 +23,15 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
 });
 
 const app = document.getElementById('app');
+
+// A coupon in the link (?coupon=CODE) is kept through the Google sign-in round trip.
+const COUPON_KEY = 'ga-coupon';
+try {
+  const c = new URLSearchParams(location.search).get('coupon');
+  if (c) sessionStorage.setItem(COUPON_KEY, c.trim().toUpperCase());
+} catch { /* storage blocked */ }
+function savedCoupon() { try { return sessionStorage.getItem(COUPON_KEY) || ''; } catch { return ''; } }
+function saveCoupon(c) { try { if (c) sessionStorage.setItem(COUPON_KEY, c); else sessionStorage.removeItem(COUPON_KEY); } catch { /* storage blocked */ } }
 const state = { user: null, paid: false, modules: [], course: null };
 
 // ---------- tiny DOM helper (text only: data is never parsed as HTML) ----------
@@ -85,6 +94,7 @@ window.addEventListener('hashchange', route);
 function route() {
   const [, page] = (location.hash || '#/').split('/');
   if (!state.user) return signIn();
+  if (page === 'admin') return admin();
   if (!state.paid) return buy();
   // There is no unit or mode picker: old #/study/<unit> and #/quiz/<unit> links land on today's plan.
   if (page === 'today') return today();
@@ -121,16 +131,50 @@ function loadRazorpay() {
 }
 
 function buy() {
-  const price = state.course?.price_minor ?? 300000;
+  const list = state.course?.price_minor ?? 300000;
+  let quote = { code: null, percent_off: 0, price_minor: list };
   const msg = h('div');
-  const button = h('button', { class: 'btn', onclick: pay }, 'Pay ' + rupees(price) + ' by UPI, card or netbanking');
+  const button = h('button', { class: 'btn', onclick: pay });
+  const priceBox = h('p', { class: 'big' });
+  const codeInput = h('input', { class: 'code', id: 'coupon', placeholder: 'Coupon code', autocomplete: 'off', maxlength: 32 });
+  const codeMsg = h('p', { class: 'small', 'aria-live': 'polite' });
+
+  function render() {
+    const off = quote.percent_off;
+    priceBox.replaceChildren(...[
+      off ? h('s', { class: 'was' }, rupees(list)) : null, off ? ' ' : null,
+      rupees(quote.price_minor),
+      h('span', { class: 'small' }, off ? `  ${off}% off with ${quote.code}` : '  one-time, lifetime access')].filter((x) => x != null));
+    button.textContent = 'Pay ' + rupees(quote.price_minor) + ' by UPI, card or netbanking';
+  }
+
+  async function apply(code, quiet) {
+    code = (code || '').trim().toUpperCase();
+    codeMsg.className = 'small';
+    if (!code) { quote = { code: null, percent_off: 0, price_minor: list }; saveCoupon(''); codeMsg.textContent = ''; return render(); }
+    const { data, error } = await sb.rpc('quote_price', { p_course_id: COURSE, p_code: code });
+    const q = Array.isArray(data) ? data[0] : data;
+    if (error || !q) {
+      if (!quiet) { codeMsg.className = 'err'; codeMsg.textContent = error?.message || 'This code is not valid'; }
+      return false;
+    }
+    // Keep the bigger discount if two codes are tried.
+    if (q.percent_off < quote.percent_off && quiet) return false;
+    quote = q;
+    codeInput.value = q.code;
+    saveCoupon(q.code);
+    codeMsg.className = 'okmsg';
+    codeMsg.textContent = `${q.code} applied: ${q.percent_off}% off.` + (q.expires_at ? ` Valid till ${new Date(q.expires_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}.` : '');
+    render();
+    return true;
+  }
 
   async function pay() {
     button.disabled = true;
     msg.replaceChildren();
     try {
       await loadRazorpay();
-      const { data, error } = await sb.functions.invoke('ga-razorpay-create-order', { body: { courseId: COURSE } });
+      const { data, error } = await sb.functions.invoke('ga-razorpay-create-order', { body: { courseId: COURSE, couponCode: quote.code || undefined } });
       if (error || !data?.orderId) {
         let detail = data?.error;
         try { detail = detail || (await error?.context?.json())?.error; } catch { /* not JSON */ }
@@ -138,10 +182,10 @@ function buy() {
       }
       new window.Razorpay({
         key: data.keyId, order_id: data.orderId, amount: data.amount, currency: data.currency,
-        name: 'Geological Assistant Prep', description: 'Lifetime access',
+        name: 'Geological Assistant Prep', description: 'Lifetime access' + (data.coupon ? ` (${data.coupon})` : ''),
         prefill: { email: state.user.email, name: state.user.user_metadata?.full_name || '' },
         theme: { color: '#b4531f' },
-        handler: () => waitForUnlock(msg),
+        handler: () => { saveCoupon(''); waitForUnlock(msg); },
         modal: { ondismiss: () => { button.disabled = false; } },
       }).open();
     } catch (e) {
@@ -150,23 +194,172 @@ function buy() {
     }
   }
 
+  render();
   show(
     h('h1', {}, 'Unlock the full course'),
     h('p', { class: 'small' }, 'Signed in as ' + (state.user.email || '')),
+    spinPanel((code) => apply(code, true)),
     h('div', { class: 'panel' },
-      h('p', { class: 'big' }, rupees(price), h('span', { class: 'small' }, '  one-time, lifetime access')),
+      priceBox,
       h('ul', {},
         h('li', {}, '1,854 fact cards with the reason behind each fact'),
         h('li', {}, '1,212 practice questions, unit quizzes and timed mock tests'),
         h('li', {}, 'Spaced revision: each fact comes back just before you forget it'),
         h('li', {}, 'Web and Android app on the same account')),
+      h('form', { class: 'row coupon', onsubmit: (e) => { e.preventDefault(); apply(codeInput.value); } },
+        h('label', { for: 'coupon', class: 'small' }, 'Have a code?'), codeInput,
+        h('button', { class: 'btn ghost sm', type: 'submit' }, 'Apply')),
+      codeMsg,
       button, msg,
       h('p', { class: 'small' }, 'Paid through Razorpay. Your card and UPI details go to Razorpay, never to us. ',
         h('a', { href: 'refunds/' }, 'Refund Policy'), '.')),
     h('div', { class: 'panel' }, h('h2', {}, 'What is inside'),
       h('div', { class: 'units' }, state.modules.map((m) =>
         h('div', { class: 'unit' }, h('span', { class: 'n' }, 'UNIT ' + m.module_no), h('h3', {}, m.name))))),
+    adminLink(),
   );
+  if (savedCoupon()) apply(savedCoupon());
+}
+
+// ---------- spin the wheel: one spin per account, 10% to 30% off ----------
+// The server picks the prize (spin_wheel in 0004_coupons.sql); the wheel only
+// shows it. The code works for this account only, once, for 7 days.
+const WHEEL = [10, 15, 20, 25, 30, 10, 15, 20];
+function wheelSvg() {
+  const n = WHEEL.length, r = 100, colors = ['#b4531f', '#2f6b4f', '#8a5a00', '#1f2a33'];
+  const slice = (i) => {
+    const a0 = (i / n) * 2 * Math.PI - Math.PI / 2, a1 = ((i + 1) / n) * 2 * Math.PI - Math.PI / 2;
+    const x0 = r + r * Math.cos(a0), y0 = r + r * Math.sin(a0), x1 = r + r * Math.cos(a1), y1 = r + r * Math.sin(a1);
+    const am = (a0 + a1) / 2, tx = r + 0.64 * r * Math.cos(am), ty = r + 0.64 * r * Math.sin(am);
+    return `<path d="M${r},${r} L${x0.toFixed(2)},${y0.toFixed(2)} A${r},${r} 0 0 1 ${x1.toFixed(2)},${y1.toFixed(2)} Z" fill="${colors[i % 4]}"/>`
+      + `<text x="${tx.toFixed(2)}" y="${ty.toFixed(2)}" fill="#fff" font-family="system-ui,sans-serif" font-size="17" font-weight="800" text-anchor="middle" dominant-baseline="middle" transform="rotate(${(((i + 0.5) / n) * 360).toFixed(1)} ${tx.toFixed(2)} ${ty.toFixed(2)})">${WHEEL[i]}%</text>`;
+  };
+  const wrap = document.createElement('div');
+  wrap.className = 'wheel';
+  // Built from constants only, never from data.
+  wrap.innerHTML = `<svg viewBox="0 0 200 200" role="img" aria-label="Discount wheel: 10% to 30% off"><g class="spin">${WHEEL.map((_, i) => slice(i)).join('')}</g><circle cx="100" cy="100" r="16" fill="#fffdf8" stroke="#1f2a33" stroke-width="3"/></svg><span class="pointer" aria-hidden="true"></span>`;
+  return wrap;
+}
+
+function spinPanel(onCode) {
+  const panel = h('div', { class: 'panel spinbox' });
+  const result = h('p', { class: 'okmsg', 'aria-live': 'polite' });
+  const wheel = wheelSvg();
+  const btn = h('button', { class: 'btn', onclick: spin }, 'Spin the wheel');
+  const done = (c, fresh) => {
+    const left = Math.max(0, Math.ceil((Date.parse(c.expires_at) - Date.now()) / 86400000));
+    result.textContent = (fresh ? `You won ${c.percent_off}% off! ` : `Your prize: ${c.percent_off}% off. `)
+      + `Code ${c.code}, applied below. ${left ? `Use it within ${left} day${left === 1 ? '' : 's'}.` : ''}`;
+    btn.remove();
+    onCode(c.code);
+  };
+  const landOn = (pct) => {
+    const idx = [...WHEEL.keys()].filter((i) => WHEEL[i] === pct);
+    const i = idx[Math.floor(Math.random() * idx.length)] ?? 0;
+    return 360 * 6 - ((i + 0.5) / WHEEL.length) * 360;
+  };
+  async function spin() {
+    btn.disabled = true;
+    result.className = 'okmsg';
+    result.textContent = '';
+    const { data, error } = await sb.rpc('spin_wheel', { p_course_id: COURSE });
+    const c = Array.isArray(data) ? data[0] : data;
+    if (error || !c) { result.className = 'err'; result.textContent = error?.message || 'Could not spin. Please try again.'; btn.disabled = false; return; }
+    const g = wheel.querySelector('.spin');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    g.style.transition = reduce ? 'none' : 'transform 4s cubic-bezier(.17,.67,.2,1)';
+    g.style.transform = `rotate(${landOn(c.percent_off)}deg)`;
+    setTimeout(() => done(c, !c.already_spun), reduce ? 0 : 4100);
+  }
+  panel.append(h('h2', {}, 'Spin for a discount'),
+    h('p', { class: 'small' }, 'One free spin per account. Win 10% to 30% off the course.'),
+    wheel, btn, result);
+  // Already spun on another visit: show the prize instead of the button.
+  sb.from('coupons').select('code,percent_off,expires_at,used_count,max_uses').eq('kind', 'spin').eq('course_id', COURSE).maybeSingle()
+    .then(({ data }) => {
+      if (!data) return;
+      const g = wheel.querySelector('.spin');
+      g.style.transform = `rotate(${landOn(data.percent_off)}deg)`;
+      if (Date.parse(data.expires_at) <= Date.now() || data.used_count >= (data.max_uses ?? 1)) {
+        btn.remove();
+        result.className = 'small';
+        result.textContent = `You already used your spin (${data.percent_off}% off, code ${data.code}), and that code has expired.`;
+      } else done(data, false);
+    });
+  return panel;
+}
+
+// ---------- admin: coupons ----------
+function adminLink() {
+  const box = h('p', { class: 'small', hidden: true }, h('a', { href: 'study#/admin' }, 'Admin: coupons'));
+  sb.rpc('is_admin').then(({ data }) => { if (data === true) box.hidden = false; });
+  return box;
+}
+
+async function admin() {
+  show(h('p', { class: 'meta' }, 'Loading coupons…'));
+  const { data: ok } = await sb.rpc('is_admin');
+  if (ok !== true) return show(h('h1', {}, 'Admins only'), h('p', {}, h('a', { href: 'study#/' }, '← Back')));
+  const f = {
+    code: h('input', { id: 'c-code', required: true, maxlength: 32, placeholder: 'PSC50', pattern: '[A-Za-z0-9\\-]{3,32}' }),
+    pct: h('input', { id: 'c-pct', type: 'number', min: 1, max: 99, required: true, placeholder: '50' }),
+    max: h('input', { id: 'c-max', type: 'number', min: 1, placeholder: 'No limit' }),
+    exp: h('input', { id: 'c-exp', type: 'date' }),
+    note: h('input', { id: 'c-note', maxlength: 120, placeholder: 'Who it is for' }),
+  };
+  const msg = h('p', { class: 'small', 'aria-live': 'polite' });
+  const table = h('div');
+  const field = (id, label, el) => h('label', { class: 'field', for: id }, h('span', { class: 'small' }, label), el);
+  const save = async (args) => {
+    const { error } = await sb.rpc('admin_save_coupon', { p_course_id: COURSE, ...args });
+    if (error) { msg.className = 'err'; msg.textContent = error.message; return false; }
+    msg.className = 'okmsg'; msg.textContent = `Saved ${args.p_code.toUpperCase()}.`;
+    await load();
+    return true;
+  };
+  async function load() {
+    const { data, error } = await sb.rpc('admin_list_coupons', { p_course_id: COURSE });
+    if (error) { table.replaceChildren(errorBox(error.message)); return; }
+    const price = state.course?.price_minor ?? 300000;
+    const date = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+    const rows = data.map((c) => h('tr', { class: c.active ? '' : 'off' },
+      h('td', {}, h('strong', {}, c.code), c.note ? h('div', { class: 'small' }, c.note) : null),
+      h('td', {}, c.kind === 'spin' ? 'Spin' : 'Admin'),
+      h('td', {}, `${c.percent_off}%`, h('div', { class: 'small' }, rupees(Math.max(100, Math.round(price * (100 - c.percent_off) / 100))))),
+      h('td', {}, `${c.used_count}${c.max_uses ? ' / ' + c.max_uses : ''}`),
+      h('td', {}, date(c.expires_at)),
+      h('td', {}, c.kind === 'admin'
+        ? h('button', { class: 'btn ghost sm', onclick: () => save({ p_code: c.code, p_percent_off: c.percent_off, p_max_uses: c.max_uses, p_expires_at: c.expires_at, p_note: c.note, p_active: !c.active }) }, c.active ? 'Turn off' : 'Turn on')
+        : (c.active ? 'On' : 'Off'))));
+    const spins = data.filter((c) => c.kind === 'spin');
+    table.replaceChildren(
+      h('p', { class: 'small' }, `${data.length - spins.length} admin codes · ${spins.length} spins · ${data.reduce((n, c) => n + c.used_count, 0)} paid uses`),
+      h('div', { class: 'scroll' }, h('table', { class: 'res' },
+        h('tr', {}, h('th', {}, 'Code'), h('th', {}, 'Type'), h('th', {}, 'Off'), h('th', {}, 'Used'), h('th', {}, 'Expires'), h('th', {}, '')),
+        rows)));
+  }
+  show(
+    h('div', { class: 'row' }, h('a', { href: 'study#/' }, '← Back')),
+    h('h1', {}, 'Coupons'),
+    h('div', { class: 'panel' },
+      h('h2', {}, 'Make a coupon'),
+      h('p', { class: 'small' }, 'Saving an existing code changes it. Spin-wheel codes are made by the wheel and cannot be edited here.'),
+      h('form', { class: 'grid', onsubmit: async (e) => {
+        e.preventDefault();
+        const ok = await save({
+          p_code: f.code.value.trim(), p_percent_off: Number(f.pct.value), p_max_uses: f.max.value ? Number(f.max.value) : null,
+          p_expires_at: f.exp.value ? new Date(f.exp.value + 'T23:59:59+05:30').toISOString() : null, p_note: f.note.value || null, p_active: true,
+        });
+        if (ok) e.target.reset();
+      } },
+        field('c-code', 'Code', f.code), field('c-pct', 'Discount %', f.pct), field('c-max', 'Max uses', f.max),
+        field('c-exp', 'Last day', f.exp), field('c-note', 'Note', f.note),
+        h('button', { class: 'btn', type: 'submit' }, 'Save coupon')),
+      msg,
+      h('p', { class: 'small' }, 'Share link: calecutech.com/geological-assistant/study?coupon=CODE')),
+    h('div', { class: 'panel' }, h('h2', {}, 'All coupons'), table),
+  );
+  load();
 }
 
 async function waitForUnlock(msg) {
