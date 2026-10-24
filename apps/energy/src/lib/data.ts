@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { serverClient } from './supabase';
-import type { Flash, Me, Paper, Today, User } from './types';
+import type { Exam, Feed, Flash, Me, Paper, User } from './types';
 
 /**
  * Everything the pages read. Each call is one of the public.em_* database
@@ -29,5 +29,6 @@ async function rpc<T>(fn: string): Promise<T> {
 
 export const getCatalog = () => rpc<Paper[]>('em_catalog');
 export const getMe = () => rpc<Me>('em_me');
-export const getToday = () => rpc<Today>('em_today');
+export const getFeed = () => rpc<Feed>('em_feed');
+export const getExam = () => rpc<Exam>('em_exam');
 export const getFlash = () => rpc<Flash[]>('em_flash');

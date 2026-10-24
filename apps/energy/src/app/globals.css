@@ -137,3 +137,48 @@ h3 { margin: 0 0 4px; font-size: 16px; }
 .invite .code { font-size: 26px; font-weight: 800; letter-spacing: 1px; margin: 0; }
 .copy code { word-break: break-all; font-size: 13px; }
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 16px; }
+
+/* Recallio feed */
+.iconbtn {
+  display: grid; place-items: center; width: 36px; height: 36px; border-radius: 99px;
+  border: 1px solid var(--line); text-decoration: none; color: var(--ink); font-size: 18px;
+}
+.iconbtn.avatar { background: var(--green); color: var(--sun); font-weight: 800; font-size: 15px; border-color: transparent; }
+.feedhead {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  color: var(--muted); font-size: 14px; margin: 4px 0 10px;
+}
+.feedhead .quota { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); }
+.sbar { height: 4px; border-radius: 99px; background: var(--line); overflow: hidden; margin-bottom: 12px; }
+.sbar span { display: block; height: 100%; background: var(--leaf); transition: width .3s; }
+.study { min-height: 60vh; display: flex; flex-direction: column; }
+.study .actions { margin-top: auto; padding-top: 18px; }
+.study .front { font-size: 20px; line-height: 1.45; }
+.study .key { font-size: 19px; font-weight: 600; }
+.study .meta .spacer { flex: 1; }
+.icon { background: none; border: 0; font-size: 18px; cursor: pointer; padding: 2px 4px; }
+.hint { color: var(--muted); margin: 10px 0 0; }
+.pill.tough { background: #fde8e1; color: #8a2c0d; }
+.again-label { margin-top: 12px; }
+.unlock { height: 3px; border-radius: 99px; background: var(--line); overflow: hidden; margin-bottom: 10px; }
+.unlock span { display: block; height: 100%; background: var(--leaf); opacity: .55; transition: width .25s linear; }
+.grade { font-size: 14px; line-height: 1.2; }
+@media (max-width: 420px) { .grades { grid-template-columns: repeat(2, 1fr); } }
+.toast {
+  position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 10;
+  background: var(--green); color: #fff; padding: 10px 16px; border-radius: 12px; font-weight: 600;
+}
+.note.card { padding: 12px 14px; }
+.settings h3 { margin: 18px 0 6px; }
+.settings .row { display: flex; gap: 10px; align-items: flex-start; margin: 6px 0; }
+.settings .block { display: block; }
+.settings input[type=date], .settings input[type=time], .settings select {
+  font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--card); color: var(--ink);
+}
+.times { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.time { display: inline-flex; gap: 4px; align-items: center; }
+.plain { padding-left: 18px; }
+.danger { color: var(--red); margin-top: 8px; }
+.danger-btn { background: var(--red); color: #fff; }
+.confirm { margin-top: 10px; }

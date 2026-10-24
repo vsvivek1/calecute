@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { browserClient } from '@/lib/supabase-browser';
-import type { Paper } from '@/lib/types';
+import type { Exam, Paper } from '@/lib/types';
+import Settings from './Settings';
 
 /**
  * The only choice a student makes: which papers they are preparing for.
@@ -14,16 +15,19 @@ export default function Enrol({
   initial,
   first = false,
   name,
+  exam,
 }: {
   catalog: Paper[];
   initial: number[];
   first?: boolean;
   name: string | null;
+  exam?: Exam | null;
 }) {
   const router = useRouter();
   const [picked, setPicked] = useState<number[]>(initial);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [step, setStep] = useState<'papers' | 'plan'>('papers');
 
   const toggle = (id: number) =>
     setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id].sort()));
@@ -37,8 +41,32 @@ export default function Enrol({
       setBusy(false);
       return;
     }
-    router.push('/');
+    // First time: one more screen for the exam date and study times.
+    if (first && exam) {
+      setBusy(false);
+      setStep('plan');
+      return;
+    }
+    router.push(first ? '/' : '/profile');
     router.refresh();
+  }
+
+  if (step === 'plan' && exam) {
+    return (
+      <>
+        <h1>Your plan</h1>
+        <p className="sub">
+          Recallio works back from your exam date and opens a short sitting at each study time. You can change
+          these later in your profile.
+        </p>
+        <Settings
+          exam={exam}
+          initial={{ studyTimes: ['07:00', '13:00', '20:00'], minutesPerDay: 30, examDate: null }}
+          submitLabel="Start studying"
+          onSaved={() => router.refresh()}
+        />
+      </>
+    );
   }
 
   return (

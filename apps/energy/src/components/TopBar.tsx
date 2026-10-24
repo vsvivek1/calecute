@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import type { User } from '@/lib/types';
 
+/** App bar: brand, the referral gift icon and the profile button. Nothing else. */
 export default function TopBar({ user, invite }: { user: User | null; invite: boolean }) {
+  const initial = (user?.name ?? user?.email ?? '?').trim().charAt(0).toUpperCase();
   return (
     <header className="bar">
       <Link href="/" className="brand">
@@ -12,19 +14,14 @@ export default function TopBar({ user, invite }: { user: User | null; invite: bo
       </Link>
       <span className="spacer" />
       {user && invite && (
-        <Link className="btn btn-ghost btn-sm" href="/invite" title="Invite friends & get rewards">
-          🎁 Invite
+        <Link className="iconbtn" href="/invite" title="Invite friends & get rewards" aria-label="Invite friends">
+          🎁
         </Link>
       )}
       {user && (
-        <Link className="btn btn-ghost btn-sm" href="/papers">
-          My papers
+        <Link className="iconbtn avatar" href="/profile" title="Profile" aria-label="Profile">
+          {initial}
         </Link>
-      )}
-      {user && (
-        <form action="/auth/signout" method="post">
-          <button className="btn btn-ghost btn-sm" type="submit">Sign out</button>
-        </form>
       )}
     </header>
   );
