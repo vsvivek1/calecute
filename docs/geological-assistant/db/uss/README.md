@@ -12,6 +12,9 @@ The course lives in its own schema, `geological_assistant`, inside the USS proje
 - `functions/ga-razorpay-create-order`, `functions/ga-razorpay-webhook`: **deployed 11 Oct 2026**
   to the USS project. They use only this schema. Until the Razorpay secrets are set they answer
   503 and change nothing.
+- `functions/ga-play-verify`, `functions/ga-play-rtdn`: Google Play purchases from the Android
+  app (`provider = 'google_play'`). **Not deployed yet.** Setup: `apps/geological-assistant-app/README.md`
+  on the `claude/geological-assistant-app` branch.
 
 To use it from apps:
 1. Dashboard > Project Settings > Data API > Exposed schemas: `geological_assistant` (done).
