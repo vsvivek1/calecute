@@ -39,8 +39,9 @@ final energyCourse = CourseConfig(
   termsUrl: 'https://calecutech.com/apps/recallio-energy-manager/terms',
   deleteAccountUrl: 'https://calecutech.com/apps/recallio-energy-manager/delete-account',
   inviteUrl: 'https://calecutech.com/rewards?app=recallio-energy-manager',
-  // Each paper is a one-time Play product at Rs 1,000, or unlocked with a
-  // coupon. The first 20 cards of every paper are free.
+  // Each paper is a one-time Play product at Rs 1,000, paid at checkout. A
+  // coupon picks the paper_N_offPP product (PP% off). The first 20 cards of
+  // every paper are free.
   pricing: const CoursePricing(
     freeCardsPerSection: 20,
     productIds: {1: 'paper_1', 2: 'paper_2', 3: 'paper_3', 4: 'paper_4'},
@@ -48,6 +49,7 @@ final energyCourse = CourseConfig(
     myPapersRpc: 'em_my_papers',
     redeemRpc: 'em_redeem_coupon',
     verifyFunction: 'em-play-verify',
+    applyCouponRpc: 'em_apply_coupon',
   ),
   examChecklist: const [
     'Admit card and photo ID',
