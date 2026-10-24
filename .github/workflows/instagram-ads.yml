@@ -1,44 +1,143 @@
 name: Instagram posts
 
-# Runs twice a day on schedule (live), or by hand from the Actions tab (dry run unless "live" is ticked).
+# Runs nine times a day on schedule (live), or by hand from the Actions tab (dry run unless "live" is ticked).
 # Free (organic) posts only: nothing here creates paid ads or spends money.
+#
+# Daily plan (IST), asked for by vivek on 18 Oct 2026: 3 quiz reels and 5 fact-card posts made from
+# the course (marketing/instagram-ads/daily.mjs), plus the 08:00 story from the ads.json rotation.
 on:
   workflow_dispatch:
     inputs:
       command:
-        description: "check (read-only test), post (feed), story, reel, or auto (next scheduled item; set ad to am or pm)"
+        description: "card (fact-card post), reel (quiz reel), check (read-only test), post (feed), story, reel-ad, or auto"
         type: choice
-        options: [check, post, story, reel, auto]
-        default: post
+        options: [card, reel, check, post, story, reel-ad, auto]
+        default: card
       ad:
-        description: "Creative id for post/story: countdown, quiz, plan, malayalam"
+        description: "card: slot 0-4. reel: slot 0-2. post/story/reel-ad: countdown, quiz or plan. auto: am or pm"
         type: string
-        default: quiz
+        default: "0"
       live:
-        description: "Actually send to Meta (unticked = dry run)"
+        description: "Actually send to Meta (unticked = dry run; the rendered files are still saved as an artifact)"
         type: boolean
         default: false
-  # Two free posts a day, approved by vivek on 17 Oct 2026. Rotation is in ads.json "schedule".
   schedule:
-    - cron: "30 2 * * *" # 08:00 IST: story ("am")
-    - cron: "30 13 * * *" # 19:00 IST, evening peak: reel or feed post ("pm")
+    - cron: "30 1 * * *" # 07:00 IST card 0
+    - cron: "30 2 * * *" # 08:00 IST story (ads.json "am" rotation)
+    - cron: "30 3 * * *" # 09:00 IST reel 0
+    - cron: "30 4 * * *" # 10:00 IST card 1
+    - cron: "30 7 * * *" # 13:00 IST card 2
+    - cron: "30 9 * * *" # 15:00 IST reel 1
+    - cron: "30 11 * * *" # 17:00 IST card 3
+    - cron: "30 13 * * *" # 19:00 IST reel 2, evening peak
+    - cron: "0 16 * * *" # 21:30 IST card 4
+
+permissions:
+  contents: write # pushes the rendered file to the ig-media branch so Instagram can fetch it
+
+concurrency:
+  group: instagram-posts
+  cancel-in-progress: false
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
+      - name: Pick the slot
+        id: slot
+        env:
+          SCHEDULE: ${{ github.event.schedule }}
+          IN_COMMAND: ${{ inputs.command }}
+          IN_AD: ${{ inputs.ad }}
+          IN_LIVE: ${{ inputs.live }}
+        run: |
+          if [ -n "$SCHEDULE" ]; then
+            case "$SCHEDULE" in
+              "30 1 * * *") c=card; a=0 ;;
+              "30 2 * * *") c=auto; a=am ;;
+              "30 3 * * *") c=reel; a=0 ;;
+              "30 4 * * *") c=card; a=1 ;;
+              "30 7 * * *") c=card; a=2 ;;
+              "30 9 * * *") c=reel; a=1 ;;
+              "30 11 * * *") c=card; a=3 ;;
+              "30 13 * * *") c=reel; a=2 ;;
+              "0 16 * * *") c=card; a=4 ;;
+              *) echo "Unknown schedule $SCHEDULE"; exit 1 ;;
+            esac
+            live=true
+          else
+            c="$IN_COMMAND"; a="$IN_AD"; live="$IN_LIVE"
+          fi
+          echo "Command=$c ad=$a live=$live"
+          { echo "command=$c"; echo "ad=$a"; echo "live=$live"; } >> "$GITHUB_OUTPUT"
+
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Publish
+
+      # ---- fact-card posts and quiz reels made from the course ----
+      - name: Install renderer
+        if: steps.slot.outputs.command == 'card' || steps.slot.outputs.command == 'reel'
+        run: |
+          npm i --no-save --no-package-lock --prefix marketing/instagram-ads playwright@1.56.1
+          (cd marketing/instagram-ads && npx playwright install --with-deps chromium)
+          command -v ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
+
+      - name: Render
+        if: steps.slot.outputs.command == 'card' || steps.slot.outputs.command == 'reel'
+        run: node marketing/instagram-ads/daily.mjs render "${{ steps.slot.outputs.command }}" "${{ steps.slot.outputs.ad }}" ig-out
+
+      - name: Keep a copy of the render
+        if: steps.slot.outputs.command == 'card' || steps.slot.outputs.command == 'reel'
+        uses: actions/upload-artifact@v4
+        with:
+          name: instagram-${{ steps.slot.outputs.command }}-${{ steps.slot.outputs.ad }}
+          path: ig-out/
+          retention-days: 14
+
+      # Instagram fetches media from a public URL. The file goes to the ig-media branch (one
+      # commit holding just this file) and is served by jsDelivr at that exact commit.
+      - name: Host the file
+        id: host
+        if: (steps.slot.outputs.command == 'card' || steps.slot.outputs.command == 'reel') && steps.slot.outputs.live == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          file=$(node -p "require('./ig-out/post.json').file")
+          mkdir media && cp "ig-out/$file" media/ && cd media
+          git init -q -b ig-media
+          git add "$file"
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "Instagram media $(date -u +%FT%TZ)"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" ig-media
+          url="https://cdn.jsdelivr.net/gh/${REPO}@$(git rev-parse HEAD)/$file"
+          for i in 1 2 3 4 5 6; do
+            curl -fsSI "$url" | grep -i '^content-type' && break
+            sleep 10
+          done
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Publish card or reel
+        if: steps.slot.outputs.command == 'card' || steps.slot.outputs.command == 'reel'
         env:
           META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
-          COMMAND: ${{ inputs.command || 'auto' }}
-          AD: ${{ inputs.ad || (github.event.schedule == '30 2 * * *' && 'am' || 'pm') }}
-          LIVE: ${{ github.event_name == 'schedule' || inputs.live }}
+          MEDIA_URL: ${{ steps.host.outputs.url }}
+        run: node marketing/instagram-ads/daily.mjs publish ig-out ${{ steps.slot.outputs.live == 'true' && '--live' || '' }}
+
+      # ---- the original ad creatives (story rotation, manual posts) ----
+      - name: Publish ad creative
+        if: steps.slot.outputs.command != 'card' && steps.slot.outputs.command != 'reel'
+        env:
+          META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          COMMAND: ${{ steps.slot.outputs.command }}
+          AD: ${{ steps.slot.outputs.ad }}
+          LIVE: ${{ steps.slot.outputs.live }}
         run: |
+          [ "$COMMAND" = reel-ad ] && COMMAND=reel
           args=("$COMMAND")
           case "$COMMAND" in post|story|auto) args+=("$AD") ;; reel) [ "$AD" != quiz ] && args+=("$AD") ;; esac
           [ "$LIVE" = "true" ] && args+=(--live)
