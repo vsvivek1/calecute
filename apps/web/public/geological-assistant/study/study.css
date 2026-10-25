@@ -33,3 +33,16 @@ table.res td,table.res th{border-bottom:1px solid var(--line);padding:8px 6px;te
 .tag{display:inline-block;font:700 11px system-ui,sans-serif;color:var(--acct);background:var(--acc);border-radius:6px;padding:2px 7px;letter-spacing:.04em}
 .tag.rev{background:var(--ok)}
 input.date{display:block;font:17px system-ui,sans-serif;padding:10px 12px;margin:6px 0;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
+.was{color:var(--mut);font-weight:600;font-size:24px}
+.coupon{margin:14px 0 4px}
+.coupon input,.grid input{font:16px system-ui,sans-serif;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-width:0}
+.coupon input{flex:1 1 160px;text-transform:uppercase;letter-spacing:.04em}
+.spinbox{text-align:center}
+.wheel{position:relative;width:min(260px,80vw);margin:10px auto 14px}
+.wheel svg{display:block;width:100%;height:auto;filter:drop-shadow(0 4px 10px rgba(0,0,0,.18))}
+.wheel .spin{transform-box:view-box;transform-origin:50% 50%}
+.wheel .pointer{position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;border-top:24px solid var(--fg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;align-items:end}
+.field{display:flex;flex-direction:column;gap:4px}
+.scroll{overflow-x:auto}
+tr.off td{opacity:.5}

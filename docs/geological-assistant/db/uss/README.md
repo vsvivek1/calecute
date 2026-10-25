@@ -9,6 +9,10 @@ The course lives in its own schema, `geological_assistant`, inside the USS proje
 - `seed/seed_01..12.sql`: 1,854 cards, 1,212 questions, 3,602 question links.
   **Applied 11 Oct 2026** and checked row by row against the source. Safe to re-run.
 - `0002_payment_orders.sql`: Razorpay orders table. **Applied 11 Oct 2026.**
+- `0004_coupons.sql`: coupons (admin codes 1% to 99% off, spin-wheel codes 10% to 30% off, one spin per
+  account, valid 7 days), `quote_price()`, `spin_wheel()`, admin RPCs for the study page's `#/admin` screen.
+  Admins are rows in `geological_assistant.admins` (email). Apply **before** deploying the new
+  `ga-razorpay-create-order` (it writes `coupon_code` and `list_price_minor`).
 - `functions/ga-razorpay-create-order`, `functions/ga-razorpay-webhook`: **deployed 11 Oct 2026**
   to the USS project. They use only this schema. Until the Razorpay secrets are set they answer
   503 and change nothing.
