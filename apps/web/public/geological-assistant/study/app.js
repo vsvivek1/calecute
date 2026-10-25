@@ -93,6 +93,16 @@ function route() {
   return home();
 }
 
+// Invite to the free general PSC questions site, shown under sign-in and pay.
+function freePscBanner() {
+  return h('a', { class: 'freepsc', href: 'https://quiz.calecutech.com/free-psc-questions?utm_source=geological-assistant&utm_medium=banner', target: '_blank', rel: 'noopener' },
+    h('span', { class: 'fp-badge' }, 'FREE'),
+    h('span', { class: 'fp-text' },
+      h('b', {}, 'Writing other Kerala PSC exams too?'),
+      h('span', {}, 'Join our free PSC questions channel for LDC, LGS, Degree Level and every general PSC exam. No payment, no sign-up fee.')),
+    h('span', { class: 'fp-go' }, 'Join free PSC questions →'));
+}
+
 // ---------- sign in ----------
 function signIn() {
   const msg = h('p', { class: 'err', hidden: true });
@@ -107,6 +117,7 @@ function signIn() {
       msg,
       h('p', { class: 'small' }, 'We use your name and email only to run your account. See the ',
         h('a', { href: 'privacy/' }, 'Privacy Policy'), '.')),
+    freePscBanner(),
   );
 }
 
@@ -163,6 +174,7 @@ function buy() {
       button, msg,
       h('p', { class: 'small' }, 'Paid through Razorpay. Your card and UPI details go to Razorpay, never to us. ',
         h('a', { href: 'refunds/' }, 'Refund Policy'), '.')),
+    freePscBanner(),
     h('div', { class: 'panel' }, h('h2', {}, 'What is inside'),
       h('div', { class: 'units' }, state.modules.map((m) =>
         h('div', { class: 'unit' }, h('span', { class: 'n' }, 'UNIT ' + m.module_no), h('h3', {}, m.name))))),
