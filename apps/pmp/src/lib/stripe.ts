@@ -12,6 +12,17 @@ export function stripe() {
 
 export const priceCents = () => Number(process.env.PRICE_CENTS ?? 3900);
 
+/**
+ * Accounts listed in TEST_PRICE_EMAILS (comma-separated, verified Google
+ * emails) pay TEST_PRICE_CENTS (default $1) so the owner can test live
+ * checkout. Everyone else pays the normal price.
+ */
+export function testPriceCents(email: string, list = process.env.TEST_PRICE_EMAILS ?? ''): number | null {
+  const e = email.trim().toLowerCase();
+  const listed = list.split(',').some((x) => x.trim().toLowerCase() === e && e !== '');
+  return listed ? Number(process.env.TEST_PRICE_CENTS ?? 100) : null;
+}
+
 export const siteOrigin = (req: Request) =>
   process.env.PUBLIC_SITE_ORIGIN ?? new URL(req.url).origin;
 

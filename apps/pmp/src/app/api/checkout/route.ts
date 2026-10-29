@@ -1,4 +1,4 @@
-import { priceCents, siteOrigin, stripe } from '@/lib/stripe';
+import { priceCents, siteOrigin, stripe, testPriceCents } from '@/lib/stripe';
 import { userFromRequest } from '@/lib/user';
 
 // Buyers sign in with Google first, and checkout is locked to that account's
@@ -7,7 +7,8 @@ export async function POST(req: Request) {
   const user = await userFromRequest(req);
   if (!user) return Response.json({ error: 'Please sign in with Google first.' }, { status: 401 });
   const origin = siteOrigin(req);
-  const priceId = process.env.STRIPE_PRICE_ID;
+  const testCents = testPriceCents(user.email);
+  const priceId = testCents === null ? process.env.STRIPE_PRICE_ID : undefined;
 
   const session = await stripe().checkout.sessions.create({
     mode: 'payment',
@@ -18,7 +19,7 @@ export async function POST(req: Request) {
             quantity: 1,
             price_data: {
               currency: 'usd',
-              unit_amount: priceCents(),
+              unit_amount: testCents ?? priceCents(),
               product_data: {
                 name: 'Calecutech PMP Prep: full access',
                 description:

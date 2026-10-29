@@ -81,9 +81,10 @@ export default function UnlockPage() {
         method: 'POST',
         headers: { Authorization: `Bearer ${key.trim()}` },
       });
-      const data = (await r.json()) as { valid: boolean; email?: string };
-      if (!data.valid) throw new Error('That licence key is not valid.');
-      saveLicense(key.trim(), data.email);
+      const data = (await r.json()) as { valid: boolean; email?: string; license?: string };
+      if (!data.valid) throw new Error('That key or code is not valid.');
+      // An access code comes back as a signed licence; a key is saved as typed.
+      saveLicense(data.license ?? key.trim(), data.email);
       router.push('/study');
     } catch (err) {
       setError((err as Error).message);
@@ -169,9 +170,9 @@ export default function UnlockPage() {
           </div>
         )}
         <details className="faq">
-          <summary>Have a licence key instead?</summary>
+          <summary>Have a licence key or access code?</summary>
           <form onSubmit={useKey} className="stack" style={{ marginTop: 12 }}>
-            <input className="text" placeholder="PMP1.…" value={key} onChange={(e) => setKey(e.target.value)} />
+            <input className="text" placeholder="Licence key or access code" value={key} onChange={(e) => setKey(e.target.value)} />
             <button className="btn btn-ghost" disabled={busy || !key.trim()}>Use key</button>
           </form>
           {error && status !== 'error' && <p className="err" style={{ marginTop: 10 }}>{error}</p>}
