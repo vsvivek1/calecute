@@ -98,10 +98,19 @@ Deno.serve(async (req) => {
   }
 
   if (payment.order_id) {
-    await admin
+    const newStatus = status === 'active' ? 'paid' : 'refunded';
+    // Only the first delivery that flips the order to paid counts a coupon use.
+    const { data: changed } = await admin
       .from('payment_orders')
-      .update({ status: status === 'active' ? 'paid' : 'refunded' })
-      .eq('provider_ref', payment.order_id);
+      .update({ status: newStatus })
+      .eq('provider_ref', payment.order_id)
+      .neq('status', newStatus)
+      .select('coupon_code');
+    const code = newStatus === 'paid' ? changed?.[0]?.coupon_code : null;
+    if (code) {
+      const { error: redeemError } = await admin.rpc('redeem_coupon', { p_code: code });
+      if (redeemError) console.error('could not count the coupon use', redeemError);
+    }
   }
 
   return new Response('ok', { status: 200 });
