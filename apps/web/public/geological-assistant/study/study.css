@@ -54,3 +54,14 @@ td.barcell{min-width:90px;width:30%}
 .days{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;max-width:520px}
 .day{display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:6px;font-size:.72rem;background:var(--line);color:inherit}
 .day.on{background:var(--ok);color:var(--card);font-weight:700}
+
+/* study schedule and missed-day nudge */
+table.sched tr.now td { background: color-mix(in srgb, var(--ok) 10%, transparent); }
+.panel.nudge { border-left: 4px solid var(--ok); }
+
+/* study calendar on the progress page: every day since the start, scroll up for older days */
+.calendar{max-height:340px;overflow:auto;max-width:420px;padding-right:4px}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.days-head{margin-bottom:4px;text-align:center}
+.days-head span{text-align:center}
+.day.pad{visibility:hidden}
