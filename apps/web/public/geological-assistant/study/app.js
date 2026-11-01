@@ -106,6 +106,7 @@ function route() {
   if (page === 'mock') return mock();
   if (page === 'results') return results();
   if (page === 'progress') return progress();
+  if (page === 'schedule') return progress().then(() => document.getElementById('schedule')?.scrollIntoView());
   return home();
 }
 
@@ -515,7 +516,7 @@ async function buildPlan() {
   const since = new Date(Date.now() - 60 * DAY).toISOString();
   const [cards, seen, attempts] = await Promise.all([
     all(() => sb.from('cards').select('id,module_id,frequency,tier,order_index,source_ref').eq('course_id', COURSE).order('id')),
-    all(() => sb.from('user_card_state').select('card_id,ease,interval_days,reps,lapses,due_at').order('card_id')),
+    all(() => sb.from('user_card_state').select('card_id,ease,interval_days,reps,lapses,due_at,last_reviewed_at').order('card_id')),
     sb.from('quiz_attempts').select('kind,answers,finished_at').eq('course_id', COURSE).gte('started_at', since)
       .order('started_at').limit(300).then(({ data, error }) => { if (error) throw error; return data; }),
   ]);
@@ -576,6 +577,7 @@ async function buildPlan() {
 
   const pastPaper = cards.filter((c) => c.source_ref);
   return {
+    lastStudied: seen.reduce((m, s) => Math.max(m, s.last_reviewed_at ? Date.parse(s.last_reviewed_at) : 0), 0),
     cards, stateById, due, fresh, daysLeft, final, mockDue, mockToday, progress, lastAnswer, log,
     learned: cards.length - unseen.length,
     pastPaper: { total: pastPaper.length, learned: pastPaper.filter((c) => stateById.has(c.id)).length },
@@ -622,9 +624,17 @@ async function home() {
       h('a', { class: 'btn', href: mockOnly ? 'study#/mock' : 'study#/today' }, mockOnly ? 'Start the mock test' : log.done ? 'Continue' : 'Start'));
   }
 
+  // A gentle nudge when days were missed: say how many, and that the plan has adjusted.
+  const lastDay = new Date(plan.lastStudied); lastDay.setHours(0, 0, 0, 0);
+  const missed = plan.lastStudied ? daysBetween(lastDay, today0()) - 1 : 0;
+  const nudge = missed >= 1 && !log.done ? h('div', { class: 'panel nudge' },
+    h('strong', {}, missed === 1 ? 'You missed yesterday.' : `You have not studied for ${missed} days.`),
+    ' ', `No problem. Today starts with the ${due.length ? due.length + ' facts you are about to forget' : 'revisions'}, and the rest of the plan is spread over the days left.`) : null;
+
   show(
     h('h1', {}, 'Today'),
     h('p', { class: 'lead' }, when),
+    nudge,
     todayPanel,
     h('div', { class: 'panel' },
       h('h2', {}, 'Your progress'),
@@ -635,7 +645,7 @@ async function home() {
           h('span', { class: 'n' }, `UNIT ${m.module_no} · ${s}/${total}`),
           h('h3', {}, m.name),
           h('div', { class: 'bar-out' }, h('div', { class: 'bar-in', style: `width:${total ? Math.round((100 * s) / total) : 0}%` })))))),
-    h('p', { class: 'small' }, h('a', { href: 'study#/progress' }, 'My progress'), '  ·  ', h('a', { href: 'study#/results' }, 'My scores'), '  ·  ',
+    h('p', { class: 'small' }, h('a', { href: 'study#/progress' }, 'My progress'), '  ·  ', h('a', { href: 'study#/schedule' }, 'My schedule'), '  ·  ', h('a', { href: 'study#/results' }, 'My scores'), '  ·  ',
       h('a', { href: '#', onclick: (e) => { e.preventDefault(); askExamDate(); } }, 'Change exam date'),
       '  ·  Signed in as ' + (state.user.email || '')),
     adminLink(),
@@ -1058,6 +1068,7 @@ function renderProgress(cards, states, attempts, who, userId) {
       h('div', { class: 'days', 'aria-label': `${days.filter((x) => x.on).length} of the last 14 days with study` },
         days.map(({ d, on }) => h('span', { class: on ? 'day on' : 'day', title: date(d) + (on ? ': studied' : ': no study') }, String(d.getDate())))),
       h('p', { class: 'small' }, `${days.filter((x) => x.on).length} of the last 14 days with study.`)),
+    userId ? null : schedulePanel(cards, byId, done),
     h('div', { class: 'panel' },
       h('h2', {}, 'Tests'),
       done.length ? h('p', {}, `${done.length} done · average ${avg(done)}% right` + (mocks.length ? ` · ${mocks.length} mock test${mocks.length === 1 ? '' : 's'}, best ${best} / ${MOCK.count}` : '')) : h('p', {}, 'No tests yet.'),
@@ -1066,6 +1077,81 @@ function renderProgress(cards, states, attempts, who, userId) {
         done.slice(0, 15).map((r) => h('tr', {},
           h('td', {}, date(r.finished_at)), h('td', {}, name(r)), h('td', {}, `${r.score} / ${r.total}`), h('td', {}, `${r.correct} / ${r.wrong}`))))) : null),
   );
+}
+
+// ---------- study schedule ----------
+// The plan from today to the exam, week by week. It plays the daily plan
+// forward: the same new-facts-a-day pace, past-paper facts first, the least
+// covered unit next, no new facts in the final week, and mock tests weekly
+// once 40% is learned (every third day in the last three weeks).
+function buildSchedule(cards, byId, attempts) {
+  const p = prefs();
+  const exam = p.exam && p.exam !== 'unknown' ? parseDay(p.exam) : null;
+  const start = today0();
+  const daysLeft = exam ? Math.max(0, daysBetween(start, exam)) : null;
+  const units = state.modules.map((m) => {
+    const mine = cards.filter((c) => c.module_id === m.id);
+    const left = mine.filter((c) => !byId.has(c.id));
+    return { m, total: mine.length, seen: mine.length - left.length, pp: left.filter((c) => c.source_ref).length, rest: left.filter((c) => !c.source_ref).length };
+  });
+  let unseen = units.reduce((t, u) => t + u.pp + u.rest, 0);
+  let learned = cards.length - unseen;
+  const span = daysLeft != null ? daysLeft : Math.min(56, Math.ceil(unseen / NEW_PER_DAY) + 7);
+  const mocks = attempts.filter((a) => a.kind === 'mock' && a.finished_at).map((a) => Date.parse(a.finished_at));
+  let lastMock = mocks.length ? Math.max(...mocks) : null;
+  const weeks = [];
+  for (let i = 0; i < span; i++) {
+    const day = new Date(start.getTime() + i * DAY);
+    const left = daysLeft != null ? daysLeft - i : null;
+    const final = left != null && left <= FINAL_DAYS;
+    const closing = left != null && left <= 21;
+    if (i % 7 === 0) weeks.push({ from: day, to: day, fresh: 0, units: new Map(), mocks: 0, final });
+    const w = weeks[weeks.length - 1];
+    w.to = day;
+    w.final = w.final && final;
+    if (final && !w.finalFrom) w.finalFrom = day;
+    const mockDue = (learned / cards.length >= 0.4 || closing) && (lastMock == null || day.getTime() - lastMock >= (closing ? 3 : 7) * DAY);
+    if (mockDue) { w.mocks += 1; lastMock = day.getTime(); }
+    if (final || !unseen) continue;
+    let perDay = left != null ? Math.ceil(unseen / Math.max(1, left - FINAL_DAYS)) : NEW_PER_DAY;
+    perDay = Math.round(Math.min(60, Math.max(10, perDay)) * (p.pace || 1));
+    if (mockDue) perDay = Math.ceil(perDay / 2);
+    for (let k = 0; k < perDay && unseen; k++) {
+      const open = units.filter((u) => u.pp + u.rest);
+      const pp = open.filter((u) => u.pp);
+      const u = (pp.length ? pp : open).reduce((x, y) => (x.seen / x.total <= y.seen / y.total ? x : y));
+      if (u.pp) u.pp -= 1; else u.rest -= 1;
+      u.seen += 1; unseen -= 1; learned += 1; w.fresh += 1;
+      w.units.set(u.m.module_no, (w.units.get(u.m.module_no) || 0) + 1);
+    }
+  }
+  const perDayNow = weeks[0] ? Math.round(weeks[0].fresh / Math.min(7, span)) : 0;
+  return { exam, daysLeft, weeks, perDayNow };
+}
+
+function schedulePanel(cards, byId, attempts) {
+  const { exam, daysLeft, weeks, perDayNow } = buildSchedule(cards, byId, attempts);
+  const date = (d) => d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+  const change = h('a', { href: '#', onclick: (e) => { e.preventDefault(); askExamDate(); } }, 'Change exam date');
+  if (daysLeft === 0) return h('div', { class: 'panel' }, h('h2', {}, 'Your schedule'), h('p', {}, 'Your exam is today. Good luck!'));
+  // About half a minute per new fact, plus revision and quick questions.
+  const minutes = Math.max(20, Math.round((perDayNow + 10) / 5) * 5);
+  return h('div', { class: 'panel', id: 'schedule' },
+    h('h2', {}, 'Your schedule'),
+    h('p', {}, exam
+      ? `Exam on ${date(exam)}, ${daysLeft} day${daysLeft === 1 ? '' : 's'} away. Study every day: about ${perDayNow} new facts plus revision, roughly ${minutes} minutes.`
+      : `No exam date yet, so this assumes ${NEW_PER_DAY} new facts a day. Study every day, roughly ${minutes} minutes.`),
+    h('div', { class: 'scroll' }, h('table', { class: 'res sched' },
+      h('tr', {}, h('th', {}, 'Week'), h('th', {}, 'Learn'), h('th', {}, 'Mock tests')),
+      weeks.map((w, i) => h('tr', { class: i === 0 ? 'now' : null },
+        h('td', {}, h('strong', {}, i === 0 ? 'This week' : `Week ${i + 1}`), h('div', { class: 'small' }, `${date(w.from)} – ${date(w.to)}`)),
+        h('td', {}, w.final ? 'Final week: revision only'
+          : w.fresh ? h('span', {}, `${w.fresh} new facts`, h('div', { class: 'small' },
+            [...w.units.entries()].sort((a, b) => b[1] - a[1]).map(([n, c]) => `Unit ${n}: ${c}`).join(' · ')),
+            w.finalFrom ? h('div', { class: 'small' }, `Revision only from ${date(w.finalFrom)}`) : null)
+          : 'Revision and practice'),
+        h('td', {}, w.mocks ? String(w.mocks) : '–'))))),
+    h('p', { class: 'small' }, 'Revision of what you have learned comes every day on top of this. Miss a day and the plan spreads the rest over the days left. ', change));
 }
 
 boot().catch((e) => show(errorBox('Something went wrong: ' + e.message)));
