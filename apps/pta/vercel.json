@@ -1,7 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "ignoreCommand": "git diff --quiet ${VERCEL_GIT_PREVIOUS_SHA:-HEAD^} HEAD -- . ../../package.json ../../package-lock.json",
   "installCommand": "cd ../.. && npm ci",
   "buildCommand": "cd ../.. && npm run build --workspace=apps/pta",
   "outputDirectory": ".next",
-  "regions": ["bom1"]
+  "regions": [
+    "bom1"
+  ]
 }

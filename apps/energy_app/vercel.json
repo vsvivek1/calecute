@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "ignoreCommand": "git diff --quiet ${VERCEL_GIT_PREVIOUS_SHA:-HEAD^} HEAD -- . ../../packages/recallio_core",
   "framework": null,
   "installCommand": "true",
   "buildCommand": "bash tool/vercel_build.sh",
