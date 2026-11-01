@@ -15,6 +15,13 @@ const COURSE = 'geological-assistant';
 const PREFIX = COURSE + '-';
 const NEW_PER_DAY = 25;
 const MOCK = { count: 100, minutes: 75, negative: 1 / 4 };
+// Tests run on the same exam rules: +1 right, −¼ wrong. The placement test is on day 2,
+// the weekly test on day 7 and every 7 days after. Both give a score for each unit.
+const TESTS = {
+  placement: { kind: 'placement', route: 'placement', label: 'Placement test', count: 50, minutes: 60 },
+  weekly: { kind: 'weekly', route: 'weekly', label: 'Weekly test', count: 50, minutes: 60 },
+};
+const FULL_MOCK = { kind: 'mock', label: 'Mock test', count: MOCK.count, minutes: MOCK.minutes };
 const HOME = location.origin + '/geological-assistant/study';
 
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
@@ -104,6 +111,8 @@ function route() {
   // There is no unit or mode picker: old #/study/<unit> and #/quiz/<unit> links land on today's plan.
   if (page === 'today') return today();
   if (page === 'mock') return mock();
+  if (page === 'placement') return testIntro(TESTS.placement);
+  if (page === 'weekly') return testIntro(TESTS.weekly);
   if (page === 'results') return results();
   if (page === 'progress') return progress();
   if (page === 'schedule') return progress().then(() => document.getElementById('schedule')?.scrollIntoView());
@@ -520,6 +529,9 @@ async function buildPlan() {
     sb.from('quiz_attempts').select('kind,answers,finished_at').eq('course_id', COURSE).gte('started_at', since)
       .order('started_at').limit(300).then(({ data, error }) => { if (error) throw error; return data; }),
   ]);
+  const testRows = await sb.from('quiz_attempts').select('kind,finished_at').eq('course_id', COURSE)
+    .in('kind', ['placement', 'weekly']).order('finished_at', { ascending: false }).limit(100)
+    .then(({ data, error }) => { if (error) throw error; return data; });
   const now = Date.now();
   const p = prefs();
   const log = dayLog();
@@ -576,7 +588,18 @@ async function buildPlan() {
   }
 
   const pastPaper = cards.filter((c) => c.source_ref);
+  // Tests: the placement once; a weekly test from day 7, then once in each week.
+  const startDay = state.user.created_at ? new Date(state.user.created_at) : today0();
+  startDay.setHours(0, 0, 0, 0);
+  const daysIn = daysBetween(startDay, today0());
+  const lastWeekly = testRows.find((r) => r.kind === 'weekly');
+  const weekStart = startDay.getTime() + Math.floor(daysIn / 7) * 7 * DAY;
+  // The placement test waits until day 2, so the first day is for learning.
+  const placementDue = daysIn >= 1 && !testRows.some((r) => r.kind === 'placement');
+  const weeklyDue = daysIn >= 7 && (!lastWeekly || Date.parse(lastWeekly.finished_at) < weekStart);
+
   return {
+    placementDue, weeklyDue,
     lastStudied: seen.reduce((m, s) => Math.max(m, s.last_reviewed_at ? Date.parse(s.last_reviewed_at) : 0), 0),
     cards, stateById, due, fresh, daysLeft, final, mockDue, mockToday, progress, lastAnswer, log,
     learned: cards.length - unseen.length,
@@ -631,10 +654,19 @@ async function home() {
     h('strong', {}, missed === 1 ? 'You missed yesterday.' : `You have not studied for ${missed} days.`),
     ' ', `No problem. Today starts with the ${due.length ? due.length + ' facts you are about to forget' : 'revisions'}, and the rest of the plan is spread over the days left.`) : null;
 
+  const t = plan.placementDue ? TESTS.placement : plan.weeklyDue ? TESTS.weekly : null;
+  const testCard = t ? h('div', { class: 'panel' },
+    h('h2', {}, t.label),
+    h('p', {}, t.kind === 'placement'
+      ? `${t.count} questions to start. They show which units are hard for you.`
+      : `${t.count} questions across all units. They show how your learning is going, unit by unit.`),
+    h('a', { class: 'btn ghost', href: 'study#/' + t.route }, 'Take the test')) : null;
+
   show(
     h('h1', {}, 'Today'),
     h('p', { class: 'lead' }, when),
     nudge,
+    testCard,
     todayPanel,
     h('div', { class: 'panel' },
       h('h2', {}, 'Your progress'),
@@ -872,10 +904,11 @@ async function linkedFacts(questionId) {
 
 function options(q) { return ['a', 'b', 'c', 'd'].map((k) => [k, q['option_' + k]]); }
 
-async function saveAttempt(kind, moduleId, total, correct, wrong, score, answers, started) {
+async function saveAttempt(kind, moduleId, total, correct, wrong, score, answers, started, unitScores = null) {
   await sb.from('quiz_attempts').insert({
     user_id: state.user.id, course_id: COURSE, kind, module_id: moduleId,
     total, correct, wrong, score, answers, started_at: started, finished_at: new Date().toISOString(),
+    unit_scores: unitScores,
   });
 }
 
@@ -886,11 +919,40 @@ async function mock() {
     h('div', { class: 'panel' },
       h('p', {}, `${MOCK.count} questions from all five units. ${MOCK.minutes} minutes. +1 for a right answer, −¼ for a wrong one, 0 if you leave it blank.`),
       h('p', { class: 'small' }, 'The test submits itself when time runs out. Do not close this tab.'),
-      h('button', { class: 'btn', onclick: runMock }, 'Start now')),
+      h('button', { class: 'btn', onclick: () => runTest(FULL_MOCK) }, 'Start now')),
   );
 }
 
-async function runMock() {
+function testIntro(t) {
+  show(
+    h('h1', {}, t.label),
+    h('div', { class: 'panel' },
+      h('p', {}, `${t.count} questions from all five units, ${t.count / 5} from each. ${t.minutes} minutes. +1 for a right answer, −¼ for a wrong one, 0 if you leave it blank.`),
+      h('p', { class: 'small' }, 'It shows where you are strong and where you are weak. Your score for each unit is saved.'),
+      h('p', { class: 'small' }, 'The test submits itself when time runs out. Do not close this tab.'),
+      h('button', { class: 'btn', onclick: () => runTest(t) }, 'Start now')),
+  );
+}
+
+// Units with their score for one test, weakest first.
+function unitRows(unitScores) {
+  return Object.entries(unitScores || {})
+    .map(([n, r]) => ({ n: +n, right: r.right, total: r.total, pct: r.total ? r.right / r.total : 0 }))
+    .sort((a, b) => a.pct - b.pct || a.n - b.n);
+}
+function weakAreasPanel(unitScores, title) {
+  const rows = unitRows(unitScores);
+  if (!rows.length) return null;
+  const weak = rows.filter((r) => r.pct < 0.5).map((r) => `Unit ${r.n}`);
+  return h('div', { class: 'panel' },
+    h('h2', {}, title || 'Your units'),
+    h('p', {}, weak.length ? `Hard for you right now: ${weak.join(', ')}.` : 'No unit is below half right.'),
+    h('table', { class: 'res' },
+      h('tr', {}, h('th', {}, 'Unit'), h('th', {}, 'Right'), h('th', {}, '%')),
+      rows.map((r) => h('tr', {}, h('td', {}, `Unit ${r.n}`), h('td', {}, `${r.right} / ${r.total}`), h('td', {}, `${Math.round(r.pct * 100)}%`)))));
+}
+
+async function runTest(t) {
   show(h('p', { class: 'meta' }, 'Setting your paper…'));
   let qs;
   try {
@@ -899,13 +961,13 @@ async function runMock() {
     const byUnit = {};
     for (const id of shuffle(ids)) (byUnit[unitOfQuestion(id) ?? 0] ||= []).push(id);
     let pick = [];
-    for (let u = 1; u <= 5; u++) pick.push(...(byUnit[u] || []).slice(0, MOCK.count / 5));
-    if (pick.length < MOCK.count) pick.push(...shuffle(ids.filter((x) => !pick.includes(x))).slice(0, MOCK.count - pick.length));
+    for (let u = 1; u <= 5; u++) pick.push(...(byUnit[u] || []).slice(0, t.count / 5));
+    if (pick.length < t.count) pick.push(...shuffle(ids.filter((x) => !pick.includes(x))).slice(0, t.count - pick.length));
     qs = await loadQuestions(shuffle(pick));
   } catch (e) { return show(errorBox('Could not set the paper: ' + e.message)); }
 
   const started = new Date();
-  const ends = started.getTime() + MOCK.minutes * 60000;
+  const ends = started.getTime() + t.minutes * 60000;
   const picks = {};
   let i = 0, over = false;
   const timer = h('span', { class: 'timer' });
@@ -948,14 +1010,22 @@ async function runMock() {
     for (const q of qs) { const p = picks[q.id]; if (!p) continue; if (p === answerOf(q)) correct += 1; else wrong += 1; }
     const score = Math.round((correct - wrong * MOCK.negative) * 100) / 100;
     const clean = Object.fromEntries(Object.entries(picks).filter(([, v]) => v));
-    await saveAttempt('mock', null, qs.length, correct, wrong, score, clean, started.toISOString());
+    const unitScores = {};
+    for (const q of qs) {
+      const u = unitOfQuestion(q.id) ?? 0;
+      unitScores[u] ||= { right: 0, total: 0 };
+      unitScores[u].total += 1;
+      if (picks[q.id] && picks[q.id] === answerOf(q)) unitScores[u].right += 1;
+    }
+    await saveAttempt(t.kind, null, qs.length, correct, wrong, score, clean, started.toISOString(), unitScores);
     const wrongOnes = qs.filter((q) => picks[q.id] && picks[q.id] !== answerOf(q));
     show(
-      h('h1', {}, 'Mock test result'),
+      h('h1', {}, t.label + ' result'),
       h('div', { class: 'panel' },
         h('p', { class: 'big' }, `${score} / ${qs.length}`),
         h('p', {}, `${correct} right, ${wrong} wrong, ${qs.length - correct - wrong} left blank.`),
         h('a', { class: 'btn', href: 'study#/' }, 'Back to today')),
+      t.kind === 'mock' ? null : weakAreasPanel(unitScores, 'Your units on this test'),
       wrongOnes.length ? h('div', { class: 'panel' }, h('h2', {}, 'Review your wrong answers'),
         wrongOnes.map((q) => h('div', { style: 'margin:14px 0' },
           h('p', { class: 'q', style: 'font:600 16px/1.45 system-ui,sans-serif;margin:0' }, q.stem),
@@ -970,7 +1040,7 @@ async function results() {
   const { data, error } = await sb.from('quiz_attempts').select('kind,module_id,total,correct,wrong,score,finished_at')
     .eq('course_id', COURSE).order('finished_at', { ascending: false }).limit(50);
   if (error) return show(errorBox('Could not load your scores: ' + error.message));
-  const name = (r) => r.kind === 'mock' ? 'Mock test' : !r.module_id ? 'Practice'
+  const name = (r) => r.kind === 'mock' ? 'Mock test' : r.kind === 'placement' ? 'Placement test' : r.kind === 'weekly' ? 'Weekly test' : !r.module_id ? 'Practice'
     : 'Unit ' + (state.modules.find((m) => m.id === r.module_id)?.module_no ?? '');
   show(
     h('div', { class: 'row' }, h('a', { href: 'study#/' }, '← Today')),
@@ -1003,7 +1073,7 @@ async function progress(userId) {
     } else {
       [states, attempts] = await Promise.all([
         all(() => sb.from('user_card_state').select('card_id,interval_days,reps,lapses,due_at,last_reviewed_at').order('card_id')),
-        sb.from('quiz_attempts').select('kind,module_id,total,correct,wrong,score,finished_at').eq('course_id', COURSE)
+        sb.from('quiz_attempts').select('kind,module_id,total,correct,wrong,score,finished_at,unit_scores').eq('course_id', COURSE)
           .order('finished_at', { ascending: false }).limit(200).then(({ data, error }) => { if (error) throw error; return data; }),
       ]);
     }
@@ -1011,6 +1081,12 @@ async function progress(userId) {
   } catch (e) {
     show(h('div', { class: 'row' }, h('a', { href: userId ? 'study#/admin' : 'study#/' }, '← Back')), errorBox('Could not load progress: ' + e.message));
   }
+}
+
+// The newest placement or weekly test's unit scores, for the progress board.
+function latestUnits(done) {
+  const t = done.find((a) => (a.kind === 'weekly' || a.kind === 'placement') && a.unit_scores);
+  return t ? t.unit_scores : null;
 }
 
 function renderProgress(cards, states, attempts, who, userId) {
@@ -1026,10 +1102,19 @@ function renderProgress(cards, states, attempts, who, userId) {
   const shaky = states.filter((s) => s.lapses >= 2).length;
 
   // Days with study in the last 14 days (from each fact's latest revision).
-  const days = [];
   const studied = new Set(states.filter((s) => s.last_reviewed_at).map((s) => dayKey(new Date(s.last_reviewed_at))));
   attempts.filter((a) => a.finished_at).forEach((a) => studied.add(dayKey(new Date(a.finished_at))));
-  for (let i = 13; i >= 0; i--) { const d = new Date(today0().getTime() - i * DAY); days.push({ d, on: studied.has(dayKey(d)) }); }
+  // Every day since the start, not just the last two weeks: from the learner's sign-up
+  // (or their first study day, if that is earlier) to today. Admins see the learner's own start.
+  let first = today0();
+  if (!userId && state.user?.created_at) { first = new Date(state.user.created_at); first.setHours(0, 0, 0, 0); }
+  for (const k of studied) { const d = parseDay(k); if (d < first) first = d; }
+  const days = [];
+  const span = Math.min(730, daysBetween(first, today0()));
+  for (let i = span; i >= 0; i--) { const d = new Date(today0().getTime() - i * DAY); days.push({ d, on: studied.has(dayKey(d)) }); }
+  const studyDays = days.filter((x) => x.on).length;
+  // Pad the first week so each day sits under its weekday (Monday first).
+  const lead = (first.getDay() + 6) % 7;
   const lastSeen = states.reduce((m, s) => Math.max(m, s.last_reviewed_at ? Date.parse(s.last_reviewed_at) : 0), 0);
 
   const done = attempts.filter((a) => a.finished_at);
@@ -1037,7 +1122,7 @@ function renderProgress(cards, states, attempts, who, userId) {
   const avg = (xs) => xs.length ? Math.round(xs.reduce((t, a) => t + (100 * a.correct) / Math.max(1, a.total), 0) / xs.length) : null;
   const best = mocks.length ? Math.max(...mocks.map((a) => Number(a.score))) : null;
   const date = (t) => new Date(t).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-  const name = (r) => r.kind === 'mock' ? 'Mock test' : !r.module_id ? 'Practice'
+  const name = (r) => r.kind === 'mock' ? 'Mock test' : r.kind === 'placement' ? 'Placement test' : r.kind === 'weekly' ? 'Weekly test' : !r.module_id ? 'Practice'
     : 'Unit ' + (state.modules.find((m) => m.id === r.module_id)?.module_no ?? '');
   const tile = (big, label) => h('div', { class: 'tile' }, h('span', { class: 'big' }, big), h('span', { class: 'small' }, label));
 
@@ -1064,19 +1149,25 @@ function renderProgress(cards, states, attempts, who, userId) {
         }))),
       shaky ? h('p', { class: 'small' }, `${shaky} fact${shaky === 1 ? '' : 's'} forgotten twice or more. They come back more often.`) : null),
     h('div', { class: 'panel' },
-      h('h2', {}, 'Last 14 days'),
-      h('div', { class: 'days', 'aria-label': `${days.filter((x) => x.on).length} of the last 14 days with study` },
-        days.map(({ d, on }) => h('span', { class: on ? 'day on' : 'day', title: date(d) + (on ? ': studied' : ': no study') }, String(d.getDate())))),
-      h('p', { class: 'small' }, `${days.filter((x) => x.on).length} of the last 14 days with study.`)),
-    userId ? null : schedulePanel(cards, byId, done),
+      h('h2', {}, 'Study calendar'),
+      h('p', { class: 'small' }, `${studyDays} study day${studyDays === 1 ? '' : 's'} since ${date(first)}. Scroll up for older days.`),
+      h('div', { class: 'calendar', id: 'calendar' },
+        h('div', { class: 'days days-head' }, ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((x) => h('span', { class: 'small' }, x))),
+        h('div', { class: 'days' },
+          Array.from({ length: lead }, () => h('span', { class: 'day pad' })),
+          days.map(({ d, on }) => h('span', { class: on ? 'day on' : 'day', title: date(d) + (on ? ': studied' : ': no study') }, String(d.getDate())))))),
     h('div', { class: 'panel' },
       h('h2', {}, 'Tests'),
+      weakAreasPanel(latestUnits(done), 'Units on your latest test'),
       done.length ? h('p', {}, `${done.length} done · average ${avg(done)}% right` + (mocks.length ? ` · ${mocks.length} mock test${mocks.length === 1 ? '' : 's'}, best ${best} / ${MOCK.count}` : '')) : h('p', {}, 'No tests yet.'),
       done.length ? h('div', { class: 'scroll' }, h('table', { class: 'res' },
         h('tr', {}, h('th', {}, 'When'), h('th', {}, 'Test'), h('th', {}, 'Score'), h('th', {}, 'Right / wrong')),
         done.slice(0, 15).map((r) => h('tr', {},
           h('td', {}, date(r.finished_at)), h('td', {}, name(r)), h('td', {}, `${r.score} / ${r.total}`), h('td', {}, `${r.correct} / ${r.wrong}`))))) : null),
   );
+  const cal = document.getElementById('calendar');
+  if (cal) cal.scrollTop = cal.scrollHeight; // start at today; scroll up for older days
+
 }
 
 // ---------- study schedule ----------
