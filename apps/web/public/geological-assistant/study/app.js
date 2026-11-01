@@ -588,15 +588,7 @@ async function buildPlan() {
   }
 
   const pastPaper = cards.filter((c) => c.source_ref);
-  // Tests: the placement once; a weekly test from day 7, then once in each week.
-  const startDay = state.user.created_at ? new Date(state.user.created_at) : today0();
-  startDay.setHours(0, 0, 0, 0);
-  const daysIn = daysBetween(startDay, today0());
-  const lastWeekly = testRows.find((r) => r.kind === 'weekly');
-  const weekStart = startDay.getTime() + Math.floor(daysIn / 7) * 7 * DAY;
-  // The placement test waits until day 2, so the first day is for learning.
-  const placementDue = daysIn >= 1 && !testRows.some((r) => r.kind === 'placement');
-  const weeklyDue = daysIn >= 7 && (!lastWeekly || Date.parse(lastWeekly.finished_at) < weekStart);
+  const { placementDue, weeklyDue } = testsDue(testRows);
 
   return {
     placementDue, weeklyDue,
@@ -605,6 +597,21 @@ async function buildPlan() {
     learned: cards.length - unseen.length,
     pastPaper: { total: pastPaper.length, learned: pastPaper.filter((c) => stateById.has(c.id)).length },
     practiceSize: final ? PRACTICE.final : PRACTICE.learn,
+  };
+}
+
+// Optional tests. The placement test is due from day 2; the weekly test from day 7,
+// then once in each week. Rows are the learner's test attempts, newest first.
+// They are never part of Today: they sit on the Progress page as an option.
+function testsDue(rows) {
+  const startDay = state.user?.created_at ? new Date(state.user.created_at) : today0();
+  startDay.setHours(0, 0, 0, 0);
+  const daysIn = daysBetween(startDay, today0());
+  const lastWeekly = rows.find((r) => r.kind === 'weekly' && r.finished_at);
+  const weekStart = startDay.getTime() + Math.floor(daysIn / 7) * 7 * DAY;
+  return {
+    placementDue: daysIn >= 1 && !rows.some((r) => r.kind === 'placement'),
+    weeklyDue: daysIn >= 7 && (!lastWeekly || Date.parse(lastWeekly.finished_at) < weekStart),
   };
 }
 
@@ -654,19 +661,11 @@ async function home() {
     h('strong', {}, missed === 1 ? 'You missed yesterday.' : `You have not studied for ${missed} days.`),
     ' ', `No problem. Today starts with the ${due.length ? due.length + ' facts you are about to forget' : 'revisions'}, and the rest of the plan is spread over the days left.`) : null;
 
-  const t = plan.placementDue ? TESTS.placement : plan.weeklyDue ? TESTS.weekly : null;
-  const testCard = t ? h('div', { class: 'panel' },
-    h('h2', {}, t.label),
-    h('p', {}, t.kind === 'placement'
-      ? `${t.count} questions to start. They show which units are hard for you.`
-      : `${t.count} questions across all units. They show how your learning is going, unit by unit.`),
-    h('a', { class: 'btn ghost', href: 'study#/' + t.route }, 'Take the test')) : null;
 
   show(
     h('h1', {}, 'Today'),
     h('p', { class: 'lead' }, when),
     nudge,
-    testCard,
     todayPanel,
     h('div', { class: 'panel' },
       h('h2', {}, 'Your progress'),
@@ -1125,11 +1124,21 @@ function renderProgress(cards, states, attempts, who, userId) {
   const name = (r) => r.kind === 'mock' ? 'Mock test' : r.kind === 'placement' ? 'Placement test' : r.kind === 'weekly' ? 'Weekly test' : !r.module_id ? 'Practice'
     : 'Unit ' + (state.modules.find((m) => m.id === r.module_id)?.module_no ?? '');
   const tile = (big, label) => h('div', { class: 'tile' }, h('span', { class: 'big' }, big), h('span', { class: 'small' }, label));
+  // Own progress only: an optional test, offered here and never on Today.
+  const due = userId ? null : testsDue(attempts);
+  const t = due?.placementDue ? TESTS.placement : due?.weeklyDue ? TESTS.weekly : null;
+  const optionalTest = t ? h('div', { class: 'panel' },
+    h('h2', {}, `${t.label} (optional)`),
+    h('p', {}, t.kind === 'placement'
+      ? `${t.count} questions across all units. It shows which units are hard for you. Your plan does not wait for it.`
+      : `${t.count} questions across all units. It shows how your learning is going, unit by unit. Your plan does not wait for it.`),
+    h('a', { class: 'btn ghost', href: 'study#/' + t.route }, 'Take the test')) : null;
 
   show(
     h('div', { class: 'row' }, h('a', { href: userId ? 'study#/admin' : 'study#/' }, userId ? '← Admin' : '← Today')),
     h('h1', {}, who ? 'Progress: ' + who : 'My progress'),
     h('p', { class: 'lead' }, lastSeen ? `Last studied ${date(lastSeen)}.` : 'No study yet.'),
+    optionalTest,
     h('div', { class: 'tiles' },
       tile(`${pct(learned.length, cards.length)}%`, `${learned.length} of ${cards.length} facts learned`),
       tile(String(strongN), `strong facts (next revision ${STRONG_DAYS}+ days away)`),
