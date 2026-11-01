@@ -662,11 +662,19 @@ async function home() {
     ' ', `No problem. Today starts with the ${due.length ? due.length + ' facts you are about to forget' : 'revisions'}, and the rest of the plan is spread over the days left.`) : null;
 
 
+  // The placement test (from day 2) and the weekly test (from day 7) are shown on Today until taken.
+  const testToday = plan.placementDue ? TESTS.placement : plan.weeklyDue ? TESTS.weekly : null;
+  const testPanel = testToday ? h('div', { class: 'panel' },
+    h('h2', {}, testToday.label),
+    h('p', {}, `${testToday.count} questions across all units. It shows which units are hard for you.`),
+    h('a', { class: 'btn ghost', href: 'study#/' + testToday.route }, 'Take the test')) : null;
+
   show(
     h('h1', {}, 'Today'),
     h('p', { class: 'lead' }, when),
     nudge,
     todayPanel,
+    testPanel,
     h('div', { class: 'panel' },
       h('h2', {}, 'Your progress'),
       h('p', {}, h('span', { class: 'big' }, plan.learned), ` of ${plan.cards.length} facts learned  ·  `,
