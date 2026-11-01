@@ -69,6 +69,8 @@ async function boot() {
   const { data: { session } } = await sb.auth.getSession();
   state.user = session?.user ?? null;
   document.getElementById('signout').hidden = !state.user;
+  // The Admin tab shows only for admins (the server checks again on every admin call).
+  if (state.user) sb.rpc('is_admin').then(({ data }) => { document.getElementById('admintab').hidden = data !== true; });
   const [{ data: course }, { data: modules }] = await Promise.all([
     sb.from('courses').select('id,name,price_minor,price_currency').eq('id', COURSE).maybeSingle(),
     sb.from('modules').select('id,module_no,name').eq('course_id', COURSE).order('module_no'),
