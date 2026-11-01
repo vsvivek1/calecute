@@ -67,7 +67,10 @@ rule-by-rule upgrade in `docs/UPGRADE_PLAN.md`.
 
 See `.env.example`. Server: `STRIPE_SECRET_KEY` (test key until launch),
 `LICENSE_SECRET` (`openssl rand -base64 32`; rotating it revokes every key),
-`PUBLIC_SITE_ORIGIN`, optional `STRIPE_PRICE_ID` / `PRICE_CENTS`. Android
+`PUBLIC_SITE_ORIGIN`, optional `STRIPE_PRICE_ID` / `PRICE_CENTS`, optional
+`ACCESS_CODES` (comma-separated codes that unlock without paying; typed into
+the licence-key box on /unlock), optional `TEST_PRICE_EMAILS` (Google accounts
+that pay `TEST_PRICE_CENTS`, default $1, for live checkout tests). Android
 build: `NEXT_PUBLIC_API_ORIGIN`, the deployed web origin.
 
 ## Running

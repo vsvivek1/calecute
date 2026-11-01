@@ -46,3 +46,22 @@ export function verifyLicense(token: string | null | undefined, key = secret()):
 
 export const bearer = (req: Request) =>
   req.headers.get('authorization')?.replace(/^Bearer\s+/i, '') ?? null;
+
+/**
+ * Access codes are plain passwords set in the ACCESS_CODES env var
+ * (comma-separated), for testers and reviewers. A matching code is swapped
+ * for a normal signed licence, so the rest of the app needs no special case.
+ * The codes live only in the environment, never in the source.
+ */
+export function isAccessCode(input: string | null | undefined, codes = process.env.ACCESS_CODES ?? ''): boolean {
+  const given = Buffer.from((input ?? '').trim());
+  if (!given.length) return false;
+  return codes
+    .split(',')
+    .map((c) => c.trim())
+    .filter(Boolean)
+    .some((c) => {
+      const want = Buffer.from(c);
+      return want.length === given.length && timingSafeEqual(want, given);
+    });
+}
