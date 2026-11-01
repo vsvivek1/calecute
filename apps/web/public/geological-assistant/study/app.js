@@ -1102,10 +1102,19 @@ function renderProgress(cards, states, attempts, who, userId) {
   const shaky = states.filter((s) => s.lapses >= 2).length;
 
   // Days with study in the last 14 days (from each fact's latest revision).
-  const days = [];
   const studied = new Set(states.filter((s) => s.last_reviewed_at).map((s) => dayKey(new Date(s.last_reviewed_at))));
   attempts.filter((a) => a.finished_at).forEach((a) => studied.add(dayKey(new Date(a.finished_at))));
-  for (let i = 13; i >= 0; i--) { const d = new Date(today0().getTime() - i * DAY); days.push({ d, on: studied.has(dayKey(d)) }); }
+  // Every day since the start, not just the last two weeks: from the learner's sign-up
+  // (or their first study day, if that is earlier) to today. Admins see the learner's own start.
+  let first = today0();
+  if (!userId && state.user?.created_at) { first = new Date(state.user.created_at); first.setHours(0, 0, 0, 0); }
+  for (const k of studied) { const d = parseDay(k); if (d < first) first = d; }
+  const days = [];
+  const span = Math.min(730, daysBetween(first, today0()));
+  for (let i = span; i >= 0; i--) { const d = new Date(today0().getTime() - i * DAY); days.push({ d, on: studied.has(dayKey(d)) }); }
+  const studyDays = days.filter((x) => x.on).length;
+  // Pad the first week so each day sits under its weekday (Monday first).
+  const lead = (first.getDay() + 6) % 7;
   const lastSeen = states.reduce((m, s) => Math.max(m, s.last_reviewed_at ? Date.parse(s.last_reviewed_at) : 0), 0);
 
   const done = attempts.filter((a) => a.finished_at);
@@ -1140,11 +1149,13 @@ function renderProgress(cards, states, attempts, who, userId) {
         }))),
       shaky ? h('p', { class: 'small' }, `${shaky} fact${shaky === 1 ? '' : 's'} forgotten twice or more. They come back more often.`) : null),
     h('div', { class: 'panel' },
-      h('h2', {}, 'Last 14 days'),
-      h('div', { class: 'days', 'aria-label': `${days.filter((x) => x.on).length} of the last 14 days with study` },
-        days.map(({ d, on }) => h('span', { class: on ? 'day on' : 'day', title: date(d) + (on ? ': studied' : ': no study') }, String(d.getDate())))),
-      h('p', { class: 'small' }, `${days.filter((x) => x.on).length} of the last 14 days with study.`)),
-    userId ? null : schedulePanel(cards, byId, done),
+      h('h2', {}, 'Study calendar'),
+      h('p', { class: 'small' }, `${studyDays} study day${studyDays === 1 ? '' : 's'} since ${date(first)}. Scroll up for older days.`),
+      h('div', { class: 'calendar', id: 'calendar' },
+        h('div', { class: 'days days-head' }, ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((x) => h('span', { class: 'small' }, x))),
+        h('div', { class: 'days' },
+          Array.from({ length: lead }, () => h('span', { class: 'day pad' })),
+          days.map(({ d, on }) => h('span', { class: on ? 'day on' : 'day', title: date(d) + (on ? ': studied' : ': no study') }, String(d.getDate())))))),
     h('div', { class: 'panel' },
       h('h2', {}, 'Tests'),
       weakAreasPanel(latestUnits(done), 'Units on your latest test'),
@@ -1154,6 +1165,9 @@ function renderProgress(cards, states, attempts, who, userId) {
         done.slice(0, 15).map((r) => h('tr', {},
           h('td', {}, date(r.finished_at)), h('td', {}, name(r)), h('td', {}, `${r.score} / ${r.total}`), h('td', {}, `${r.correct} / ${r.wrong}`))))) : null),
   );
+  const cal = document.getElementById('calendar');
+  if (cal) cal.scrollTop = cal.scrollHeight; // start at today; scroll up for older days
+
 }
 
 // ---------- study schedule ----------

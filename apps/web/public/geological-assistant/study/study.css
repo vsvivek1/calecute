@@ -58,3 +58,10 @@ td.barcell{min-width:90px;width:30%}
 /* study schedule and missed-day nudge */
 table.sched tr.now td { background: color-mix(in srgb, var(--ok) 10%, transparent); }
 .panel.nudge { border-left: 4px solid var(--ok); }
+
+/* study calendar on the progress page: every day since the start, scroll up for older days */
+.calendar{max-height:340px;overflow:auto;max-width:420px;padding-right:4px}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.days-head{margin-bottom:4px;text-align:center}
+.days-head span{text-align:center}
+.day.pad{visibility:hidden}
