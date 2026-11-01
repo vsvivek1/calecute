@@ -69,6 +69,7 @@ async function boot() {
   const { data: { session } } = await sb.auth.getSession();
   state.user = session?.user ?? null;
   document.getElementById('signout').hidden = !state.user;
+  document.getElementById('progresstab').hidden = !state.user;
   // The Admin tab shows only for admins (the server checks again on every admin call).
   if (state.user) sb.rpc('is_admin').then(({ data }) => { document.getElementById('admintab').hidden = data !== true; });
   const [{ data: course }, { data: modules }] = await Promise.all([
@@ -94,14 +95,17 @@ document.getElementById('signout').addEventListener('click', async (e) => {
 window.addEventListener('hashchange', route);
 
 function route() {
-  const [, page] = (location.hash || '#/').split('/');
+  const [, page, arg] = (location.hash || '#/').split('/');
   if (!state.user) return signIn();
   if (page === 'admin') return admin();
+  // An admin looking at one learner: #/progress/<user id>.
+  if (page === 'progress' && arg) return progress(arg);
   if (!state.paid) return buy();
   // There is no unit or mode picker: old #/study/<unit> and #/quiz/<unit> links land on today's plan.
   if (page === 'today') return today();
   if (page === 'mock') return mock();
   if (page === 'results') return results();
+  if (page === 'progress') return progress();
   return home();
 }
 
@@ -414,7 +418,7 @@ async function admin() {
         h('td', {}, String(p.cards_studied)),
         h('td', {}, String(p.tests_taken)),
         h('td', {}, date(p.last_studied_at)),
-        h('td', {}, act));
+        h('td', {}, h('a', { class: 'btn ghost sm', href: 'study#/progress/' + p.user_id }, 'Progress'), ' ', act));
     });
     const paid = data.filter((p) => p.has_access && p.paid_via !== 'coupon').length;
     const free = data.filter((p) => p.paid_via === 'coupon').length;
@@ -631,7 +635,7 @@ async function home() {
           h('span', { class: 'n' }, `UNIT ${m.module_no} · ${s}/${total}`),
           h('h3', {}, m.name),
           h('div', { class: 'bar-out' }, h('div', { class: 'bar-in', style: `width:${total ? Math.round((100 * s) / total) : 0}%` })))))),
-    h('p', { class: 'small' }, h('a', { href: 'study#/results' }, 'My scores'), '  ·  ',
+    h('p', { class: 'small' }, h('a', { href: 'study#/progress' }, 'My progress'), '  ·  ', h('a', { href: 'study#/results' }, 'My scores'), '  ·  ',
       h('a', { href: '#', onclick: (e) => { e.preventDefault(); askExamDate(); } }, 'Change exam date'),
       '  ·  Signed in as ' + (state.user.email || '')),
     adminLink(),
@@ -967,6 +971,100 @@ async function results() {
         h('td', {}, r.finished_at ? new Date(r.finished_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : ''),
         h('td', {}, name(r)), h('td', {}, `${r.score} / ${r.total}`), h('td', {}, `${r.correct} / ${r.wrong}`))))
       : h('p', {}, 'No scores yet. They appear here after your first session.'),
+  );
+}
+
+// ---------- progress board ----------
+// What a learner has learned, unit by unit, and how their tests went. With a
+// user id (admins only) it shows that learner instead; the server checks
+// admin rights in admin_user_progress.
+const STRONG_DAYS = 21; // a fact whose next revision is 3+ weeks away is counted as strong
+
+async function progress(userId) {
+  show(h('p', { class: 'meta' }, 'Loading progress…'));
+  let states, attempts, who = null;
+  try {
+    const cardsQ = all(() => sb.from('cards').select('id,module_id,source_ref').eq('course_id', COURSE).order('id'));
+    if (userId) {
+      const { data, error } = await sb.rpc('admin_user_progress', { p_course_id: COURSE, p_user_id: userId });
+      if (error) throw error;
+      ({ states, attempts } = data);
+      who = data.email || 'this learner';
+    } else {
+      [states, attempts] = await Promise.all([
+        all(() => sb.from('user_card_state').select('card_id,interval_days,reps,lapses,due_at,last_reviewed_at').order('card_id')),
+        sb.from('quiz_attempts').select('kind,module_id,total,correct,wrong,score,finished_at').eq('course_id', COURSE)
+          .order('finished_at', { ascending: false }).limit(200).then(({ data, error }) => { if (error) throw error; return data; }),
+      ]);
+    }
+    renderProgress(await cardsQ, states || [], attempts || [], who, userId);
+  } catch (e) {
+    show(h('div', { class: 'row' }, h('a', { href: userId ? 'study#/admin' : 'study#/' }, '← Back')), errorBox('Could not load progress: ' + e.message));
+  }
+}
+
+function renderProgress(cards, states, attempts, who, userId) {
+  const now = Date.now();
+  const byId = new Map(states.map((s) => [s.card_id, s]));
+  const strong = (s) => s && s.interval_days >= STRONG_DAYS;
+  const pct = (a, b) => (b ? Math.round((100 * a) / b) : 0);
+  const learned = cards.filter((c) => byId.has(c.id));
+  const strongN = cards.filter((c) => strong(byId.get(c.id))).length;
+  const dueN = states.filter((s) => Date.parse(s.due_at) <= now).length;
+  const pp = cards.filter((c) => c.source_ref);
+  const ppLearned = pp.filter((c) => byId.has(c.id)).length;
+  const shaky = states.filter((s) => s.lapses >= 2).length;
+
+  // Days with study in the last 14 days (from each fact's latest revision).
+  const days = [];
+  const studied = new Set(states.filter((s) => s.last_reviewed_at).map((s) => dayKey(new Date(s.last_reviewed_at))));
+  attempts.filter((a) => a.finished_at).forEach((a) => studied.add(dayKey(new Date(a.finished_at))));
+  for (let i = 13; i >= 0; i--) { const d = new Date(today0().getTime() - i * DAY); days.push({ d, on: studied.has(dayKey(d)) }); }
+  const lastSeen = states.reduce((m, s) => Math.max(m, s.last_reviewed_at ? Date.parse(s.last_reviewed_at) : 0), 0);
+
+  const done = attempts.filter((a) => a.finished_at);
+  const mocks = done.filter((a) => a.kind === 'mock');
+  const avg = (xs) => xs.length ? Math.round(xs.reduce((t, a) => t + (100 * a.correct) / Math.max(1, a.total), 0) / xs.length) : null;
+  const best = mocks.length ? Math.max(...mocks.map((a) => Number(a.score))) : null;
+  const date = (t) => new Date(t).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+  const name = (r) => r.kind === 'mock' ? 'Mock test' : !r.module_id ? 'Practice'
+    : 'Unit ' + (state.modules.find((m) => m.id === r.module_id)?.module_no ?? '');
+  const tile = (big, label) => h('div', { class: 'tile' }, h('span', { class: 'big' }, big), h('span', { class: 'small' }, label));
+
+  show(
+    h('div', { class: 'row' }, h('a', { href: userId ? 'study#/admin' : 'study#/' }, userId ? '← Admin' : '← Today')),
+    h('h1', {}, who ? 'Progress: ' + who : 'My progress'),
+    h('p', { class: 'lead' }, lastSeen ? `Last studied ${date(lastSeen)}.` : 'No study yet.'),
+    h('div', { class: 'tiles' },
+      tile(`${pct(learned.length, cards.length)}%`, `${learned.length} of ${cards.length} facts learned`),
+      tile(String(strongN), `strong facts (next revision ${STRONG_DAYS}+ days away)`),
+      tile(`${ppLearned}/${pp.length}`, 'past-paper facts learned'),
+      tile(String(dueN), 'facts due for revision now')),
+    h('div', { class: 'panel' },
+      h('h2', {}, 'Units'),
+      h('div', { class: 'scroll' }, h('table', { class: 'res' },
+        h('tr', {}, h('th', {}, 'Unit'), h('th', {}, 'Learned'), h('th', {}, 'Strong'), h('th', {}, '')),
+        state.modules.map((m) => {
+          const mine = cards.filter((c) => c.module_id === m.id);
+          const l = mine.filter((c) => byId.has(c.id)).length, st = mine.filter((c) => strong(byId.get(c.id))).length;
+          return h('tr', {},
+            h('td', {}, h('strong', {}, `Unit ${m.module_no}`), h('div', { class: 'small' }, m.name)),
+            h('td', {}, `${l} / ${mine.length}`), h('td', {}, String(st)),
+            h('td', { class: 'barcell' }, h('div', { class: 'bar-out' }, h('div', { class: 'bar-in', style: `width:${pct(l, mine.length)}%` }))));
+        }))),
+      shaky ? h('p', { class: 'small' }, `${shaky} fact${shaky === 1 ? '' : 's'} forgotten twice or more. They come back more often.`) : null),
+    h('div', { class: 'panel' },
+      h('h2', {}, 'Last 14 days'),
+      h('div', { class: 'days', 'aria-label': `${days.filter((x) => x.on).length} of the last 14 days with study` },
+        days.map(({ d, on }) => h('span', { class: on ? 'day on' : 'day', title: date(d) + (on ? ': studied' : ': no study') }, String(d.getDate())))),
+      h('p', { class: 'small' }, `${days.filter((x) => x.on).length} of the last 14 days with study.`)),
+    h('div', { class: 'panel' },
+      h('h2', {}, 'Tests'),
+      done.length ? h('p', {}, `${done.length} done · average ${avg(done)}% right` + (mocks.length ? ` · ${mocks.length} mock test${mocks.length === 1 ? '' : 's'}, best ${best} / ${MOCK.count}` : '')) : h('p', {}, 'No tests yet.'),
+      done.length ? h('div', { class: 'scroll' }, h('table', { class: 'res' },
+        h('tr', {}, h('th', {}, 'When'), h('th', {}, 'Test'), h('th', {}, 'Score'), h('th', {}, 'Right / wrong')),
+        done.slice(0, 15).map((r) => h('tr', {},
+          h('td', {}, date(r.finished_at)), h('td', {}, name(r)), h('td', {}, `${r.score} / ${r.total}`), h('td', {}, `${r.correct} / ${r.wrong}`))))) : null),
   );
 }
 

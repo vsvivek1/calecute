@@ -46,3 +46,11 @@ input.date{display:block;font:17px system-ui,sans-serif;padding:10px 12px;margin
 .field{display:flex;flex-direction:column;gap:4px}
 .scroll{overflow-x:auto}
 tr.off td{opacity:.5}
+/* progress board */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:0 0 16px}
+.tile{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.tile .big{font-size:1.6rem}
+td.barcell{min-width:90px;width:30%}
+.days{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;max-width:520px}
+.day{display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:6px;font-size:.72rem;background:var(--line);color:inherit}
+.day.on{background:var(--ok);color:var(--card);font-weight:700}
