@@ -15,7 +15,7 @@ const COURSE = 'geological-assistant';
 const PREFIX = COURSE + '-';
 const NEW_PER_DAY = 25;
 const MOCK = { count: 100, minutes: 75, negative: 1 / 4 };
-// Tests run on the same exam rules: +1 right, −¼ wrong. The placement test is on day 1,
+// Tests run on the same exam rules: +1 right, −¼ wrong. The placement test is on day 2,
 // the weekly test on day 7 and every 7 days after. Both give a score for each unit.
 const TESTS = {
   placement: { kind: 'placement', route: 'placement', label: 'Placement test', count: 50, minutes: 60 },
@@ -594,7 +594,8 @@ async function buildPlan() {
   const daysIn = daysBetween(startDay, today0());
   const lastWeekly = testRows.find((r) => r.kind === 'weekly');
   const weekStart = startDay.getTime() + Math.floor(daysIn / 7) * 7 * DAY;
-  const placementDue = !testRows.some((r) => r.kind === 'placement');
+  // The placement test waits until day 2, so the first day is for learning.
+  const placementDue = daysIn >= 1 && !testRows.some((r) => r.kind === 'placement');
   const weeklyDue = daysIn >= 7 && (!lastWeekly || Date.parse(lastWeekly.finished_at) < weekStart);
 
   return {
