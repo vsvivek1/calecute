@@ -1,10 +1,12 @@
 -- Geological Assistant: discount coupons and the spin wheel (schema geological_assistant, USS project).
 -- Additive only. Nothing in public or auth is touched.
 --
--- Two kinds of coupon share one table:
---   admin: made by an admin, 1% to 99% off, optional use limit and expiry.
---   spin:  won on the spin wheel, 10% to 30% off, one per user per course,
---          usable only by the user who spun, valid 7 days.
+-- Three kinds of coupon share one table:
+--   admin:  made by an admin, 1% to 99% off, optional use limit and expiry.
+--   spin:   won on the spin wheel, 10% to 30% off, one per user per course,
+--           usable only by the user who spun, valid 7 days.
+--   access: made by an admin for one signed-in user; unlocks the course free
+--           (claim_access_code in 0005_admin_tools.sql), one use.
 -- The price is always worked out on the server (ga-razorpay-create-order calls
 -- quote_price); the browser only sends the code.
 
@@ -19,8 +21,8 @@ insert into geological_assistant.admins (email) values ('vs.vivek1@gmail.com') o
 create table geological_assistant.coupons (
   code text primary key check (code = upper(code) and code ~ '^[A-Z0-9-]{3,32}$'),
   course_id text not null references geological_assistant.courses(id),
-  kind text not null check (kind in ('admin', 'spin')),
-  percent_off int not null check (percent_off between 1 and 99),
+  kind text not null check (kind in ('admin', 'spin', 'access')),
+  percent_off int not null check (percent_off between 1 and 100),
   user_id uuid references auth.users(id) on delete cascade,
   max_uses int check (max_uses is null or max_uses > 0),
   used_count int not null default 0,
@@ -29,15 +31,18 @@ create table geological_assistant.coupons (
   note text,
   created_by text,
   created_at timestamptz not null default now(),
-  check (kind = 'admin' or (user_id is not null and percent_off between 10 and 30))
+  check ((kind = 'admin' and percent_off between 1 and 99)
+      or (kind = 'spin' and user_id is not null and percent_off between 10 and 30)
+      or (kind = 'access' and user_id is not null and percent_off = 100))
 );
 -- One spin per user per course.
 create unique index coupons_one_spin on geological_assistant.coupons (user_id, course_id) where kind = 'spin';
 
 alter table geological_assistant.coupons enable row level security;
--- A user may see the coupon they won; admin coupons are never listed to the public.
-create policy coupons_own_spin_read on geological_assistant.coupons for select to authenticated
-  using (kind = 'spin' and user_id = (select auth.uid()));
+-- A user may see the codes made for them (spin prize, free-access code); admin
+-- coupons are never listed to the public.
+create policy coupons_own_read on geological_assistant.coupons for select to authenticated
+  using (kind in ('spin', 'access') and user_id = (select auth.uid()));
 grant select on geological_assistant.coupons to authenticated;
 grant all on geological_assistant.coupons to service_role;
 
@@ -71,7 +76,11 @@ begin
   if not found or not c.active then raise exception 'This code is not valid'; end if;
   if c.expires_at is not null and c.expires_at <= now() then raise exception 'This code has expired'; end if;
   if c.max_uses is not null and c.used_count >= c.max_uses then raise exception 'This code has been used up'; end if;
-  if c.kind = 'spin' and c.user_id is distinct from uid then raise exception 'This code belongs to another account'; end if;
+  if c.kind in ('spin', 'access') and c.user_id is distinct from uid then raise exception 'This code belongs to another account'; end if;
+  -- A free-access code costs nothing (no payment: the page calls claim_access_code).
+  if c.kind = 'access' then
+    return query select c.code, 100, list, 0, c.expires_at; return;
+  end if;
   -- Never below ₹1 (Razorpay's minimum).
   return query select c.code, c.percent_off, list, greatest(100, round(list * (100 - c.percent_off) / 100.0)::int), c.expires_at;
 end $$;

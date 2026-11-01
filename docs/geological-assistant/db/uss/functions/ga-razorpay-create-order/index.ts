@@ -86,6 +86,8 @@ Deno.serve(async (req) => {
       .maybeSingle<{ code: string; price_minor: number }>();
     if (quoteError || !quote) return json({ error: quoteError?.message || 'This code is not valid' }, 400);
     amount = quote.price_minor;
+    // A free-access code needs no payment: the page unlocks it with claim_access_code.
+    if (amount < 100) return json({ error: 'This code unlocks the course free. Use the Unlock button.' }, 400);
     coupon = quote.code;
   }
 

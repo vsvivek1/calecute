@@ -13,6 +13,10 @@ The course lives in its own schema, `geological_assistant`, inside the USS proje
   account, valid 7 days), `quote_price()`, `spin_wheel()`, admin RPCs for the study page's `#/admin` screen.
   Admins are rows in `geological_assistant.admins` (email). Apply **before** deploying the new
   `ga-razorpay-create-order` (it writes `coupon_code` and `list_price_minor`).
+- `0005_admin_tools.sql` (needs 0004): admins open the course free (`has_active_subscription` is true
+  for them), `admin_list_participants()` (who signed in, who paid, cards studied, tests taken),
+  `admin_make_access_code()` (a one-use `FREE-…` code for one signed-in user) and
+  `claim_access_code()` (the user unlocks the course free; writes a `provider = 'coupon'` subscription).
 - `functions/ga-razorpay-create-order`, `functions/ga-razorpay-webhook`: **deployed 11 Oct 2026**
   to the USS project. They use only this schema. Until the Razorpay secrets are set they answer
   503 and change nothing.

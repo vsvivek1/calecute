@@ -143,9 +143,9 @@ function buy() {
     const off = quote.percent_off;
     priceBox.replaceChildren(...[
       off ? h('s', { class: 'was' }, rupees(list)) : null, off ? ' ' : null,
-      rupees(quote.price_minor),
+      quote.price_minor ? rupees(quote.price_minor) : 'Free',
       h('span', { class: 'small' }, off ? `  ${off}% off with ${quote.code}` : '  one-time, lifetime access')].filter((x) => x != null));
-    button.textContent = 'Pay ' + rupees(quote.price_minor) + ' by UPI, card or netbanking';
+    button.textContent = quote.price_minor ? 'Pay ' + rupees(quote.price_minor) + ' by UPI, card or netbanking' : 'Unlock the course';
   }
 
   async function apply(code, quiet) {
@@ -172,6 +172,7 @@ function buy() {
   async function pay() {
     button.disabled = true;
     msg.replaceChildren();
+    if (quote.code && quote.price_minor === 0) return claim();
     try {
       await loadRazorpay();
       const { data, error } = await sb.functions.invoke('ga-razorpay-create-order', { body: { courseId: COURSE, couponCode: quote.code || undefined } });
@@ -192,6 +193,16 @@ function buy() {
       msg.replaceChildren(errorBox(e.message));
       button.disabled = false;
     }
+  }
+
+  // A free-access code from the admin: no payment, the course unlocks at once.
+  async function claim() {
+    const { error } = await sb.rpc('claim_access_code', { p_code: quote.code });
+    if (error) { msg.replaceChildren(errorBox(error.message)); button.disabled = false; return; }
+    saveCoupon('');
+    state.paid = true;
+    location.hash = '#/';
+    route();
   }
 
   render();
@@ -219,6 +230,10 @@ function buy() {
     adminLink(),
   );
   if (savedCoupon()) apply(savedCoupon());
+  // The admin made a free-access code for this account: fill it in.
+  sb.from('coupons').select('code,used_count,max_uses').eq('kind', 'access').eq('course_id', COURSE).eq('active', true)
+    .order('created_at', { ascending: false }).limit(1).maybeSingle()
+    .then(({ data }) => { if (data && data.used_count < (data.max_uses ?? 1)) apply(data.code); });
 }
 
 // ---------- spin the wheel: one spin per account, 10% to 30% off ----------
@@ -291,13 +306,13 @@ function spinPanel(onCode) {
 
 // ---------- admin: coupons ----------
 function adminLink() {
-  const box = h('p', { class: 'small', hidden: true }, h('a', { href: 'study#/admin' }, 'Admin: coupons'));
+  const box = h('p', { class: 'small', hidden: true }, h('a', { href: 'study#/admin' }, 'Admin: participants and coupons'));
   sb.rpc('is_admin').then(({ data }) => { if (data === true) box.hidden = false; });
   return box;
 }
 
 async function admin() {
-  show(h('p', { class: 'meta' }, 'Loading coupons…'));
+  show(h('p', { class: 'meta' }, 'Loading…'));
   const { data: ok } = await sb.rpc('is_admin');
   if (ok !== true) return show(h('h1', {}, 'Admins only'), h('p', {}, h('a', { href: 'study#/' }, '← Back')));
   const f = {
@@ -309,6 +324,8 @@ async function admin() {
   };
   const msg = h('p', { class: 'small', 'aria-live': 'polite' });
   const table = h('div');
+  const people = h('div');
+  const peopleMsg = h('p', { class: 'small', 'aria-live': 'polite' });
   const field = (id, label, el) => h('label', { class: 'field', for: id }, h('span', { class: 'small' }, label), el);
   const save = async (args) => {
     const { error } = await sb.rpc('admin_save_coupon', { p_course_id: COURSE, ...args });
@@ -324,23 +341,27 @@ async function admin() {
     const date = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
     const rows = data.map((c) => h('tr', { class: c.active ? '' : 'off' },
       h('td', {}, h('strong', {}, c.code), c.note ? h('div', { class: 'small' }, c.note) : null),
-      h('td', {}, c.kind === 'spin' ? 'Spin' : 'Admin'),
-      h('td', {}, `${c.percent_off}%`, h('div', { class: 'small' }, rupees(Math.max(100, Math.round(price * (100 - c.percent_off) / 100))))),
+      h('td', {}, c.kind === 'spin' ? 'Spin' : c.kind === 'access' ? 'Free access' : 'Admin'),
+      h('td', {}, `${c.percent_off}%`, h('div', { class: 'small' }, c.kind === 'access' ? 'Free' : rupees(Math.max(100, Math.round(price * (100 - c.percent_off) / 100))))),
       h('td', {}, `${c.used_count}${c.max_uses ? ' / ' + c.max_uses : ''}`),
       h('td', {}, date(c.expires_at)),
       h('td', {}, c.kind === 'admin'
         ? h('button', { class: 'btn ghost sm', onclick: () => save({ p_code: c.code, p_percent_off: c.percent_off, p_max_uses: c.max_uses, p_expires_at: c.expires_at, p_note: c.note, p_active: !c.active }) }, c.active ? 'Turn off' : 'Turn on')
         : (c.active ? 'On' : 'Off'))));
-    const spins = data.filter((c) => c.kind === 'spin');
+    const n = (k) => data.filter((c) => c.kind === k).length;
     table.replaceChildren(
-      h('p', { class: 'small' }, `${data.length - spins.length} admin codes · ${spins.length} spins · ${data.reduce((n, c) => n + c.used_count, 0)} paid uses`),
+      h('p', { class: 'small' }, `${n('admin')} admin codes · ${n('spin')} spins · ${n('access')} free-access codes · ${data.reduce((t, c) => t + c.used_count, 0)} uses`),
       h('div', { class: 'scroll' }, h('table', { class: 'res' },
         h('tr', {}, h('th', {}, 'Code'), h('th', {}, 'Type'), h('th', {}, 'Off'), h('th', {}, 'Used'), h('th', {}, 'Expires'), h('th', {}, '')),
         rows)));
   }
   show(
     h('div', { class: 'row' }, h('a', { href: 'study#/' }, '← Back')),
-    h('h1', {}, 'Coupons'),
+    h('h1', {}, 'Admin'),
+    h('p', { class: 'small' }, 'You can open the full course free as admin. ', h('a', { href: 'study#/' }, 'Go to the course')),
+    h('div', { class: 'panel' }, h('h2', {}, 'Participants'),
+      h('p', { class: 'small' }, 'Everyone who signed in on the course page. "Free code" makes a one-use code for that person only; when they sign in, the buy page fills it in and the course unlocks without payment.'),
+      peopleMsg, people),
     h('div', { class: 'panel' },
       h('h2', {}, 'Make a coupon'),
       h('p', { class: 'small' }, 'Saving an existing code changes it. Spin-wheel codes are made by the wheel and cannot be edited here.'),
@@ -360,6 +381,47 @@ async function admin() {
     h('div', { class: 'panel' }, h('h2', {}, 'All coupons'), table),
   );
   load();
+  loadPeople();
+
+  async function loadPeople() {
+    const { data, error } = await sb.rpc('admin_list_participants', { p_course_id: COURSE });
+    if (error) { people.replaceChildren(errorBox(error.message)); return; }
+    const date = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '';
+    const access = (p) => !p.has_access ? 'No'
+      : p.paid_via === 'coupon' ? 'Free code'
+      : p.paid_via === 'razorpay' ? 'Paid ' + rupees(p.amount_minor ?? 0)
+      : p.paid_via === 'google_play' ? 'Paid (Play)' : 'Yes';
+    const makeCode = async (p, btn) => {
+      btn.disabled = true;
+      const { data: code, error: e } = await sb.rpc('admin_make_access_code', { p_course_id: COURSE, p_user_id: p.user_id, p_note: p.email });
+      if (e) { peopleMsg.className = 'err'; peopleMsg.textContent = e.message; btn.disabled = false; return; }
+      peopleMsg.className = 'okmsg';
+      peopleMsg.textContent = `Code ${code} made for ${p.email}. They sign in with that Google account and the course unlocks. Link: calecutech.com/geological-assistant/study?coupon=${code}`;
+      loadPeople();
+      load();
+    };
+    const rows = data.map((p) => {
+      let act = '';
+      if (!p.has_access) {
+        act = p.access_code ? h('strong', {}, p.access_code) : h('button', { class: 'btn ghost sm' }, 'Free code');
+        if (act.tagName === 'BUTTON') act.addEventListener('click', () => makeCode(p, act));
+      }
+      return h('tr', {},
+        h('td', {}, p.email || '(no email)', h('div', { class: 'small' }, 'Joined ' + date(p.signed_up_at))),
+        h('td', {}, access(p), p.paid_at ? h('div', { class: 'small' }, date(p.paid_at)) : null),
+        h('td', {}, String(p.cards_studied)),
+        h('td', {}, String(p.tests_taken)),
+        h('td', {}, date(p.last_studied_at)),
+        h('td', {}, act));
+    });
+    const paid = data.filter((p) => p.has_access && p.paid_via !== 'coupon').length;
+    const free = data.filter((p) => p.paid_via === 'coupon').length;
+    people.replaceChildren(
+      h('p', { class: 'small' }, `${data.length} signed in · ${paid} paid · ${free} free code · ${data.length - paid - free} no access`),
+      h('div', { class: 'scroll' }, h('table', { class: 'res' },
+        h('tr', {}, h('th', {}, 'Person'), h('th', {}, 'Access'), h('th', {}, 'Cards'), h('th', {}, 'Tests'), h('th', {}, 'Last study'), h('th', {}, '')),
+        rows)));
+  }
 }
 
 async function waitForUnlock(msg) {
@@ -570,6 +632,7 @@ async function home() {
     h('p', { class: 'small' }, h('a', { href: 'study#/results' }, 'My scores'), '  ·  ',
       h('a', { href: '#', onclick: (e) => { e.preventDefault(); askExamDate(); } }, 'Change exam date'),
       '  ·  Signed in as ' + (state.user.email || '')),
+    adminLink(),
   );
 }
 
