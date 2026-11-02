@@ -105,11 +105,20 @@ Deno.serve(async (req) => {
       .update({ status: newStatus })
       .eq('provider_ref', payment.order_id)
       .neq('status', newStatus)
-      .select('coupon_code');
+      .select('id, coupon_code');
     const code = newStatus === 'paid' ? changed?.[0]?.coupon_code : null;
     if (code) {
       const { error: redeemError } = await admin.rpc('redeem_coupon', { p_code: code });
       if (redeemError) console.error('could not count the coupon use', redeemError);
+    }
+    // Referral commission: added when paid, removed when refunded (0008_referrals.sql).
+    const orderId = changed?.[0]?.id;
+    if (orderId && changed?.[0]?.coupon_code) {
+      const { error: settleError } = await admin.rpc('settle_referral', {
+        p_order_id: orderId,
+        p_paid: newStatus === 'paid',
+      });
+      if (settleError) console.error('could not settle the referral', settleError);
     }
   }
 
