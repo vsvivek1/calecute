@@ -936,66 +936,6 @@ const payoutProfileSchema: Json = {
   },
 };
 
-/* ------------------------------------------------------------- invoices */
-const INVOICE_REQUEST: Json = {
-  type: "object",
-  required: ["paymentRef", "amountPaise", "paidAt"],
-  properties: {
-    paymentRef: { type: "string", description: "The product's payment id (Razorpay pay_…, Play order id)." },
-    customerRef: { type: "string", description: "The product's own user id, for GET /invoices." },
-    amountPaise: { type: "integer", minimum: 1, description: "What the buyer paid, GST included." },
-    paidAt: { type: "string", format: "date-time" },
-    description: { type: "string", description: "Invoice line; defaults to the product name." },
-    buyer: {
-      type: "object",
-      properties: {
-        name: { type: "string" },
-        email: { type: "string", format: "email" },
-        gstin: { type: "string", description: "Checked, including the check digit. Its state is the place of supply." },
-        stateCode: { type: "string", pattern: "^\\d{2}$", description: "GST state code; the place of supply when there is no GSTIN." },
-      },
-    },
-  },
-};
-
-const CREDIT_NOTE_REQUEST: Json = {
-  type: "object",
-  required: ["paymentRef", "refundRef", "amountPaise", "refundedAt"],
-  properties: {
-    paymentRef: { type: "string" },
-    refundRef: { type: "string", description: "The product's refund id." },
-    amountPaise: { type: "integer", minimum: 1 },
-    refundedAt: { type: "string", format: "date-time" },
-  },
-};
-
-const INVOICE: Json = {
-  type: "object",
-  properties: {
-    id: { type: "integer" },
-    type: { type: "string", enum: ["INVOICE", "CREDIT_NOTE"] },
-    number: { type: "string", examples: ["CT/2026-27/00001", "CN/2026-27/00001"] },
-    financialYear: { type: "string", examples: ["2026-27"] },
-    issuedAt: { type: "string", format: "date-time" },
-    paymentRef: { type: "string" },
-    refundRef: { type: ["string", "null"] },
-    originalNumber: { type: ["string", "null"], description: "Credit notes: the invoice credited." },
-    customerRef: { type: ["string", "null"] },
-    seller: { type: "object" },
-    buyer: { type: "object" },
-    placeOfSupply: { type: "string" },
-    description: { type: "string" },
-    sac: { type: "string" },
-    gstRateBps: { type: "integer" },
-    taxablePaise: { type: "integer" },
-    cgstPaise: { type: "integer" },
-    sgstPaise: { type: "integer" },
-    igstPaise: { type: "integer" },
-    totalPaise: { type: "integer" },
-    pdfUrl: { type: "string", format: "uri", description: "Opens the PDF without a key." },
-  },
-};
-
 /* ------------------------------------------------------------------ paths */
 
 const ok200 = (schema: Json, description = "Success."): Json => ({
@@ -1116,7 +1056,6 @@ export function buildSpec(serverUrl: string): Json {
       { name: "admin-reports", description: "Coverage, agents, revenue and funnel reports. JSON, CSV or PDF." },
       { name: "admin-actions", description: "Approvals, assignments, slots, payouts, messaging, admin users." },
       { name: "attribution", description: "Referral attribution and payments, called by product systems. First code wins, permanently." },
-      { name: "invoices", description: "GST tax invoices and credit notes for every product, under one GSTIN and one number series." },
       { name: "referral", description: "Invite codes for every app user, the public leaderboard, QR and click logging." },
       { name: "meta", description: "Health and this specification." },
     ],
@@ -2226,75 +2165,6 @@ export function buildSpec(serverUrl: string): Json {
           security: false,
           requestBody: body(ref("ReferralClickRequest")),
           responses: { "202": ok200({ type: "object", properties: { accepted: { type: "boolean" } } }, "Accepted.") },
-        }),
-      },
-
-      /* --------------------------------------------------------- invoices */
-      "/invoices": {
-        post: operation({
-          tag: "invoices",
-          summary: "Issue the GST tax invoice for a captured payment",
-          description: [
-            "Every Calecute app sells under one GSTIN, so invoices are numbered here in one",
-            "consecutive series per financial year for all products (CT/2026-27/00001).",
-            "Prices are GST-inclusive: `amountPaise` is split into taxable value and CGST +",
-            "SGST (buyer in the seller's state, or state unknown) or IGST.",
-            "",
-            "Idempotent on `paymentRef` per product: a repeat returns the invoice already",
-            "issued with 200. `pdfUrl` opens the PDF without a key; give it to the buyer.",
-          ].join("\n"),
-          roles: "API key (server only), or SUPER_ADMIN",
-          requestBody: body(INVOICE_REQUEST),
-          responses: {
-            "200": ok200(INVOICE, "Already issued for this paymentRef; the same invoice."),
-            "201": ok200(INVOICE, "Issued."),
-          },
-        }),
-        get: operation({
-          tag: "invoices",
-          summary: "List one customer's invoices and credit notes",
-          description: "Only this product's documents for `customerRef`, newest first.",
-          roles: "API key (server only), or SUPER_ADMIN",
-          parameters: [queryParam("customerRef", { type: "string" }, "The product's own user id.", true)],
-          responses: {
-            "200": ok200({ type: "object", required: ["items"], properties: { items: { type: "array", items: INVOICE } } }),
-          },
-        }),
-      },
-      "/credit-notes": {
-        post: operation({
-          tag: "invoices",
-          summary: "Issue a credit note for a refund",
-          description: [
-            "Against the invoice for `paymentRef`, with the tax reversed in proportion.",
-            "Own series (CN/2026-27/00001). Idempotent on `refundRef`. Refunds can never add",
-            "up to more than the invoice.",
-          ].join("\n"),
-          roles: "API key (server only), or SUPER_ADMIN",
-          requestBody: body(CREDIT_NOTE_REQUEST),
-          responses: {
-            "200": ok200(INVOICE, "Already issued for this refundRef; the same credit note."),
-            "201": ok200(INVOICE, "Issued."),
-            "404": errorResponse("No invoice for that paymentRef (paid before invoicing started)."),
-            "422": errorResponse("Refunds would exceed the invoice total."),
-          },
-        }),
-      },
-      "/invoices/{id}/pdf": {
-        get: operation({
-          tag: "invoices",
-          summary: "Invoice or credit note as a PDF",
-          description: "Public, but only with the document's own `token` (from `pdfUrl`). Not cached, not indexed.",
-          security: false,
-          parameters: [
-            pathParam("id", "Invoice id."),
-            queryParam("token", { type: "string", pattern: "^[0-9a-f]{32}$" }, "The view token from pdfUrl.", true),
-            queryParam("download", { type: "string", enum: ["0", "1"] }, "1 to download instead of opening."),
-          ],
-          responses: {
-            "200": { description: "The PDF.", content: { "application/pdf": { schema: { type: "string", format: "binary" } } } },
-            "404": errorResponse("No document with that id and token."),
-          },
         }),
       },
 

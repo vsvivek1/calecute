@@ -12,11 +12,11 @@
  * Deploy (USS project; Razorpay sends no Supabase JWT, the signature is the auth):
  *   supabase functions deploy ga-razorpay-webhook --no-verify-jwt
  *   supabase secrets set RAZORPAY_WEBHOOK_SECRET=...
- * It also asks the shared Calecute invoicing API (apps/api, one number
+ * It also asks the shared Calecute billing service (repo vsvivek1/calecute-billing, one number
  * series for the whole GSTIN) for the GST tax invoice on each capture and a
  * credit note on each refund, and keeps the number and PDF link on the order.
  * Both calls are idempotent, so a repeated delivery gets the same document.
- *   supabase secrets set CALECUTE_API_URL=https://... CALECUTE_API_KEY=...
+ *   supabase secrets set BILLING_API_URL=https://... BILLING_API_KEY=...
  * Without those two secrets invoicing is skipped (logged), access still works.
  *
  * Razorpay dashboard > Webhooks: URL .../functions/v1/ga-razorpay-webhook,
@@ -28,8 +28,8 @@ const SCHEMA = 'geological_assistant';
 const WEBHOOK_SECRET = Deno.env.get('RAZORPAY_WEBHOOK_SECRET');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-const INVOICE_API_URL = Deno.env.get('CALECUTE_API_URL')?.replace(/\/+$/, '');
-const INVOICE_API_KEY = Deno.env.get('CALECUTE_API_KEY');
+const INVOICE_API_URL = Deno.env.get('BILLING_API_URL')?.replace(/\/+$/, '');
+const INVOICE_API_KEY = Deno.env.get('BILLING_API_KEY');
 
 type Admin = ReturnType<typeof createClient>;
 
@@ -59,7 +59,7 @@ async function issueDocument(
   userId: string,
 ) {
   if (!INVOICE_API_URL || !INVOICE_API_KEY) {
-    console.warn('invoicing skipped: CALECUTE_API_URL / CALECUTE_API_KEY not set');
+    console.warn('invoicing skipped: BILLING_API_URL / BILLING_API_KEY not set');
     return;
   }
   const { data: order } = payment.order_id

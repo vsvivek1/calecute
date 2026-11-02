@@ -2,7 +2,7 @@
 -- Additive only. Nothing in public or auth is changed.
 --
 -- Invoices are NOT issued here. Every Calecute app sells under one GSTIN, so the invoice number
--- series and the PDFs live in the shared Calecute API (apps/api, POST /api/v1/invoices and
+-- series and the PDFs live in the shared Calecute billing service (repo vsvivek1/calecute-billing, POST /api/v1/invoices and
 -- /api/v1/credit-notes). ga-razorpay-webhook calls it after each capture or refund and keeps the
 -- number and PDF link on the order, so the study page can list a buyer's invoices.
 

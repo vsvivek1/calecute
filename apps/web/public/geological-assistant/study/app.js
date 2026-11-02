@@ -1282,7 +1282,7 @@ function schedulePanel(cards, byId, attempts) {
 }
 
 // ---------- invoices ----------
-// Issued by the shared Calecute invoicing API when the payment webhook runs;
+// Issued by the shared Calecute billing service when the payment webhook runs;
 // the webhook keeps each number and PDF link on the order, and this page lists them.
 async function invoices() {
   const { data, error } = await sb.from('payment_orders')

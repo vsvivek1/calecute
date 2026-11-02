@@ -547,9 +547,6 @@ export const products = pgTable("products", {
   /** Play Store listing; Android visitors are sent here with an install referrer. */
   playUrl: text("play_url"),
   androidPackage: text("android_package"),
-  /** What this product's invoice line is taxed as. See drizzle/0010_invoices.sql. */
-  sac: text("sac").notNull().default("999293"),
-  gstRateBps: smallint("gst_rate_bps").notNull().default(1800),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
@@ -1030,62 +1027,4 @@ export const agentMessageRecipients = pgTable(
     readAt: timestamp("read_at", { withTimezone: true }),
   },
   (t) => [primaryKey({ columns: [t.messageId, t.agentId] })],
-);
-
-/* ------------------------------------------------------------- invoices */
-
-/** The one GST registration every invoice is issued under. One row. */
-export const invoiceSeller = pgTable("invoice_seller", {
-  id: boolean("id").primaryKey().default(true),
-  legalName: text("legal_name").notNull(),
-  address: text("address").notNull(),
-  stateCode: text("state_code").notNull(),
-  /** Null: not registered, so documents are receipts with no tax. */
-  gstin: text("gstin"),
-  email: text("email").notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-});
-
-/**
- * GST tax invoices and credit notes for every product, in one numbering
- * series per financial year. Never updated or deleted. See
- * drizzle/0010_invoices.sql and lib/invoice.ts.
- */
-export const invoices = pgTable(
-  "invoices",
-  {
-    id: bigserial("id", { mode: "number" }).primaryKey(),
-    /** INVOICE | CREDIT_NOTE */
-    docType: text("doc_type").notNull(),
-    number: text("number").notNull().unique(),
-    financialYear: text("financial_year").notNull(),
-    issuedAt: timestamp("issued_at", { withTimezone: true }).notNull(),
-    productId: bigint("product_id", { mode: "number" })
-      .notNull()
-      .references(() => products.id),
-    paymentRef: text("payment_ref").notNull(),
-    refundRef: text("refund_ref"),
-    originalInvoiceId: bigint("original_invoice_id", { mode: "number" }),
-    customerRef: text("customer_ref"),
-    sellerName: text("seller_name").notNull(),
-    sellerAddress: text("seller_address").notNull(),
-    sellerStateCode: text("seller_state_code").notNull(),
-    sellerGstin: text("seller_gstin"),
-    buyerName: text("buyer_name"),
-    buyerEmail: text("buyer_email"),
-    buyerGstin: text("buyer_gstin"),
-    placeOfSupply: text("place_of_supply").notNull(),
-    description: text("description").notNull(),
-    sac: text("sac").notNull(),
-    gstRateBps: smallint("gst_rate_bps").notNull(),
-    taxablePaise: bigint("taxable_paise", { mode: "number" }).notNull(),
-    cgstPaise: bigint("cgst_paise", { mode: "number" }).notNull().default(0),
-    sgstPaise: bigint("sgst_paise", { mode: "number" }).notNull().default(0),
-    igstPaise: bigint("igst_paise", { mode: "number" }).notNull().default(0),
-    totalPaise: bigint("total_paise", { mode: "number" }).notNull(),
-    // Random; set by the database default.
-    viewToken: text("view_token").notNull().default(sql`replace(gen_random_uuid()::text, '-', '')`),
-    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  },
-  (t) => [index("invoices_customer_idx").on(t.productId, t.customerRef, t.issuedAt)],
 );
