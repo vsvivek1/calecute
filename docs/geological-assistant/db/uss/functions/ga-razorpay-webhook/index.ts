@@ -111,7 +111,7 @@ Deno.serve(async (req) => {
       const { error: redeemError } = await admin.rpc('redeem_coupon', { p_code: code });
       if (redeemError) console.error('could not count the coupon use', redeemError);
     }
-    // Referral commission: added when paid, removed when refunded (0008_referrals.sql).
+    // Referral commission: added when paid, removed when refunded (0009_referrals.sql).
     const orderId = changed?.[0]?.id;
     if (orderId && changed?.[0]?.coupon_code) {
       const { error: settleError } = await admin.rpc('settle_referral', {
