@@ -79,6 +79,7 @@ async function boot() {
   document.getElementById('progresstab').hidden = !state.user;
   // The Admin tab shows only for admins (the server checks again on every admin call).
   if (state.user) sb.rpc('is_admin').then(({ data }) => { document.getElementById('admintab').hidden = data !== true; });
+  if (state.user) sb.rpc('my_referral', { p_course_id: COURSE }).then(({ data }) => { document.getElementById('referstab').hidden = data?.enabled !== true; }, () => {});
   const [{ data: course }, { data: modules }] = await Promise.all([
     sb.from('courses').select('id,name,price_minor,price_currency').eq('id', COURSE).maybeSingle(),
     sb.from('modules').select('id,module_no,name').eq('course_id', COURSE).order('module_no'),
@@ -323,11 +324,7 @@ function spinPanel(onCode) {
 
 // ---------- referrals: a paid learner refers friends and earns a commission ----------
 // Shown only to learners the admin picked. Everything is checked again on the server.
-function referLink() {
-  const box = h('p', { class: 'small', hidden: true }, h('a', { href: 'study#/referrals' }, 'Refer friends and earn'));
-  sb.rpc('my_referral', { p_course_id: COURSE }).then(({ data }) => { if (data?.enabled === true) box.hidden = false; }, () => {});
-  return box;
-}
+// The Refer tab in the top menu is shown only to learners the admin picked (see the session start).
 
 async function referrals() {
   const back = h('div', { class: 'row' }, h('a', { href: 'study#/' }, '← Today'));
@@ -363,6 +360,7 @@ async function referrals() {
   show(
     back,
     h('h1', {}, 'Refer friends'),
+    h('p', { class: 'small' }, 'Shown only to learners the admin has picked to refer.'),
     h('div', { class: 'panel' }, h('h2', {}, 'Your code'),
       h('p', {}, h('strong', { class: 'big' }, data.code), ' ', copy),
       h('p', { class: 'small' }, `${link}`),
@@ -816,7 +814,6 @@ async function home() {
     h('p', { class: 'small' }, h('a', { href: 'study#/progress' }, 'My progress'), '  ·  ', h('a', { href: 'study#/schedule' }, 'My schedule'), '  ·  ', h('a', { href: 'study#/results' }, 'My scores'), '  ·  ',
       h('a', { href: '#', onclick: (e) => { e.preventDefault(); askExamDate(); } }, 'Change exam date'),
       '  ·  Signed in as ' + (state.user.email || '')),
-    referLink(),
     adminLink(),
   );
 }
