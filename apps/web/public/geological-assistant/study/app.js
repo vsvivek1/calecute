@@ -114,6 +114,7 @@ function route() {
   if (page === 'placement') return testIntro(TESTS.placement);
   if (page === 'weekly') return testIntro(TESTS.weekly);
   if (page === 'results') return results();
+  if (page === 'referrals') return referrals();
   if (page === 'progress') return progress();
   if (page === 'schedule') return progress().then(() => document.getElementById('schedule')?.scrollIntoView());
   return home();
@@ -320,6 +321,122 @@ function spinPanel(onCode) {
   return panel;
 }
 
+// ---------- referrals: a paid learner refers friends and earns a commission ----------
+// Shown only to learners the admin picked. Everything is checked again on the server.
+function referLink() {
+  const box = h('p', { class: 'small', hidden: true }, h('a', { href: 'study#/referrals' }, 'Refer friends and earn'));
+  sb.rpc('my_referral', { p_course_id: COURSE }).then(({ data }) => { if (data?.enabled === true) box.hidden = false; }, () => {});
+  return box;
+}
+
+async function referrals() {
+  const back = h('div', { class: 'row' }, h('a', { href: 'study#/' }, '← Today'));
+  show(h('p', { class: 'meta' }, 'Loading…'));
+  const { data, error } = await sb.rpc('my_referral', { p_course_id: COURSE });
+  if (error) return show(back, errorBox('Could not load referrals: ' + error.message));
+  if (!data.enabled) return show(back, h('h1', {}, 'Refer friends'), h('p', {}, 'Referrals are not open on your account.'));
+  const msg = h('p', { class: 'small', 'aria-live': 'polite' });
+  if (!data.code) {
+    const make = h('button', { class: 'btn', onclick: async () => {
+      make.disabled = true;
+      const { error: e } = await sb.rpc('create_my_referral_code', { p_course_id: COURSE });
+      if (e) { msg.className = 'err'; msg.textContent = e.message; make.disabled = false; return; }
+      referrals();
+    } }, 'Create my referral code');
+    return show(back, h('h1', {}, 'Refer friends'),
+      h('div', { class: 'panel' },
+        h('p', {}, `Your friends get ${data.percent_off}% off the course with your code. You earn ${data.commission_percent}% of what they pay.`),
+        data.paid ? make : h('p', { class: 'small' }, 'Buy the course first, then you can create your code.'),
+        msg));
+  }
+  const link = `https://calecutech.com/geological-assistant/study?coupon=${data.code}`;
+  const copy = h('button', { class: 'btn ghost sm', onclick: async () => {
+    try { await navigator.clipboard.writeText(link); copy.textContent = 'Copied'; } catch { copy.textContent = 'Copy failed'; }
+  } }, 'Copy link');
+  const date = (d) => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  const tile = (big, label) => h('div', { class: 'tile' }, h('span', { class: 'big' }, big), h('span', { class: 'small' }, label));
+  const sales = data.sales.length
+    ? h('div', { class: 'scroll' }, h('table', { class: 'res' },
+        h('tr', {}, h('th', {}, 'Date'), h('th', {}, 'Buyer'), h('th', {}, 'Paid'), h('th', {}, 'Your share')),
+        data.sales.map((s) => h('tr', {}, h('td', {}, date(s.created_at)), h('td', {}, s.buyer), h('td', {}, rupees(s.paid_minor)), h('td', {}, rupees(s.commission_minor))))))
+    : h('p', { class: 'small' }, 'No purchases with your code yet.');
+  show(
+    back,
+    h('h1', {}, 'Refer friends'),
+    h('div', { class: 'panel' }, h('h2', {}, 'Your code'),
+      h('p', {}, h('strong', { class: 'big' }, data.code), ' ', copy),
+      h('p', { class: 'small' }, `${link}`),
+      h('p', { class: 'small' }, `Friends get ${data.percent_off}% off.${data.max_uses ? ` The code works for ${data.max_uses} purchases.` : ''} You earn ${data.commission_percent}% of what they pay.`)),
+    h('div', { class: 'tiles' },
+      tile(rupees(Number(data.earned_minor)), 'Earned so far'),
+      tile(String(data.sales.length), 'Purchases'),
+      tile(String(data.used_count), 'Uses')),
+    h('div', { class: 'panel' }, h('h2', {}, 'Purchases with your code'), sales),
+    msg);
+}
+
+// Admin: which learners can refer, their discount and use limit, and what they have earned.
+function referralAdmin() {
+  const msg = h('p', { class: 'small', 'aria-live': 'polite' });
+  const body = h('div');
+  const cap = h('input', { type: 'number', min: 1, max: 50, required: true, value: 20 });
+  const comm = h('input', { type: 'number', min: 1, max: 50, required: true, value: 10 });
+  const field = (label, el) => h('label', { class: 'field' }, h('span', { class: 'small' }, label), el);
+  const ref = { cap: () => Number(cap.value) || 20 };
+  async function load() {
+    const [s, p] = await Promise.all([
+      sb.rpc('admin_get_referral_settings', { p_course_id: COURSE }),
+      sb.rpc('admin_list_referral_partners', { p_course_id: COURSE }),
+    ]);
+    const err = s.error || p.error;
+    if (err) { body.replaceChildren(errorBox(err.message)); return; }
+    cap.value = s.data.max_discount_percent;
+    comm.value = s.data.commission_percent;
+    if (!p.data.length) { body.replaceChildren(h('p', { class: 'small' }, 'No referrers yet. Use "Make referrer" in the participants list.')); return; }
+    const rows = p.data.map((r) => {
+      const pct = h('input', { type: 'number', min: 1, max: s.data.max_discount_percent, value: r.percent_off, style: 'width:5em' });
+      const uses = h('input', { type: 'number', min: 1, placeholder: 'No limit', value: r.max_uses ?? '', style: 'width:6em' });
+      // Read the discount and limit when clicked, so an edit is saved with the button.
+      const act = (enabled, label) => h('button', { class: 'btn ghost sm', onclick: async () => {
+        const { error } = await sb.rpc('admin_set_referral_partner', { p_course_id: COURSE, p_user_id: r.user_id,
+          p_enabled: enabled, p_percent: Number(pct.value), p_max_uses: uses.value ? Number(uses.value) : null });
+        if (error) { msg.className = 'err'; msg.textContent = error.message; return; }
+        msg.className = 'okmsg'; msg.textContent = 'Saved.';
+        load();
+      } }, label);
+      return h('tr', { class: r.enabled ? '' : 'off' },
+        h('td', {}, r.email || '(no email)', r.code ? h('div', { class: 'small' }, r.code) : null),
+        h('td', {}, pct, '%'),
+        h('td', {}, uses),
+        h('td', {}, `${r.used_count} used · ${r.sales_count} paid`),
+        h('td', {}, rupees(Number(r.earned_minor))),
+        h('td', {},
+          act(true, 'Save'), ' ',
+          act(!r.enabled, r.enabled ? 'Turn off' : 'Turn on')));
+    });
+    body.replaceChildren(h('div', { class: 'scroll' }, h('table', { class: 'res' },
+      h('tr', {}, h('th', {}, 'Referrer'), h('th', {}, 'Discount'), h('th', {}, 'Use limit'), h('th', {}, 'Uses'), h('th', {}, 'Earned'), h('th', {}, '')),
+      rows)));
+  }
+  const saveSettings = h('button', { class: 'btn', type: 'button', onclick: async () => {
+    const { error } = await sb.rpc('admin_set_referral_settings', { p_course_id: COURSE, p_max_discount: Number(cap.value), p_commission: Number(comm.value) });
+    if (error) { msg.className = 'err'; msg.textContent = error.message; return; }
+    msg.className = 'okmsg'; msg.textContent = 'Settings saved.';
+    load();
+  } }, 'Save settings');
+  ref.el = h('div', { class: 'panel' },
+    h('h2', {}, 'Referrals'),
+    h('p', { class: 'small' }, 'Only the learners you pick can refer. A referrer makes their code once they have paid. Buyers get the discount; the referrer earns the commission on what the buyer pays.'),
+    h('div', { class: 'grid' },
+      field('Biggest discount a referrer can give (%)', cap),
+      field('Commission to referrer (%)', comm),
+      saveSettings),
+    msg, body);
+  ref.reload = load;
+  load();
+  return ref;
+}
+
 // ---------- admin: coupons ----------
 function adminLink() {
   const box = h('p', { class: 'small', hidden: true }, h('a', { href: 'study#/admin' }, 'Admin: participants and coupons'));
@@ -371,6 +488,7 @@ async function admin() {
         h('tr', {}, h('th', {}, 'Code'), h('th', {}, 'Type'), h('th', {}, 'Off'), h('th', {}, 'Used'), h('th', {}, 'Expires'), h('th', {}, '')),
         rows)));
   }
+  const ref = referralAdmin();
   show(
     h('div', { class: 'row' }, h('a', { href: 'study#/' }, '← Back')),
     h('h1', {}, 'Admin'),
@@ -394,6 +512,7 @@ async function admin() {
         h('button', { class: 'btn', type: 'submit' }, 'Save coupon')),
       msg,
       h('p', { class: 'small' }, 'Share link: calecutech.com/geological-assistant/study?coupon=CODE')),
+    ref.el,
     h('div', { class: 'panel' }, h('h2', {}, 'All coupons'), table),
   );
   load();
@@ -416,6 +535,15 @@ async function admin() {
       loadPeople();
       load();
     };
+    const makeReferrer = async (p, btn) => {
+      btn.disabled = true;
+      const { error: e } = await sb.rpc('admin_set_referral_partner', { p_course_id: COURSE, p_user_id: p.user_id,
+        p_enabled: true, p_percent: Math.min(10, ref.cap()), p_max_uses: null });
+      if (e) { peopleMsg.className = 'err'; peopleMsg.textContent = e.message; btn.disabled = false; return; }
+      peopleMsg.className = 'okmsg';
+      peopleMsg.textContent = `${p.email} can now refer. They create their code once they have paid. Set the discount and limit in Referrals.`;
+      ref.reload();
+    };
     const rows = data.map((p) => {
       let act = '';
       if (!p.has_access) {
@@ -428,7 +556,8 @@ async function admin() {
         h('td', {}, String(p.cards_studied)),
         h('td', {}, String(p.tests_taken)),
         h('td', {}, date(p.last_studied_at)),
-        h('td', {}, h('a', { class: 'btn ghost sm', href: 'study#/progress/' + p.user_id }, 'Progress'), ' ', act));
+        h('td', {}, h('a', { class: 'btn ghost sm', href: 'study#/progress/' + p.user_id }, 'Progress'), ' ', act, ' ',
+          h('button', { class: 'btn ghost sm', onclick: (e) => makeReferrer(p, e.currentTarget) }, 'Make referrer')));
     });
     const paid = data.filter((p) => p.has_access && p.paid_via !== 'coupon').length;
     const free = data.filter((p) => p.paid_via === 'coupon').length;
@@ -687,6 +816,7 @@ async function home() {
     h('p', { class: 'small' }, h('a', { href: 'study#/progress' }, 'My progress'), '  ·  ', h('a', { href: 'study#/schedule' }, 'My schedule'), '  ·  ', h('a', { href: 'study#/results' }, 'My scores'), '  ·  ',
       h('a', { href: '#', onclick: (e) => { e.preventDefault(); askExamDate(); } }, 'Change exam date'),
       '  ·  Signed in as ' + (state.user.email || '')),
+    referLink(),
     adminLink(),
   );
 }
