@@ -208,6 +208,8 @@ export const getCatalogue = (token: string) =>
     token,
   });
 
+export type CommissionTerms = Schemas["CommissionTerms"];
+
 export interface AgentEarnings {
   summary?: {
     pendingPaise?: number;
@@ -215,13 +217,8 @@ export interface AgentEarnings {
     lifetimePaise?: number;
     tdsWithheldPaise?: number;
   };
-  terms?: {
-    rateBps?: number;
-    tdsRateBps?: number;
-    tdsSection?: string;
-    basis?: string;
-    payoutFrequency?: string;
-  };
+  /** Per-tier, per-product. The rate is no longer one number; see `terms.rates`. */
+  terms?: Partial<CommissionTerms>;
   data?: {
     id: number;
     accruedAt: string | null;
@@ -232,6 +229,8 @@ export interface AgentEarnings {
     netCommissionPaise: number;
     financialYear: string | null;
     customerName: string | null;
+    productName?: string | null;
+    tier?: "USER" | "SELLER" | null;
   }[];
 }
 
@@ -280,3 +279,30 @@ export const runReport = (
   const suffix = query.toString() ? `?${query}` : "";
   return api.get<ReportResult>(`/admin/reports/${slug}${suffix}`, { token });
 };
+
+/* ------------------------------------------------------------- referral */
+// Public, no token. The rewards page and the /r/{code} redirect use these.
+
+export type Leaderboard = Schemas["Leaderboard"];
+export type LeaderboardRow = Schemas["LeaderboardRow"];
+export type PublicProduct = Schemas["PublicProduct"];
+
+/** Cached a minute, matching the API's own edge cache on this endpoint. */
+export const getLeaderboard = (params: { app?: string; limit?: number } = {}) => {
+  const query = new URLSearchParams();
+  if (params.app) query.set("app", params.app);
+  query.set("limit", String(params.limit ?? 50));
+  return api.get<Leaderboard>(`/public/leaderboard?${query}`, { revalidate: 60 });
+};
+
+export const getPublicProducts = () =>
+  api.get<{ data: PublicProduct[] }>("/public/products", { revalidate: 300 });
+
+export const getPublicProduct = (slug: string) =>
+  api.get<PublicProduct>(`/public/products/${encodeURIComponent(slug)}`, {
+    revalidate: 300,
+  });
+
+/** Fire-and-forget; the redirect never waits on it. */
+export const logReferralClick = (body: { code: string; app?: string; source?: string }) =>
+  api.post<{ accepted: boolean }>("/public/referral-clicks", body);

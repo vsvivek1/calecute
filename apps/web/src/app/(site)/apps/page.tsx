@@ -12,38 +12,45 @@ export const metadata: Metadata = {
 
 const MONOGRAM_COLORS = ["bg-emerald-600", "bg-sky-600", "bg-violet-600", "bg-rose-600", "bg-amber-600", "bg-teal-600"];
 
-type Tile = { key: string; name: string; tagline: string; href: string; image?: string; demo?: boolean };
+type Tile = { key: string; name: string; tagline: string; href: string; image?: string; demo?: boolean; playUrl?: string };
 
-/** One app as an image link: the whole tile is the link. Apps without an icon get a letter tile. */
+/** One app as an image link: the whole tile is the link, with an optional Play link under it. Apps without an icon get a letter tile. */
 function AppTile({ tile, index }: { tile: Tile; index: number }) {
   return (
-    <a
-      href={tile.href}
-      className="group flex flex-col items-center rounded-2xl border border-black/10 p-4 text-center transition hover:-translate-y-0.5 hover:border-black/30 focus-visible:outline-2 focus-visible:outline-offset-2 dark:border-white/15 dark:hover:border-white/40"
-    >
-      {tile.image ? (
-        <Image
-          src={tile.image}
-          alt=""
-          width={96}
-          height={96}
-          unoptimized
-          className="h-24 w-24 rounded-2xl object-cover"
-        />
-      ) : (
-        <span
-          aria-hidden="true"
-          className={`flex h-24 w-24 items-center justify-center rounded-2xl text-4xl font-semibold text-white ${MONOGRAM_COLORS[index % MONOGRAM_COLORS.length]}`}
-        >
-          {tile.name.trim().charAt(0).toUpperCase()}
-        </span>
+    <div className="flex flex-col">
+      <a
+        href={tile.href}
+        className="group flex flex-col items-center rounded-2xl border border-black/10 p-4 text-center transition hover:-translate-y-0.5 hover:border-black/30 focus-visible:outline-2 focus-visible:outline-offset-2 dark:border-white/15 dark:hover:border-white/40"
+      >
+        {tile.image ? (
+          <Image
+            src={tile.image}
+            alt=""
+            width={96}
+            height={96}
+            unoptimized
+            className="h-24 w-24 rounded-2xl object-cover"
+          />
+        ) : (
+          <span
+            aria-hidden="true"
+            className={`flex h-24 w-24 items-center justify-center rounded-2xl text-4xl font-semibold text-white ${MONOGRAM_COLORS[index % MONOGRAM_COLORS.length]}`}
+          >
+            {tile.name.trim().charAt(0).toUpperCase()}
+          </span>
+        )}
+        <span className="mt-3 text-sm font-medium leading-snug group-hover:underline">{tile.name}</span>
+        {tile.demo && (
+          <span className="mt-1 rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs">Demo build</span>
+        )}
+        <span className="mt-1 line-clamp-2 text-xs text-black/60 dark:text-white/60">{tile.tagline}</span>
+      </a>
+      {tile.playUrl && (
+        <a href={tile.playUrl} className="mt-2 self-center text-xs font-medium underline">
+          Get it on Google Play
+        </a>
       )}
-      <span className="mt-3 text-sm font-medium leading-snug group-hover:underline">{tile.name}</span>
-      {tile.demo && (
-        <span className="mt-1 rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-xs">Demo build</span>
-      )}
-      <span className="mt-1 line-clamp-2 text-xs text-black/60 dark:text-white/60">{tile.tagline}</span>
-    </a>
+    </div>
   );
 }
 

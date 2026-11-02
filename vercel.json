@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "ignoreCommand": "git diff --quiet ${VERCEL_GIT_PREVIOUS_SHA:-HEAD^} HEAD -- apps/web public package.json package-lock.json vercel.json",
   "buildCommand": "npm run build --workspace=apps/web",
   "installCommand": "npm ci",
   "outputDirectory": "apps/web/.next"

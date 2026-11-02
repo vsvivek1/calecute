@@ -1,0 +1,642 @@
+[
+  {
+    "id": "biz-001",
+    "domain": "business",
+    "topic": "Compliance",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "You are managing a predictive project to build a customer billing system. Midway through execution, the government announces a new data privacy regulation that takes effect four months before your planned go-live. The current design stores customer data in ways the regulation will prohibit. What should you do FIRST?",
+    "options": [
+      "Continue executing the approved plan, since the regulation was not part of the baseline and compliance work can be scoped as a follow-on project",
+      "Direct the development team to immediately redesign the data storage module so the system is compliant well before the regulation takes effect",
+      "Analyze the regulation's impact on scope, schedule, and cost with compliance and legal experts, then submit a change request",
+      "Ask the sponsor to petition the regulator for an exemption so the baseline can be preserved"
+    ],
+    "answer": 2,
+    "explanation": "Compliance is non-negotiable, but the project manager must first understand the impact with the right experts and then use integrated change control to update the baselines. Redesigning immediately is tempting, yet acting without impact analysis or an approved change bypasses governance and may solve the wrong problem."
+  },
+  {
+    "id": "biz-002",
+    "domain": "business",
+    "topic": "Compliance",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "Your agile team is building a public-facing web portal. Local law requires the portal to meet accessibility standards at launch. The product owner wants to defer all accessibility stories to a later release to deliver more features sooner. What is the BEST action?",
+    "options": [
+      "Explain the legal obligation to the product owner and make accessibility criteria part of the Definition of Done for the launch release",
+      "Accept the product owner's decision because the product owner owns backlog prioritization and is accountable for maximizing value",
+      "Escalate immediately to the sponsor to override the product owner",
+      "Plan a dedicated hardening sprint just before launch so the team can address all accessibility gaps at once without slowing feature delivery now"
+    ],
+    "answer": 0,
+    "explanation": "The product owner owns prioritization, but not the ability to waive legal requirements; building compliance into the Definition of Done ensures every increment is releasable and compliant. Simply accepting the decision is tempting given the product owner's authority, but it exposes the organization to legal risk. A late hardening sprint concentrates risk and rework rather than building quality in."
+  },
+  {
+    "id": "biz-003",
+    "domain": "business",
+    "topic": "Benefits realization",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "You are closing a project that delivered a new warehouse management system. The business case states the main benefit, a 15% reduction in inventory carrying costs, will only be measurable about 12 months after go-live. What should you do?",
+    "options": [
+      "Keep the project open, with a reduced core team, until the 15% reduction in carrying costs can be measured and confirmed against the business case",
+      "Close the project and declare it successful because all deliverables were accepted",
+      "Measure inventory carrying costs now and report the result as the realized benefit",
+      "Confirm the benefits management plan names a benefit owner and measurement schedule, then transition benefit tracking to that owner"
+    ],
+    "answer": 3,
+    "explanation": "Benefits often materialize after the project ends, so the benefits management plan should assign an owner in the business who will measure and sustain them. Keeping the project open is tempting but ties up resources and budget for work that is operational, not project work. Declaring success on deliverables alone ignores whether value is actually achieved."
+  },
+  {
+    "id": "biz-004",
+    "domain": "business",
+    "topic": "Value delivery",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "Your team has released several increments of a mobile banking app on schedule. Usage analytics now show that two of the most recently released features are rarely used by customers. What is the BEST course of action?",
+    "options": [
+      "Continue delivering the committed roadmap, because the releases are on schedule and adoption of new features typically grows over several releases",
+      "Work with the product owner to review value metrics, validate assumptions with real users, and reprioritize the backlog",
+      "Ask the team to increase velocity so more features reach customers faster",
+      "Add more features to the low-usage areas to make them more attractive"
+    ],
+    "answer": 1,
+    "explanation": "Agile value delivery is measured by outcomes, not output, so low adoption is a signal to inspect and adapt the backlog based on user feedback. Continuing the roadmap is tempting because the team is on schedule, but delivering unused features consumes capacity without creating value."
+  },
+  {
+    "id": "biz-005",
+    "domain": "business",
+    "topic": "Business case",
+    "approach": "predictive",
+    "difficulty": 3,
+    "stem": "During execution of a product development project, a major competitor launches a similar product at a much lower price. Marketing now estimates the projected revenue in your business case will drop by about 60%. What is the BEST action?",
+    "options": [
+      "Crash the schedule by adding resources to critical path activities so your product reaches the market before the competitor gains significant share",
+      "Inform the sponsor with an impact analysis and recommend that governance reassess the business case to continue, change, or terminate",
+      "Continue executing because the project manager's responsibility is to deliver the approved scope",
+      "Reduce the project scope on your own authority to lower costs and protect the return"
+    ],
+    "answer": 1,
+    "explanation": "The business case is the basis for the investment decision, so a material change to it must go to the sponsor and governing body to decide the project's future. Crashing the schedule is tempting, but it increases cost without knowing whether the project is still viable, and the competitor has already launched."
+  },
+  {
+    "id": "biz-006",
+    "domain": "business",
+    "topic": "Organizational change",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "You are leading a hybrid ERP implementation. Configuration is done in iterations, while training and cutover follow a predictive plan. Surveys show warehouse staff are anxious and resistant to the new system, and training is not scheduled until the final month. What is the BEST action?",
+    "options": [
+      "Ask functional managers to mandate use of the new system at go-live",
+      "Delay go-live until all resistance has been eliminated",
+      "Add more training sessions in the final month, including hands-on practice in a test environment, so that every warehouse user is fully ready at go-live",
+      "Engage affected users now through change champions, explain the reasons for the change, and invite them to iteration reviews"
+    ],
+    "answer": 3,
+    "explanation": "Supporting organizational change means involving the people affected early, building understanding of why the change matters, and giving them a voice in the outcome. Extra late training is tempting, but it addresses skills rather than the underlying resistance and comes too late to influence adoption."
+  },
+  {
+    "id": "biz-007",
+    "domain": "business",
+    "topic": "Organizational structures",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "You have been assigned as project coordinator for an initiative in a strongly functional organization. You need a database specialist from another department for three weeks. What should you do?",
+    "options": [
+      "Negotiate with the functional manager who controls the specialist's time",
+      "Assign the specialist to your project tasks directly, since the initiative has been formally approved by senior management",
+      "Ask human resources to transfer the specialist to your team",
+      "Escalate the request to the chief executive officer"
+    ],
+    "answer": 0,
+    "explanation": "In a functional organization, the functional manager holds authority over resources, and the project coordinator has little or no direct authority. Assigning the specialist directly is tempting but assumes authority you do not have in this structure."
+  },
+  {
+    "id": "biz-008",
+    "domain": "business",
+    "topic": "Organizational structures",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "You work in a balanced matrix organization on a hybrid project. A key engineer tells you her functional manager has asked her to prioritize departmental maintenance work over the sprint commitments she made with your team. What should you do FIRST?",
+    "options": [
+      "Tell the engineer to follow the project priorities, because the sprint commitment came first and changing it mid-sprint would disrupt the whole team's plan",
+      "Request a replacement engineer who reports to a less demanding manager",
+      "Meet with the functional manager to clarify priorities and agree on the engineer's allocation, escalating only if you cannot agree",
+      "Let the engineer decide which work is more important"
+    ],
+    "answer": 2,
+    "explanation": "In a matrix, team members have two managers, so resource conflicts are resolved by the project manager and functional manager collaborating, with escalation as a fallback. Telling the engineer to follow your priorities is tempting but puts her in the middle of a conflict you are responsible for resolving."
+  },
+  {
+    "id": "biz-009",
+    "domain": "business",
+    "topic": "Governance",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "Your project's governance framework allows you to manage cost variances up to 5%. A supplier price increase will cause a 9% cost overrun. What is the BEST action?",
+    "options": [
+      "Use the management reserve to cover the overrun and continue, since the price increase was an unforeseen event",
+      "Rebaseline the cost to reflect the new supplier pricing",
+      "Wait until the next scheduled monthly report to mention the variance",
+      "Escalate to the steering committee through the defined escalation path, presenting the variance, its causes, and options"
+    ],
+    "answer": 3,
+    "explanation": "When a variance exceeds the project manager's tolerance, the governance framework requires escalation to the authority that owns the decision. Using management reserve is tempting, but it is controlled by management and requires their approval; rebaselining also requires approved change control."
+  },
+  {
+    "id": "biz-010",
+    "domain": "business",
+    "topic": "Governance",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "Your organization's portfolio board requires every project to submit detailed phase-gate documents. Your agile team says producing these documents is waste and slows delivery. What is the BEST action?",
+    "options": [
+      "Stop submitting the documents, since agile values working software over comprehensive documentation and the board can attend sprint reviews instead",
+      "Produce the full documentation set to stay compliant with the board",
+      "Work with the PMO and the board to tailor governance so they get the information they need through lightweight artifacts such as demos and burnup charts",
+      "Ask the team to complete the documents in overtime so sprint work is not affected"
+    ],
+    "answer": 2,
+    "explanation": "Governance serves a legitimate purpose, so the right move is to tailor how its information needs are met rather than ignore or blindly follow it. Ignoring the requirement is tempting given agile values, but it breaks organizational governance and erodes trust with decision makers."
+  },
+  {
+    "id": "biz-011",
+    "domain": "business",
+    "topic": "Ethics",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "You are evaluating vendor bids for a large contract. One bidder's account manager offers you premium tickets to a championship game, worth well above your organization's gift limit. What should you do?",
+    "options": [
+      "Accept the tickets but make sure they do not influence your evaluation",
+      "Decline the tickets and follow your organization's policy for reporting the offer",
+      "Accept the tickets and share them with your project team",
+      "Accept the tickets only after the contract has been awarded"
+    ],
+    "answer": 1,
+    "explanation": "Accepting a gift above policy limits during a procurement creates a conflict of interest, or at least its appearance, regardless of your intentions. Accepting while promising objectivity is tempting, but fairness under the Code of Ethics requires avoiding situations that compromise or appear to compromise impartiality."
+  },
+  {
+    "id": "biz-012",
+    "domain": "business",
+    "topic": "Ethics",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "You are leading vendor selection for a hybrid project. While reviewing the shortlist, you discover that one of the vendors is owned by your brother-in-law. What is the BEST action?",
+    "options": [
+      "Disclose the relationship to the sponsor and procurement, and recuse yourself from evaluating that vendor's bid",
+      "Remove that vendor from the shortlist to avoid any appearance of bias, and note the reason in the procurement file for audit purposes",
+      "Continue with the evaluation because you are confident you can remain objective",
+      "Ask your brother-in-law to withdraw his company's bid"
+    ],
+    "answer": 0,
+    "explanation": "The Code of Ethics requires proactive and full disclosure of real or potential conflicts of interest and stepping back from the decision. Removing the vendor is tempting but is itself unfair, because it penalizes a potentially qualified bidder based on your personal situation."
+  },
+  {
+    "id": "biz-013",
+    "domain": "business",
+    "topic": "Ethics",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "You are the agile project lead for a product team. Before a quarterly executive review, the sponsor asks you to show the release as on track, even though the team's burnup chart shows the planned scope will not be completed by the release date. What should you do?",
+    "options": [
+      "Present accurate progress data and discuss the forecast and options with the sponsor before the review",
+      "Report the release as on track as the sponsor requested",
+      "Report it as on track, then tell the executives privately afterward about the forecast risk",
+      "Ask the team to vote on what status should be reported"
+    ],
+    "answer": 0,
+    "explanation": "Honesty under the Code of Ethics requires truthful reporting, and transparency is central to agile. Speaking with the sponsor first respects the relationship while still refusing to misrepresent status. Following the sponsor's request may seem respectful of authority, but it deliberately misleads decision makers."
+  },
+  {
+    "id": "biz-014",
+    "domain": "business",
+    "topic": "Ethics",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "While reviewing shared quality records, you discover that another project manager in your organization has signed off on safety test results that were never actually performed. What should you do?",
+    "options": [
+      "Confront the other project manager at the next PMO meeting in front of peers",
+      "Report the issue through the organization's appropriate channels, such as compliance or the ethics office",
+      "Ignore it because it is not your project",
+      "Post about the issue on a professional networking site to warn others"
+    ],
+    "answer": 1,
+    "explanation": "The Code of Ethics expects practitioners to report unethical or illegal conduct to the appropriate authorities, especially when safety is at stake. Ignoring it because it is someone else's project is tempting, but responsibility extends to conduct you become aware of. Public confrontation or posting violates respect and due process."
+  },
+  {
+    "id": "biz-015",
+    "domain": "business",
+    "topic": "Cultural awareness",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "You lead a distributed hybrid team. Members from one location rarely speak during retrospectives, and you learn that in their culture openly criticizing processes in front of senior colleagues is uncommon. What is the BEST approach?",
+    "options": [
+      "Require every team member to speak at least once in each retrospective",
+      "Exclude that location from the joint retrospectives and have their local lead gather feedback separately so they are not uncomfortable",
+      "Use structured and anonymous input techniques, such as silent writing, and work to build psychological safety over time",
+      "Explain that the company culture requires everyone to speak up openly"
+    ],
+    "answer": 2,
+    "explanation": "Cultural awareness means adapting facilitation to how people are comfortable contributing while still capturing their input. Requiring everyone to speak is tempting as a way to ensure participation, but it ignores the cultural context and may produce superficial or uncomfortable responses."
+  },
+  {
+    "id": "biz-016",
+    "domain": "business",
+    "topic": "External environment",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "Your Scrum team is in the middle of a sprint when a new industry regulation is published. It will require changes to the reporting feature in the next release, but it does not invalidate the current sprint goal. What is the BEST action?",
+    "options": [
+      "Submit a formal change request to the change control board before making any backlog changes, so the regulatory impact is approved and documented",
+      "Ignore the regulation until the next release planning event",
+      "Cancel the current sprint and replan around the regulation",
+      "Have the product owner add and prioritize backlog items for the regulatory change after refining their impact with the team"
+    ],
+    "answer": 3,
+    "explanation": "Agile approaches absorb changes through the product backlog, which the product owner continuously refines and reorders. Cancelling the sprint is tempting, but it is only appropriate when the sprint goal becomes obsolete, which is not the case here."
+  },
+  {
+    "id": "biz-017",
+    "domain": "business",
+    "topic": "External environment",
+    "approach": "hybrid",
+    "difficulty": 3,
+    "stem": "Your company has just been acquired by a larger competitor. The new parent company uses different project governance standards and has announced it will review all in-flight initiatives. You are managing a hybrid project. What should you do FIRST?",
+    "options": [
+      "Pause all project work until the parent company issues formal direction, so the team does not spend budget on an initiative that may be cancelled in the review",
+      "Continue as planned, since the project was approved before the acquisition",
+      "Engage your sponsor to understand the new strategic direction, identify new stakeholders in the parent company, and confirm the project is still aligned",
+      "Immediately convert the project to the parent company's methodology"
+    ],
+    "answer": 2,
+    "explanation": "Mergers change the strategic context, so the project manager should proactively reconfirm alignment and update stakeholder engagement. Pausing work is tempting as a cautious move, but it is unilateral and wastes capacity when no one has asked for it."
+  },
+  {
+    "id": "biz-018",
+    "domain": "business",
+    "topic": "Sustainability",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "You are managing a construction project for an organization that has publicly committed to cutting carbon emissions by 40%. Procurement identifies a concrete supplier that is 8% cheaper but has a significantly higher carbon footprint than the alternative. What is the BEST action?",
+    "options": [
+      "Select the cheaper supplier because staying within budget is the project manager's priority",
+      "Select the lower-carbon supplier yourself, since it supports the organization's public commitment, and absorb the 8% cost difference in contingency",
+      "Ignore the carbon footprint because sustainability is not in the project scope",
+      "Evaluate both suppliers against the sustainability criteria and the business case, and present the trade-off to the sponsor for a decision"
+    ],
+    "answer": 3,
+    "explanation": "Projects should support organizational ESG commitments, and trade-offs affecting strategy and budget should be decided with the sponsor using clear analysis. Choosing the cheaper supplier is tempting from a cost perspective, but it ignores a strategic commitment that is part of the value the project must deliver."
+  },
+  {
+    "id": "biz-019",
+    "domain": "business",
+    "topic": "Sustainability",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "Your organization has added a goal to reduce the energy consumption of its digital products. Your team is building a data-heavy analytics product, but none of the backlog items address energy efficiency. What is the BEST action?",
+    "options": [
+      "Raise the goal with the product owner and propose energy-efficiency acceptance criteria or nonfunctional requirements for the backlog",
+      "Have the team quietly optimize for energy efficiency as part of normal engineering work, without informing the product owner or changing the backlog",
+      "Wait for the sustainability office to send formal requirements",
+      "Escalate to the sustainability office that the product owner is ignoring the goal"
+    ],
+    "answer": 0,
+    "explanation": "Sustainability considerations should be made visible and incorporated into the backlog so the product owner can balance them transparently with other value. Escalating is tempting, but there is no evidence the product owner is resisting; collaboration should come first."
+  },
+  {
+    "id": "biz-020",
+    "domain": "business",
+    "topic": "Strategic alignment",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "You have just received a signed project charter for a new initiative. You want to understand how the project supports the organization's strategic objectives. Which documents should you review?",
+    "options": [
+      "The work breakdown structure and the schedule baseline",
+      "The business case and the benefits management plan",
+      "The resource calendars and team skills matrix",
+      "The risk register and the issue log"
+    ],
+    "answer": 1,
+    "explanation": "The business case explains why the project is worth the investment, and the benefits management plan describes how and when benefits aligned with strategy will be delivered. The WBS and schedule are tempting because they are core planning documents, but they describe how work will be done, not why it matters strategically."
+  },
+  {
+    "id": "biz-021",
+    "domain": "business",
+    "topic": "Strategic alignment",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "A senior vice president asks your agile team to build a reporting dashboard that she personally wants. It does not relate to the product vision or the current quarter's objectives and key results. What is the BEST approach?",
+    "options": [
+      "Build the dashboard to keep a powerful stakeholder satisfied",
+      "Have the product owner weigh the request against the vision and objectives and discuss the trade-offs openly with the vice president",
+      "Refuse the request because it is outside the product vision",
+      "Have the team build it as side work during slack time without adding it to the backlog, so the sprint commitments and the vision are not affected"
+    ],
+    "answer": 1,
+    "explanation": "The product owner should assess every request against the vision and strategic objectives and make trade-offs visible to stakeholders. Building it to satisfy a powerful stakeholder is tempting, but it diverts capacity from strategically aligned work. Hidden work undermines transparency."
+  },
+  {
+    "id": "biz-022",
+    "domain": "business",
+    "topic": "Organizational change",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "Your organization is moving from traditional project delivery to agile teams. Several middle managers are resisting because they fear losing their authority and roles. As the agile transformation lead, what is the BEST action?",
+    "options": [
+      "Engage the managers directly, clarify how their roles will evolve toward servant leadership, and involve them in shaping the transformation",
+      "Bypass the managers and work directly with the teams",
+      "Ask executives to mandate the managers' compliance with the new model, since a clear top-down message is the fastest way to end uncertainty and resistance",
+      "Pause the transformation until the managers feel comfortable"
+    ],
+    "answer": 0,
+    "explanation": "Successful organizational change addresses the concerns of affected stakeholders and gives them a meaningful role in the change. Executive mandates are tempting because they appear fast, but they typically create surface compliance and hidden resistance."
+  },
+  {
+    "id": "biz-023",
+    "domain": "business",
+    "topic": "Benefits realization",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "Your sponsor asks how you will demonstrate that your hybrid customer-service modernization project delivered value, not just outputs. What is the BEST response?",
+    "options": [
+      "Track earned value metrics such as CPI and SPI throughout the project to show the sponsor that it is delivering on budget and on schedule",
+      "Report the number of story points completed in each iteration",
+      "Obtain formal customer sign-off on each deliverable",
+      "Define outcome measures, such as reduced call handling time, with baselines, targets, and owners in the benefits management plan"
+    ],
+    "answer": 3,
+    "explanation": "Value is demonstrated through measurable business outcomes tied to the business case, documented in the benefits management plan. Earned value is tempting because it is a recognized performance metric, but it measures project efficiency, not whether business benefits were achieved."
+  },
+  {
+    "id": "biz-024",
+    "domain": "business",
+    "topic": "Compliance",
+    "approach": "predictive",
+    "difficulty": 3,
+    "stem": "An internal audit of your pharmaceutical manufacturing project finds that several equipment validation records required by regulators are incomplete. Regulatory inspection is three months away. What is the BEST action?",
+    "options": [
+      "Have the team fill in the missing records based on what the results most likely were, since the equipment has been operating within specification",
+      "Challenge the audit findings with the auditors because the equipment is working correctly",
+      "Perform a root cause analysis and work with quality and compliance teams on a corrective action plan to properly complete the validation",
+      "Wait for the regulatory inspection to see whether the inspectors raise the issue"
+    ],
+    "answer": 2,
+    "explanation": "Compliance gaps should be addressed through root cause analysis and genuine corrective action with the appropriate experts. Backfilling records is tempting under time pressure, but fabricating records is dishonest and could be illegal."
+  },
+  {
+    "id": "biz-025",
+    "domain": "business",
+    "topic": "Compliance",
+    "approach": "agile",
+    "difficulty": 3,
+    "stem": "Your agile team develops software for a medical device. Regulators require traceability from requirements to design, code, and verification tests. The team worries that documentation will destroy its delivery rhythm. What is the BEST approach?",
+    "options": [
+      "Switch the project to a waterfall approach, because regulators expect a documented phase-gate life cycle with formal sign-offs at each stage",
+      "Generate all traceability documentation at the end of the project",
+      "Keep regulatory items out of the backlog so they do not affect velocity",
+      "Link requirements, stories, and tests continuously as part of the workflow and include traceability in the Definition of Done"
+    ],
+    "answer": 3,
+    "explanation": "Agile teams in regulated environments meet compliance by embedding it into each increment, which keeps the product releasable and auditable. Switching to waterfall is tempting but unnecessary; regulation dictates what evidence is needed, not which life cycle must be used."
+  },
+  {
+    "id": "biz-026",
+    "domain": "business",
+    "topic": "External environment",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "A critical component supplier for your project is based in a country that has just become subject to new international trade sanctions. Deliveries are scheduled to begin in two months. What should you do FIRST?",
+    "options": [
+      "Terminate the supplier's contract immediately",
+      "Assess the impact with procurement and legal, update the risk register, and plan responses such as qualifying an alternative supplier",
+      "Wait to see whether the sanctions are lifted before deliveries are due",
+      "Ask the supplier to route shipments through a third country so deliveries arrive on time without breaching the letter of the sanctions"
+    ],
+    "answer": 1,
+    "explanation": "External changes like sanctions must be analyzed with the right experts, and risk responses planned before acting. Terminating immediately is tempting but may breach the contract or be unnecessary before legal analysis. Routing shipments to evade sanctions is illegal."
+  },
+  {
+    "id": "biz-027",
+    "domain": "business",
+    "topic": "Ethics",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "During a sprint review, you hear a team member make a joke mocking a colleague's accent. Several people laugh, and the colleague looks uncomfortable. What is the BEST action?",
+    "options": [
+      "Ignore it because the team seemed to find it funny",
+      "Reprimand the team member in front of everyone at the review so the whole team clearly understands that such behavior will not be tolerated",
+      "Speak privately and promptly with the team member about the comment's impact and reinforce the team's working agreements on respect",
+      "Report the team member to human resources without speaking to anyone"
+    ],
+    "answer": 2,
+    "explanation": "The Code of Ethics requires respect, and leaders should address disrespectful behavior quickly and directly while preserving dignity. A public reprimand is tempting because it signals the behavior is unacceptable, but it disrespects the team member and can damage team trust."
+  },
+  {
+    "id": "biz-028",
+    "domain": "business",
+    "topic": "Ethics",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "A director asks you to manage a project to certify a facility under a specialized safety standard. You have never worked with this standard and lack the required certification. What should you do?",
+    "options": [
+      "Inform the director of your knowledge gaps and propose ways to address them, such as engaging a certified expert, before accepting",
+      "Accept the assignment and learn the standard as you go without mentioning the gap",
+      "Decline the assignment, because the Code of Ethics requires you to accept only assignments for which you already hold the required certification",
+      "Accept the assignment and delegate all technical decisions to the team"
+    ],
+    "answer": 0,
+    "explanation": "The Code of Ethics requires accepting only assignments consistent with your qualifications and being transparent about gaps so the organization can make an informed decision. Declining outright is tempting but unnecessary when gaps can be addressed with expert support."
+  },
+  {
+    "id": "biz-029",
+    "domain": "business",
+    "topic": "Governance",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "Your hybrid project includes a fixed-price contract with a vendor for a hardware module, while the software is developed iteratively. The product owner wants to change a hardware feature specified in the contract. What is the BEST action?",
+    "options": [
+      "Process the change through the contract's change control procedure so that scope, price, and schedule are formally agreed",
+      "Reprioritize the vendor's work in the product backlog, since the hybrid approach allows the product owner to adjust scope each iteration",
+      "Ask the vendor's engineer to make the change since they have verbally agreed",
+      "Defer the change until the software iterations are complete"
+    ],
+    "answer": 0,
+    "explanation": "Contractual scope is governed by the contract's terms, so changes require formal change control regardless of the approach used elsewhere. Reprioritizing the backlog is tempting in a hybrid environment, but it does not change legal obligations under a fixed-price contract."
+  },
+  {
+    "id": "biz-030",
+    "domain": "business",
+    "topic": "PMO",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "Your organization's PMO provides templates, training, and lessons learned, but exerts little control over how projects are run. What type of PMO is this?",
+    "options": [
+      "Controlling",
+      "Directive",
+      "Supportive",
+      "Projectized"
+    ],
+    "answer": 2,
+    "explanation": "A supportive PMO acts as a consultative resource, supplying templates, training, and lessons learned with a low degree of control. A controlling PMO is tempting because it also provides templates, but it requires compliance with frameworks and audits. A directive PMO manages projects directly."
+  },
+  {
+    "id": "biz-031",
+    "domain": "business",
+    "topic": "Organizational change",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "Your process automation project will eliminate several roles in the accounts payable department. Rumors are spreading and employees are anxious. What is the BEST action?",
+    "options": [
+      "Keep project details confidential until the system goes live, so that productivity in the department does not drop before the transition is complete",
+      "Work with the sponsor and human resources to communicate openly and early about the changes, impacts, and support available",
+      "Have team members share information informally to calm people",
+      "Leave all communication to the department's functional managers"
+    ],
+    "answer": 1,
+    "explanation": "Transparent, planned communication coordinated with leadership and HR is central to managing organizational change and limits damaging rumors. Keeping details confidential is tempting to avoid disruption, but silence fuels speculation and erodes trust."
+  },
+  {
+    "id": "biz-032",
+    "domain": "business",
+    "topic": "Value delivery",
+    "approach": "agile",
+    "difficulty": 3,
+    "stem": "The business case for a new subscription service assumes strong customer demand, but the evidence for this assumption is weak. Leadership wants to commit a large budget. What is the BEST approach?",
+    "options": [
+      "Complete a detailed requirements analysis before starting any development",
+      "Build the full feature set so customers see the complete value proposition",
+      "Run a customer survey on the proposed service and proceed with full development if a majority of responses show strong purchase intent",
+      "Propose delivering a minimum viable product to validate the demand hypothesis before committing the full investment"
+    ],
+    "answer": 3,
+    "explanation": "An MVP tests the key business assumption with real customer behavior at low cost, enabling an informed investment decision. A survey is tempting, but stated intentions are less reliable than actual usage, and proceeding with full development still risks a large loss."
+  },
+  {
+    "id": "biz-033",
+    "domain": "business",
+    "topic": "External environment",
+    "approach": "agile",
+    "difficulty": 1,
+    "stem": "Due to an economic downturn, leadership cuts the budget for your agile product team by 30% for the next two quarters. What is the BEST action?",
+    "options": [
+      "Ask the team to work overtime to deliver the original roadmap",
+      "Keep the full roadmap and extend the release dates proportionally so that every committed feature is still delivered, just over a longer period",
+      "Work with the product owner to reprioritize the backlog so the highest-value items are delivered within the reduced capacity",
+      "Reduce testing practices to free up capacity for features"
+    ],
+    "answer": 2,
+    "explanation": "With fixed capacity, agile teams flex scope by focusing on the highest-value items. Extending dates is tempting, but it ignores that value should be maximized now, and the reduced budget may not cover the extended timeline. Cutting quality creates technical debt."
+  },
+  {
+    "id": "biz-034",
+    "domain": "business",
+    "topic": "Governance",
+    "approach": "agile",
+    "difficulty": 3,
+    "stem": "Your team needs approval from the enterprise security architecture board before releasing a new integration. The board meets only monthly, and this dependency is blocking delivery. As the servant leader, what is the BEST action?",
+    "options": [
+      "Escalate the impediment through the governance path and work with the board on a faster decision mechanism for similar requests",
+      "Release the integration without approval to keep delivering value, and submit the security documentation to the board at its next monthly meeting",
+      "Wait for the next scheduled board meeting",
+      "Remove the integration story from the backlog"
+    ],
+    "answer": 0,
+    "explanation": "Servant leaders remove impediments beyond the team's control and improve organizational processes while still respecting governance. Waiting is tempting because it follows the rules, but it does not address a systemic bottleneck. Releasing without approval violates governance and may create security risk."
+  },
+  {
+    "id": "biz-035",
+    "domain": "business",
+    "topic": "Cultural awareness",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "You are developing the schedule for an international project with a team in another country. You realize the schedule does not account for several major national holidays in that country. What should you do?",
+    "options": [
+      "Ask the local team to work through the holidays to protect the schedule",
+      "Keep the schedule as is and add schedule contingency to absorb the holidays and other delays",
+      "Apply your own country's holiday calendar to all team members for consistency",
+      "Work with the local team to update the resource calendars with their holidays and adjust the schedule"
+    ],
+    "answer": 3,
+    "explanation": "Cultural awareness includes respecting local customs and holidays, and resource calendars are the right tool to reflect availability. Adding contingency is tempting, but it hides a known constraint instead of planning for it accurately."
+  },
+  {
+    "id": "biz-036",
+    "domain": "business",
+    "topic": "Ethics",
+    "approach": "hybrid",
+    "difficulty": 3,
+    "stem": "A new team member on your hybrid project shares a confidential design document from his former employer, a competitor, saying it will save weeks of work. The sponsor is eager to use it. What is the BEST action?",
+    "options": [
+      "Use the document because it will save significant time",
+      "Refuse to use the document, ensure it is not distributed further, and report the situation according to company policy",
+      "Use the ideas but do not reference the document in project records",
+      "Use the document to keep the project on schedule and ask the legal department afterward to confirm whether using it was acceptable"
+    ],
+    "answer": 1,
+    "explanation": "Using another organization's confidential information violates intellectual property rights and the honesty and responsibility standards of the Code of Ethics. Using only the ideas is tempting because it seems less direct, but it still exploits misappropriated information."
+  },
+  {
+    "id": "biz-037",
+    "domain": "business",
+    "topic": "Strategic alignment",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "The portfolio review board reprioritizes initiatives based on a new strategic plan. Your hybrid project is moved to a lower priority, and two key resources will be reassigned. What is the BEST action?",
+    "options": [
+      "Lobby executives to reverse the decision",
+      "Understand the rationale, update the project plans for the new constraints, and communicate the impacts to stakeholders",
+      "Continue using the two resources until they are formally removed, to finish as much critical work as possible before the reassignment takes effect",
+      "Inform the team that the project is effectively cancelled"
+    ],
+    "answer": 1,
+    "explanation": "Portfolio decisions reflect organizational strategy, and the project manager should adapt the project and keep stakeholders informed. Lobbying is tempting to protect the project, but it works against a legitimate governance decision made for strategic reasons."
+  },
+  {
+    "id": "biz-038",
+    "domain": "business",
+    "topic": "Sustainability",
+    "approach": "hybrid",
+    "difficulty": 3,
+    "stem": "Your project is building a new distribution center. All environmental permits have been obtained, but residents of the neighboring community are raising concerns at public meetings about traffic, noise, and air quality. What is the BEST action?",
+    "options": [
+      "Proceed as planned because all required permits are in place",
+      "Launch a public relations campaign highlighting the jobs and tax revenue the facility will create to build community support for the project",
+      "Refer all community concerns to the local government",
+      "Engage community representatives to understand their concerns, assess impacts, and incorporate reasonable mitigations into the plan"
+    ],
+    "answer": 3,
+    "explanation": "Sustainability and social responsibility go beyond legal minimums; engaging affected communities protects the organization's reputation and social license to operate. Proceeding because permits exist is tempting, but legal compliance alone does not address stakeholder concerns that can delay or derail the project."
+  },
+  {
+    "id": "biz-039",
+    "domain": "business",
+    "topic": "Compliance",
+    "approach": "agile",
+    "difficulty": 1,
+    "stem": "To reduce hosting costs, the product owner asks the team to store customer data in a cloud region outside the country. Company policy requires customer data to remain in-country. What is the BEST action?",
+    "options": [
+      "Advise the product owner that the request conflicts with policy and involve the compliance team before any decision is made",
+      "Proceed with the cheaper region because the product owner prioritizes the work",
+      "Let the team vote on whether to follow the policy",
+      "Implement the change now to capture the hosting savings, and confirm compliance with the data residency policy during the next release"
+    ],
+    "answer": 0,
+    "explanation": "Organizational policies and regulations constrain product decisions, so compliance must be consulted before acting. Proceeding because the product owner asked is tempting, but the product owner's authority over priorities does not extend to overriding company policy."
+  },
+  {
+    "id": "biz-040",
+    "domain": "business",
+    "topic": "Organizational structures",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "You manage a project in a projectized organization. The project will close in two months, and team members are worried because they have no assigned work after closure. What is the BEST action?",
+    "options": [
+      "Extend the project schedule so the team remains employed and engaged for longer",
+      "Tell the team that their next assignments are not the project manager's concern",
+      "Work with management early to plan the release of team members and help transition them to new assignments",
+      "Release team members immediately so they can look for new roles"
+    ],
+    "answer": 2,
+    "explanation": "In a projectized organization, team members are dedicated to the project and may have no home department, so planned resource release is especially important. Releasing people immediately is tempting to give them time, but it jeopardizes the remaining project work and is not a planned transition."
+  }
+]

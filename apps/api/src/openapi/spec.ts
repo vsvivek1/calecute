@@ -224,20 +224,83 @@ const payoutProfileBody = z.object({
 });
 
 const attributionClaimBody = z.object({
-  customerExternalRef: z.string(),
-  customerName: z.string(),
-  agentCode: z.string(),
-  source: z.string().optional(),
+  customerExternalRef: z
+    .string()
+    .min(1)
+    .max(120)
+    .describe(
+      "The customer's id in the calling app — the same value the app sends as `externalRef` to POST /members for that user. Stored namespaced as `<product slug>:<customerExternalRef>`.",
+    ),
+  customerName: z.string().min(1).max(200),
+  agentCode: z
+    .string()
+    .max(40)
+    .describe("A seller's `CA-…` code or a member's `RF-…` invite code. Case-insensitive."),
+  source: z
+    .string()
+    .max(40)
+    .optional()
+    .describe('Where the code came from: "referral_link", "typed", "qr", "install_referrer".'),
+  productSlug: z
+    .string()
+    .max(80)
+    .optional()
+    .describe("Only for a SUPER_ADMIN caller. A service key's product is implied and this field is ignored."),
 });
 
 const paymentBody = z.object({
-  externalRef: z.string(),
-  customerExternalRef: z.string(),
-  productId: z.number().int().nullish(),
+  externalRef: z.string().min(1).max(120).describe("The payment's id in the product system. Unique."),
+  customerExternalRef: z
+    .string()
+    .min(1)
+    .max(120)
+    .describe("The customer's id in the calling app, exactly as sent to /attribution/claim."),
+  productId: z.number().int().nullish().describe("Only for a SUPER_ADMIN caller; ignored with a service key."),
+  productSlug: z.string().max(80).nullish().describe("Only for a SUPER_ADMIN caller; ignored with a service key."),
   grossPaise: z.number().int().min(0).describe("Amounts are integer paise. Never a float."),
   gstPaise: z.number().int().min(0).default(0),
   gatewayFeePaise: z.number().int().min(0).default(0),
   paidAt: z.string().describe("ISO 8601 timestamp."),
+});
+
+const memberBody = z.object({
+  externalRef: z
+    .string()
+    .min(1)
+    .max(120)
+    .describe("The app's own user id. Namespaced server-side as `<product slug>:<externalRef>`."),
+  name: z.string().min(1).max(200).describe("Display name. Masked to first name and last initial on the public leaderboard."),
+  email: z.string().email().max(200).nullish(),
+  pictureUrl: z.string().url().max(500).nullish(),
+});
+
+const referralClickBody = z.object({
+  code: z.string().min(3).max(40),
+  app: z.string().max(80).optional().describe("Product slug, when the link named one."),
+  source: z.string().max(40).optional().describe('e.g. "web", "android".'),
+});
+
+const productSettingsBody = z.object({
+  feePaise: z
+    .number()
+    .int()
+    .min(0)
+    .nullable()
+    .optional()
+    .describe("The product's fee in paise. `null` makes it FREE: members then earn diamonds instead of cash."),
+  sellerRateBps: z.number().int().min(1000).max(3000).optional().describe("What a seller earns: 1000 (10%) to 3000 (30%)."),
+  userRateBps: z.number().int().min(0).max(1000).optional().describe("What a member earns on a paid product. Default 100 (1%)."),
+  webUrl: z.string().url().nullable().optional(),
+  playUrl: z.string().url().nullable().optional(),
+  androidPackage: z.string().nullable().optional(),
+  active: z.boolean().optional(),
+});
+
+const apiKeyMintBody = z.object({
+  kind: z
+    .enum(["client", "server"])
+    .describe("`client` ships inside an app: members, claims, clicks. `server` is held by the product backend and may also record payments."),
+  label: z.string().min(1).max(120).describe('Where this key lives, e.g. "Android 2.4" or "billing worker".'),
 });
 
 const eventBody = z.object({
@@ -369,13 +432,205 @@ const sessionUserSchema: Json = {
 
 const commissionTermsSchema: Json = {
   type: "object",
-  description: "The published commission terms, served so no client hardcodes them.",
+  description:
+    "The commission terms that apply to this agent, served so no client hardcodes them. The rate is per product: a SELLER earns the product's seller rate (10% to 30%), a USER-tier member earns the product's member rate (default 1%) on paid products and diamonds on free ones.",
+  required: ["tier", "rateBps", "rates", "tdsRateBps", "tdsSection", "basis", "payoutFrequency"],
   properties: {
-    rateBps: { type: "integer", description: "1000 = 10% of every payment." },
+    tier: { type: "string", enum: ["USER", "SELLER"] },
+    rateBps: { type: "integer", description: "The lowest cash rate that applies to this agent across active products. See `rates`." },
+    maxRateBps: { type: "integer", description: "The highest." },
+    rates: {
+      type: "array",
+      description: "One entry per active product.",
+      items: {
+        type: "object",
+        required: ["productId", "slug", "nameEn", "isFree", "reward", "rateBps"],
+        properties: {
+          productId: { type: "integer" },
+          slug: { type: "string" },
+          nameEn: { type: "string" },
+          isFree: { type: "boolean" },
+          reward: { type: "string", enum: ["CASH", "DIAMOND"], description: "DIAMOND only for a USER-tier agent on a free product." },
+          rateBps: { type: "integer", description: "0 when the reward is DIAMOND." },
+        },
+      },
+    },
     tdsRateBps: { type: "integer", description: "200 = 2%." },
     tdsSection: { type: "string", description: "194H." },
     basis: { type: "string", description: "Net of GST and payment gateway charges." },
     payoutFrequency: { type: "string", enum: ["MONTHLY"] },
+  },
+};
+
+/* ------------------------------------------------------ referral schemas */
+
+const memberStatsSchema: Json = {
+  type: "object",
+  required: ["friendsJoined", "payingFriends", "diamonds", "earnings"],
+  properties: {
+    friendsJoined: { type: "integer", description: "Customers attributed to this code, across every product." },
+    payingFriends: { type: "integer", description: "Of those, how many have paid at least once." },
+    diamonds: { type: "integer", description: "Recognition for friends who joined free products. Never money." },
+    earnings: {
+      type: "object",
+      required: ["pendingPaise", "paidPaise", "lifetimePaise", "currency"],
+      properties: {
+        pendingPaise: { type: "integer" },
+        paidPaise: { type: "integer" },
+        lifetimePaise: { type: "integer" },
+        currency: { type: "string", enum: ["INR"] },
+      },
+    },
+  },
+};
+
+const memberSchema: Json = {
+  type: "object",
+  required: ["code", "link", "whatsappShareUrl", "qrUrl", "tier", "status", "stats", "product"],
+  properties: {
+    code: { type: "string", examples: ["RF-7K2M9Q"], description: "The member's invite code. Immutable." },
+    link: {
+      type: "string",
+      examples: ["https://calecutech.com/r/RF-7K2M9Q?app=quizkerala"],
+      description: "Share this. The website resolves it to the product's web URL or Play listing with the code attached.",
+    },
+    whatsappShareUrl: { type: "string", description: "A wa.me link with a pre-written message, Malayalam first." },
+    qrUrl: { type: "string", description: "Absolute URL of a PNG QR encoding `link`. Append `&format=svg` for SVG." },
+    tier: { type: "string", enum: ["USER"] },
+    status: { type: "string", description: "APPROVED unless an administrator suspended the member." },
+    stats: ref("MemberStats"),
+    product: {
+      type: "object",
+      required: ["slug", "name", "isFree", "userRateBps"],
+      properties: {
+        slug: { type: "string" },
+        name: { type: "string" },
+        isFree: { type: "boolean", description: "True: friends who join earn the member a diamond. False: 1% of what friends pay." },
+        userRateBps: { type: "integer" },
+      },
+    },
+  },
+};
+
+const publicProductSchema: Json = {
+  type: "object",
+  required: ["id", "slug", "nameEn", "nameMl", "isFree", "sellerRateBps", "userRateBps"],
+  properties: {
+    id: { type: "integer" },
+    slug: { type: "string" },
+    nameEn: { type: "string" },
+    nameMl: { type: "string" },
+    summaryEn: { type: ["string", "null"] },
+    isFree: { type: "boolean" },
+    feePaise: { type: ["integer", "null"], description: "Null means free." },
+    sellerRateBps: { type: "integer", description: "1000..3000." },
+    userRateBps: { type: "integer" },
+    webUrl: { type: ["string", "null"] },
+    playUrl: { type: ["string", "null"] },
+    androidPackage: { type: ["string", "null"] },
+  },
+};
+
+const adminProductSchema: Json = {
+  allOf: [
+    ref("PublicProduct"),
+    {
+      type: "object",
+      properties: {
+        active: { type: "boolean" },
+        createdAt: { type: "string", format: "date-time" },
+      },
+    },
+  ],
+};
+
+const leaderboardRowSchema: Json = {
+  type: "object",
+  required: ["rank", "displayName", "tier", "diamonds", "friendsJoined", "payingFriends", "earnedNetPaise"],
+  properties: {
+    rank: { type: "integer" },
+    displayName: { type: "string", description: 'Masked: first name and last initial, e.g. "Vivek S."' },
+    tier: { type: "string", enum: ["USER", "SELLER"] },
+    diamonds: { type: "integer" },
+    friendsJoined: { type: "integer" },
+    payingFriends: { type: "integer" },
+    earnedNetPaise: { type: "integer", description: "Net commission not cancelled or forfeited, in paise." },
+  },
+};
+
+const leaderboardSchema: Json = {
+  type: "object",
+  required: ["app", "limit", "currency", "rows"],
+  properties: {
+    app: { type: ["string", "null"], description: "The product filter applied, or null for every product." },
+    limit: { type: "integer" },
+    currency: { type: "string", enum: ["INR"] },
+    rows: { type: "array", items: ref("LeaderboardRow") },
+  },
+};
+
+const apiKeySchema: Json = {
+  type: "object",
+  required: ["id", "productId", "kind", "label", "createdAt", "revokedAt"],
+  properties: {
+    id: { type: "integer" },
+    productId: { type: "integer" },
+    kind: { type: "string", enum: ["client", "server"] },
+    label: { type: "string" },
+    createdAt: { type: "string", format: "date-time" },
+    revokedAt: { type: ["string", "null"], format: "date-time" },
+  },
+};
+
+const attributionResultSchema: Json = {
+  type: "object",
+  required: ["attributed"],
+  properties: {
+    attributed: { type: "boolean" },
+    reason: {
+      type: "string",
+      enum: ["UNKNOWN_CODE", "AGENT_NOT_APPROVED", "SELF_REFERRAL", "ALREADY_ATTRIBUTED"],
+      description: "Present when `attributed` is false.",
+    },
+    agentCode: { type: "string", description: "The code that now holds the customer." },
+    tier: { type: "string", enum: ["USER", "SELLER"] },
+    customerId: { type: "integer" },
+    diamondAwarded: { type: "boolean", description: "True when a USER-tier member just earned a diamond for this join (free product)." },
+    agentStatus: { type: "string" },
+    heldBy: { type: ["string", "null"], description: "On ALREADY_ATTRIBUTED: the code that won." },
+    heldSince: { type: ["string", "null"], format: "date-time" },
+  },
+};
+
+const paymentResultSchema: Json = {
+  type: "object",
+  required: ["recorded", "replayed"],
+  properties: {
+    recorded: { type: "boolean" },
+    replayed: { type: "boolean", description: "True when this response was replayed from the Idempotency-Key." },
+    reason: {
+      type: "string",
+      enum: ["PAYMENT_ALREADY_RECORDED", "NO_ATTRIBUTION", "AGENT_NOT_APPROVED", "AGENT_NOT_PLACED"],
+      description: "Why no commission accrued, when none did.",
+    },
+    externalRef: { type: "string" },
+    paymentId: { type: "integer" },
+    commissionAccrued: { type: "boolean" },
+    commissionId: { type: "integer" },
+    agentCode: { type: "string" },
+    tier: { type: "string", enum: ["USER", "SELLER"] },
+    product: { type: ["string", "null"], description: "Product slug." },
+    breakdown: {
+      type: "object",
+      properties: {
+        basePaise: { type: "integer" },
+        rateBps: { type: "integer", description: "The product's seller or member rate, whichever applied." },
+        grossCommissionPaise: { type: "integer" },
+        tdsRateBps: { type: "integer" },
+        tdsPaise: { type: "integer" },
+        netCommissionPaise: { type: "integer" },
+      },
+    },
   },
 };
 
@@ -761,6 +1016,16 @@ export function buildSpec(serverUrl: string): Json {
         "modified client asking for another district's rows receives an empty set,",
         "not an error.",
         "",
+        "## Product systems (API keys)",
+        "",
+        "A Calecute app — the thing a referred customer actually joins — calls the",
+        "referral endpoints with an API key in `X-Api-Key`, not a user token. A",
+        "`client` key (`ck_live_…`) ships inside an app and may register members,",
+        "claim attributions and log clicks; a `server` key (`sk_live_…`) is held",
+        "by the product's backend and may additionally record payments. Keys are",
+        "minted by a SUPER_ADMIN at `POST /admin/products/{id}/api-keys` and scope",
+        "every call to that one product. See docs/referral-architecture.md.",
+        "",
         "## Conventions",
         "",
         "- Errors always use the `Error` envelope. Branch on `error.code`.",
@@ -790,7 +1055,8 @@ export function buildSpec(serverUrl: string): Json {
       { name: "products", description: "Product catalogue and sales material." },
       { name: "admin-reports", description: "Coverage, agents, revenue and funnel reports. JSON, CSV or PDF." },
       { name: "admin-actions", description: "Approvals, assignments, slots, payouts, messaging, admin users." },
-      { name: "attribution", description: "Referral attribution. First code wins, permanently." },
+      { name: "attribution", description: "Referral attribution and payments, called by product systems. First code wins, permanently." },
+      { name: "referral", description: "Invite codes for every app user, the public leaderboard, QR and click logging." },
       { name: "meta", description: "Health and this specification." },
     ],
     security: [{ bearerAuth: [] }],
@@ -801,6 +1067,13 @@ export function buildSpec(serverUrl: string): Json {
           scheme: "bearer",
           bearerFormat: "JWT",
           description: "Access token from POST /auth/google or POST /auth/refresh.",
+        },
+        apiKey: {
+          type: "apiKey",
+          in: "header",
+          name: "X-Api-Key",
+          description:
+            "A product's `ck_live_…` (client) or `sk_live_…` (server) key, from POST /admin/products/{id}/api-keys or scripts/mint-api-key.mts.",
         },
       },
       schemas: {
@@ -829,8 +1102,21 @@ export function buildSpec(serverUrl: string): Json {
         QualificationsRequest: json(qualificationsBody) as Json,
         PayoutProfileRequest: json(payoutProfileBody) as Json,
         AttributionClaimRequest: json(attributionClaimBody) as Json,
+        AttributionResult: attributionResultSchema,
         PaymentRequest: json(paymentBody) as Json,
+        PaymentResult: paymentResultSchema,
         EventRequest: json(eventBody) as Json,
+        MemberRequest: json(memberBody) as Json,
+        MemberStats: memberStatsSchema,
+        Member: memberSchema,
+        PublicProduct: publicProductSchema,
+        AdminProduct: adminProductSchema,
+        ProductSettingsRequest: json(productSettingsBody) as Json,
+        ApiKey: apiKeySchema,
+        ApiKeyMintRequest: json(apiKeyMintBody) as Json,
+        LeaderboardRow: leaderboardRowSchema,
+        Leaderboard: leaderboardSchema,
+        ReferralClickRequest: json(referralClickBody) as Json,
       },
     },
     paths: {
@@ -1139,13 +1425,46 @@ export function buildSpec(serverUrl: string): Json {
           tag: "agent",
           summary: "Earnings summary and commission ledger",
           description:
-            "Pending, paid and lifetime totals, plus the individual commission rows behind them so an agent can see which payment each came from. The published terms are returned alongside, so no client hardcodes the 10% or the 2% TDS.",
+            "Pending, paid and lifetime totals, plus the individual commission rows behind them so an agent can see which payment each came from. The terms that apply to this agent are returned alongside as `terms` (see CommissionTerms): the rate is per product and per tier, so no client hardcodes a percentage or the 2% TDS.",
           roles: "AGENT",
           parameters: [
             queryParam("status", { type: "string", enum: ["ACCRUED", "APPROVED", "PAID", "CANCELLED", "FORFEITED"] }, "Filter the ledger."),
             ...PAGINATION_PARAMS,
           ],
-          responses: { "200": ok200({ type: "object" }) },
+          responses: {
+            "200": ok200({
+              type: "object",
+              required: ["summary", "data", "pageInfo", "terms"],
+              properties: {
+                summary: ref("EarningsSummary"),
+                data: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      id: { type: "integer" },
+                      accruedAt: { type: "string", format: "date-time" },
+                      status: { type: "string", enum: ["ACCRUED", "APPROVED", "PAID", "CANCELLED", "FORFEITED"] },
+                      basePaise: { type: "integer" },
+                      rateBps: { type: "integer" },
+                      tier: { type: ["string", "null"], enum: ["USER", "SELLER", null] },
+                      productSlug: { type: ["string", "null"] },
+                      productName: { type: ["string", "null"] },
+                      grossCommissionPaise: { type: "integer" },
+                      tdsPaise: { type: "integer" },
+                      netCommissionPaise: { type: "integer" },
+                      financialYear: { type: "string" },
+                      paidAt: { type: ["string", "null"], format: "date-time" },
+                      paymentPaidAt: { type: "string", format: "date-time" },
+                      customerName: { type: "string" },
+                    },
+                  },
+                },
+                pageInfo: ref("PageInfo"),
+                terms: ref("CommissionTerms"),
+              },
+            }),
+          },
         }),
       },
       "/agent/customers": {
@@ -1414,6 +1733,81 @@ export function buildSpec(serverUrl: string): Json {
           responses: { "200": ok200({ type: "object" }), "422": errorResponse("Filter matches more agents than maxAgents.") },
         }),
       },
+      "/admin/products/{id}": {
+        patch: operation({
+          tag: "admin-actions",
+          summary: "Set a product's fee, referral rates and links",
+          description: [
+            "`feePaise: null` makes the product FREE: a member's friends then earn them",
+            "diamonds rather than cash. `sellerRateBps` is the seller band, 1000 to",
+            "3000. `userRateBps` is what a member earns on a paid product, default 100.",
+            "`webUrl` and `playUrl` are where `/r/{code}?app=slug` sends a visitor.",
+            "",
+            "SUPER_ADMIN only: the rates are a company-wide decision, and the products",
+            "write policy admits nobody else.",
+          ].join("\n"),
+          roles: "SUPER_ADMIN",
+          parameters: [pathParam("id", "Product id.")],
+          requestBody: body(ref("ProductSettingsRequest")),
+          responses: {
+            "200": ok200({ type: "object", required: ["product"], properties: { product: ref("AdminProduct") } }),
+            "404": errorResponse("Unknown product."),
+          },
+        }),
+      },
+      "/admin/products/{id}/api-keys": {
+        get: operation({
+          tag: "admin-actions",
+          summary: "List a product's API keys",
+          description: "Never the hash, never the plaintext. Revoked keys are listed with `revokedAt` set.",
+          roles: "SUPER_ADMIN",
+          parameters: [pathParam("id", "Product id.")],
+          responses: {
+            "200": ok200({ type: "object", required: ["data"], properties: { data: { type: "array", items: ref("ApiKey") } } }),
+          },
+        }),
+        post: operation({
+          tag: "admin-actions",
+          summary: "Mint an API key for a product system",
+          description: [
+            "The plaintext is in this response and nowhere else, ever: only its",
+            "SHA-256 is stored. A `client` key ships inside an app and may call",
+            "`/members`, `/attribution/claim` and the click log; a `server` key is",
+            "held by the product's backend and may additionally call `/payments`.",
+            "The same can be done offline with `scripts/mint-api-key.mts`.",
+          ].join("\n"),
+          roles: "SUPER_ADMIN",
+          parameters: [pathParam("id", "Product id.")],
+          requestBody: body(ref("ApiKeyMintRequest")),
+          responses: {
+            "201": ok200(
+              {
+                type: "object",
+                required: ["key", "plaintext"],
+                properties: {
+                  key: { allOf: [ref("ApiKey"), { type: "object", properties: { product: { type: "string", description: "Product slug." } } }] },
+                  plaintext: { type: "string", examples: ["ck_live_7k2m9qx4w3e8r5t6y1u0p9a2s3d4f5g6"], description: "Shown once." },
+                },
+              },
+              "Minted.",
+            ),
+            "404": errorResponse("Unknown product."),
+          },
+        }),
+      },
+      "/admin/products/{id}/api-keys/{keyId}": {
+        delete: operation({
+          tag: "admin-actions",
+          summary: "Revoke an API key",
+          description: "The row stays, stamped, for the audit trail; the next request with the key gets 401.",
+          roles: "SUPER_ADMIN",
+          parameters: [pathParam("id", "Product id."), pathParam("keyId", "Key id.")],
+          responses: {
+            "200": ok200({ type: "object", required: ["revoked"], properties: { revoked: { type: "boolean" }, key: ref("ApiKey") } }),
+            "404": errorResponse("No active key with that id for this product."),
+          },
+        }),
+      },
       "/admin/local-bodies/{id}": {
         patch: operation({
           tag: "admin-actions",
@@ -1613,13 +2007,21 @@ export function buildSpec(serverUrl: string): Json {
             "dispute from data. A losing claim receives `heldBy` so the caller can see",
             "who holds it without a second request.",
             "",
-            "Called by a product system, not by an agent or a browser.",
+            "Called by a product system with its API key (client or server), or by a",
+            "SUPER_ADMIN naming `productSlug`. The customer reference is stored as",
+            "`<product slug>:<customerExternalRef>`, so send the app's own user id —",
+            "the same value sent to `POST /members` for that user.",
+            "",
+            "The code may be a seller's `CA-…` or a member's `RF-…`; both live in one",
+            "namespace. A member cannot claim themselves (`SELF_REFERRAL`). On a FREE",
+            "product a member earns one diamond when the claim is accepted; on a PAID",
+            "product nothing is earned until the friend pays (`POST /payments`).",
           ].join("\n"),
-          roles: "SUPER_ADMIN (service credential)",
+          roles: "API key (client or server), or SUPER_ADMIN",
           requestBody: body(ref("AttributionClaimRequest")),
           responses: {
-            "200": ok200({ type: "object" }, "Not attributed. See `reason`: UNKNOWN_CODE, AGENT_NOT_APPROVED or ALREADY_ATTRIBUTED."),
-            "201": ok200({ type: "object" }, "Attribution locked to this agent."),
+            "200": ok200(ref("AttributionResult"), "Not attributed. See `reason`: UNKNOWN_CODE, AGENT_NOT_APPROVED, SELF_REFERRAL or ALREADY_ATTRIBUTED."),
+            "201": ok200(ref("AttributionResult"), "Attribution locked to this code."),
           },
         }),
       },
@@ -1632,15 +2034,137 @@ export function buildSpec(serverUrl: string): Json {
             "unique as a second line of defence, and the arithmetic is re-checked by a",
             "database constraint so a bug here cannot write an inconsistent ledger row.",
             "",
-            "Commission is 10% of the amount net of GST and gateway charges, less 2%",
-            "TDS under Section 194H. It accrues only for an APPROVED agent holding the",
-            "attribution; an unattributed payment is recorded with",
-            "`commissionAccrued: false` rather than rejected.",
+            "Commission is a percentage of the amount net of GST and gateway charges,",
+            "less 2% TDS under Section 194H. The percentage depends on who holds the",
+            "attribution: a SELLER earns the product's `sellerRateBps` (10% to 30%),",
+            "a USER-tier member earns the product's `userRateBps` (default 1%). It",
+            "accrues only for an APPROVED referrer; an unattributed payment is recorded",
+            "with `commissionAccrued: false` rather than rejected.",
+            "",
+            "Only a SERVER key may call this — a client key ships inside an app. The",
+            "customer reference is namespaced exactly as in `/attribution/claim`.",
           ].join("\n"),
-          roles: "SUPER_ADMIN (service credential)",
+          roles: "API key (server only), or SUPER_ADMIN",
           parameters: [IDEMPOTENCY_HEADER],
           requestBody: body(ref("PaymentRequest")),
-          responses: { "201": ok200({ type: "object" }) },
+          responses: {
+            "200": ok200(ref("PaymentResult"), "Already recorded under this externalRef; nothing changed."),
+            "201": ok200(ref("PaymentResult"), "Recorded. `commissionAccrued` says whether a commission row was written."),
+            "404": errorResponse("Unknown customer reference — call /attribution/claim first, or the customer joined with no code."),
+          },
+        }),
+      },
+
+      /* ---------------------------------------------------------- members */
+      "/members": {
+        post: operation({
+          tag: "referral",
+          summary: "Find or create a user's invite code",
+          description: [
+            "Call this when a user signs in to your app. The first call creates the",
+            "member and their immutable `RF-…` code; every later call returns the same",
+            "code with fresh stats. Idempotent, so calling it on every sign-in is the",
+            "intended usage.",
+            "",
+            "`externalRef` is your own user id. It is namespaced per product, and it is",
+            "the same value you send as `customerExternalRef` when this user joins",
+            "through somebody else's code.",
+          ].join("\n"),
+          roles: "API key (client or server)",
+          requestBody: body(ref("MemberRequest")),
+          responses: {
+            "200": ok200(ref("Member"), "Existing member."),
+            "201": ok200(ref("Member"), "Member created."),
+          },
+        }),
+      },
+      "/members/{externalRef}": {
+        get: operation({
+          tag: "referral",
+          summary: "A member's code and stats",
+          description: "The same shape as POST /members, for refreshing stats without re-sending the profile. 404 until POST /members has been called for that user.",
+          roles: "API key (client or server)",
+          parameters: [
+            { name: "externalRef", in: "path", required: true, schema: { type: "string", maxLength: 120 }, description: "Your own user id, as sent to POST /members." },
+          ],
+          responses: {
+            "200": ok200(ref("Member")),
+            "404": errorResponse("No member with that reference."),
+          },
+        }),
+      },
+
+      /* ----------------------------------------------------------- public */
+      "/public/leaderboard": {
+        get: operation({
+          tag: "referral",
+          summary: "Public leaderboard of referral earnings",
+          description: [
+            "Who has earned the most from referrals, both tiers, across every app or",
+            "filtered to one. Names are masked to first name and last initial and",
+            "nothing identifying is returned. Cached for 60 seconds.",
+          ].join("\n"),
+          security: false,
+          parameters: [
+            queryParam("app", { type: "string" }, "Product slug. Omit for every product."),
+            queryParam("limit", { type: "integer", minimum: 1, maximum: 100, default: 50 }, "Rows to return."),
+          ],
+          responses: { "200": ok200(ref("Leaderboard")) },
+        }),
+      },
+      "/public/products": {
+        get: operation({
+          tag: "referral",
+          summary: "Active products and what a referrer earns on each",
+          description: "Public. Used by the rewards page filter and by the /r/{code} redirect on the website.",
+          security: false,
+          responses: {
+            "200": ok200({ type: "object", required: ["data"], properties: { data: { type: "array", items: ref("PublicProduct") } } }),
+          },
+        }),
+      },
+      "/public/products/{slug}": {
+        get: operation({
+          tag: "referral",
+          summary: "One product's public referral facts",
+          description: "Free or paid, the rates, and the web and Play URLs a referral link resolves to.",
+          security: false,
+          parameters: [
+            { name: "slug", in: "path", required: true, schema: { type: "string", pattern: "^[a-z0-9-]{1,80}$" }, description: "Product slug." },
+          ],
+          responses: {
+            "200": ok200(ref("PublicProduct")),
+            "404": errorResponse("Unknown or inactive product."),
+          },
+        }),
+      },
+      "/public/qr": {
+        get: operation({
+          tag: "referral",
+          summary: "QR image for an invite link",
+          description: "Encodes `https://<web>/r/{code}?app={app}`. Public and cacheable; no app ships a QR library.",
+          security: false,
+          parameters: [
+            queryParam("code", { type: "string", pattern: "^[A-Z0-9-]{3,40}$" }, "The invite code.", true),
+            queryParam("app", { type: "string", pattern: "^[a-z0-9-]{1,80}$" }, "Product slug.", true),
+            queryParam("format", { type: "string", enum: ["png", "svg"], default: "png" }, "Image format."),
+          ],
+          responses: {
+            "200": {
+              description: "The QR image.",
+              content: { "image/png": { schema: { type: "string", format: "binary" } }, "image/svg+xml": { schema: { type: "string" } } },
+            },
+          },
+        }),
+      },
+      "/public/referral-clicks": {
+        post: operation({
+          tag: "referral",
+          summary: "Log a click on an invite link",
+          description: "Fired by the website's /r/{code} redirect before it sends the visitor on. No user id and no full IP is stored. Returns 202; never wait on it.",
+          security: false,
+          requestBody: body(ref("ReferralClickRequest")),
+          responses: { "202": ok200({ type: "object", properties: { accepted: { type: "boolean" } } }, "Accepted.") },
         }),
       },
 

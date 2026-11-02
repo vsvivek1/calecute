@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --port 3001",
     "build": "npm run openapi && npm run postman && next build",
+    "vercel-build": "sh scripts/vercel-build.sh",
     "start": "next start --port 3001",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
@@ -18,7 +19,9 @@
     "verify": "npm run typecheck && npm run openapi && node scripts/check-spec-coverage.mjs && npm run db:verify",
     "geo:convert": "node scripts/convert-lgd.mjs",
     "dev:session": "node --env-file-if-exists=.env.local scripts/dev-session.mjs",
-    "postman": "node scripts/build-postman.mjs"
+    "postman": "node scripts/build-postman.mjs",
+    "test": "node --test \"tests/**/*.test.mts\"",
+    "mint-api-key": "node --env-file-if-exists=.env.local scripts/mint-api-key.mts"
   },
   "dependencies": {
     "drizzle-orm": "^0.44.6",

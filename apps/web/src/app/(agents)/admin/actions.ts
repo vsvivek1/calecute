@@ -297,3 +297,62 @@ export async function messageAgents(
     "Sent.",
   );
 }
+
+/* ------------------------------------------------------ product API keys */
+
+interface MintedKey {
+  key: { id: number; kind: string; label: string; product: string };
+  plaintext: string;
+}
+
+/**
+ * Mints a key for a product. The plaintext comes back once, in the success
+ * message, and is never stored or shown again — the API keeps only its hash.
+ */
+export async function mintProductApiKey(
+  _previous: ActionState,
+  data: FormData,
+): Promise<ActionState> {
+  const productId = id(data, "productId");
+  const kind = text(data, "kind");
+  const label = text(data, "label");
+  if (!productId) return { error: "Missing product id." };
+  if (kind !== "client" && kind !== "server") return { error: "Pick a key type." };
+  if (!label) return { error: "Give the key a label." };
+
+  const token = await currentAccessToken();
+  if (!token) return { error: "Your session expired. Sign in again." };
+
+  let minted: MintedKey;
+  try {
+    minted = await api.post<MintedKey>(
+      `/admin/products/${productId}/api-keys`,
+      { kind, label },
+      { token },
+    );
+  } catch (error) {
+    if (isRedirect(error)) throw error;
+    if (error instanceof ApiError) return { error: error.message, code: error.code };
+    throw error;
+  }
+
+  revalidatePath("/admin/products");
+  return {
+    ok: `${minted.key.product} ${kind} key (copy it now, it is shown once): ${minted.plaintext}`,
+  };
+}
+
+export async function revokeProductApiKey(
+  _previous: ActionState,
+  data: FormData,
+): Promise<ActionState> {
+  const productId = id(data, "productId");
+  const keyId = id(data, "keyId");
+  if (!productId || !keyId) return { error: "Missing product or key id." };
+  return run(
+    "/admin/products",
+    (token) =>
+      api.delete(`/admin/products/${productId}/api-keys/${keyId}`, { token }),
+    "Key revoked. Apps still using it get 401 from now on.",
+  );
+}

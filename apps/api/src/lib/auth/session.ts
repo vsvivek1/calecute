@@ -55,10 +55,15 @@ export async function establishSession(
     let user = bySub[0];
 
     if (!user) {
+      // Product users (external_ref set) are never claimed by a Google
+      // sign-in: the same address in two apps is two rows, and neither is
+      // this person's account here.
       const byEmail = await tx
         .select()
         .from(users)
-        .where(raw`lower(${users.email}) = ${identity.email}`)
+        .where(
+          raw`lower(${users.email}) = ${identity.email} AND ${users.externalRef} IS NULL`,
+        )
         .limit(1);
 
       if (byEmail[0]) {
@@ -132,7 +137,7 @@ export async function establishSession(
       tokens,
       user: {
         id: user.id,
-        email: user.email,
+        email: user.email ?? "",
         name: user.name,
         role: user.role,
         pictureUrl: user.pictureUrl,
@@ -251,7 +256,7 @@ export async function rotateSession(
       tokens,
       user: {
         id: user.id,
-        email: user.email,
+        email: user.email ?? "",
         name: user.name,
         role: user.role,
         pictureUrl: user.pictureUrl,

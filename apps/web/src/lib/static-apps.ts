@@ -9,6 +9,8 @@ export type StaticApp = {
   tagline: string;
   href: string;
   image: string;
+  /** Google Play listing, shown under the tile on /apps. */
+  playUrl?: string;
 };
 
 export const STATIC_APPS: StaticApp[] = [
@@ -53,6 +55,20 @@ export const STATIC_APPS: StaticApp[] = [
     tagline: "Jathakam, porutham and muhurtham with classical sources",
     href: "/jathakam",
     image: "/jathakam/assets/icon-192.png",
+  },
+  {
+    name: "Ramayanam Wallpapers",
+    tagline: "A Ramayana painting and its story as your wallpaper, a new one every day",
+    href: "/ramayanam",
+    image: "/ramayanam/assets/icon-192.png",
+    playUrl: "https://play.google.com/store/apps/details?id=com.calecutech.ramayanam",
+  },
+  {
+    name: "Bhagavatham Wallpapers",
+    tagline: "A Bhagavatam painting and its story as your wallpaper, a new one every day",
+    href: "/bhagavatham",
+    image: "/bhagavatham/assets/icon-192.png",
+    playUrl: "https://play.google.com/store/apps/details?id=com.calecutech.bhagavatham",
   },
   {
     name: "Muhurtham Clock",

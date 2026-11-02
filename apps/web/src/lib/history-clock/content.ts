@@ -17,6 +17,7 @@ export const historyClock = {
   tagline: "Spin the clock. Watch empires rise and fall.",
   appPath: "/history-clock/app",
   quizPath: "/history-clock/quiz",
+  supportPath: "/history-clock/support",
 } as const;
 
 export const legalEntity = `${company.legalName}, ${company.jurisdiction}`;

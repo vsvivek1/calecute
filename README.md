@@ -14,6 +14,10 @@ module and holds no connection string, so it can be replaced without touching
 the API — and an Android app can be written against the same endpoints with no
 API change.
 
+Also in this repository: **Calecutech PTA**, a parent-teacher app (attendance,
+fees, homework, grades, complaints, quizzes) with a web app in `apps/pta` and
+a Flutter app in `apps/pta_mobile`. See [apps/pta/README.md](apps/pta/README.md).
+
 ---
 
 ## Before this can go live

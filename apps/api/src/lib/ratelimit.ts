@@ -44,6 +44,10 @@ export const RULES = {
   write: { limit: 60, windowSeconds: 60 },
   /** Analytics beacons. Generous: one page view fires several. */
   analytics: { limit: 240, windowSeconds: 60 },
+  /** A product system calling with its API key. Per key, not per address. */
+  service: { limit: 600, windowSeconds: 60 },
+  /** Public referral reads: leaderboard, QR, product lookup. */
+  referralRead: { limit: 120, windowSeconds: 60 },
 } as const satisfies Record<string, RateLimitRule>;
 
 export async function consume(

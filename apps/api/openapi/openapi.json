@@ -3,7 +3,7 @@
   "info": {
     "title": "Calecute Technologies — Commission Agent Programme API",
     "version": "1.0.0",
-    "description": "REST API for the Kerala commission agent programme.\n\n**This document is the contract.** Two clients consume it — the web frontend\nat calecutech.com and an Android app — and neither may depend on behaviour\nthat is not described here. The web frontend generates its TypeScript types\nfrom this file.\n\n## Authentication\n\nGoogle Sign-In only; there are no passwords and no OTP login. A client\nobtains a Google credential (an ID token natively, or an authorization code\non the web), posts it to `/auth/google`, and receives our own JWT pair. A\nGoogle token is never accepted as a session.\n\nSend the access token as `Authorization: Bearer <token>`. It is stateless:\nevery endpoint authorises from its claims. Refresh tokens are single-use and\nrotate; presenting a rotated one revokes all sessions for that user.\n\n## Authorisation\n\nRoles live on the user row: `AGENT`, `DISTRICT_ADMIN`, `SUPER_ADMIN`. Call\n`GET /me` and render whatever role comes back — do not infer it from an\nemail address or any client-side list.\n\nDistrict admins are scoped to assigned districts, and that scoping is\nenforced by Postgres row-level security rather than by query filters. A\nmodified client asking for another district's rows receives an empty set,\nnot an error.\n\n## Conventions\n\n- Errors always use the `Error` envelope. Branch on `error.code`.\n- Every list endpoint is cursor paginated. Offsets are not supported.\n- All money is integer **paise**. Never a float.\n- Geography is referenced by stable numeric id, never by name.\n- Endpoints that write money require an `Idempotency-Key` header.\n- Rate limits are reported in `RateLimit-Limit`, `RateLimit-Remaining` and\n  `RateLimit-Reset`; a 429 also carries `Retry-After`.",
+    "description": "REST API for the Kerala commission agent programme.\n\n**This document is the contract.** Two clients consume it — the web frontend\nat calecutech.com and an Android app — and neither may depend on behaviour\nthat is not described here. The web frontend generates its TypeScript types\nfrom this file.\n\n## Authentication\n\nGoogle Sign-In only; there are no passwords and no OTP login. A client\nobtains a Google credential (an ID token natively, or an authorization code\non the web), posts it to `/auth/google`, and receives our own JWT pair. A\nGoogle token is never accepted as a session.\n\nSend the access token as `Authorization: Bearer <token>`. It is stateless:\nevery endpoint authorises from its claims. Refresh tokens are single-use and\nrotate; presenting a rotated one revokes all sessions for that user.\n\n## Authorisation\n\nRoles live on the user row: `AGENT`, `DISTRICT_ADMIN`, `SUPER_ADMIN`. Call\n`GET /me` and render whatever role comes back — do not infer it from an\nemail address or any client-side list.\n\nDistrict admins are scoped to assigned districts, and that scoping is\nenforced by Postgres row-level security rather than by query filters. A\nmodified client asking for another district's rows receives an empty set,\nnot an error.\n\n## Product systems (API keys)\n\nA Calecute app — the thing a referred customer actually joins — calls the\nreferral endpoints with an API key in `X-Api-Key`, not a user token. A\n`client` key (`ck_live_…`) ships inside an app and may register members,\nclaim attributions and log clicks; a `server` key (`sk_live_…`) is held\nby the product's backend and may additionally record payments. Keys are\nminted by a SUPER_ADMIN at `POST /admin/products/{id}/api-keys` and scope\nevery call to that one product. See docs/referral-architecture.md.\n\n## Conventions\n\n- Errors always use the `Error` envelope. Branch on `error.code`.\n- Every list endpoint is cursor paginated. Offsets are not supported.\n- All money is integer **paise**. Never a float.\n- Geography is referenced by stable numeric id, never by name.\n- Endpoints that write money require an `Idempotency-Key` header.\n- Rate limits are reported in `RateLimit-Limit`, `RateLimit-Remaining` and\n  `RateLimit-Reset`; a 429 also carries `Retry-After`.",
     "contact": {
       "name": "Calecute Technologies",
       "email": "info@calecutech.com"
@@ -58,7 +58,11 @@
     },
     {
       "name": "attribution",
-      "description": "Referral attribution. First code wins, permanently."
+      "description": "Referral attribution and payments, called by product systems. First code wins, permanently."
+    },
+    {
+      "name": "referral",
+      "description": "Invite codes for every app user, the public leaderboard, QR and click logging."
     },
     {
       "name": "meta",
@@ -77,6 +81,12 @@
         "scheme": "bearer",
         "bearerFormat": "JWT",
         "description": "Access token from POST /auth/google or POST /auth/refresh."
+      },
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Api-Key",
+        "description": "A product's `ck_live_…` (client) or `sk_live_…` (server) key, from POST /admin/products/{id}/api-keys or scripts/mint-api-key.mts."
       }
     },
     "schemas": {
@@ -358,11 +368,72 @@
       },
       "CommissionTerms": {
         "type": "object",
-        "description": "The published commission terms, served so no client hardcodes them.",
+        "description": "The commission terms that apply to this agent, served so no client hardcodes them. The rate is per product: a SELLER earns the product's seller rate (10% to 30%), a USER-tier member earns the product's member rate (default 1%) on paid products and diamonds on free ones.",
+        "required": [
+          "tier",
+          "rateBps",
+          "rates",
+          "tdsRateBps",
+          "tdsSection",
+          "basis",
+          "payoutFrequency"
+        ],
         "properties": {
+          "tier": {
+            "type": "string",
+            "enum": [
+              "USER",
+              "SELLER"
+            ]
+          },
           "rateBps": {
             "type": "integer",
-            "description": "1000 = 10% of every payment."
+            "description": "The lowest cash rate that applies to this agent across active products. See `rates`."
+          },
+          "maxRateBps": {
+            "type": "integer",
+            "description": "The highest."
+          },
+          "rates": {
+            "type": "array",
+            "description": "One entry per active product.",
+            "items": {
+              "type": "object",
+              "required": [
+                "productId",
+                "slug",
+                "nameEn",
+                "isFree",
+                "reward",
+                "rateBps"
+              ],
+              "properties": {
+                "productId": {
+                  "type": "integer"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "nameEn": {
+                  "type": "string"
+                },
+                "isFree": {
+                  "type": "boolean"
+                },
+                "reward": {
+                  "type": "string",
+                  "enum": [
+                    "CASH",
+                    "DIAMOND"
+                  ],
+                  "description": "DIAMOND only for a USER-tier agent on a free product."
+                },
+                "rateBps": {
+                  "type": "integer",
+                  "description": "0 when the reward is DIAMOND."
+                }
+              }
+            }
           },
           "tdsRateBps": {
             "type": "integer",
@@ -1348,16 +1419,30 @@
         "type": "object",
         "properties": {
           "customerExternalRef": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "The customer's id in the calling app — the same value the app sends as `externalRef` to POST /members for that user. Stored namespaced as `<product slug>:<customerExternalRef>`."
           },
           "customerName": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
           },
           "agentCode": {
-            "type": "string"
+            "type": "string",
+            "maxLength": 40,
+            "description": "A seller's `CA-…` code or a member's `RF-…` invite code. Case-insensitive."
           },
           "source": {
-            "type": "string"
+            "description": "Where the code came from: \"referral_link\", \"typed\", \"qr\", \"install_referrer\".",
+            "type": "string",
+            "maxLength": 40
+          },
+          "productSlug": {
+            "description": "Only for a SUPER_ADMIN caller. A service key's product is implied and this field is ignored.",
+            "type": "string",
+            "maxLength": 80
           }
         },
         "required": [
@@ -1366,22 +1451,97 @@
           "agentCode"
         ]
       },
+      "AttributionResult": {
+        "type": "object",
+        "required": [
+          "attributed"
+        ],
+        "properties": {
+          "attributed": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "UNKNOWN_CODE",
+              "AGENT_NOT_APPROVED",
+              "SELF_REFERRAL",
+              "ALREADY_ATTRIBUTED"
+            ],
+            "description": "Present when `attributed` is false."
+          },
+          "agentCode": {
+            "type": "string",
+            "description": "The code that now holds the customer."
+          },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "USER",
+              "SELLER"
+            ]
+          },
+          "customerId": {
+            "type": "integer"
+          },
+          "diamondAwarded": {
+            "type": "boolean",
+            "description": "True when a USER-tier member just earned a diamond for this join (free product)."
+          },
+          "agentStatus": {
+            "type": "string"
+          },
+          "heldBy": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "On ALREADY_ATTRIBUTED: the code that won."
+          },
+          "heldSince": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
       "PaymentRequest": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "externalRef": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "The payment's id in the product system. Unique."
           },
           "customerExternalRef": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "The customer's id in the calling app, exactly as sent to /attribution/claim."
           },
           "productId": {
+            "description": "Only for a SUPER_ADMIN caller; ignored with a service key.",
             "anyOf": [
               {
                 "type": "integer",
                 "minimum": -9007199254740991,
                 "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "productSlug": {
+            "description": "Only for a SUPER_ADMIN caller; ignored with a service key.",
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
               },
               {
                 "type": "null"
@@ -1417,6 +1577,85 @@
           "grossPaise",
           "paidAt"
         ]
+      },
+      "PaymentResult": {
+        "type": "object",
+        "required": [
+          "recorded",
+          "replayed"
+        ],
+        "properties": {
+          "recorded": {
+            "type": "boolean"
+          },
+          "replayed": {
+            "type": "boolean",
+            "description": "True when this response was replayed from the Idempotency-Key."
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "PAYMENT_ALREADY_RECORDED",
+              "NO_ATTRIBUTION",
+              "AGENT_NOT_APPROVED",
+              "AGENT_NOT_PLACED"
+            ],
+            "description": "Why no commission accrued, when none did."
+          },
+          "externalRef": {
+            "type": "string"
+          },
+          "paymentId": {
+            "type": "integer"
+          },
+          "commissionAccrued": {
+            "type": "boolean"
+          },
+          "commissionId": {
+            "type": "integer"
+          },
+          "agentCode": {
+            "type": "string"
+          },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "USER",
+              "SELLER"
+            ]
+          },
+          "product": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Product slug."
+          },
+          "breakdown": {
+            "type": "object",
+            "properties": {
+              "basePaise": {
+                "type": "integer"
+              },
+              "rateBps": {
+                "type": "integer",
+                "description": "The product's seller or member rate, whichever applied."
+              },
+              "grossCommissionPaise": {
+                "type": "integer"
+              },
+              "tdsRateBps": {
+                "type": "integer"
+              },
+              "tdsPaise": {
+                "type": "integer"
+              },
+              "netCommissionPaise": {
+                "type": "integer"
+              }
+            }
+          }
+        }
       },
       "EventRequest": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1469,6 +1708,490 @@
         "required": [
           "sessionId",
           "event"
+        ]
+      },
+      "MemberRequest": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "externalRef": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "The app's own user id. Namespaced server-side as `<product slug>:<externalRef>`."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Display name. Masked to first name and last initial on the public leaderboard."
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "format": "email",
+                "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pictureUrl": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500,
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "externalRef",
+          "name"
+        ]
+      },
+      "MemberStats": {
+        "type": "object",
+        "required": [
+          "friendsJoined",
+          "payingFriends",
+          "diamonds",
+          "earnings"
+        ],
+        "properties": {
+          "friendsJoined": {
+            "type": "integer",
+            "description": "Customers attributed to this code, across every product."
+          },
+          "payingFriends": {
+            "type": "integer",
+            "description": "Of those, how many have paid at least once."
+          },
+          "diamonds": {
+            "type": "integer",
+            "description": "Recognition for friends who joined free products. Never money."
+          },
+          "earnings": {
+            "type": "object",
+            "required": [
+              "pendingPaise",
+              "paidPaise",
+              "lifetimePaise",
+              "currency"
+            ],
+            "properties": {
+              "pendingPaise": {
+                "type": "integer"
+              },
+              "paidPaise": {
+                "type": "integer"
+              },
+              "lifetimePaise": {
+                "type": "integer"
+              },
+              "currency": {
+                "type": "string",
+                "enum": [
+                  "INR"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "Member": {
+        "type": "object",
+        "required": [
+          "code",
+          "link",
+          "whatsappShareUrl",
+          "qrUrl",
+          "tier",
+          "status",
+          "stats",
+          "product"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "examples": [
+              "RF-7K2M9Q"
+            ],
+            "description": "The member's invite code. Immutable."
+          },
+          "link": {
+            "type": "string",
+            "examples": [
+              "https://calecutech.com/r/RF-7K2M9Q?app=quizkerala"
+            ],
+            "description": "Share this. The website resolves it to the product's web URL or Play listing with the code attached."
+          },
+          "whatsappShareUrl": {
+            "type": "string",
+            "description": "A wa.me link with a pre-written message, Malayalam first."
+          },
+          "qrUrl": {
+            "type": "string",
+            "description": "Absolute URL of a PNG QR encoding `link`. Append `&format=svg` for SVG."
+          },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "USER"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "description": "APPROVED unless an administrator suspended the member."
+          },
+          "stats": {
+            "$ref": "#/components/schemas/MemberStats"
+          },
+          "product": {
+            "type": "object",
+            "required": [
+              "slug",
+              "name",
+              "isFree",
+              "userRateBps"
+            ],
+            "properties": {
+              "slug": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "isFree": {
+                "type": "boolean",
+                "description": "True: friends who join earn the member a diamond. False: 1% of what friends pay."
+              },
+              "userRateBps": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "PublicProduct": {
+        "type": "object",
+        "required": [
+          "id",
+          "slug",
+          "nameEn",
+          "nameMl",
+          "isFree",
+          "sellerRateBps",
+          "userRateBps"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "nameEn": {
+            "type": "string"
+          },
+          "nameMl": {
+            "type": "string"
+          },
+          "summaryEn": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "isFree": {
+            "type": "boolean"
+          },
+          "feePaise": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Null means free."
+          },
+          "sellerRateBps": {
+            "type": "integer",
+            "description": "1000..3000."
+          },
+          "userRateBps": {
+            "type": "integer"
+          },
+          "webUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "playUrl": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "androidPackage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "AdminProduct": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PublicProduct"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "active": {
+                "type": "boolean"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        ]
+      },
+      "ProductSettingsRequest": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "feePaise": {
+            "description": "The product's fee in paise. `null` makes it FREE: members then earn diamonds instead of cash.",
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sellerRateBps": {
+            "description": "What a seller earns: 1000 (10%) to 3000 (30%).",
+            "type": "integer",
+            "minimum": 1000,
+            "maximum": 3000
+          },
+          "userRateBps": {
+            "description": "What a member earns on a paid product. Default 100 (1%).",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "webUrl": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "playUrl": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "androidPackage": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "active": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ApiKey": {
+        "type": "object",
+        "required": [
+          "id",
+          "productId",
+          "kind",
+          "label",
+          "createdAt",
+          "revokedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "productId": {
+            "type": "integer"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "client",
+              "server"
+            ]
+          },
+          "label": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "revokedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "ApiKeyMintRequest": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "client",
+              "server"
+            ],
+            "description": "`client` ships inside an app: members, claims, clicks. `server` is held by the product backend and may also record payments."
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "Where this key lives, e.g. \"Android 2.4\" or \"billing worker\"."
+          }
+        },
+        "required": [
+          "kind",
+          "label"
+        ]
+      },
+      "LeaderboardRow": {
+        "type": "object",
+        "required": [
+          "rank",
+          "displayName",
+          "tier",
+          "diamonds",
+          "friendsJoined",
+          "payingFriends",
+          "earnedNetPaise"
+        ],
+        "properties": {
+          "rank": {
+            "type": "integer"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "Masked: first name and last initial, e.g. \"Vivek S.\""
+          },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "USER",
+              "SELLER"
+            ]
+          },
+          "diamonds": {
+            "type": "integer"
+          },
+          "friendsJoined": {
+            "type": "integer"
+          },
+          "payingFriends": {
+            "type": "integer"
+          },
+          "earnedNetPaise": {
+            "type": "integer",
+            "description": "Net commission not cancelled or forfeited, in paise."
+          }
+        }
+      },
+      "Leaderboard": {
+        "type": "object",
+        "required": [
+          "app",
+          "limit",
+          "currency",
+          "rows"
+        ],
+        "properties": {
+          "app": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The product filter applied, or null for every product."
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "INR"
+            ]
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LeaderboardRow"
+            }
+          }
+        }
+      },
+      "ReferralClickRequest": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 40
+          },
+          "app": {
+            "description": "Product slug, when the link named one.",
+            "type": "string",
+            "maxLength": 80
+          },
+          "source": {
+            "description": "e.g. \"web\", \"android\".",
+            "type": "string",
+            "maxLength": 40
+          }
+        },
+        "required": [
+          "code"
         ]
       }
     }
@@ -3503,7 +4226,7 @@
           "agent"
         ],
         "summary": "Earnings summary and commission ledger",
-        "description": "Pending, paid and lifetime totals, plus the individual commission rows behind them so an agent can see which payment each came from. The published terms are returned alongside, so no client hardcodes the 10% or the 2% TDS.\n\n**Requires role:** AGENT",
+        "description": "Pending, paid and lifetime totals, plus the individual commission rows behind them so an agent can see which payment each came from. The terms that apply to this agent are returned alongside as `terms` (see CommissionTerms): the rate is per product and per tier, so no client hardcodes a percentage or the 2% TDS.\n\n**Requires role:** AGENT",
         "parameters": [
           {
             "name": "status",
@@ -3569,7 +4292,104 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "type": "object",
+                  "required": [
+                    "summary",
+                    "data",
+                    "pageInfo",
+                    "terms"
+                  ],
+                  "properties": {
+                    "summary": {
+                      "$ref": "#/components/schemas/EarningsSummary"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "accruedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "ACCRUED",
+                              "APPROVED",
+                              "PAID",
+                              "CANCELLED",
+                              "FORFEITED"
+                            ]
+                          },
+                          "basePaise": {
+                            "type": "integer"
+                          },
+                          "rateBps": {
+                            "type": "integer"
+                          },
+                          "tier": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "enum": [
+                              "USER",
+                              "SELLER",
+                              null
+                            ]
+                          },
+                          "productSlug": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "productName": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "grossCommissionPaise": {
+                            "type": "integer"
+                          },
+                          "tdsPaise": {
+                            "type": "integer"
+                          },
+                          "netCommissionPaise": {
+                            "type": "integer"
+                          },
+                          "financialYear": {
+                            "type": "string"
+                          },
+                          "paidAt": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "format": "date-time"
+                          },
+                          "paymentPaidAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "customerName": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "pageInfo": {
+                      "$ref": "#/components/schemas/PageInfo"
+                    },
+                    "terms": {
+                      "$ref": "#/components/schemas/CommissionTerms"
+                    }
+                  }
                 }
               }
             }
@@ -5568,6 +6388,535 @@
         }
       }
     },
+    "/admin/products/{id}": {
+      "patch": {
+        "tags": [
+          "admin-actions"
+        ],
+        "summary": "Set a product's fee, referral rates and links",
+        "description": "`feePaise: null` makes the product FREE: a member's friends then earn them\ndiamonds rather than cash. `sellerRateBps` is the seller band, 1000 to\n3000. `userRateBps` is what a member earns on a paid product, default 100.\n`webUrl` and `playUrl` are where `/r/{code}?app=slug` sends a visitor.\n\nSUPER_ADMIN only: the rates are a company-wide decision, and the products\nwrite policy admits nobody else.\n\n**Requires role:** SUPER_ADMIN",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Product id."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductSettingsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {
+              "RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests allowed per window."
+              },
+              "RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests left in this window."
+              },
+              "RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the window resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "product"
+                  ],
+                  "properties": {
+                    "product": {
+                      "$ref": "#/components/schemas/AdminProduct"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed, or a geography id was not recognised.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed or expired access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not permitted, or outside district scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown product.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded. See RateLimit-* and Retry-After headers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error. The requestId identifies it in the logs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/products/{id}/api-keys": {
+      "get": {
+        "tags": [
+          "admin-actions"
+        ],
+        "summary": "List a product's API keys",
+        "description": "Never the hash, never the plaintext. Revoked keys are listed with `revokedAt` set.\n\n**Requires role:** SUPER_ADMIN",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Product id."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {
+              "RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests allowed per window."
+              },
+              "RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests left in this window."
+              },
+              "RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the window resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ApiKey"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed, or a geography id was not recognised.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed or expired access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not permitted, or outside district scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded. See RateLimit-* and Retry-After headers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error. The requestId identifies it in the logs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "admin-actions"
+        ],
+        "summary": "Mint an API key for a product system",
+        "description": "The plaintext is in this response and nowhere else, ever: only its\nSHA-256 is stored. A `client` key ships inside an app and may call\n`/members`, `/attribution/claim` and the click log; a `server` key is\nheld by the product's backend and may additionally call `/payments`.\nThe same can be done offline with `scripts/mint-api-key.mts`.\n\n**Requires role:** SUPER_ADMIN",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Product id."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApiKeyMintRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Minted.",
+            "headers": {
+              "RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests allowed per window."
+              },
+              "RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests left in this window."
+              },
+              "RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the window resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "key",
+                    "plaintext"
+                  ],
+                  "properties": {
+                    "key": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/ApiKey"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "product": {
+                              "type": "string",
+                              "description": "Product slug."
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "plaintext": {
+                      "type": "string",
+                      "examples": [
+                        "ck_live_7k2m9qx4w3e8r5t6y1u0p9a2s3d4f5g6"
+                      ],
+                      "description": "Shown once."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed, or a geography id was not recognised.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed or expired access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not permitted, or outside district scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown product.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded. See RateLimit-* and Retry-After headers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error. The requestId identifies it in the logs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/products/{id}/api-keys/{keyId}": {
+      "delete": {
+        "tags": [
+          "admin-actions"
+        ],
+        "summary": "Revoke an API key",
+        "description": "The row stays, stamped, for the audit trail; the next request with the key gets 401.\n\n**Requires role:** SUPER_ADMIN",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Product id."
+          },
+          {
+            "name": "keyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Key id."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {
+              "RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests allowed per window."
+              },
+              "RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests left in this window."
+              },
+              "RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the window resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "revoked"
+                  ],
+                  "properties": {
+                    "revoked": {
+                      "type": "boolean"
+                    },
+                    "key": {
+                      "$ref": "#/components/schemas/ApiKey"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed, or a geography id was not recognised.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed or expired access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not permitted, or outside district scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No active key with that id for this product.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded. See RateLimit-* and Retry-After headers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error. The requestId identifies it in the logs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/admin/local-bodies/{id}": {
       "patch": {
         "tags": [
@@ -7013,7 +8362,7 @@
           "attribution"
         ],
         "summary": "Claim a customer for an agent code",
-        "description": "**First code wins, permanently.** With ten agents per panchayat, two\nagents claiming the same customer is certain, so the rule is decided in\nthe schema: one attribution row per customer, a unique constraint on\n`customer_id`, and no UPDATE policy on the table at all. There is no\nreassignment path in this API.\n\nEvery attempt is recorded, accepted or rejected, with the code as\npresented and the reason. That log is the entire basis for settling a\ndispute from data. A losing claim receives `heldBy` so the caller can see\nwho holds it without a second request.\n\nCalled by a product system, not by an agent or a browser.\n\n**Requires role:** SUPER_ADMIN (service credential)",
+        "description": "**First code wins, permanently.** With ten agents per panchayat, two\nagents claiming the same customer is certain, so the rule is decided in\nthe schema: one attribution row per customer, a unique constraint on\n`customer_id`, and no UPDATE policy on the table at all. There is no\nreassignment path in this API.\n\nEvery attempt is recorded, accepted or rejected, with the code as\npresented and the reason. That log is the entire basis for settling a\ndispute from data. A losing claim receives `heldBy` so the caller can see\nwho holds it without a second request.\n\nCalled by a product system with its API key (client or server), or by a\nSUPER_ADMIN naming `productSlug`. The customer reference is stored as\n`<product slug>:<customerExternalRef>`, so send the app's own user id —\nthe same value sent to `POST /members` for that user.\n\nThe code may be a seller's `CA-…` or a member's `RF-…`; both live in one\nnamespace. A member cannot claim themselves (`SELF_REFERRAL`). On a FREE\nproduct a member earns one diamond when the claim is accepted; on a PAID\nproduct nothing is earned until the friend pays (`POST /payments`).\n\n**Requires role:** API key (client or server), or SUPER_ADMIN",
         "requestBody": {
           "required": true,
           "content": {
@@ -7026,7 +8375,7 @@
         },
         "responses": {
           "200": {
-            "description": "Not attributed. See `reason`: UNKNOWN_CODE, AGENT_NOT_APPROVED or ALREADY_ATTRIBUTED.",
+            "description": "Not attributed. See `reason`: UNKNOWN_CODE, AGENT_NOT_APPROVED, SELF_REFERRAL or ALREADY_ATTRIBUTED.",
             "headers": {
               "RateLimit-Limit": {
                 "schema": {
@@ -7050,13 +8399,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/AttributionResult"
                 }
               }
             }
           },
           "201": {
-            "description": "Attribution locked to this agent.",
+            "description": "Attribution locked to this code.",
             "headers": {
               "RateLimit-Limit": {
                 "schema": {
@@ -7080,7 +8429,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/AttributionResult"
                 }
               }
             }
@@ -7144,7 +8493,7 @@
           "attribution"
         ],
         "summary": "Record a customer payment and accrue commission",
-        "description": "Creates money, so: an `Idempotency-Key` is mandatory, `externalRef` is\nunique as a second line of defence, and the arithmetic is re-checked by a\ndatabase constraint so a bug here cannot write an inconsistent ledger row.\n\nCommission is 10% of the amount net of GST and gateway charges, less 2%\nTDS under Section 194H. It accrues only for an APPROVED agent holding the\nattribution; an unattributed payment is recorded with\n`commissionAccrued: false` rather than rejected.\n\n**Requires role:** SUPER_ADMIN (service credential)",
+        "description": "Creates money, so: an `Idempotency-Key` is mandatory, `externalRef` is\nunique as a second line of defence, and the arithmetic is re-checked by a\ndatabase constraint so a bug here cannot write an inconsistent ledger row.\n\nCommission is a percentage of the amount net of GST and gateway charges,\nless 2% TDS under Section 194H. The percentage depends on who holds the\nattribution: a SELLER earns the product's `sellerRateBps` (10% to 30%),\na USER-tier member earns the product's `userRateBps` (default 1%). It\naccrues only for an APPROVED referrer; an unattributed payment is recorded\nwith `commissionAccrued: false` rather than rejected.\n\nOnly a SERVER key may call this — a client key ships inside an app. The\ncustomer reference is namespaced exactly as in `/attribution/claim`.\n\n**Requires role:** API key (server only), or SUPER_ADMIN",
         "parameters": [
           {
             "name": "Idempotency-Key",
@@ -7169,8 +8518,8 @@
           }
         },
         "responses": {
-          "201": {
-            "description": "Success.",
+          "200": {
+            "description": "Already recorded under this externalRef; nothing changed.",
             "headers": {
               "RateLimit-Limit": {
                 "schema": {
@@ -7194,7 +8543,37 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/PaymentResult"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Recorded. `commissionAccrued` says whether a commission row was written.",
+            "headers": {
+              "RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests allowed per window."
+              },
+              "RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests left in this window."
+              },
+              "RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the window resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResult"
                 }
               }
             }
@@ -7221,6 +8600,713 @@
           },
           "403": {
             "description": "Authenticated but not permitted, or outside district scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown customer reference — call /attribution/claim first, or the customer joined with no code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded. See RateLimit-* and Retry-After headers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error. The requestId identifies it in the logs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/members": {
+      "post": {
+        "tags": [
+          "referral"
+        ],
+        "summary": "Find or create a user's invite code",
+        "description": "Call this when a user signs in to your app. The first call creates the\nmember and their immutable `RF-…` code; every later call returns the same\ncode with fresh stats. Idempotent, so calling it on every sign-in is the\nintended usage.\n\n`externalRef` is your own user id. It is namespaced per product, and it is\nthe same value you send as `customerExternalRef` when this user joins\nthrough somebody else's code.\n\n**Requires role:** API key (client or server)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MemberRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Existing member.",
+            "headers": {
+              "RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests allowed per window."
+              },
+              "RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests left in this window."
+              },
+              "RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the window resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Member created.",
+            "headers": {
+              "RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests allowed per window."
+              },
+              "RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests left in this window."
+              },
+              "RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the window resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed, or a geography id was not recognised.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed or expired access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not permitted, or outside district scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded. See RateLimit-* and Retry-After headers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error. The requestId identifies it in the logs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/members/{externalRef}": {
+      "get": {
+        "tags": [
+          "referral"
+        ],
+        "summary": "A member's code and stats",
+        "description": "The same shape as POST /members, for refreshing stats without re-sending the profile. 404 until POST /members has been called for that user.\n\n**Requires role:** API key (client or server)",
+        "parameters": [
+          {
+            "name": "externalRef",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 120
+            },
+            "description": "Your own user id, as sent to POST /members."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {
+              "RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests allowed per window."
+              },
+              "RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests left in this window."
+              },
+              "RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the window resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed, or a geography id was not recognised.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed or expired access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not permitted, or outside district scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No member with that reference.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded. See RateLimit-* and Retry-After headers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error. The requestId identifies it in the logs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/leaderboard": {
+      "get": {
+        "tags": [
+          "referral"
+        ],
+        "summary": "Public leaderboard of referral earnings",
+        "description": "Who has earned the most from referrals, both tiers, across every app or\nfiltered to one. Names are masked to first name and last initial and\nnothing identifying is returned. Cached for 60 seconds.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "app",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Product slug. Omit for every product."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            },
+            "description": "Rows to return."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {
+              "RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests allowed per window."
+              },
+              "RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests left in this window."
+              },
+              "RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the window resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Leaderboard"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed, or a geography id was not recognised.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded. See RateLimit-* and Retry-After headers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error. The requestId identifies it in the logs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/products": {
+      "get": {
+        "tags": [
+          "referral"
+        ],
+        "summary": "Active products and what a referrer earns on each",
+        "description": "Public. Used by the rewards page filter and by the /r/{code} redirect on the website.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {
+              "RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests allowed per window."
+              },
+              "RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests left in this window."
+              },
+              "RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the window resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PublicProduct"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed, or a geography id was not recognised.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded. See RateLimit-* and Retry-After headers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error. The requestId identifies it in the logs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/products/{slug}": {
+      "get": {
+        "tags": [
+          "referral"
+        ],
+        "summary": "One product's public referral facts",
+        "description": "Free or paid, the rates, and the web and Play URLs a referral link resolves to.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]{1,80}$"
+            },
+            "description": "Product slug."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {
+              "RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests allowed per window."
+              },
+              "RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests left in this window."
+              },
+              "RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the window resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicProduct"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed, or a geography id was not recognised.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or inactive product.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded. See RateLimit-* and Retry-After headers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error. The requestId identifies it in the logs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/qr": {
+      "get": {
+        "tags": [
+          "referral"
+        ],
+        "summary": "QR image for an invite link",
+        "description": "Encodes `https://<web>/r/{code}?app={app}`. Public and cacheable; no app ships a QR library.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Z0-9-]{3,40}$"
+            },
+            "description": "The invite code."
+          },
+          {
+            "name": "app",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]{1,80}$"
+            },
+            "description": "Product slug."
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "png",
+                "svg"
+              ],
+              "default": "png"
+            },
+            "description": "Image format."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The QR image.",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/svg+xml": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed, or a geography id was not recognised.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded. See RateLimit-* and Retry-After headers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error. The requestId identifies it in the logs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/public/referral-clicks": {
+      "post": {
+        "tags": [
+          "referral"
+        ],
+        "summary": "Log a click on an invite link",
+        "description": "Fired by the website's /r/{code} redirect before it sends the visitor on. No user id and no full IP is stored. Returns 202; never wait on it.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReferralClickRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted.",
+            "headers": {
+              "RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests allowed per window."
+              },
+              "RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests left in this window."
+              },
+              "RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the window resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accepted": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed, or a geography id was not recognised.",
             "content": {
               "application/json": {
                 "schema": {

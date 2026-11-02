@@ -178,8 +178,11 @@ export default async function AgentDashboard() {
               </div>
             </div>
 
-            <p style={{ marginTop: "1rem" }}>
-              <a href="/agents/dashboard/earnings">See every commission</a>
+            <p className="chips-note" style={{ marginTop: "1rem" }}>
+              You earn 10% to 30% of each payment, set per product.{" "}
+              <a href="/agents/dashboard/earnings">See every commission and your rate per product</a>
+              {" · "}
+              <a href="/rewards">Public leaderboard</a>
             </p>
 
             {blocked && (

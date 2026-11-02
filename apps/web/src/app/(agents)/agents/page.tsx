@@ -66,7 +66,7 @@ export const revalidate = 3600;
 
 const TITLE = "Commission agent programme";
 const DESCRIPTION =
-  "Calecute Technologies is appointing commission agents in every panchayat in Kerala to sell its software products. No registration fee, no deposit. 10% commission on every payment a referred customer makes.";
+  "Calecute Technologies is appointing commission agents in every panchayat in Kerala to sell its software products. No registration fee, no deposit. 10% to 30% commission, depending on the product, on every payment a referred customer makes.";
 
 export const metadata: Metadata = {
   title: TITLE,

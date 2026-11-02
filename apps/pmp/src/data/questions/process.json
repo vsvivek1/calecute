@@ -1,0 +1,1282 @@
+[
+  {
+    "id": "prc-001",
+    "domain": "process",
+    "topic": "Scope",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "You are managing a predictive project to build an internal reporting system. During a walkthrough you discover that a developer added an extra export format after a client representative casually mentioned it in a hallway. The format is not in the approved scope. What should you do FIRST?",
+    "options": [
+      "Assess the unapproved work's impact and route any scope addition through change control",
+      "Keep the export format, since the client representative asked for it and it adds value at no extra charge",
+      "Instruct the developer to remove the feature immediately, without further discussion, to restore the baseline",
+      "Record the event in the lessons learned register and continue with the planned work"
+    ],
+    "answer": 0,
+    "explanation": "Adding unapproved work is gold plating; the project manager should first understand its impact on scope, schedule, cost, quality, and risk and then route it through change control so the decision is made properly. Keeping it because the client may like it bypasses the scope baseline and introduces untested, unfunded work; removing it without analysis may also waste effort or upset the client."
+  },
+  {
+    "id": "prc-002",
+    "domain": "process",
+    "topic": "Scope",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "Your team is creating the work breakdown structure for a new warehouse fit-out. A team member asks how far the deliverables should be decomposed. What is the best guidance?",
+    "options": [
+      "Decompose until every element represents exactly one day of effort, so progress can be tracked daily",
+      "Stop at the second level and capture the remaining detail only in the schedule",
+      "Decompose until each element matches a single team member's job title",
+      "Decompose until each work package can be reliably estimated, assigned, and controlled"
+    ],
+    "answer": 3,
+    "explanation": "The work package is the lowest level of the WBS and should be small enough to estimate cost and duration, assign ownership, and monitor. A fixed one-day rule is arbitrary and leads to excessive decomposition; activities are derived from work packages later, not used in place of decomposition."
+  },
+  {
+    "id": "prc-003",
+    "domain": "process",
+    "topic": "Scope",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "Your quality team has inspected the final set of deliverables for a facilities upgrade and confirmed they meet the specifications. What should you do NEXT?",
+    "options": [
+      "Review the verified deliverables with the customer and obtain formal acceptance",
+      "Close the project and release the team",
+      "Conduct a quality audit to confirm the inspection process was followed before involving the customer",
+      "Update the lessons learned register and archive the inspection reports"
+    ],
+    "answer": 0,
+    "explanation": "Control Quality confirms deliverables are correct; Validate Scope is where the customer or sponsor formally accepts those verified deliverables. Closing the project before acceptance skips a required step, and a quality audit is a Manage Quality activity that does not produce customer acceptance."
+  },
+  {
+    "id": "prc-004",
+    "domain": "process",
+    "topic": "Scope",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "On a regulated banking project, an external auditor asks you to demonstrate that each requirement can be traced back to a business objective and forward to the test case that verifies it. Which artifact should you provide?",
+    "options": [
+      "Project scope statement",
+      "Stakeholder engagement assessment matrix",
+      "Quality checklist",
+      "Requirements traceability matrix"
+    ],
+    "answer": 3,
+    "explanation": "The requirements traceability matrix links each requirement to its origin (such as a business objective) and to the deliverables and tests that satisfy it. The scope statement describes scope and acceptance criteria at a higher level but does not provide requirement-by-requirement traceability."
+  },
+  {
+    "id": "prc-005",
+    "domain": "process",
+    "topic": "Scope",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "You lead a hybrid project: the data center build-out follows a predictive plan, while the customer portal is delivered in two-week iterations. During user testing of the portal, a business user identifies a new feature they need. What should you do?",
+    "options": [
+      "Submit a formal change request to the change control board before anyone discusses it",
+      "Ask the product owner to add it to the product backlog for prioritization",
+      "Have the portal team add the feature to the current iteration, since it was discovered during user testing",
+      "Reject the request because the requirements baseline is frozen"
+    ],
+    "answer": 1,
+    "explanation": "The portal is managed adaptively, so new needs flow into the product backlog where the product owner prioritizes them by value. A formal CCB request is appropriate for the baselined predictive components, not for routine backlog items, and inserting the work into the current iteration disrupts the iteration goal."
+  },
+  {
+    "id": "prc-006",
+    "domain": "process",
+    "topic": "Scope",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "During backlog refinement, the team agrees that a high-priority user story is far too large to complete in a single sprint. What should happen?",
+    "options": [
+      "Split the story with the product owner into smaller slices that each deliver usable value",
+      "Extend the next sprint so the story can fit",
+      "Split the story into separate database, back-end, and user-interface stories that each fit within a sprint",
+      "Assign the story to the most senior developer so it can be completed faster"
+    ],
+    "answer": 0,
+    "explanation": "Large stories should be split vertically into thin slices that each deliver end-to-end value and can be completed within a sprint. Splitting by technical layer is tempting but produces pieces that deliver no usable value on their own; sprint length should stay consistent."
+  },
+  {
+    "id": "prc-007",
+    "domain": "process",
+    "topic": "Scope",
+    "approach": "agile",
+    "difficulty": 1,
+    "stem": "Midway through a sprint, a senior stakeholder approaches a developer directly and asks for a new feature to be added before the sprint review. As the agile project lead, what should you do?",
+    "options": [
+      "Allow the developer to add it if it looks small, since the stakeholder needs it before the sprint review",
+      "Cancel the sprint and re-plan around the new feature",
+      "Redirect the stakeholder to the product owner to consider the request for the backlog",
+      "Submit a change request to the change control board"
+    ],
+    "answer": 2,
+    "explanation": "The product owner owns the product backlog and decides priority; protecting the sprint goal keeps the team focused. Letting the developer quietly add work undermines the product owner and the team's commitment, even if the request seems small."
+  },
+  {
+    "id": "prc-008",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "The day before sprint review, a developer reports that a story meets all of its acceptance criteria, but the code has not been peer reviewed, which the team's definition of done requires. What is the best course of action?",
+    "options": [
+      "Treat the story as not done; finish the review if time allows or return it to the backlog",
+      "Count the story as done because its acceptance criteria are satisfied, and log the peer review as follow-up work",
+      "Count half of the story points toward velocity",
+      "Remove peer review from the definition of done for this sprint only"
+    ],
+    "answer": 0,
+    "explanation": "A story is done only when it meets both its acceptance criteria and the team's definition of done, which applies to every item. Acceptance criteria alone are tempting but are story-specific; skipping the shared quality standard creates hidden technical debt, and partial credit distorts velocity."
+  },
+  {
+    "id": "prc-009",
+    "domain": "process",
+    "topic": "Schedule",
+    "approach": "predictive",
+    "difficulty": 3,
+    "stem": "A project network has four activities: A (4 days) and B (5 days) can start immediately; C (6 days) starts after both A and B finish; D (3 days) starts after B finishes. The project is complete when C and D are both finished. What is the project duration and the total float of activity D?",
+    "options": [
+      "10 days; D has 3 days of float",
+      "11 days; D has 0 days of float",
+      "11 days; D has 3 days of float",
+      "14 days; D has 1 day of float"
+    ],
+    "answer": 2,
+    "explanation": "Paths: A-C = 4+6 = 10, B-C = 5+6 = 11, B-D = 5+3 = 8, so the critical path is B-C at 11 days. D has early start 5 and must finish by day 11, so late start = 11 - 3 = 8 and float = 8 - 5 = 3 days. The 10-day answer uses path A-C, which is not the longest path."
+  },
+  {
+    "id": "prc-010",
+    "domain": "process",
+    "topic": "Schedule",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "Activity A (3 days) is first. Activities B (5 days) and C (4 days) both follow A. Activity D (2 days) follows both B and C. What is the total float of activity C?",
+    "options": [
+      "0 days",
+      "2 days",
+      "1 day",
+      "4 days"
+    ],
+    "answer": 2,
+    "explanation": "Path A-B-D = 3+5+2 = 10 days (critical) and path A-C-D = 3+4+2 = 9 days. C can start on day 3 at the earliest, and must finish by day 8 (when D's late start is), so its late start is 8 - 4 = 4 and float = 4 - 3 = 1 day. Zero float would apply only to activities on the critical path A-B-D."
+  },
+  {
+    "id": "prc-011",
+    "domain": "process",
+    "topic": "Schedule",
+    "approach": "predictive",
+    "difficulty": 3,
+    "stem": "You must shorten your project by two days at the least cost. Activity P is on the critical path and costs $600 per day to crash. Activity Q is on the critical path and costs $900 per day. Activity R costs $300 per day but has 6 days of float. Activity S is on the critical path but is already at its crash limit. What should you do?",
+    "options": [
+      "Crash activity R because it is the cheapest",
+      "Crash activity Q",
+      "Crash activity S",
+      "Crash activity P"
+    ],
+    "answer": 3,
+    "explanation": "Crashing only shortens the project when applied to critical-path activities, and you choose the cheapest cost per day among those that can still be compressed, which is P at $600/day. R is the cheapest but has float, so shortening it does not move the end date; S cannot be compressed further."
+  },
+  {
+    "id": "prc-012",
+    "domain": "process",
+    "topic": "Schedule",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "The sponsor asks you to deliver a project three weeks earlier than planned but says no additional budget is available. Several critical-path activities currently run in sequence only by preference, not by hard logic. What is the most appropriate compression technique?",
+    "options": [
+      "Crash the critical path by adding contract resources, since crashing is the fastest way to recover three weeks",
+      "Lower the quality acceptance criteria to save time",
+      "Fast track the critical-path activities, accepting the higher risk of rework",
+      "Remove the activities from the schedule and add them back later"
+    ],
+    "answer": 2,
+    "explanation": "Fast tracking performs activities in parallel that were planned in sequence, typically without direct added cost but with increased risk of rework. Crashing is tempting but normally adds cost through extra resources, which conflicts with the no-budget constraint; lowering quality or deleting work requires approved changes and harms the outcome."
+  },
+  {
+    "id": "prc-013",
+    "domain": "process",
+    "topic": "Schedule",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "On a hybrid project, a supplier informs you that a hardware component on the critical path will arrive two weeks late. The software team is working in sprints on a separate track. What should you do FIRST?",
+    "options": [
+      "Tell the sponsor the project will finish two weeks late",
+      "Submit a change request to extend the schedule baseline by two weeks so the plan reflects the supplier's new date",
+      "Analyze the delay's impact on the integrated schedule and identify response options",
+      "Ask the software team to stop their sprints until the hardware arrives"
+    ],
+    "answer": 2,
+    "explanation": "Before deciding or escalating, the project manager should determine the actual impact (float, dependencies, whether the software track can absorb work) and develop options such as resequencing or compression. Submitting a change request or informing the sponsor of a two-week slip assumes an impact that has not yet been analyzed."
+  },
+  {
+    "id": "prc-014",
+    "domain": "process",
+    "topic": "Schedule",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "A product combines a predictive hardware build with an agile software stream. Executives want one view of when the product will be ready. What is the best way to provide it?",
+    "options": [
+      "Maintain a roadmap of hardware milestones and velocity-based software release forecasts",
+      "Require the software team to produce a detailed Gantt chart of every task through launch so both streams match",
+      "Report only the hardware dates because they are baselined",
+      "Convert the hardware team to two-week sprints so all work is reported the same way"
+    ],
+    "answer": 0,
+    "explanation": "A combined roadmap or milestone view lets each stream use the method that fits it while giving executives an integrated forecast. Forcing a task-level Gantt on the agile team adds overhead and false precision, and converting hardware to sprints is not justified by reporting needs."
+  },
+  {
+    "id": "prc-015",
+    "domain": "process",
+    "topic": "Cost",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "A risk that was identified and analyzed during planning has now occurred. The planned response will cost $20,000. Where should the funds come from?",
+    "options": [
+      "The management reserve",
+      "A new funding request to the sponsor",
+      "The contingency reserve",
+      "Budget transferred from other work packages"
+    ],
+    "answer": 2,
+    "explanation": "Contingency reserves are set aside within the cost baseline for identified risks (known-unknowns) and are used when those risks occur. Management reserve is for unidentified risks (unknown-unknowns) and is outside the cost baseline, so it is not the first source for a planned response."
+  },
+  {
+    "id": "prc-016",
+    "domain": "process",
+    "topic": "Cost",
+    "approach": "predictive",
+    "difficulty": 3,
+    "stem": "Midway through a project, a new government regulation that nobody anticipated requires $50,000 of additional work. The risk was never identified. What should you do?",
+    "options": [
+      "Draw the money from the contingency reserve without approval, since it exists to absorb cost overruns during execution",
+      "Reduce scope elsewhere quietly to absorb the cost",
+      "Record the extra cost as a cost variance and take no other action",
+      "Submit a change request to use management reserve, updating the cost baseline once approved"
+    ],
+    "answer": 3,
+    "explanation": "An unidentified risk is an unknown-unknown and is funded from management reserve, which typically requires approval through change control (often by the sponsor) and then increases the cost baseline. Contingency reserve is tempting but is intended for identified risks; silently cutting scope bypasses change control."
+  },
+  {
+    "id": "prc-017",
+    "domain": "process",
+    "topic": "Earned value",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "Your project has a BAC of $200,000. At the status date, PV = $120,000, EV = $90,000, and AC = $100,000. What is the cost performance index (CPI)?",
+    "options": [
+      "0.90",
+      "0.75",
+      "1.11",
+      "0.83"
+    ],
+    "answer": 0,
+    "explanation": "CPI = EV / AC = 90,000 / 100,000 = 0.90, meaning you are getting $0.90 of value for each dollar spent. 0.75 is the SPI (EV / PV = 90,000 / 120,000), and 1.11 is the inverted ratio AC / EV."
+  },
+  {
+    "id": "prc-018",
+    "domain": "process",
+    "topic": "Earned value",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "Using the same project (BAC $200,000, PV $120,000, EV $90,000, AC $100,000), what is the schedule performance index (SPI), and what does it indicate?",
+    "options": [
+      "0.90; the project is behind schedule",
+      "1.33; the project is ahead of schedule",
+      "0.75; the project is over budget",
+      "0.75; the project is behind schedule"
+    ],
+    "answer": 3,
+    "explanation": "SPI = EV / PV = 90,000 / 120,000 = 0.75; a value below 1.0 means less work has been accomplished than planned, so the project is behind schedule. 0.90 is the CPI, and SPI says nothing about budget performance."
+  },
+  {
+    "id": "prc-019",
+    "domain": "process",
+    "topic": "Earned value",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "A project has a BAC of $500,000. To date, EV = $200,000 and AC = $250,000. The team expects current cost performance to continue for the rest of the project. What is the estimate at completion (EAC)?",
+    "options": [
+      "$625,000",
+      "$550,000",
+      "$400,000",
+      "$600,000"
+    ],
+    "answer": 0,
+    "explanation": "With typical variance continuing, EAC = BAC / CPI. CPI = 200,000 / 250,000 = 0.80, so EAC = 500,000 / 0.80 = $625,000. $550,000 is the atypical formula AC + (BAC - EV) = 250,000 + 300,000, which assumes future work will be performed at the planned rate."
+  },
+  {
+    "id": "prc-020",
+    "domain": "process",
+    "topic": "Earned value",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "A project has a BAC of $300,000, EV of $120,000, and AC of $150,000. The cost overrun was caused by a one-time equipment failure that will not recur, and the remaining work is expected to be done at the budgeted rate. What is the EAC?",
+    "options": [
+      "$375,000",
+      "$270,000",
+      "$330,000",
+      "$450,000"
+    ],
+    "answer": 2,
+    "explanation": "For an atypical variance, EAC = AC + (BAC - EV) = 150,000 + (300,000 - 120,000) = $330,000. $375,000 is BAC / CPI (300,000 / 0.80), which would be correct only if the overrun were expected to continue."
+  },
+  {
+    "id": "prc-021",
+    "domain": "process",
+    "topic": "Earned value",
+    "approach": "predictive",
+    "difficulty": 3,
+    "stem": "A project has BAC = $400,000, PV = $200,000, EV = $160,000, and AC = $200,000. Because there is a firm completion date, management believes both cost and schedule performance will influence the remaining work. What is the EAC?",
+    "options": [
+      "$500,000",
+      "$440,000",
+      "$575,000",
+      "$625,000"
+    ],
+    "answer": 2,
+    "explanation": "CPI = 160,000 / 200,000 = 0.80 and SPI = 160,000 / 200,000 = 0.80. EAC = AC + (BAC - EV) / (CPI x SPI) = 200,000 + 240,000 / 0.64 = 200,000 + 375,000 = $575,000. $500,000 is BAC / CPI, which ignores the schedule factor."
+  },
+  {
+    "id": "prc-022",
+    "domain": "process",
+    "topic": "Earned value",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "A project has BAC = $600,000, EV = $240,000, and AC = $300,000. Assuming current cost performance continues, what is the estimate to complete (ETC)?",
+    "options": [
+      "$360,000",
+      "$750,000",
+      "$300,000",
+      "$450,000"
+    ],
+    "answer": 3,
+    "explanation": "CPI = 240,000 / 300,000 = 0.80. ETC = (BAC - EV) / CPI = 360,000 / 0.80 = $450,000 (equivalently EAC - AC = 750,000 - 300,000). $360,000 is the remaining budgeted work (BAC - EV) without adjusting for performance, and $750,000 is the EAC, not the ETC."
+  },
+  {
+    "id": "prc-023",
+    "domain": "process",
+    "topic": "Earned value",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "A project has a BAC of $1,000,000 and a cumulative CPI of 0.80, which is expected to continue. What is the variance at completion (VAC)?",
+    "options": [
+      "-$250,000",
+      "-$200,000",
+      "+$250,000",
+      "$1,250,000"
+    ],
+    "answer": 0,
+    "explanation": "EAC = BAC / CPI = 1,000,000 / 0.80 = 1,250,000. VAC = BAC - EAC = 1,000,000 - 1,250,000 = -$250,000, a forecast overrun. -$200,000 incorrectly computes BAC x (1 - CPI), and $1,250,000 is the EAC itself."
+  },
+  {
+    "id": "prc-024",
+    "domain": "process",
+    "topic": "Earned value",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "A project has a BAC of $100,000, EV of $40,000, and AC of $50,000. The sponsor insists that the project still finish within the original budget. What cost performance is needed on the remaining work?",
+    "options": [
+      "TCPI = 0.80",
+      "TCPI = 1.25",
+      "TCPI = 1.20",
+      "TCPI = 0.83"
+    ],
+    "answer": 2,
+    "explanation": "TCPI (to BAC) = (BAC - EV) / (BAC - AC) = (100,000 - 40,000) / (100,000 - 50,000) = 60,000 / 50,000 = 1.20, so each remaining dollar must produce $1.20 of work. 0.80 is the current CPI (40,000 / 50,000), and 1.25 is just its inverse; neither answers what future performance is required."
+  },
+  {
+    "id": "prc-025",
+    "domain": "process",
+    "topic": "Earned value",
+    "approach": "predictive",
+    "difficulty": 3,
+    "stem": "A project has BAC = $200,000, EV = $80,000, and AC = $100,000. Recognizing the original budget is no longer achievable, the sponsor has approved a new EAC of $230,000. What TCPI is required to meet the approved EAC?",
+    "options": [
+      "1.20",
+      "0.80",
+      "1.08",
+      "0.92"
+    ],
+    "answer": 3,
+    "explanation": "TCPI (to EAC) = (BAC - EV) / (EAC - AC) = (200,000 - 80,000) / (230,000 - 100,000) = 120,000 / 130,000 = 0.923, about 0.92. 1.20 is the TCPI to BAC [120,000 / (200,000 - 100,000)], which no longer applies once a new EAC is approved."
+  },
+  {
+    "id": "prc-026",
+    "domain": "process",
+    "topic": "Earned value",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "A work package has a budget of $250,000. It is reported as 40% complete, and $120,000 has been spent. What is the cost variance (CV)?",
+    "options": [
+      "+$20,000",
+      "-$130,000",
+      "-$20,000",
+      "-$30,000"
+    ],
+    "answer": 2,
+    "explanation": "EV = 40% x 250,000 = 100,000. CV = EV - AC = 100,000 - 120,000 = -$20,000, meaning the work is over budget. +$20,000 reverses the formula (AC - EV), and -$130,000 compares AC to the full budget rather than to earned value."
+  },
+  {
+    "id": "prc-027",
+    "domain": "process",
+    "topic": "Earned value",
+    "approach": "predictive",
+    "difficulty": 3,
+    "stem": "A project has BAC = $300,000, EV = $150,000, and AC = $180,000. A review reveals that the original estimates for the remaining work were fundamentally flawed, and the team produces a new bottom-up estimate of $170,000 for the remaining work. What is the EAC?",
+    "options": [
+      "$360,000",
+      "$330,000",
+      "$170,000",
+      "$350,000"
+    ],
+    "answer": 3,
+    "explanation": "When original assumptions are no longer valid, EAC = AC + bottom-up ETC = 180,000 + 170,000 = $350,000. $360,000 is BAC / CPI (300,000 / 0.833), and $330,000 is AC + (BAC - EV); both rely on the original estimates that were found to be flawed."
+  },
+  {
+    "id": "prc-028",
+    "domain": "process",
+    "topic": "Earned value",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "On a hybrid program, the predictive construction workstream reports PV = $400,000, EV = $340,000, and AC = $320,000. How should you describe this workstream's status to the sponsor?",
+    "options": [
+      "Ahead of schedule (SV = +$60,000) and over budget (CV = -$20,000)",
+      "Behind schedule (SV = -$80,000) and over budget (CV = -$20,000)",
+      "Behind schedule (SV = -$60,000) and under budget (CV = +$20,000)",
+      "On schedule and under budget because AC is less than PV"
+    ],
+    "answer": 2,
+    "explanation": "SV = EV - PV = 340,000 - 400,000 = -$60,000 (behind schedule) and CV = EV - AC = 340,000 - 320,000 = +$20,000 (under budget); SPI = 0.85, CPI = 1.06. Comparing AC with PV is a common mistake; it mixes actual spending with planned value and does not measure either cost or schedule performance."
+  },
+  {
+    "id": "prc-029",
+    "domain": "process",
+    "topic": "Quality",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "While reviewing a control chart for a manufacturing process on your project, you notice that the last eight measurements all fall above the mean, though every point is within the control limits. What should you do?",
+    "options": [
+      "Take no action because all points are within the control limits",
+      "Investigate for an assignable cause, as the run suggests the process may be out of control",
+      "Recalculate the control limits using the latest data",
+      "Stop the process and reject all units produced since the run began to keep defects from reaching the customer"
+    ],
+    "answer": 1,
+    "explanation": "A run of seven or more consecutive points on one side of the mean is a nonrandom pattern (the rule of seven) and indicates a likely special cause even when points are inside the limits. Ignoring it because points are within limits is the tempting error; rejecting all output is an overreaction before investigation."
+  },
+  {
+    "id": "prc-030",
+    "domain": "process",
+    "topic": "Quality",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "The sponsor proposes cutting a budget line for training the team on a new welding standard to save money. You want to explain its value in cost-of-quality terms. How is this training classified?",
+    "options": [
+      "An appraisal cost because it measures welders' conformance to the new standard",
+      "An internal failure cost because it addresses defects the welders are already producing",
+      "An external failure cost because it protects the customer",
+      "A prevention cost that reduces the likelihood of defects"
+    ],
+    "answer": 3,
+    "explanation": "Training, process documentation, and good equipment are prevention costs, which are cost of conformance and generally reduce more expensive failure costs. Appraisal costs are activities such as inspection and testing that evaluate quality rather than prevent defects."
+  },
+  {
+    "id": "prc-031",
+    "domain": "process",
+    "topic": "Quality",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "An agile team's velocity has risen for three sprints, but the number of defects found in production has also climbed sharply. You learn the team has been skipping automated tests to finish more stories. What is the best action?",
+    "options": [
+      "Add a dedicated testing sprint after every three development sprints to catch and fix accumulated production defects",
+      "Reinforce the definition of done with the team, including automated tests, even if velocity dips",
+      "Raise the velocity target so the team can absorb the defect fixes",
+      "Ask the product owner to accept stories with known defects to keep momentum"
+    ],
+    "answer": 1,
+    "explanation": "Quality must be built into every increment through the definition of done; velocity achieved by skipping tests is not real progress. A periodic \"hardening\" or testing sprint is tempting but delays feedback and lets defects accumulate rather than preventing them."
+  },
+  {
+    "id": "prc-032",
+    "domain": "process",
+    "topic": "Risk",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "On a hybrid project, the risk register lists a trigger for a key supplier risk: the supplier missing two consecutive weekly shipments. That trigger has just occurred. What should happen NEXT?",
+    "options": [
+      "Hold a workshop to identify new risks related to the supplier",
+      "The risk owner implements the planned response in the risk register",
+      "Submit a change request to the change control board",
+      "Escalate the situation to the sponsor and wait for direction before committing any project resources"
+    ],
+    "answer": 1,
+    "explanation": "Triggers signal that a risk is occurring or about to occur, and the assigned risk owner should execute the agreed response. Escalation or a change request may follow if the response itself requires baseline changes, but the first step is to implement the response that was already planned."
+  },
+  {
+    "id": "prc-033",
+    "domain": "process",
+    "topic": "Risk",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "During a weekly team meeting, a team member mentions a potential risk that is not in the risk register: a key testing lab may close for renovation during your test phase. What should you do?",
+    "options": [
+      "Immediately book a second testing lab as a mitigation",
+      "Wait to see whether the lab confirms the closure",
+      "Add the risk to the risk register and analyze its probability and impact",
+      "Escalate the risk to the sponsor right away"
+    ],
+    "answer": 2,
+    "explanation": "Newly identified risks should be documented in the risk register and analyzed so that an appropriate response can be planned and an owner assigned. Implementing a response immediately skips analysis and may spend money on a low-priority risk."
+  },
+  {
+    "id": "prc-034",
+    "domain": "process",
+    "topic": "Risk",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "Your team has identified 60 risks, and you have limited time to decide which ones deserve detailed attention. What should you use FIRST to prioritize them?",
+    "options": [
+      "A Monte Carlo simulation of the full schedule to quantify each risk's effect on the end date",
+      "A decision tree for each risk",
+      "A tornado diagram from sensitivity analysis",
+      "A probability and impact matrix in qualitative risk analysis"
+    ],
+    "answer": 3,
+    "explanation": "Qualitative analysis with a probability and impact matrix is a fast way to rank many risks and decide which need further analysis or responses. Monte Carlo simulation and other quantitative tools are more time-consuming and are typically applied to the highest-priority risks or the overall project after qualitative analysis."
+  },
+  {
+    "id": "prc-035",
+    "domain": "process",
+    "topic": "Risk",
+    "approach": "predictive",
+    "difficulty": 3,
+    "stem": "Your project has two risks. Threat T has a 30% probability of causing a $50,000 loss. Opportunity O has a 20% probability of producing a $20,000 saving. What is the combined expected monetary value (EMV) of these risks?",
+    "options": [
+      "-$30,000",
+      "-$11,000",
+      "-$19,000",
+      "+$11,000"
+    ],
+    "answer": 1,
+    "explanation": "EMV = sum of (probability x impact). Threat: 0.30 x -50,000 = -15,000. Opportunity: 0.20 x +20,000 = +4,000. Total EMV = -15,000 + 4,000 = -$11,000. -$30,000 adds the raw impacts without weighting them by probability, and -$19,000 wrongly treats the opportunity as a loss."
+  },
+  {
+    "id": "prc-036",
+    "domain": "process",
+    "topic": "Risk",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "Expensive testing equipment must be shipped overseas for your project, and there is a risk of damage in transit. You purchase a shipping insurance policy. Which risk response strategy are you using?",
+    "options": [
+      "Transfer",
+      "Mitigate",
+      "Avoid",
+      "Accept"
+    ],
+    "answer": 0,
+    "explanation": "Buying insurance shifts the financial impact of the threat to a third party, which is transfer; the risk of damage still exists. Mitigation would reduce the probability or impact, for example by improving packaging, rather than shifting ownership of the consequences."
+  },
+  {
+    "id": "prc-037",
+    "domain": "process",
+    "topic": "Risk",
+    "approach": "hybrid",
+    "difficulty": 3,
+    "stem": "While planning a hybrid IT project, your team identifies a risk that the company's enterprise data center migration could disrupt several projects across the portfolio. Responding is outside your authority. What should you do?",
+    "options": [
+      "Mitigate the risk using your project's contingency reserve, since the migration directly threatens your schedule",
+      "Escalate the risk to the appropriate program or portfolio owner and record it as escalated",
+      "Accept the risk passively because it is outside your control",
+      "Remove it from the risk register because it is not a project risk"
+    ],
+    "answer": 1,
+    "explanation": "Risks whose response exceeds the project manager's authority or that affect other parts of the organization should be escalated to the right owner, who accepts responsibility, and the project tracks it as escalated. Using project reserves for an enterprise-wide risk is outside your authority and unlikely to be sufficient."
+  },
+  {
+    "id": "prc-038",
+    "domain": "process",
+    "topic": "Risk",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "An agile team is about to integrate with a third-party payments API that nobody on the team has used, and estimates for related stories vary wildly. What is the best way to address this uncertainty?",
+    "options": [
+      "Add a time-boxed spike to explore the API before committing to the related stories",
+      "Pause the project for a month-long upfront design phase to fully specify the integration before any coding",
+      "Accept the risk and begin the stories without further investigation",
+      "Transfer the risk by asking the API vendor to write the integration"
+    ],
+    "answer": 0,
+    "explanation": "A spike is a short, time-boxed experiment that reduces technical uncertainty and improves estimates, which fits agile risk management. A long upfront design phase delays value delivery and feedback and is inconsistent with incremental learning."
+  },
+  {
+    "id": "prc-039",
+    "domain": "process",
+    "topic": "Procurement",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "You need to procure a standard, well-defined set of office furniture with complete specifications. Your organization wants to minimize its own cost risk. Which contract type is most appropriate?",
+    "options": [
+      "Cost plus fixed fee (CPFF)",
+      "Time and materials (T&M)",
+      "Firm fixed price (FFP)",
+      "Cost plus incentive fee (CPIF)"
+    ],
+    "answer": 2,
+    "explanation": "With clearly defined scope, a firm fixed-price contract places most cost risk on the seller and gives the buyer a known price. Cost-reimbursable contracts such as CPFF place more risk on the buyer and are suited to uncertain scope."
+  },
+  {
+    "id": "prc-040",
+    "domain": "process",
+    "topic": "Procurement",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "Your organization is contracting a research lab to develop a prototype whose scope cannot be fully defined. The seller will not accept a fixed price, but you want to motivate the seller to control costs. Which contract type best fits?",
+    "options": [
+      "Cost plus fixed fee (CPFF)",
+      "Cost plus incentive fee (CPIF)",
+      "Firm fixed price (FFP)",
+      "Fixed price with economic price adjustment (FP-EPA)"
+    ],
+    "answer": 1,
+    "explanation": "CPIF reimburses allowable costs (suiting uncertain scope) while sharing savings or overruns against a target cost, giving the seller an incentive to control costs. CPFF also handles uncertain scope but pays the same fee regardless of cost performance, so it offers no cost-efficiency incentive."
+  },
+  {
+    "id": "prc-041",
+    "domain": "process",
+    "topic": "Procurement",
+    "approach": "predictive",
+    "difficulty": 3,
+    "stem": "You have a CPIF contract with a target cost of $200,000, a target fee of $20,000, and a 70/30 share ratio (buyer/seller). The seller's actual costs are $180,000. What is the total amount the buyer pays?",
+    "options": [
+      "$200,000",
+      "$206,000",
+      "$214,000",
+      "$194,000"
+    ],
+    "answer": 1,
+    "explanation": "Underrun = 200,000 - 180,000 = 20,000; seller's share = 30% x 20,000 = 6,000, so fee = 20,000 + 6,000 = 26,000. Total = actual cost + fee = 180,000 + 26,000 = $206,000. $214,000 incorrectly gives the seller 70% of the savings (20,000 + 14,000 fee), which is the buyer's share."
+  },
+  {
+    "id": "prc-042",
+    "domain": "process",
+    "topic": "Procurement",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "Your project needs a specialized sensor module. Your organization has never built one, but some engineers believe they could learn. What should you do FIRST?",
+    "options": [
+      "Issue a request for proposal to qualified sellers",
+      "Assign the engineers to start building a prototype, since learning the skill in-house builds long-term capability",
+      "Perform a make-or-buy analysis of cost, risk, capability, and schedule",
+      "Hire contract staff to build the module in-house"
+    ],
+    "answer": 2,
+    "explanation": "A make-or-buy analysis determines whether the work should be done internally or procured, considering direct and indirect costs, risk, capacity, and strategic factors. Issuing an RFP is tempting but presumes the buy decision has already been made."
+  },
+  {
+    "id": "prc-043",
+    "domain": "process",
+    "topic": "Procurement",
+    "approach": "predictive",
+    "difficulty": 3,
+    "stem": "A seller submits a claim stating that a design clarification you issued constitutes a change that added $40,000 of work. You believe it was within the original scope. What should you do?",
+    "options": [
+      "Follow the contract's claims process, negotiating first and using alternative dispute resolution if needed",
+      "Refer the matter to the legal department to begin litigation, since the claim disputes the contract's original scope",
+      "Withhold all payments to the seller until the claim is withdrawn, to protect your organization's leverage",
+      "Terminate the contract for cause"
+    ],
+    "answer": 0,
+    "explanation": "Contested changes are handled as claims under the contract's terms, with negotiation as the preferred method and alternative dispute resolution such as mediation or arbitration as the next step. Litigation is a last resort, and withholding payments or terminating may itself breach the contract."
+  },
+  {
+    "id": "prc-044",
+    "domain": "process",
+    "topic": "Procurement",
+    "approach": "hybrid",
+    "difficulty": 3,
+    "stem": "You are procuring a software vendor who will work in sprints alongside your internal team. Your finance department wants cost certainty, but the detailed features will evolve. Which contracting approach best fits?",
+    "options": [
+      "A firm fixed-price contract with all requirements frozen before work starts, giving finance full cost certainty",
+      "An open-ended time-and-materials contract with no cap",
+      "A fixed price per sprint or capacity block, with a buyer-prioritized backlog whose scope can vary",
+      "A handshake agreement to be formalized once the scope is known"
+    ],
+    "answer": 2,
+    "explanation": "Agile-friendly contracts often fix cost and time per increment while letting scope vary, giving finance predictability and the buyer flexibility to reprioritize. Freezing all requirements up front defeats the purpose of iterative delivery, and an uncapped T&M contract provides no cost certainty."
+  },
+  {
+    "id": "prc-045",
+    "domain": "process",
+    "topic": "Communications",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "Your project team has 10 members including you. Three more people are about to join. How many additional communication channels will this create?",
+    "options": [
+      "78",
+      "30",
+      "3",
+      "33"
+    ],
+    "answer": 3,
+    "explanation": "Channels = n(n - 1) / 2. Before: 10 x 9 / 2 = 45. After: 13 x 12 / 2 = 78. Additional = 78 - 45 = 33. 78 is the new total, not the increase."
+  },
+  {
+    "id": "prc-046",
+    "domain": "process",
+    "topic": "Communications",
+    "approach": "hybrid",
+    "difficulty": 1,
+    "stem": "A key stakeholder complains that they never receive the project information they need and are surprised by decisions. What should you do FIRST?",
+    "options": [
+      "Add the stakeholder to every project email distribution list so no decision or update is ever missed again",
+      "Send the stakeholder all past status reports",
+      "Review the communications management plan against the stakeholder's needs and update it",
+      "Escalate the complaint to the sponsor"
+    ],
+    "answer": 2,
+    "explanation": "The communications management plan defines who receives what, when, and how; checking whether this stakeholder's needs were captured addresses the root cause. Flooding the stakeholder with every email is tempting but creates noise rather than meeting their actual information needs."
+  },
+  {
+    "id": "prc-047",
+    "domain": "process",
+    "topic": "Communications",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "Your project team is spread across three continents, and members in one region keep missing decisions made in meetings held during their night. What is the best approach?",
+    "options": [
+      "Require everyone to attend meetings at headquarters time regardless of location, so every decision is made with the full team present",
+      "Hold separate meetings for each region and do not share outcomes between them, so each region can decide quickly",
+      "Work with the team to adjust communication, such as shared decision records and rotating meeting times, and update the plan",
+      "Stop holding meetings and rely only on email"
+    ],
+    "answer": 2,
+    "explanation": "Distributed teams benefit from collaboratively agreed communication norms that combine asynchronous tools with fair scheduling, documented in the plan. Forcing headquarters time on everyone is unfair and unsustainable, and isolated regional meetings fragment the team."
+  },
+  {
+    "id": "prc-048",
+    "domain": "process",
+    "topic": "Communications",
+    "approach": "agile",
+    "difficulty": 1,
+    "stem": "Senior managers on an agile project keep asking the team for written status reports, which takes time away from delivery. What should you do?",
+    "options": [
+      "Require each developer to submit a weekly written status report so managers receive consistent, detailed updates on every story",
+      "Use information radiators such as burnup charts and the roadmap, and invite managers to sprint reviews",
+      "Tell the managers that agile teams do not report status",
+      "Ask the product owner to stop managers from contacting the team"
+    ],
+    "answer": 1,
+    "explanation": "Information radiators and sprint reviews provide transparent, low-overhead visibility into actual progress and working increments. Adding individual written reports increases overhead, while refusing to share status damages stakeholder trust."
+  },
+  {
+    "id": "prc-049",
+    "domain": "process",
+    "topic": "Change control",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "The project sponsor asks you to add a new reporting module to a project that is under a formal scope baseline. What should you do FIRST?",
+    "options": [
+      "Add the module, because the sponsor has the authority to approve additions to the scope",
+      "Submit a change request to the change control board immediately so the sponsor's request is decided quickly",
+      "Decline the request because the scope is baselined",
+      "Evaluate the impact of the request on scope, schedule, cost, quality, and risk"
+    ],
+    "answer": 3,
+    "explanation": "The project manager should first analyze the impact so the change request contains the information decision makers need, and then submit it through integrated change control. Submitting immediately is tempting but sends an incomplete request; adding it directly bypasses change control even when the sponsor asks."
+  },
+  {
+    "id": "prc-050",
+    "domain": "process",
+    "topic": "Change control",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "The change control board has approved a change that adds two weeks and $30,000 to your project. What should you do NEXT?",
+    "options": [
+      "Begin implementing the change right away without updating documents, since the board has already approved it",
+      "Re-analyze the change to confirm the board's decision",
+      "Close the change request and archive it",
+      "Update the affected baselines and plans, inform stakeholders, and implement the change"
+    ],
+    "answer": 3,
+    "explanation": "Once approved, the change is reflected in the project management plan and baselines, the change log is updated, affected stakeholders are informed, and the work is implemented. Implementing without updating baselines makes performance measurement meaningless."
+  },
+  {
+    "id": "prc-051",
+    "domain": "process",
+    "topic": "Change control",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "On a hybrid project, regulatory reporting requirements are baselined under predictive control, while the user-facing app is managed with a product backlog. A stakeholder requests a change to the regulatory report format. How should this be handled?",
+    "options": [
+      "Add it to the product backlog for the product owner to prioritize alongside the other app features and stakeholder requests",
+      "Analyze its impact and process it through integrated change control, as it affects baselined scope",
+      "Let the developers make the change if it is small",
+      "Defer it until the project ends and handle it as an operational change"
+    ],
+    "answer": 1,
+    "explanation": "In a hybrid approach, the governance applied depends on the component: baselined regulatory scope requires formal change control. The backlog route is appropriate for the adaptive app features, not for controlled regulated deliverables."
+  },
+  {
+    "id": "prc-052",
+    "domain": "process",
+    "topic": "Change control",
+    "approach": "agile",
+    "difficulty": 1,
+    "stem": "On an agile project, the sponsor learns of a market shift and wants a set of features moved ahead of others planned for later releases. How should this change be handled?",
+    "options": [
+      "Submit a formal change request to the change control board to approve the new release sequence",
+      "Stop the current sprint and start a new one with the new features",
+      "The product owner reprioritizes the product backlog",
+      "The development team decides which features to swap"
+    ],
+    "answer": 2,
+    "explanation": "In agile, changing priorities is expected and handled by the product owner ordering the backlog; new priorities are pulled into upcoming sprints. A formal CCB request is unnecessary for backlog reordering, and stopping the sprint is reserved for when the sprint goal becomes obsolete."
+  },
+  {
+    "id": "prc-053",
+    "domain": "process",
+    "topic": "Integration",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "A key supplier unexpectedly announces it is going out of business, which was never identified as a risk. This immediately affects your current deliverables. Where should you record and manage this?",
+    "options": [
+      "In the issue log, with an owner and actions to resolve it",
+      "In the risk register as a new risk to be analyzed",
+      "In the assumption log as an invalidated assumption only",
+      "In the lessons learned register for review at closure"
+    ],
+    "answer": 0,
+    "explanation": "An event that is already happening is an issue, not a risk, so it belongs in the issue log with an owner, due date, and resolution actions (workarounds). Adding it to the risk register is tempting, but risks are uncertain future events; any related future risks can be logged separately."
+  },
+  {
+    "id": "prc-054",
+    "domain": "process",
+    "topic": "Integration",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "You have been told you will manage a new project, but functional managers refuse to release staff because they say the project has no official standing. What should you do?",
+    "options": [
+      "Work with the sponsor to issue a project charter that authorizes the project and your role",
+      "Escalate each functional manager to their superior",
+      "Begin the work with whatever resources are available",
+      "Develop the project management plan and send it to the functional managers to show the project's official standing"
+    ],
+    "answer": 0,
+    "explanation": "The project charter, issued by the sponsor, formally authorizes the project and gives the project manager authority to apply organizational resources. A project management plan is developed after authorization and does not itself grant authority."
+  },
+  {
+    "id": "prc-055",
+    "domain": "process",
+    "topic": "Integration",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "A key planning assumption on your hybrid project, that a shared test environment would be available full-time, has proven false. What should you do?",
+    "options": [
+      "Ignore it because the team will find a workaround",
+      "Submit a change request to extend the project end date to make up for the lost test environment time",
+      "Record it in the lessons learned register and move on",
+      "Update the assumption log and analyze the impact on risks, schedule, and plans"
+    ],
+    "answer": 3,
+    "explanation": "When an assumption proves false, it should be updated in the assumption log and its effects analyzed, since invalid assumptions often create new risks or issues. Requesting a schedule extension before analyzing the impact is premature."
+  },
+  {
+    "id": "prc-056",
+    "domain": "process",
+    "topic": "Closure",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "The customer has formally accepted the final deliverable of your project. What should you do NEXT?",
+    "options": [
+      "Release the team immediately and close the project file, since the customer's acceptance completes the project",
+      "Complete closing activities: finalize lessons learned, archive records, and release resources",
+      "Begin planning a follow-on project with the customer",
+      "Hold a celebration and consider the project closed"
+    ],
+    "answer": 1,
+    "explanation": "After acceptance, the project manager performs the Close Project or Phase activities: transferring deliverables, finalizing documentation and lessons learned, closing procurements, archiving, and releasing resources. Releasing the team immediately can lose knowledge needed to finish closure."
+  },
+  {
+    "id": "prc-057",
+    "domain": "process",
+    "topic": "Closure",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "Midway through a hybrid project, the sponsor terminates it because the market opportunity disappeared. What should you do?",
+    "options": [
+      "Stop all work immediately and release the team without further action",
+      "Try to convince the sponsor to continue the project",
+      "Complete the remaining deliverables currently in progress before closing so the investment so far is not wasted",
+      "Perform closing activities, documenting deliverable status, the termination reason, and lessons learned"
+    ],
+    "answer": 3,
+    "explanation": "Even when a project is terminated early, it should be closed formally: record what was completed, why it ended, transfer any usable deliverables, close contracts, and capture lessons learned. Simply stopping and walking away loses valuable organizational knowledge."
+  },
+  {
+    "id": "prc-058",
+    "domain": "process",
+    "topic": "Closure",
+    "approach": "hybrid",
+    "difficulty": 3,
+    "stem": "Your hybrid project is ready to hand over a new customer service platform, but the operations team says it lacks the documentation and training to support it. What should you do?",
+    "options": [
+      "Close the project because the deliverables have been accepted and operational readiness is the operations team's responsibility",
+      "Confirm transition requirements and coordinate knowledge transfer and training before closing",
+      "Have the project team support the platform indefinitely",
+      "Escalate to the sponsor that operations is not ready and close anyway"
+    ],
+    "answer": 1,
+    "explanation": "Transition of the product to operations is part of delivering value and of closing the project; the project manager should ensure transition requirements, documentation, and training are completed. Closing anyway risks the product failing in operations, and permanent project-team support is not sustainable."
+  },
+  {
+    "id": "prc-059",
+    "domain": "process",
+    "topic": "Closure",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "In sprint retrospectives, an agile team keeps identifying the same problems with unclear handoffs, but nothing changes. What should you do as the servant leader?",
+    "options": [
+      "Help the team pick one or two specific improvements, assign owners, and review results next retrospective",
+      "Stop holding retrospectives because they are not productive",
+      "Decide the solution for the team and announce it, since the same handoff problems have gone unresolved for several sprints",
+      "Report the team's problems to functional managers"
+    ],
+    "answer": 0,
+    "explanation": "Retrospectives are effective when they produce a small number of actionable improvements with owners that are followed up. Dictating a solution undermines team ownership, and abandoning retrospectives removes the team's main mechanism for continuous improvement."
+  },
+  {
+    "id": "prc-060",
+    "domain": "process",
+    "topic": "Methodology selection",
+    "approach": "agile",
+    "difficulty": 1,
+    "stem": "A startup is building a consumer mobile app. Requirements are uncertain, the market changes quickly, and the founders want frequent customer feedback. Which delivery approach is most suitable?",
+    "options": [
+      "A predictive approach with all requirements defined upfront to control scope in a fast-changing market",
+      "An adaptive approach with short iterations and frequent releases",
+      "A waterfall approach with a single release at the end",
+      "A predictive approach with monthly status reports"
+    ],
+    "answer": 1,
+    "explanation": "High uncertainty and a need for rapid feedback favor an adaptive approach that delivers small increments and adjusts based on learning. A predictive approach works best when requirements are stable and well understood, which is not the case here."
+  },
+  {
+    "id": "prc-061",
+    "domain": "process",
+    "topic": "Methodology selection",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "Your organization is constructing a bridge. Requirements are fixed by engineering codes, changes are costly once construction starts, and regulators require approvals at defined stages. Which delivery approach is most suitable?",
+    "options": [
+      "An agile approach with two-week sprints",
+      "A kanban approach with continuous flow",
+      "An iterative approach with frequent design changes",
+      "A predictive approach with detailed upfront planning and phase gates"
+    ],
+    "answer": 3,
+    "explanation": "Stable, well-defined requirements, high cost of change, and stage-gated regulatory approvals favor a predictive approach. Agile methods add value when requirements are uncertain and frequent change is cheap, which does not apply to physical construction under fixed codes."
+  },
+  {
+    "id": "prc-062",
+    "domain": "process",
+    "topic": "Methodology selection",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "Your company is developing a medical device whose hardware must pass a strictly regulated, stage-gated approval process, while its companion mobile app needs frequent updates based on patient feedback. Which approach is most appropriate?",
+    "options": [
+      "A fully predictive approach for both components, since the regulated hardware sets the overall approval timeline",
+      "A fully agile approach for both components",
+      "A hybrid approach: predictive for the regulated hardware, adaptive for the app",
+      "Let each team choose independently with no integration plan"
+    ],
+    "answer": 2,
+    "explanation": "Tailoring the approach to each component's characteristics, predictive where requirements are fixed and regulated, adaptive where they evolve, delivers the benefits of both. A single approach for everything ignores the different uncertainty levels, and independent choices without integration planning risk misalignment."
+  },
+  {
+    "id": "prc-063",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 1,
+    "stem": "During the daily standup, team members address their updates to you, the project lead, and the meeting has become a 30-minute status report. What should you do?",
+    "options": [
+      "Cancel the daily standup and collect written updates instead",
+      "Extend the standup to 45 minutes so everyone can give full detail and you can track each member's progress closely",
+      "Ask the product owner to run the standup",
+      "Coach the team that the standup is a 15-minute time-box for coordinating with each other toward the sprint goal"
+    ],
+    "answer": 3,
+    "explanation": "The daily standup is a short, time-boxed meeting for the team to synchronize and surface impediments; it is not a status report to a manager. Canceling it removes valuable daily coordination, and lengthening it increases waste."
+  },
+  {
+    "id": "prc-064",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "At the sprint review, stakeholders suggest several changes to a feature the team just demonstrated. What should happen with this feedback?",
+    "options": [
+      "The team implements all changes immediately in the next sprint",
+      "The product owner evaluates it and updates the product backlog accordingly",
+      "The feedback is recorded in the change log for the change control board",
+      "The team defers all feedback to the retrospective"
+    ],
+    "answer": 1,
+    "explanation": "The sprint review gathers stakeholder feedback, which the product owner uses to adapt and reorder the product backlog. Automatically implementing everything ignores prioritization, and the retrospective focuses on the team's process rather than the product."
+  },
+  {
+    "id": "prc-065",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "In sprint planning, the product owner pushes the team to commit to 50 story points. The team's average velocity is 35 and no capacity changes are expected. What should the team do?",
+    "options": [
+      "Select work based on historical velocity and capacity, and agree priorities with the product owner",
+      "Commit to 50 points and work overtime to deliver them, since the product owner has already set the sprint's priorities",
+      "Commit to 50 points but lower the definition of done",
+      "Refuse to plan until the product owner reduces expectations"
+    ],
+    "answer": 0,
+    "explanation": "The team determines how much work it can take on based on velocity and capacity, while the product owner determines priority; together they agree on a realistic sprint goal. Committing to 50 points through overtime or lowered quality is unsustainable and undermines predictability."
+  },
+  {
+    "id": "prc-066",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "Halfway through a sprint, the team realizes it will not finish all of the stories it planned. What should the team do?",
+    "options": [
+      "Discuss with the product owner and renegotiate scope while protecting the sprint goal",
+      "Extend the sprint by a few days to finish everything, then shorten the next sprint to keep the release date",
+      "Mark the stories done and fix any gaps next sprint",
+      "Work weekends to finish all the planned stories"
+    ],
+    "answer": 0,
+    "explanation": "Sprint length is fixed; when the team learns it cannot complete everything, it collaborates with the product owner to adjust scope so the highest-value work and sprint goal are met. Extending the sprint breaks the cadence and makes velocity and planning less reliable."
+  },
+  {
+    "id": "prc-067",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "Over the last three sprints, an agile team completed 30, 34, and 26 story points. The remaining product backlog is estimated at 240 points. Assuming the backlog does not change, approximately how many more sprints will be needed?",
+    "options": [
+      "7 sprints",
+      "8 sprints",
+      "9 sprints",
+      "10 sprints"
+    ],
+    "answer": 1,
+    "explanation": "Average velocity = (30 + 34 + 26) / 3 = 90 / 3 = 30 points per sprint. Sprints needed = 240 / 30 = 8. Using the best sprint (34) gives about 7, which is optimistic, and using the worst (26) gives about 9.2, which is pessimistic."
+  },
+  {
+    "id": "prc-068",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "A functional manager wants to use velocity to compare two agile teams working on different products and reward the team with the higher number. What should you advise?",
+    "options": [
+      "Velocity is a team-specific planning measure and should not be used to compare teams",
+      "Compare the teams but normalize by team size",
+      "Have both teams use the same story point scale and reference stories so their velocities can be compared fairly",
+      "Use velocity comparisons only for the annual performance review"
+    ],
+    "answer": 0,
+    "explanation": "Story points are relative to each team's own estimation, so velocity is meaningful only for that team's forecasting. Using it for comparison or rewards encourages point inflation and destroys its usefulness; normalizing by size does not fix the problem of different scales."
+  },
+  {
+    "id": "prc-069",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "On day six of a ten-day sprint, the burndown chart has been flat for four days even though the team says everyone is busy. What is the most likely explanation and the best action?",
+    "options": [
+      "Work is started but not finished; investigate impediments, oversized stories, and too much WIP",
+      "The team is idle; ask the functional manager to assign more tasks so each member's capacity is fully used",
+      "The chart is wrong; stop using burndown charts",
+      "The sprint is going well; no action is needed"
+    ],
+    "answer": 0,
+    "explanation": "A flat burndown means remaining work is not decreasing, often because items are started but not finished, are blocked, or are too large. The servant leader should help uncover impediments and encourage finishing work before starting more, rather than assume idleness."
+  },
+  {
+    "id": "prc-070",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "A release burnup chart shows the completed-work line rising steadily, but the total-scope line has risen by 40% over the past four sprints, and the forecast release date keeps slipping. What does this indicate?",
+    "options": [
+      "The team's velocity is declining",
+      "Scope is being added faster than expected; the product owner should review priorities with stakeholders",
+      "The team is underestimating story points, so each sprint's work turns out larger than planned and the forecast slips",
+      "The burnup chart is calculated incorrectly"
+    ],
+    "answer": 1,
+    "explanation": "A burnup chart separates completed work from total scope, so a rising scope line shows that new work is being added. The completed-work line is rising steadily, so declining velocity is not the cause; the product owner should make trade-offs about what belongs in the release."
+  },
+  {
+    "id": "prc-071",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 1,
+    "stem": "Executives want to launch a new online service, but nobody is sure customers will pay for it. They ask you to plan the first release. What approach is best?",
+    "options": [
+      "Build and release the complete feature set so customers see the full value before deciding whether to pay",
+      "Run a year-long market study before any development begins",
+      "Deliver a minimum viable product to test key assumptions with real customers",
+      "Release a prototype only to internal staff and never to customers"
+    ],
+    "answer": 2,
+    "explanation": "A minimum viable product lets the organization validate its riskiest assumptions with real users quickly and cheaply, then adapt. Building the full feature set first is tempting but risks heavy investment in a product customers may not want."
+  },
+  {
+    "id": "prc-072",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "Your kanban team has a WIP limit of 3 in the Testing column, and it is full. A developer has just finished coding an item and has nothing else in progress. What should the developer do?",
+    "options": [
+      "Help move items through Testing to free capacity before pulling new work",
+      "Move the item into Testing anyway since it is ready",
+      "Pull a new item from the backlog into Development",
+      "Ask the team lead to raise the Testing WIP limit permanently"
+    ],
+    "answer": 0,
+    "explanation": "WIP limits expose bottlenecks and encourage the team to swarm on downstream work to finish items. Pulling new work is tempting but increases work in progress and lengthens cycle time; exceeding or permanently raising the limit hides the bottleneck."
+  },
+  {
+    "id": "prc-073",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 3,
+    "stem": "A cumulative flow diagram for your kanban team shows the band for \"Waiting for Review\" steadily widening while the \"Done\" band grows slowly. What does this indicate?",
+    "options": [
+      "The team is delivering faster than planned",
+      "A bottleneck at the review stage that is increasing cycle time",
+      "The backlog is running out of work",
+      "The WIP limits are too low for the review stage, so finished work cannot move forward quickly enough"
+    ],
+    "answer": 1,
+    "explanation": "A widening band in a cumulative flow diagram means items are entering that stage faster than they leave, a bottleneck that increases cycle time. Concluding that WIP limits are too low is backwards; a growing queue usually signals the need for tighter limits or more review capacity."
+  },
+  {
+    "id": "prc-074",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "The product owner reports that the team needs to forecast when 120 story points of features will be done. The team's velocity has ranged from 18 to 24 points per sprint. What is the best forecast to give?",
+    "options": [
+      "Exactly 5 sprints",
+      "Exactly 6 sprints",
+      "Between 4 and 5 sprints",
+      "Between 5 and 7 sprints"
+    ],
+    "answer": 3,
+    "explanation": "Using the velocity range: 120 / 24 = 5 sprints (best case) and 120 / 18 = 6.67, rounded up to 7 sprints (worst case). A range communicates uncertainty honestly; quoting only 5 sprints assumes the team always hits its best velocity."
+  },
+  {
+    "id": "prc-075",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 1,
+    "stem": "A team member finished a story and tells the product owner it is done, but the tester says it is not done, and another developer has a different view. The team has never agreed on what done means. What should you do?",
+    "options": [
+      "Let the product owner decide each story individually",
+      "Adopt the definition of done from another team without discussion",
+      "Ask the tester to decide what is done",
+      "Facilitate the team and product owner in creating a shared definition of done"
+    ],
+    "answer": 3,
+    "explanation": "A shared, explicit definition of done created collaboratively ensures consistent quality and transparency about what complete means. Deciding case by case leads to inconsistent quality, and copying another team's definition without discussion lacks buy-in and context."
+  },
+  {
+    "id": "prc-076",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "During planning poker, estimates for a story range from 2 to 13 points. What should happen next?",
+    "options": [
+      "Average the estimates and use the result, since it balances the optimistic and pessimistic views of the work",
+      "The highest and lowest estimators explain their reasoning, then the team re-estimates",
+      "Use the estimate from the most senior developer",
+      "Choose the highest estimate to be safe"
+    ],
+    "answer": 1,
+    "explanation": "Wide differences usually reveal different understandings of the work; discussing the outliers surfaces assumptions and risks before re-estimating. Averaging hides the disagreement and the information it contains."
+  },
+  {
+    "id": "prc-077",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "Before backlog refinement was introduced, the product owner wrote every story alone, and the team often saw stories for the first time during sprint planning, causing long and confused meetings. What is the best improvement?",
+    "options": [
+      "Have the product owner write more detailed specifications alone so stories are complete before sprint planning",
+      "Hold regular refinement sessions where the product owner and team clarify, split, and estimate stories",
+      "Double the length of sprint planning meetings",
+      "Let the team write all stories without the product owner"
+    ],
+    "answer": 1,
+    "explanation": "Ongoing backlog refinement brings the team and product owner together to prepare upcoming items so they are understood and ready before sprint planning. Longer specifications written alone still lack shared understanding, and removing the product owner removes the voice of value."
+  },
+  {
+    "id": "prc-078",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "The team has two stories that are 80% complete and one that is done. They want to demonstrate all three at the sprint review to show progress. What should you advise?",
+    "options": [
+      "Demonstrate only work meeting the definition of done; return unfinished stories to the backlog",
+      "Demonstrate all three stories so stakeholders can see progress",
+      "Demonstrate all three but claim the partial stories as 80% of their points to reflect the work actually performed",
+      "Skip the sprint review until all three stories are done"
+    ],
+    "answer": 0,
+    "explanation": "The sprint review inspects a usable increment, which includes only work that meets the definition of done; unfinished items go back to the backlog for the product owner to reprioritize. Showing incomplete work as progress gives stakeholders a misleading view of what is actually usable."
+  },
+  {
+    "id": "prc-079",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "The product owner is rarely available, and the team often waits days for answers to questions about stories, slowing progress. What should you do?",
+    "options": [
+      "Have the team make product decisions themselves to avoid waiting, then have the product owner confirm them whenever available",
+      "Make the product decisions yourself as the project lead",
+      "Pause the sprint until the product owner is available",
+      "Raise the impediment with the product owner and, if needed, the sponsor to secure availability or an empowered delegate"
+    ],
+    "answer": 3,
+    "explanation": "An unavailable product owner is an impediment that the servant leader should address, ensuring someone with authority over priorities is accessible. Having the team or project lead make product decisions themselves undermines the product owner's accountability for value."
+  },
+  {
+    "id": "prc-080",
+    "domain": "process",
+    "topic": "Agile delivery",
+    "approach": "agile",
+    "difficulty": 3,
+    "stem": "A kanban team's average cycle time has doubled over two months. You notice that when an item gets blocked, team members simply start another item. What is the best action?",
+    "options": [
+      "Add more columns to the board to track blocked work in more detail",
+      "Make blockers visible, swarm to remove them, and enforce WIP limits so work finishes before new work starts",
+      "Increase the WIP limits so blocked work does not stop the flow and team members always have something to work on",
+      "Ask each team member to work on more items in parallel"
+    ],
+    "answer": 1,
+    "explanation": "Starting new work whenever something is blocked increases work in progress, which lengthens cycle time; limiting WIP and swarming on blockers restores flow. Increasing WIP limits is tempting but makes the problem worse by allowing even more partially finished work."
+  }
+]

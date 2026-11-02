@@ -1,0 +1,45 @@
+name: Instagram posts
+
+# Runs twice a day on schedule (live), or by hand from the Actions tab (dry run unless "live" is ticked).
+# Free (organic) posts only: nothing here creates paid ads or spends money.
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: "check (read-only test), post (feed), story, reel, or auto (next scheduled item; set ad to am or pm)"
+        type: choice
+        options: [check, post, story, reel, auto]
+        default: post
+      ad:
+        description: "Creative id for post/story: countdown, quiz, plan, malayalam"
+        type: string
+        default: quiz
+      live:
+        description: "Actually send to Meta (unticked = dry run)"
+        type: boolean
+        default: false
+  # Two free posts a day, approved by vivek on 17 Oct 2026. Rotation is in ads.json "schedule".
+  schedule:
+    - cron: "30 2 * * *" # 08:00 IST: story ("am")
+    - cron: "30 13 * * *" # 19:00 IST, evening peak: reel or feed post ("pm")
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Publish
+        env:
+          META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          COMMAND: ${{ inputs.command || 'auto' }}
+          AD: ${{ inputs.ad || (github.event.schedule == '30 2 * * *' && 'am' || 'pm') }}
+          LIVE: ${{ github.event_name == 'schedule' || inputs.live }}
+        run: |
+          args=("$COMMAND")
+          case "$COMMAND" in post|story|auto) args+=("$AD") ;; reel) [ "$AD" != quiz ] && args+=("$AD") ;; esac
+          [ "$LIVE" = "true" ] && args+=(--live)
+          node marketing/instagram-ads/publish.mjs "${args[@]}"

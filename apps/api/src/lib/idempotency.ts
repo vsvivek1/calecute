@@ -33,7 +33,8 @@ export async function withIdempotency<T>(
   params: {
     key: string | null;
     endpoint: string;
-    userId: number;
+    /** Null for a service key, which is not a user. */
+    userId: number | null;
     requestBody: unknown;
     required?: boolean;
   },

@@ -1,0 +1,47 @@
+// Labels in English and Malayalam. Only the words a parent navigates by are
+// translated; what teachers write (homework, notices) is shown as written.
+
+const ml: Record<string, string> = {
+  Today: 'ഇന്ന്',
+  Attendance: 'ഹാജർ',
+  Fees: 'ഫീസ്',
+  Homework: 'ഗൃഹപാഠം',
+  Activities: 'പ്രവർത്തനങ്ങൾ',
+  Grades: 'മാർക്ക്',
+  'Sample tests': 'മാതൃകാ പരീക്ഷകൾ',
+  Quizzes: 'ക്വിസ്',
+  Complaints: 'പരാതികൾ',
+  Notices: 'അറിയിപ്പുകൾ',
+  More: 'കൂടുതൽ',
+  'Sign out': 'പുറത്തുകടക്കുക',
+  present: 'ഹാജർ',
+  absent: 'ഹാജരില്ല',
+  late: 'വൈകി',
+  leave: 'അവധി',
+  'Not marked yet': 'രേഖപ്പെടുത്തിയിട്ടില്ല',
+  Due: 'അടയ്ക്കാനുള്ളത്',
+  Overdue: 'കുടിശ്ശിക',
+  Paid: 'അടച്ചു',
+  Receipt: 'രസീത്',
+  'Mark done': 'പൂർത്തിയായി',
+  Done: 'പൂർത്തിയായി',
+  'Request leave': 'അവധി അപേക്ഷ',
+  'Raise a complaint': 'പരാതി നൽകുക',
+  'Needs your reply': 'നിങ്ങളുടെ മറുപടി വേണം',
+  'Nothing needs you today': 'ഇന്ന് നിങ്ങൾ ചെയ്യേണ്ടതൊന്നുമില്ല',
+  'Upcoming': 'വരാനിരിക്കുന്നവ',
+  'Start quiz': 'ക്വിസ് തുടങ്ങുക',
+  Submit: 'സമർപ്പിക്കുക',
+  Yes: 'അതെ',
+  No: 'ഇല്ല',
+  Class: 'ക്ലാസ്',
+  Teacher: 'അധ്യാപകർ',
+  Office: 'ഓഫീസ്',
+  Parent: 'രക്ഷിതാവ്',
+};
+
+export type Lang = 'en' | 'ml';
+
+export function translator(l: Lang) {
+  return (s: string) => (l === 'ml' ? ml[s] ?? s : s);
+}

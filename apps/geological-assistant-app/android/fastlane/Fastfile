@@ -1,0 +1,45 @@
+default_platform(:android)
+
+AAB = File.expand_path("../../build/app/outputs/bundle/release/app-release.aab", __dir__)
+
+platform :android do
+  desc "Build the signed release AAB. Needs android/key.properties (upload key) and a config file with a Google web client id."
+  lane :build do |o|
+    unless File.exist?(File.expand_path("../key.properties", __dir__))
+      UI.user_error!("android/key.properties missing: release would be signed with the debug key")
+    end
+    config = o[:config] || "config/prod.json"
+    number = o[:build_number] ? "--build-number=#{o[:build_number]}" : ""
+    sh("cd ../.. && flutter build appbundle --release #{number} --dart-define-from-file=#{config}")
+  end
+
+  desc "Upload the AAB to the PRODUCTION track as a DRAFT. Nothing goes live until it is sent for review in Play Console."
+  lane :production_draft do |o|
+    aab = o[:aab] || AAB
+    UI.user_error!("AAB not found: #{aab}") unless File.exist?(aab)
+    upload_to_play_store(
+      track: "production",
+      aab: aab,
+      release_status: "draft",
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
+  desc "Upload the AAB to internal testing as a draft."
+  lane :internal_draft do |o|
+    aab = o[:aab] || AAB
+    UI.user_error!("AAB not found: #{aab}") unless File.exist?(aab)
+    upload_to_play_store(
+      track: "internal",
+      aab: aab,
+      release_status: "draft",
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+end

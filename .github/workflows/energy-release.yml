@@ -1,0 +1,134 @@
+name: Energy Auditor release
+
+# Builds the signed Android App Bundle for com.calecutech.energyauditor.
+# Started by hand only (Actions > Energy Auditor release > Run workflow).
+# The AAB is always kept on the run page. Uploads go to Play only as DRAFTS;
+# publishing stays a manual step in Play Console.
+#
+# Note: Google Play accepts API uploads only after the app's first bundle was
+# uploaded by hand in Play Console. For the very first release, download the
+# AAB from the run page and upload it there.
+#
+# Repository secrets (Settings > Secrets and variables > Actions):
+#   ANDROID_KEYSTORE_BASE64   base64 of the upload keystore (.jks)
+#   ANDROID_KEYSTORE_PASSWORD keystore password
+#   ANDROID_KEY_ALIAS         key alias
+#   ANDROID_KEY_PASSWORD      key password
+#   PLAY_SERVICE_ACCOUNT_JSON Play Console service account key (uploads only)
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: "Where to upload the bundle"
+        type: choice
+        options: [none, production-draft, internal-draft]
+        default: none
+      listing:
+        description: "Also push the store listing text and images"
+        type: boolean
+        default: false
+
+concurrency:
+  group: energy-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: "3.47.7"
+          cache: true
+
+      - name: Check signing secrets
+        env:
+          KS: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          missing=0
+          for v in KS KS_PASS KEY_ALIAS KEY_PASS; do
+            if [ -z "${!v}" ]; then echo "::error::secret for $v is not set"; missing=1; fi
+          done
+          exit $missing
+
+      - name: Write upload keystore and key.properties
+        working-directory: apps/energy_app/android
+        env:
+          KS: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "$KS" | base64 --decode > "$RUNNER_TEMP/upload.jks"
+          {
+            echo "storeFile=$RUNNER_TEMP/upload.jks"
+            echo "storePassword=$KS_PASS"
+            echo "keyAlias=$KEY_ALIAS"
+            echo "keyPassword=$KEY_PASS"
+          } > key.properties
+
+      - name: Tests
+        run: |
+          (cd packages/recallio_core && flutter pub get && flutter test)
+          (cd apps/energy_app && flutter pub get && flutter test)
+
+      # versionName comes from pubspec.yaml; versionCode is the run number so
+      # every upload is higher than the last one Play has seen.
+      - name: Build AAB
+        working-directory: apps/energy_app
+        run: flutter build appbundle --release --build-number=${{ github.run_number }}
+
+      - name: Verify the AAB is signed with the upload key
+        run: |
+          aab=apps/energy_app/build/app/outputs/bundle/release/app-release.aab
+          jarsigner -verify "$aab" | grep -q "jar verified"
+          if keytool -printcert -jarfile "$aab" | grep -q "CN=Android Debug"; then
+            echo "::error::AAB is signed with the debug key"; exit 1
+          fi
+          keytool -printcert -jarfile "$aab" | grep -E "Owner|SHA1|SHA256"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: energy-auditor-aab-${{ github.run_number }}
+          path: apps/energy_app/build/app/outputs/bundle/release/app-release.aab
+          retention-days: 30
+          if-no-files-found: error
+
+      - uses: ruby/setup-ruby@v1
+        if: ${{ inputs.upload != 'none' || inputs.listing }}
+        with:
+          ruby-version: "3.3"
+
+      - name: Upload to Play
+        if: ${{ inputs.upload != 'none' || inputs.listing }}
+        working-directory: apps/energy_app/android
+        env:
+          PLAY_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          TARGET: ${{ inputs.upload }}
+          LISTING: ${{ inputs.listing }}
+        run: |
+          if [ -z "$PLAY_JSON" ]; then echo "::error::PLAY_SERVICE_ACCOUNT_JSON is not set"; exit 1; fi
+          echo "$PLAY_JSON" > "$RUNNER_TEMP/play-key.json"
+          export SUPPLY_JSON_KEY="$RUNNER_TEMP/play-key.json"
+          bundle install
+          case "$TARGET" in
+            production-draft) bundle exec fastlane production_draft ;;
+            internal-draft) bundle exec fastlane internal ;;
+          esac
+          if [ "$LISTING" = "true" ]; then bundle exec fastlane metadata; fi
+
+      - name: Remove signing material
+        if: always()
+        run: rm -f apps/energy_app/android/key.properties "$RUNNER_TEMP/upload.jks" "$RUNNER_TEMP/play-key.json"

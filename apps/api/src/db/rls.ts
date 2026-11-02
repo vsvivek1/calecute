@@ -22,11 +22,27 @@
 import { sql } from "drizzle-orm";
 import { db } from "./client";
 
-export type ActorRole = "AGENT" | "DISTRICT_ADMIN" | "SUPER_ADMIN" | "PUBLIC";
+/**
+ * SERVICE is a product system calling with an API key (see lib/route.ts
+ * `serviceRoute`). It is not a user: `userId` is 0, which matches no row, and
+ * the policies admit it only to the product-system tables, scoped to the
+ * product the key belongs to through `app.product_id`.
+ */
+export type ActorRole =
+  | "AGENT"
+  | "DISTRICT_ADMIN"
+  | "SUPER_ADMIN"
+  | "SERVICE"
+  | "PUBLIC";
+
+/** A role a signed-in person can hold. SERVICE and PUBLIC are not people. */
+export type UserRole = Exclude<ActorRole, "PUBLIC" | "SERVICE">;
 
 export interface Actor {
   userId: number | null;
   role: ActorRole;
+  /** Set only for a SERVICE actor: the product whose key authenticated it. */
+  productId?: number | null;
 }
 
 /** The anonymous caller: the recruitment page before anyone signs in. */
@@ -66,7 +82,8 @@ export async function withRls<T>(
      * separate statements added ~110ms to every request in the product.
      *
      * The role is still a module constant rather than anything derived from a
-     * request, and both identity values are bound parameters.
+     * request, and all identity values are bound parameters. `app.product_id`
+     * is empty for everyone but a SERVICE actor.
      */
     await tx.execute(
       sql`SELECT
@@ -74,7 +91,10 @@ export async function withRls<T>(
             set_config('app.user_id', ${
               actor.userId === null ? "" : String(actor.userId)
             }, true),
-            set_config('app.role', ${actor.role}, true)`,
+            set_config('app.role', ${actor.role}, true),
+            set_config('app.product_id', ${
+              actor.productId == null ? "" : String(actor.productId)
+            }, true)`,
     );
     return fn(tx);
   });

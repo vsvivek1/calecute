@@ -1,0 +1,36 @@
+Pass the BEE National Certification Examination (NCE) for Energy Managers and Energy Auditors with a few minutes a day. Recallio turns the four BEE guide books into small study cards and plans every day for you, counted back from your exam date.
+
+Built for working engineers preparing for the BEE certified energy manager (CEM) and certified energy auditor (CEA) exam: no timetable to make, no chapters to choose. Open the app at your study time and do the cards it gives you.
+
+WHO IT IS FOR
+• Mechanical, electrical and chemical engineers preparing for the BEE energy manager or energy auditor certificate
+• Plant, utility and maintenance engineers who want to revise energy audit and energy conservation basics
+• Energy consultants and ESCO staff brushing up on the Energy Conservation Act, 2001, PAT scheme and energy audit methods
+
+HOW IT WORKS
+• Set your exam date and the papers you are taking. The app decides what to study each day, including revision.
+• At each study time you get an alert: "10 cards, about 6 minutes". Study one card at a time.
+• After each card, tap Didn't get it, Tough, Understood or So simple. Spaced repetition brings the card back just before you would forget it.
+• Tough cards come back sooner; easy ones move far away, so your time goes where it is needed.
+• At noon, one key fact arrives as a short flash.
+• The last weeks switch to revision, and the last two days to cram mode.
+• A weekly report shows what became easy and what is still tough.
+
+ALL FOUR BEE PAPERS
+• Paper 1: General aspects of energy management and energy audit
+• Paper 2: Energy efficiency in thermal utilities (boilers, steam, furnaces, cogeneration, waste heat recovery)
+• Paper 3: Energy efficiency in electrical utilities (motors, compressed air, HVAC, pumps, fans, lighting, DG sets)
+• Paper 4: Energy performance assessment for equipment and utility systems
+
+WHAT IS INSIDE
+• Over 2,000 cards written from the BEE guide books, in chapter order, each naming the page it came from.
+• Energy audit and energy efficiency numericals solved one step at a time, with the reason for every step: boiler efficiency, pump and fan laws, motor loading, power factor, heat balance and more.
+• Read-aloud on every card, English and Malayalam app language, works offline.
+• Sign in with Google to use the same progress on your phone and on the web at energy.recallio.calecutech.com.
+
+PRICING
+The first 20 cards of every paper are free. Unlock a paper for ₹1,000 (one-time, no subscription) to study all of it until your exam. Coupon codes are also accepted.
+
+Recallio is an independent study app by Calecute Technologies. It is not affiliated with or endorsed by the Bureau of Energy Efficiency (BEE) or the Ministry of Power. Check the official BEE notification for exam dates and rules.
+
+Privacy: https://calecutech.com/apps/recallio-energy-manager/privacy

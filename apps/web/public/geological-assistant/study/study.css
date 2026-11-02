@@ -29,6 +29,42 @@
 table.res{border-collapse:collapse;width:100%;font:15px system-ui,sans-serif}
 table.res td,table.res th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left}
 @media(max-width:560px){.rate{grid-template-columns:1fr}}
+.plan{margin:6px 0 16px;padding-left:22px;font-size:17px;line-height:1.6}
+.tag{display:inline-block;font:700 11px system-ui,sans-serif;color:var(--acct);background:var(--acc);border-radius:6px;padding:2px 7px;letter-spacing:.04em}
+.tag.rev{background:var(--ok)}
+input.date{display:block;font:17px system-ui,sans-serif;padding:10px 12px;margin:6px 0;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
+.was{color:var(--mut);font-weight:600;font-size:24px}
+.coupon{margin:14px 0 4px}
+.coupon input,.grid input{font:16px system-ui,sans-serif;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-width:0}
+.coupon input{flex:1 1 160px;text-transform:uppercase;letter-spacing:.04em}
+.spinbox{text-align:center}
+.wheel{position:relative;width:min(260px,80vw);margin:10px auto 14px}
+.wheel svg{display:block;width:100%;height:auto;filter:drop-shadow(0 4px 10px rgba(0,0,0,.18))}
+.wheel .spin{transform-box:view-box;transform-origin:50% 50%}
+.wheel .pointer{position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;border-top:24px solid var(--fg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;align-items:end}
+.field{display:flex;flex-direction:column;gap:4px}
+.scroll{overflow-x:auto}
+tr.off td{opacity:.5}
+/* progress board */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:0 0 16px}
+.tile{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.tile .big{font-size:1.6rem}
+td.barcell{min-width:90px;width:30%}
+.days{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;max-width:520px}
+.day{display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:6px;font-size:.72rem;background:var(--line);color:inherit}
+.day.on{background:var(--ok);color:var(--card);font-weight:700}
+
+/* study schedule and missed-day nudge */
+table.sched tr.now td { background: color-mix(in srgb, var(--ok) 10%, transparent); }
+.panel.nudge { border-left: 4px solid var(--ok); }
+
+/* study calendar on the progress page: every day since the start, scroll up for older days */
+.calendar{max-height:340px;overflow:auto;max-width:420px;padding-right:4px}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.days-head{margin-bottom:4px;text-align:center}
+.days-head span{text-align:center}
+.day.pad{visibility:hidden}
 .bill{display:grid;gap:4px;margin:6px 0 14px;max-width:420px;font:15px system-ui,sans-serif}
 .bill label{font-weight:600;margin-top:6px}
 .bill input,.bill select{width:100%;box-sizing:border-box;min-width:0;font:16px system-ui,sans-serif;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}

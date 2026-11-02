@@ -14,9 +14,11 @@ const PATHS: Array<{ path: string; priority: number; changeFrequency: "monthly" 
   { path: "/agents", priority: 0.9, changeFrequency: "weekly" },
   { path: "/agents/terms", priority: 0.5, changeFrequency: "yearly" },
   { path: "/agents/privacy", priority: 0.5, changeFrequency: "yearly" },
+  { path: "/rewards", priority: 0.7, changeFrequency: "weekly" },
   { path: "/about", priority: 0.6, changeFrequency: "monthly" },
   { path: "/services", priority: 0.6, changeFrequency: "monthly" },
   { path: "/products", priority: 0.6, changeFrequency: "monthly" },
+  { path: "/courses", priority: 0.7, changeFrequency: "monthly" },
   { path: "/products/dailydo", priority: 0.5, changeFrequency: "monthly" },
   { path: "/apps", priority: 0.5, changeFrequency: "monthly" },
   // Recallio's own pages are listed explicitly: Google's OAuth review checks
@@ -66,6 +68,14 @@ const PATHS: Array<{ path: string; priority: number; changeFrequency: "monthly" 
   { path: "/findmybus/terms", priority: 0.4, changeFrequency: "yearly" },
   { path: "/findmybus/support", priority: 0.4, changeFrequency: "yearly" },
   { path: "/findmybus/delete-account", priority: 0.4, changeFrequency: "yearly" },
+  // Geological Assistant Prep. Static pages under public/geological-assistant.
+  // The course home is the page meant to rank for the Kerala PSC exam; the
+  // study app itself is noindex and stays out.
+  { path: "/geological-assistant", priority: 0.9, changeFrequency: "weekly" },
+  { path: "/geological-assistant/privacy", priority: 0.3, changeFrequency: "yearly" },
+  { path: "/geological-assistant/terms", priority: 0.3, changeFrequency: "yearly" },
+  { path: "/geological-assistant/refunds", priority: 0.3, changeFrequency: "yearly" },
+  { path: "/geological-assistant/support", priority: 0.3, changeFrequency: "yearly" },
   // Bankers Gold (GoldLelam). Product page; its policy pages live under /goldlelam.
   { path: "/bankers-gold", priority: 0.8, changeFrequency: "monthly" },
   // QuizKerala. Next routes under app/quizkerala with their own layout.
@@ -87,6 +97,7 @@ const PATHS: Array<{ path: string; priority: number; changeFrequency: "monthly" 
   { path: "/history-clock/terms", priority: 0.4, changeFrequency: "yearly" },
   { path: "/history-clock/delete-account", priority: 0.4, changeFrequency: "yearly" },
   { path: "/locations", priority: 0.4, changeFrequency: "yearly" },
+  { path: "/careers", priority: 0.6, changeFrequency: "weekly" },
   { path: "/contact", priority: 0.5, changeFrequency: "yearly" },
   { path: "/privacy", priority: 0.3, changeFrequency: "yearly" },
   { path: "/terms", priority: 0.3, changeFrequency: "yearly" },

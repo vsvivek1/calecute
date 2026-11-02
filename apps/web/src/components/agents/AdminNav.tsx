@@ -66,6 +66,9 @@ export function AdminNav({
               <li>
                 <a href="/admin/audit">Audit log</a>
               </li>
+              <li>
+                <a href="/admin/products">API keys</a>
+              </li>
             </>
           )}
         </ul>

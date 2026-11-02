@@ -39,6 +39,13 @@ export const userRole = pgEnum("user_role", [
   "SUPER_ADMIN",
 ]);
 
+/**
+ * Two kinds of referrer in one table. USER is every app user, automatically,
+ * with no application; SELLER is a vetted commission agent. See
+ * drizzle/0009_referral_tiers.sql.
+ */
+export const agentTier = pgEnum("agent_tier", ["USER", "SELLER"]);
+
 export const userStatus = pgEnum("user_status", [
   "ACTIVE",
   "SUSPENDED",
@@ -265,9 +272,20 @@ export const users = pgTable(
   "users",
   {
     id: bigserial("id", { mode: "number" }).primaryKey(),
-    /** Google's stable subject claim. The real identity key. */
-    googleSub: text("google_sub").notNull().unique(),
-    email: text("email").notNull(),
+    /**
+     * Google's stable subject claim: the identity key for anyone who signs in
+     * here. Null for a product user, who is identified by `externalRef`.
+     */
+    googleSub: text("google_sub").unique(),
+    /**
+     * `<product_slug>:<the app's own user id>` for a member created through
+     * POST /members. Such a user never signs in to this API; the row exists so
+     * a USER-tier agent can hang off it. Exactly one of googleSub/externalRef
+     * is set (CHECK users_identity_check, users_product_user_check).
+     */
+    externalRef: text("external_ref").unique(),
+    /** Required for a Google user; a product user may have none. */
+    email: text("email"),
     emailVerified: boolean("email_verified").notNull().default(false),
     name: text("name").notNull(),
     pictureUrl: text("picture_url"),
@@ -281,7 +299,13 @@ export const users = pgTable(
       .notNull()
       .defaultNow(),
   },
-  (t) => [uniqueIndex("users_email_idx").on(sql`lower(${t.email})`)],
+  (t) => [
+    // One Google account per email. Product users are outside this: the same
+    // person in two apps is two rows, and either may carry the same address.
+    uniqueIndex("users_email_idx")
+      .on(sql`lower(${t.email})`)
+      .where(sql`${t.externalRef} IS NULL`),
+  ],
 );
 
 /** Which districts a DISTRICT_ADMIN may see. SUPER_ADMIN needs no rows here. */
@@ -348,11 +372,23 @@ export const agents = pgTable(
       .notNull()
       .unique()
       .references(() => users.id, { onDelete: "cascade" }),
-    /** CA-<district codeSlug>-<zero padded sequence>. Immutable once issued. */
+    /**
+     * SELLER: CA-<district codeSlug>-<zero padded sequence>.
+     * USER:   RF-<6 unambiguous base32 characters>.
+     * Immutable once issued.
+     */
     agentCode: text("agent_code").notNull().unique(),
-    districtId: bigint("district_id", { mode: "number" })
-      .notNull()
-      .references(() => districts.id),
+    tier: agentTier("tier").notNull().default("SELLER"),
+    /** What a USER-tier member is called on the leaderboard (masked there). */
+    displayName: text("display_name"),
+    /** The product whose API key created a USER-tier row. Null for sellers. */
+    sourceProductId: bigint("source_product_id", { mode: "number" }).references(
+      () => products.id,
+    ),
+    /** Required for a seller (CHECK agents_seller_fields_check); null for USER tier. */
+    districtId: bigint("district_id", { mode: "number" }).references(
+      () => districts.id,
+    ),
     /**
      * Null while an applicant's local body is not yet seeded — see
      * drizzle/0006_pending_local_body.sql. Such an agent holds no slot and
@@ -372,24 +408,18 @@ export const agents = pgTable(
     /** The ward number typed by an applicant whose town is not seeded yet. */
     pendingWardNumber: smallint("pending_ward_number"),
     /** Not verified at signup by design; verified later at payout setup. */
-    mobile: text("mobile").notNull(),
+    mobile: text("mobile"),
     mobileVerifiedAt: timestamp("mobile_verified_at", { withTimezone: true }),
-    occupation: text("occupation").notNull(),
+    occupation: text("occupation"),
     status: agentStatus("status").notNull().default("PENDING_REVIEW"),
     reviewedBy: bigint("reviewed_by", { mode: "number" }).references(
       () => users.id,
     ),
     reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
     reviewNote: text("review_note"),
-    termsVersion: text("terms_version")
-      .notNull()
-      .references(() => termsVersions.version),
-    termsAcceptedAt: timestamp("terms_accepted_at", {
-      withTimezone: true,
-    }).notNull(),
-    privacyConsentAt: timestamp("privacy_consent_at", {
-      withTimezone: true,
-    }).notNull(),
+    termsVersion: text("terms_version").references(() => termsVersions.version),
+    termsAcceptedAt: timestamp("terms_accepted_at", { withTimezone: true }),
+    privacyConsentAt: timestamp("privacy_consent_at", { withTimezone: true }),
     firstSaleAt: timestamp("first_sale_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -406,6 +436,8 @@ export const agents = pgTable(
     index("agents_ward_idx").on(t.wardId),
     index("agents_status_idx").on(t.status),
     index("agents_created_at_idx").on(t.createdAt),
+    index("agents_tier_idx").on(t.tier),
+    index("agents_source_product_idx").on(t.sourceProductId),
   ],
 );
 
@@ -504,10 +536,46 @@ export const products = pgTable("products", {
   summaryEn: text("summary_en"),
   summaryMl: text("summary_ml"),
   active: boolean("active").notNull().default(true),
+  /** Null means the product is free: referrers earn diamonds, never money. */
+  feePaise: bigint("fee_paise", { mode: "number" }),
+  /** What a SELLER earns on this product, 1000..3000 (10% to 30%). */
+  sellerRateBps: smallint("seller_rate_bps").notNull().default(1000),
+  /** What a USER-tier referrer earns on a paid product, 0..1000. Default 1%. */
+  userRateBps: smallint("user_rate_bps").notNull().default(100),
+  /** Where /r/<code>?app=<slug> sends a visitor on the web. */
+  webUrl: text("web_url"),
+  /** Play Store listing; Android visitors are sent here with an install referrer. */
+  playUrl: text("play_url"),
+  androidPackage: text("android_package"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
 });
+
+/**
+ * Credentials for product systems. Only the SHA-256 of the plaintext is kept;
+ * the plaintext (`ck_live_…` for a client key, `sk_live_…` for a server key)
+ * is shown once at minting. See lib/apikeys.ts.
+ */
+export const productApiKeys = pgTable(
+  "product_api_keys",
+  {
+    id: bigserial("id", { mode: "number" }).primaryKey(),
+    productId: bigint("product_id", { mode: "number" })
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    /** `client` ships inside an app (low trust); `server` may record payments. */
+    kind: text("kind").notNull(),
+    keyHash: text("key_hash").notNull().unique(),
+    label: text("label").notNull(),
+    createdBy: bigint("created_by", { mode: "number" }).references(() => users.id),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  },
+  (t) => [index("product_api_keys_product_idx").on(t.productId)],
+);
 
 export const productAssets = pgTable(
   "product_assets",
@@ -556,6 +624,10 @@ export const customers = pgTable(
     /** Identifier from the product system that owns the billing relationship. */
     externalRef: text("external_ref").notNull().unique(),
     displayName: text("display_name").notNull(),
+    /** The product the customer joined. Set for every row written through a service key. */
+    productId: bigint("product_id", { mode: "number" }).references(
+      () => products.id,
+    ),
     districtId: bigint("district_id", { mode: "number" }).references(
       () => districts.id,
     ),
@@ -567,7 +639,61 @@ export const customers = pgTable(
       .notNull()
       .defaultNow(),
   },
-  (t) => [index("customers_district_idx").on(t.districtId)],
+  (t) => [
+    index("customers_district_idx").on(t.districtId),
+    index("customers_product_idx").on(t.productId),
+  ],
+);
+
+/**
+ * One diamond per friend who joins a FREE product through a USER-tier code.
+ * Recognition only — nothing here is ever paid out. `customerId` is unique so
+ * a friend counts once, ever, whichever code they were claimed with.
+ */
+export const diamondAwards = pgTable(
+  "diamond_awards",
+  {
+    id: bigserial("id", { mode: "number" }).primaryKey(),
+    agentId: bigint("agent_id", { mode: "number" })
+      .notNull()
+      .references(() => agents.id),
+    productId: bigint("product_id", { mode: "number" })
+      .notNull()
+      .references(() => products.id),
+    customerId: bigint("customer_id", { mode: "number" })
+      .notNull()
+      .unique()
+      .references(() => customers.id),
+    amount: integer("amount").notNull().default(1),
+    awardedAt: timestamp("awarded_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    index("diamond_awards_agent_idx").on(t.agentId),
+    index("diamond_awards_product_idx").on(t.productId),
+  ],
+);
+
+/** A click on /r/<code>. No user id and no full IP; see lib/net.ts. */
+export const referralClicks = pgTable(
+  "referral_clicks",
+  {
+    id: bigserial("id", { mode: "number" }).primaryKey(),
+    code: text("code").notNull(),
+    productId: bigint("product_id", { mode: "number" }).references(
+      () => products.id,
+    ),
+    source: text("source"),
+    ipHash: text("ip_hash"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    index("referral_clicks_code_idx").on(t.code),
+    index("referral_clicks_created_idx").on(t.createdAt),
+  ],
 );
 
 /**
@@ -638,7 +764,7 @@ export const payments = pgTable(
     gatewayFeePaise: bigint("gateway_fee_paise", { mode: "number" })
       .notNull()
       .default(0),
-    /** gross - gst - gatewayFee. The base the 10% is calculated on. */
+    /** gross - gst - gatewayFee. The base the commission rate is applied to. */
     netPaise: bigint("net_paise", { mode: "number" }).notNull(),
     paidAt: timestamp("paid_at", { withTimezone: true }).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
@@ -676,14 +802,23 @@ export const commissions = pgTable(
     agentId: bigint("agent_id", { mode: "number" })
       .notNull()
       .references(() => agents.id),
-    /** Copied from the agent at accrual so reports stay stable. */
-    districtId: bigint("district_id", { mode: "number" })
-      .notNull()
-      .references(() => districts.id),
-    localBodyId: bigint("local_body_id", { mode: "number" })
-      .notNull()
-      .references(() => localBodies.id),
-    /** Base = payment.netPaise. Rate in basis points (1000 = 10%). */
+    /** The referrer's tier at accrual. Null on rows written before 0009. */
+    tier: agentTier("tier"),
+    /**
+     * Copied from the agent at accrual so reports stay stable. Required for a
+     * seller (CHECK commissions_geography_check); a USER-tier referrer has none.
+     */
+    districtId: bigint("district_id", { mode: "number" }).references(
+      () => districts.id,
+    ),
+    localBodyId: bigint("local_body_id", { mode: "number" }).references(
+      () => localBodies.id,
+    ),
+    /**
+     * Base = payment.netPaise. Rate in basis points: the product's
+     * sellerRateBps (1000..3000) for a seller, userRateBps (default 100) for a
+     * USER-tier referrer.
+     */
     basePaise: bigint("base_paise", { mode: "number" }).notNull(),
     rateBps: integer("rate_bps").notNull().default(1000),
     grossCommissionPaise: bigint("gross_commission_paise", {
@@ -712,6 +847,7 @@ export const commissions = pgTable(
     index("commissions_district_idx").on(t.districtId),
     index("commissions_status_idx").on(t.status),
     index("commissions_fy_idx").on(t.financialYear),
+    index("commissions_tier_idx").on(t.tier),
   ],
 );
 

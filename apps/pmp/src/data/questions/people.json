@@ -1,0 +1,962 @@
+[
+  {
+    "id": "ppl-001",
+    "domain": "people",
+    "topic": "Conflict management",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "You are the project manager on a construction-management software rollout. During a weekly status meeting, two senior engineers get into a heated argument over the database design, and the disagreement is now stalling several downstream decisions. What should you do FIRST?",
+    "options": [
+      "Meet with both engineers privately to understand each position and facilitate a collaborative resolution",
+      "Escalate the disagreement to the engineers' functional managers, since they control the engineers' priorities and can settle the design question quickly",
+      "Choose the design you prefer so the schedule is not affected further",
+      "Ask the project sponsor to make the final call on the database design"
+    ],
+    "answer": 0,
+    "explanation": "The project manager should first engage the people in conflict directly and seek a collaborative, problem-solving resolution that addresses the root technical concerns. Making the decision yourself may feel fast, but it forces an outcome, ignores the engineers' expertise, and tends to leave the conflict unresolved. Escalation to managers or the sponsor is only appropriate after the team's own attempts fail."
+  },
+  {
+    "id": "ppl-002",
+    "domain": "people",
+    "topic": "Servant leadership",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "You recently became the team facilitator for an agile team. You notice that during the daily standup, each developer faces you and reports what they did yesterday, and the meeting feels like a status report to you. What is the BEST action?",
+    "options": [
+      "Replace the standup with written status updates sent to you each morning",
+      "Keep the current format but enforce a strict 10-minute timebox",
+      "Coach the team that the standup is for them to coordinate with each other, and step back from leading it",
+      "Ask each developer to also report the hours spent on each task so you can track productivity and spot anyone falling behind early"
+    ],
+    "answer": 2,
+    "explanation": "The daily standup is a planning and coordination event owned by the team, not a status report to a leader. A servant leader coaches the team and deliberately steps back so the team self-organizes. Simply enforcing a timebox keeps the meeting short but preserves the underlying problem of reporting to the facilitator."
+  },
+  {
+    "id": "ppl-003",
+    "domain": "people",
+    "topic": "Agile roles",
+    "approach": "agile",
+    "difficulty": 1,
+    "stem": "A marketing director approaches one of your developers in the middle of a sprint and asks them to add a new promotional banner feature right away. The developer asks you, the scrum master, how to respond. What is the BEST guidance?",
+    "options": [
+      "Add the feature now if the developer estimates it will take less than a day",
+      "Direct the marketing director to the product owner, who manages backlog priorities",
+      "Decline the request firmly and tell the director to wait for the next project phase",
+      "Escalate the request to the project sponsor for approval"
+    ],
+    "answer": 1,
+    "explanation": "The product owner is accountable for the product backlog and decides what gets prioritized; new requests should flow through the PO rather than directly to developers. Quietly absorbing a 'small' request mid-sprint undermines the sprint goal and bypasses prioritization. Declining outright is unnecessarily adversarial, since the request may be valuable."
+  },
+  {
+    "id": "ppl-004",
+    "domain": "people",
+    "topic": "Team charter & ground rules",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "You are leading a hybrid project that combines staff from an engineering department and an IT department. Within the first two weeks there is friction over expected response times, meeting etiquette, and how decisions are recorded. What should you do?",
+    "options": [
+      "Write a clear set of rules yourself based on both departments' policies and distribute them to the team for compliance so expectations are consistent",
+      "Ask both functional managers to remind their staff of their department policies",
+      "Wait, since friction is a normal part of team development and will resolve itself",
+      "Facilitate a session in which the team co-creates a team charter with ground rules and decision-making norms"
+    ],
+    "answer": 3,
+    "explanation": "A team charter created collaboratively gives the team shared ownership of its values, ground rules, and decision-making process, which directly addresses the friction. Rules written solely by the project manager tend to get weak buy-in. Waiting it out ignores a clear, fixable cause of conflict."
+  },
+  {
+    "id": "ppl-005",
+    "domain": "people",
+    "topic": "Virtual teams",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "Your project team is spread across four time zones. The weekly coordination meeting is scheduled during normal business hours for most members, but it falls at 11 p.m. for the team in one region. Morale in that region has noticeably declined. What is the BEST approach?",
+    "options": [
+      "Keep the current time because it suits the majority, and ask the affected region to accept the late slot as a temporary cost of working on a global team",
+      "Rotate meeting times so the inconvenience is shared, and shift routine updates to asynchronous channels",
+      "Excuse the affected region from the meeting and send them the minutes",
+      "Request that the affected team members relocate to a closer time zone"
+    ],
+    "answer": 1,
+    "explanation": "Rotating meeting times demonstrates fairness and respect, and moving routine updates to asynchronous tools reduces the need for live meetings at all. Excusing that region from the meeting seems kind but cuts them off from real-time collaboration and can make them feel like second-class team members. Keeping the time ignores a clear morale issue."
+  },
+  {
+    "id": "ppl-006",
+    "domain": "people",
+    "topic": "Psychological safety",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "During retrospectives, a senior developer tends to dominate the conversation while the junior developers rarely speak. As the team facilitator, what should you do?",
+    "options": [
+      "Ask the senior developer to skip the next few retrospectives",
+      "Tell the junior developers that participation in retrospectives is mandatory and that their contributions will be noted in their performance feedback",
+      "Shorten the retrospective so less time is lost to unproductive discussion",
+      "Use structured facilitation techniques, such as silent writing or round-robin input, so every voice is heard"
+    ],
+    "answer": 3,
+    "explanation": "Structured facilitation techniques level the playing field and create psychological safety without singling anyone out. Excluding the senior developer removes a valuable perspective and may create resentment. Forcing participation through pressure tends to reduce safety rather than increase it."
+  },
+  {
+    "id": "ppl-007",
+    "domain": "people",
+    "topic": "Negotiation",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "Midway through execution, a functional manager informs you that she plans to reassign your only database specialist to another project next week. The specialist's work is on the critical path. What should you do FIRST?",
+    "options": [
+      "Escalate immediately to the sponsor to block the reassignment, since the specialist's work is on the critical path and the sponsor outranks the functional manager",
+      "Accept the reassignment and update the schedule baseline accordingly",
+      "Meet with the functional manager to explain the critical-path impact and negotiate an arrangement that works for both parties",
+      "Refuse the reassignment, citing the approved resource management plan"
+    ],
+    "answer": 2,
+    "explanation": "In a matrix environment the project manager should negotiate directly with the functional manager, sharing impacts and exploring options such as a phased handover or part-time availability. Escalating to the sponsor first skips the step of collaborating with the person who controls the resource. Simply refusing or accepting both avoid the negotiation that could protect project objectives."
+  },
+  {
+    "id": "ppl-008",
+    "domain": "people",
+    "topic": "Empowerment",
+    "approach": "agile",
+    "difficulty": 1,
+    "stem": "Your agile team has just pulled a user story into the sprint and asks you, the team facilitator, to decide which developer should work on which task. What is the BEST response?",
+    "options": [
+      "Encourage the team to decide among themselves how to divide the work, offering support if they get stuck",
+      "Assign the tasks based on each developer's strongest skills",
+      "Ask the product owner to assign the tasks",
+      "Have the most senior developer assign the tasks to save time"
+    ],
+    "answer": 0,
+    "explanation": "Agile teams are self-organizing: the developers decide how to accomplish the work. A servant leader empowers them to make that decision rather than making it for them. Assigning tasks by skill may seem efficient, but it undermines ownership and is not the facilitator's role."
+  },
+  {
+    "id": "ppl-009",
+    "domain": "people",
+    "topic": "Emotional intelligence",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "A normally calm and cooperative team member snaps angrily at a colleague during a design review. This is very unusual behavior for this person. What should you do?",
+    "options": [
+      "Issue a formal written warning for unprofessional conduct",
+      "Report the incident to the human resources department",
+      "Speak with the team member privately to understand what is going on and offer support",
+      "Address the behavior immediately in front of the team to reinforce ground rules"
+    ],
+    "answer": 2,
+    "explanation": "Because the behavior is out of character, the emotionally intelligent response is to seek to understand the underlying cause privately and with empathy. Formal warnings and HR referrals are disproportionate for a single uncharacteristic incident. Addressing it publicly risks embarrassment and damages trust."
+  },
+  {
+    "id": "ppl-010",
+    "domain": "people",
+    "topic": "Stakeholder engagement",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "On a hybrid program, a component is being delivered in two-week iterations. The stakeholder engagement assessment matrix shows that a department head who will use this component is currently resistant, and the desired level is supportive. She believes iterative delivery means a lack of planning. What is the BEST action?",
+    "options": [
+      "Meet with her to understand her concerns and invite her to iteration reviews so she can see working increments",
+      "Ask the sponsor to instruct her to support the project",
+      "Switch the component to a predictive approach with a detailed upfront plan, since her concern about planning reflects an influential stakeholder's preference",
+      "Reduce her involvement so her resistance does not slow the team"
+    ],
+    "answer": 0,
+    "explanation": "Moving a stakeholder from resistant to supportive starts with understanding her concerns and then demonstrating value; iteration reviews let her see real progress and influence the product. Changing the delivery approach for one stakeholder ignores why iterative delivery was chosen. Going to the sponsor or limiting her involvement does not address the cause of the resistance."
+  },
+  {
+    "id": "ppl-011",
+    "domain": "people",
+    "topic": "Agile roles",
+    "approach": "agile",
+    "difficulty": 1,
+    "stem": "On a Scrum team, which role is accountable for maximizing the value of the product and ordering the product backlog?",
+    "options": [
+      "The scrum master",
+      "The developers, collectively",
+      "The project sponsor",
+      "The product owner"
+    ],
+    "answer": 3,
+    "explanation": "The product owner is accountable for product value and for the content and ordering of the backlog. The scrum master focuses on the effectiveness of the team and the process, not product decisions. The developers contribute to refinement and estimates but do not own backlog ordering."
+  },
+  {
+    "id": "ppl-012",
+    "domain": "people",
+    "topic": "Team performance",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "A team member has missed the due dates on three consecutive deliverables. Before this project, she had a strong performance record. What should you do FIRST?",
+    "options": [
+      "Reassign her remaining work to a more reliable team member",
+      "Meet with her privately to discover the root cause of the missed deadlines",
+      "Inform her functional manager about the performance issue",
+      "Add the late deliverables to the risk register as a schedule risk and adjust the remaining due dates to reflect her recent pace of work"
+    ],
+    "answer": 1,
+    "explanation": "The first step is to understand the cause, which may be unclear requirements, overallocation, a skill gap, or a personal issue. Only then can the right corrective action be chosen. Reassigning work treats the symptom, removes development opportunities, and may be unfair if the cause lies elsewhere."
+  },
+  {
+    "id": "ppl-013",
+    "domain": "people",
+    "topic": "Conflict management",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "Two developers on your agile team disagree about which caching approach to use. Both options seem technically viable, and the debate has gone on for two days. As the team facilitator, what should you do?",
+    "options": [
+      "Ask the product owner to choose one of the approaches",
+      "Decide the approach yourself to end the debate",
+      "Bring in an architect from outside the team to make the decision, since an independent expert can break the deadlock without bias toward either side",
+      "Facilitate a team discussion and suggest a timeboxed spike so the team can decide based on evidence"
+    ],
+    "answer": 3,
+    "explanation": "Technical decisions belong to the developers, and a timeboxed spike turns opinion into evidence while keeping the decision with the team. The product owner owns what is built, not how, so asking the PO to decide misplaces the responsibility. Imposing a decision, whether yours or an outside architect's, undermines self-organization."
+  },
+  {
+    "id": "ppl-014",
+    "domain": "people",
+    "topic": "Mentoring & training",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "A newly assigned team member lacks experience with a modeling tool that is essential for his work packages. The resource management plan includes a training budget. What is the BEST action?",
+    "options": [
+      "Request a replacement who already knows the tool from the functional manager, since the work packages cannot wait for him to get up to speed",
+      "Arrange the training identified in the resource management plan and pair him with an experienced colleague",
+      "Complete his modeling work yourself until he learns the tool",
+      "Request a schedule extension to allow him to learn on his own"
+    ],
+    "answer": 1,
+    "explanation": "Following the plan and developing team members' competencies through training and pairing is the best approach. Requesting a replacement skips an available, planned solution and does not develop the team. The project manager doing the work personally neglects management responsibilities."
+  },
+  {
+    "id": "ppl-015",
+    "domain": "people",
+    "topic": "Virtual teams",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "On your hybrid project, half the team works in the office and half is fully remote. Remote members complain that important decisions are made in hallway conversations they never hear about. What should you do?",
+    "options": [
+      "Establish a norm that decisions are made or recorded in shared channels and ensure equal participation in meetings",
+      "Require all team members to work from the office",
+      "Hold separate meetings for remote and in-office members so that each group can discuss decisions in the format that suits it best, then share summaries",
+      "Assign the remote members to less decision-critical work"
+    ],
+    "answer": 0,
+    "explanation": "Inclusive practices such as documenting decisions in shared tools and running meetings that give remote members equal voice address the root cause of exclusion. Mandating office attendance ignores the reasons the team is distributed. Separate meetings or lower-impact work would deepen the divide."
+  },
+  {
+    "id": "ppl-016",
+    "domain": "people",
+    "topic": "Servant leadership",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "Your agile team has been blocked for three days waiting for a security review from another department. The team has raised this in every daily standup. As the scrum master, what should you do?",
+    "options": [
+      "Tell the team to proceed without the review and fix any findings later",
+      "Note the issue for discussion at the next retrospective",
+      "Work directly with the security department to resolve the impediment",
+      "Escalate the issue to the project sponsor"
+    ],
+    "answer": 2,
+    "explanation": "Removing impediments the team cannot resolve on its own is a core servant-leadership responsibility, and it should happen promptly. Waiting for the retrospective leaves the team blocked. Escalating to the sponsor may eventually be necessary, but only after the scrum master has tried to resolve it directly."
+  },
+  {
+    "id": "ppl-017",
+    "domain": "people",
+    "topic": "Team charter & ground rules",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "Your team charter states that meetings start on time and that laptops are closed unless needed for the agenda. One team member has repeatedly arrived late and works on email during meetings. What should you do?",
+    "options": [
+      "Speak with the team member privately and refer to the ground rules the team agreed to",
+      "Revise the ground rules since they are clearly not working",
+      "Call out the behavior publicly at the start of the next meeting",
+      "Report the behavior to the team member's functional manager"
+    ],
+    "answer": 0,
+    "explanation": "Ground rules were agreed by the team, so a private conversation that references them is the appropriate first step and preserves respect. Public call-outs damage relationships and trust. Revising the rules because of one person's behavior is unwarranted when the rest of the team follows them."
+  },
+  {
+    "id": "ppl-018",
+    "domain": "people",
+    "topic": "Team performance",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "Your team's velocity has declined steadily over the last three sprints. Leadership has noticed. What should you do FIRST?",
+    "options": [
+      "Ask the team to commit to more story points in the next sprint",
+      "Report the decline to the sponsor along with a recovery plan that sets a higher velocity target for each of the next three sprints",
+      "Explore the trend with the team in the retrospective to identify the causes",
+      "Request additional developers to restore throughput"
+    ],
+    "answer": 2,
+    "explanation": "Before acting, the team should inspect the trend together to find root causes, which could include technical debt, unclear stories, interruptions, or estimation drift. Pushing for higher commitments ignores the cause and can damage quality and morale. Adding people or reporting a plan before understanding the problem is premature."
+  },
+  {
+    "id": "ppl-019",
+    "domain": "people",
+    "topic": "Stakeholder engagement",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "During execution, you learn that a regional operations director, previously unidentified, will be heavily affected by the project's deliverables and has significant influence in the organization. What should you do FIRST?",
+    "options": [
+      "Send the director all current project documentation",
+      "Update the stakeholder register and assess the director's interests, influence, and expectations",
+      "Add the director to the change control board",
+      "Continue as planned because the scope baseline is already approved"
+    ],
+    "answer": 1,
+    "explanation": "Newly identified stakeholders must be added to the stakeholder register and analyzed before an engagement approach is chosen. Sending all documentation without understanding their needs is unfocused and may overwhelm them. Ignoring an influential stakeholder creates a significant risk."
+  },
+  {
+    "id": "ppl-020",
+    "domain": "people",
+    "topic": "Building shared understanding",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "At the last two sprint reviews, the product owner rejected several stories the developers considered complete. Discussion reveals that the team and PO have different ideas of what 'done' means. What is the BEST action?",
+    "options": [
+      "Have the product owner write a stricter definition of done for the team, since the product owner is accountable for accepting the increment",
+      "Extend the next sprint so the team has time to finish rejected work",
+      "Create a separate quality-control step after each sprint",
+      "Facilitate a session with the developers and product owner to agree on a shared definition of done"
+    ],
+    "answer": 3,
+    "explanation": "A definition of done agreed jointly by the team and product owner creates shared understanding and prevents repeated rejection. If the PO writes it alone, the team may still interpret it differently and will have less ownership. Extending the sprint or adding a QC gate treats the symptoms, not the misalignment."
+  },
+  {
+    "id": "ppl-021",
+    "domain": "people",
+    "topic": "Conflict management",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "Which conflict resolution approach is MOST likely to produce a lasting resolution in which both parties' underlying concerns are addressed?",
+    "options": [
+      "Smoothing, also called accommodating, which emphasizes areas of agreement",
+      "Collaborating, also called problem solving",
+      "Compromising, also called reconciling, where each side gives something up",
+      "Forcing, also called directing"
+    ],
+    "answer": 1,
+    "explanation": "Collaborating incorporates multiple viewpoints and works toward consensus and commitment, which usually leads to a lasting resolution. Compromising is often tempting because it seems fair, but each party gives something up, so neither is fully satisfied. Smoothing and forcing either avoid the real issue or impose a win-lose outcome."
+  },
+  {
+    "id": "ppl-022",
+    "domain": "people",
+    "topic": "Negotiation",
+    "approach": "hybrid",
+    "difficulty": 3,
+    "stem": "On a hybrid project, a hardware vendor delivering under a fixed-price contract tells you it needs to push its delivery date back three weeks. Your agile software teams depend on that hardware for integration testing. What is the BEST approach?",
+    "options": [
+      "Accept the new date and ask the software teams to absorb the delay",
+      "Notify the vendor that late-delivery penalties will be enforced immediately, since the contract protects your schedule and doing so sets a firm precedent",
+      "Cancel the contract and source the hardware from another vendor",
+      "Review the contract terms and work with procurement to negotiate a solution that meets both parties' needs"
+    ],
+    "answer": 3,
+    "explanation": "The contract defines the rights and obligations of both parties, and the procurement function usually holds authority over contract changes; a win-win negotiation preserves the relationship and may yield options such as partial delivery. Threatening penalties first escalates confrontation before exploring solutions. Simply accepting or cancelling skips analysis and negotiation."
+  },
+  {
+    "id": "ppl-023",
+    "domain": "people",
+    "topic": "Psychological safety",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "A developer accidentally deployed a configuration error that briefly caused an outage. He is visibly upset and worried about being blamed. As the team facilitator, what should you do?",
+    "options": [
+      "Remove the developer's deployment privileges until further notice so the same error cannot recur while the team investigates the outage",
+      "Report the incident and the developer's name to his line manager",
+      "Facilitate a blameless review that focuses on improving the process that allowed the error",
+      "Move on quickly and avoid discussing the incident to spare his feelings"
+    ],
+    "answer": 2,
+    "explanation": "A blameless review protects psychological safety while still producing real improvements, such as automated checks that prevent the same failure. Removing privileges or reporting the individual teaches the team to hide mistakes. Avoiding the discussion misses the learning opportunity and leaves the root cause unaddressed."
+  },
+  {
+    "id": "ppl-024",
+    "domain": "people",
+    "topic": "Team performance",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "Two weeks after kickoff, your newly formed team is arguing about who owns which deliverables, and some members are openly challenging each other's approaches. What is the BEST approach?",
+    "options": [
+      "Recognize this as a normal stage of team development and facilitate clarifying roles, for example with a responsibility assignment matrix",
+      "Disband the team and form a new one with more compatible members",
+      "Stay out of it so the team can work through the issues on its own",
+      "Escalate the conflicts to the sponsor to show their impact on the schedule and request authority to reassign the members who keep challenging others"
+    ],
+    "answer": 0,
+    "explanation": "This behavior is typical of the storming stage, where the project manager should actively coach and facilitate, for example by clarifying roles and responsibilities. Staying entirely hands-off can let the team stall or fracture at this stage. Disbanding or escalating are drastic reactions to a normal phase of team development."
+  },
+  {
+    "id": "ppl-025",
+    "domain": "people",
+    "topic": "Agile roles",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "The product owner on your team is frequently unavailable, and developers are often waiting a day or more for answers about requirements. As the scrum master, what is the BEST action?",
+    "options": [
+      "Encourage the developers to make their own assumptions about the requirements and keep moving, then correct course at the sprint review",
+      "Answer the requirements questions yourself in the PO's absence",
+      "Discuss the impact with the product owner and work together on securing more availability or a suitable delegate",
+      "Ask the sponsor to appoint a different product owner"
+    ],
+    "answer": 2,
+    "explanation": "The scrum master should first raise the impact directly with the PO and collaborate on a solution, such as scheduled availability or a delegate with decision authority. Having the developers guess risks building the wrong thing. Asking the sponsor to replace the PO skips the collaborative conversation and should only come later if needed."
+  },
+  {
+    "id": "ppl-026",
+    "domain": "people",
+    "topic": "Emotional intelligence",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "During a tense negotiation with a supplier, you notice your frustration rising. You take a breath, pause, and choose your words carefully before responding. Which emotional intelligence competency are you demonstrating?",
+    "options": [
+      "Self-management",
+      "Social awareness",
+      "Relationship management",
+      "Self-actualization"
+    ],
+    "answer": 0,
+    "explanation": "Self-management, also called self-regulation, is the ability to control and redirect disruptive emotions and impulses. Social awareness is about perceiving others' emotions, which is related but is not what this scenario describes. Relationship management involves managing interactions with others, not regulating your own reactions."
+  },
+  {
+    "id": "ppl-027",
+    "domain": "people",
+    "topic": "Empowerment",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "On a hybrid project, the team leads want to switch their internal work tracking from a task list to a Kanban board. The change does not affect the scope, schedule, or cost baselines. What should you do?",
+    "options": [
+      "Submit a change request to the change control board",
+      "Deny the request to maintain consistency with the project management plan and with the tracking methods the other project teams already use",
+      "Ask the sponsor whether the change is acceptable",
+      "Support the team's decision, since it is within their authority, and record it in the team's working agreements"
+    ],
+    "answer": 3,
+    "explanation": "Teams should be empowered to tailor how they manage their own work when it does not affect baselines. Sending a change request for an internal workflow choice adds bureaucracy without value. Denying it or asking the sponsor signals a lack of trust and undermines empowerment."
+  },
+  {
+    "id": "ppl-028",
+    "domain": "people",
+    "topic": "Virtual teams",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "You are forming a new agile team whose members are distributed across three countries and have never worked together. Early interactions are polite but guarded. What is the BEST way to build trust?",
+    "options": [
+      "Install activity-monitoring software to verify everyone is working",
+      "Hold an interactive virtual kickoff with team-building activities and create working agreements together",
+      "Hold daily one-on-one check-ins in place of team meetings",
+      "Assign individual tasks to avoid dependencies between team members"
+    ],
+    "answer": 1,
+    "explanation": "Trust grows from getting to know one another and co-creating shared norms, both of which an interactive kickoff and joint working agreements support. Monitoring software signals distrust and damages morale. Daily individual check-ins or isolating tasks reduce team interaction rather than building it."
+  },
+  {
+    "id": "ppl-029",
+    "domain": "people",
+    "topic": "Team performance",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "Your team completed a major milestone two weeks ahead of schedule while maintaining quality. What is the BEST way to respond?",
+    "options": [
+      "Give a bonus only to the team lead who coordinated the work",
+      "Wait until project closure to recognize all achievements together",
+      "Raise the targets for the next milestone since the team has shown it can deliver more, and present the new targets as a vote of confidence",
+      "Recognize the team's achievement as described in the recognition and rewards plan"
+    ],
+    "answer": 3,
+    "explanation": "Timely recognition that follows the planned approach reinforces desired behavior and motivates the team. Waiting until closure loses much of the motivational value. Rewarding only one person can create resentment when the whole team contributed."
+  },
+  {
+    "id": "ppl-030",
+    "domain": "people",
+    "topic": "Mentoring & training",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "A developer on your team tells you she would like to grow into a team facilitator role in the future. What is the BEST response?",
+    "options": [
+      "Tell her to earn a recognized agile facilitation certification first, and revisit the conversation once she holds the credential",
+      "Mentor her and give her opportunities to facilitate some team events with your support",
+      "Refer her to human resources for career planning",
+      "Advise her to stay focused on development until the project ends"
+    ],
+    "answer": 1,
+    "explanation": "Mentoring and providing safe opportunities to practice are effective ways to develop team members and are part of a servant leader's role. Requiring a certification first adds a barrier without giving her real experience. Referring her to HR or deferring the conversation misses an opportunity to support her growth."
+  },
+  {
+    "id": "ppl-031",
+    "domain": "people",
+    "topic": "Conflict management",
+    "approach": "predictive",
+    "difficulty": 3,
+    "stem": "Two functional managers disagree about which of their staff should be assigned to your project's testing phase. Each claims the other department should supply the resources, and the testing start date is approaching. What is the BEST action?",
+    "options": [
+      "Facilitate a meeting with both managers on project needs and organizational priorities, escalating only if they cannot agree",
+      "Escalate the matter to the sponsor immediately to protect the start date",
+      "Choose the department you believe has the better testers",
+      "Allow the managers to work it out themselves, since resource assignment is their responsibility in a matrix organization rather than the project manager's"
+    ],
+    "answer": 0,
+    "explanation": "The project manager should first try to resolve the conflict collaboratively by bringing the parties together around shared objectives. Escalation is appropriate only if that effort fails. Choosing a department unilaterally exceeds the PM's authority in a matrix organization, and staying out of it puts the testing start date at risk."
+  },
+  {
+    "id": "ppl-032",
+    "domain": "people",
+    "topic": "Team charter & ground rules",
+    "approach": "agile",
+    "difficulty": 1,
+    "stem": "Your agile team keeps arguing about how quickly code reviews should be completed, and pull requests sometimes wait several days. What should you do as the team facilitator?",
+    "options": [
+      "Mandate that all code reviews be completed within 24 hours and track compliance at each sprint review so the delays do not recur",
+      "Ask the product owner to set the code review policy",
+      "Facilitate a team discussion to agree on a code review expectation and add it to the working agreements",
+      "Escalate the delay to the development manager"
+    ],
+    "answer": 2,
+    "explanation": "Working agreements created by the team gain stronger commitment and can be revisited as needed. Mandating a rule may solve the immediate issue but bypasses the team's ownership of its own process. The product owner does not own engineering practices."
+  },
+  {
+    "id": "ppl-033",
+    "domain": "people",
+    "topic": "Mentoring & training",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "Your organization is moving several projects to a hybrid approach. Most of your team members have only worked on predictive projects and are anxious about agile practices. What should you do FIRST?",
+    "options": [
+      "Assess the team's current skills and plan training and coaching tailored to the identified gaps",
+      "Replace team members with experienced agile practitioners",
+      "Send the team reading material about agile frameworks and ask them to complete it before the first iteration begins so everyone starts aligned",
+      "Start iterations immediately and let the team learn by doing"
+    ],
+    "answer": 0,
+    "explanation": "Assessing skills first ensures that training and coaching target real gaps, which reduces anxiety and builds capability. Learning by doing has value but, without support, can increase anxiety and lead to poor results. Replacing people ignores the opportunity to develop them, and reading material alone is rarely sufficient."
+  },
+  {
+    "id": "ppl-034",
+    "domain": "people",
+    "topic": "Stakeholder engagement",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "The project sponsor stops you in the hallway and asks you to add a new reporting feature to the project's deliverables. The scope baseline has already been approved. What is the BEST response?",
+    "options": [
+      "Add the feature since the sponsor has authority over the project and funds it, then update the scope baseline to reflect the new deliverable",
+      "Decline because the scope baseline is approved",
+      "Thank the sponsor, explain the change control process, and help prepare a change request for evaluation",
+      "Ask the team to quietly include the feature if they have spare capacity"
+    ],
+    "answer": 2,
+    "explanation": "Even sponsor requests should go through integrated change control so impacts on scope, schedule, cost, and risk are evaluated. Adding it directly because of the sponsor's authority leads to scope creep and uncontrolled impacts. Declining outright is unhelpful, since the change may well be approved."
+  },
+  {
+    "id": "ppl-035",
+    "domain": "people",
+    "topic": "Conflict management",
+    "approach": "agile",
+    "difficulty": 3,
+    "stem": "During sprint planning, the product owner pushes the developers to take on more stories than their recent capacity suggests is realistic. The developers are frustrated but reluctant to push back. As the scrum master, what is the BEST action?",
+    "options": [
+      "Let the developers accept the extra stories to keep the product owner satisfied, and plan to carry any unfinished stories into the next sprint",
+      "Remind everyone that the developers forecast what they can complete, and help the PO focus the sprint on the most valuable items",
+      "Extend the sprint length to make room for the additional stories",
+      "Decide the sprint scope yourself based on historical velocity"
+    ],
+    "answer": 1,
+    "explanation": "The developers own the sprint forecast, while the product owner owns priority, so the scrum master facilitates a conversation that respects both accountabilities. Accepting unrealistic commitments leads to burnout, quality issues, and broken trust. Changing the sprint length or deciding scope personally undermines the framework and the team's ownership."
+  },
+  {
+    "id": "ppl-036",
+    "domain": "people",
+    "topic": "Virtual teams",
+    "approach": "predictive",
+    "difficulty": 3,
+    "stem": "Several team members in one of your offices come from a culture where openly disagreeing with a manager is uncommon. They agree to every deadline in meetings but frequently miss commitments. What is the BEST approach?",
+    "options": [
+      "Insist that they speak up in meetings whenever they disagree with a deadline, and explain that silence will be treated as a firm commitment",
+      "Report the missed commitments to their local manager",
+      "Reassign their work to team members who meet their deadlines",
+      "Build relationships with them and offer one-on-one and anonymous channels where concerns can be raised safely"
+    ],
+    "answer": 3,
+    "explanation": "Cultural awareness means adapting communication so people can raise concerns in ways that feel safe to them. Insisting they speak up publicly ignores the cultural factor causing the problem. Reporting or reassigning treats the symptom and damages trust."
+  },
+  {
+    "id": "ppl-037",
+    "domain": "people",
+    "topic": "Empowerment",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "Your team needs a quick way to check the level of support for a proposed change to its working agreements and to surface any reservations. Which technique is MOST appropriate?",
+    "options": [
+      "Planning poker",
+      "Fist of five",
+      "MoSCoW prioritization",
+      "Monte Carlo simulation"
+    ],
+    "answer": 1,
+    "explanation": "Fist of five lets each person show their level of support at once, quickly revealing reservations that can then be discussed. Planning poker is also a simultaneous-reveal technique, but it is used for relative estimation rather than for gauging agreement. MoSCoW is a prioritization method and Monte Carlo is a quantitative risk analysis technique."
+  },
+  {
+    "id": "ppl-038",
+    "domain": "people",
+    "topic": "Stakeholder engagement",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "A senior executive on your hybrid program insists on detailed Gantt chart reports for all work, including the components delivered by agile teams. The teams feel this reporting conflicts with how they work. What should you do?",
+    "options": [
+      "Tell the executive that agile teams do not produce Gantt charts",
+      "Require the agile teams to maintain detailed Gantt charts alongside their boards so that all components are reported in one consistent format",
+      "Send the executive the teams' burndown charts instead",
+      "Meet with the executive to understand her information needs and tailor reporting, such as a milestone-based roadmap"
+    ],
+    "answer": 3,
+    "explanation": "Understanding what the executive actually needs to know, such as dates, risks, or progress toward milestones, allows reporting to be tailored in a way that serves her and fits the delivery approach. Sending burndown charts without explanation may not meet her needs. Forcing detailed Gantt charts on agile teams adds overhead with little value."
+  },
+  {
+    "id": "ppl-039",
+    "domain": "people",
+    "topic": "Team performance",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "A team performance assessment reveals that two sub-teams rarely communicate, which is causing rework at integration points. What is the BEST next step?",
+    "options": [
+      "Merge the sub-teams under a single technical lead",
+      "Require all communication between the sub-teams to go through you so that integration information is coordinated and nothing is missed",
+      "Work with both sub-teams to identify the communication barriers and agree on specific improvements",
+      "Add more detailed integration requirements to the scope statement"
+    ],
+    "answer": 2,
+    "explanation": "Engaging both sub-teams to find root causes and agree on improvements, such as shared meetings or integration checkpoints, builds ownership of the solution. Routing all communication through the project manager creates a bottleneck. Restructuring or rewriting scope is premature before the barriers are understood."
+  },
+  {
+    "id": "ppl-040",
+    "domain": "people",
+    "topic": "Servant leadership",
+    "approach": "agile",
+    "difficulty": 1,
+    "stem": "Which behavior is MOST characteristic of a servant leader on an agile team?",
+    "options": [
+      "Removing obstacles and shielding the team from distractions so it can focus on delivering value",
+      "Assigning tasks and tracking each person's progress daily",
+      "Making the key technical decisions for the team",
+      "Reporting individual performance metrics to management"
+    ],
+    "answer": 0,
+    "explanation": "Servant leaders support the team by removing impediments and protecting focus, enabling the team to self-organize. Assigning and tracking individual tasks reflects a command-and-control style. Making technical decisions for the team takes ownership away from the people doing the work."
+  },
+  {
+    "id": "ppl-041",
+    "domain": "people",
+    "topic": "Conflict management",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "A team member comes to you and complains that a colleague keeps changing shared design files without telling anyone. What should you do FIRST?",
+    "options": [
+      "Speak to the colleague immediately and tell them to stop changing the shared design files without first notifying the rest of the team",
+      "Reassign the design files to only one owner",
+      "Encourage the team member to discuss the issue directly with the colleague, and offer to help facilitate if needed",
+      "Make a note of the issue for the colleague's performance review"
+    ],
+    "answer": 2,
+    "explanation": "Team members should first try to resolve interpersonal issues directly with each other, with the project manager available to facilitate. Intervening immediately can escalate the matter and prevents team members from building conflict resolution skills. Restructuring ownership or documenting it for a review are premature."
+  },
+  {
+    "id": "ppl-042",
+    "domain": "people",
+    "topic": "Psychological safety",
+    "approach": "agile",
+    "difficulty": 3,
+    "stem": "You have taken over an agile team whose previous manager criticized people harshly when experiments failed. Now the team rarely suggests new ideas. What is the BEST way to change this?",
+    "options": [
+      "Model the behavior by sharing your own mistakes openly and encouraging small, safe-to-fail experiments",
+      "Require each team member to propose at least one improvement idea per sprint and track the number of ideas submitted at each retrospective",
+      "Reward only the ideas that produce measurable results",
+      "Bring in an external coach and step back from the team"
+    ],
+    "answer": 0,
+    "explanation": "Leaders build psychological safety by modeling vulnerability and making it safe to experiment and fail on a small scale. Rewarding only successful ideas reinforces the fear of failure the team already has. Mandating ideas creates pressure rather than safety."
+  },
+  {
+    "id": "ppl-043",
+    "domain": "people",
+    "topic": "Negotiation",
+    "approach": "hybrid",
+    "difficulty": 3,
+    "stem": "Two agile teams and a predictive integration workstream all need the same performance-testing specialist in the coming month, and each product owner insists their work is the top priority. What is the BEST action?",
+    "options": [
+      "Allocate the specialist to whichever team requested first",
+      "Split the specialist's time equally among all three teams without further discussion so that no product owner can claim unfair treatment by you",
+      "Escalate to the sponsor to decide who gets the specialist",
+      "Facilitate a joint session with the product owners and integration lead to prioritize the specialist's time by overall value and dependencies"
+    ],
+    "answer": 3,
+    "explanation": "Bringing the parties together to negotiate based on shared program value and dependencies leads to a decision everyone can support. An equal split looks fair but ignores which work is actually most critical. Escalation should be reserved for cases where the parties cannot agree."
+  },
+  {
+    "id": "ppl-044",
+    "domain": "people",
+    "topic": "Team charter & ground rules",
+    "approach": "predictive",
+    "difficulty": 1,
+    "stem": "A new engineer joins your project halfway through execution. The team has a well-established charter and ground rules. What is the BEST way to integrate him?",
+    "options": [
+      "Let him learn the team's norms by observing meetings",
+      "Review the team charter with him during onboarding and pair him with an experienced team member",
+      "Send him the project management plan and the team charter and ask him to read both before he attends any team meetings",
+      "Ask the team to update the charter to reflect his preferences"
+    ],
+    "answer": 1,
+    "explanation": "Reviewing the charter sets clear expectations, and pairing with a buddy speeds up both social and technical integration. Learning norms only by observation is slow and can lead to misunderstandings. Sending the full management plan does not convey team norms effectively."
+  },
+  {
+    "id": "ppl-045",
+    "domain": "people",
+    "topic": "Agile roles",
+    "approach": "agile",
+    "difficulty": 1,
+    "stem": "On an agile team, who should estimate the effort for user stories?",
+    "options": [
+      "The product owner, who owns the backlog",
+      "The scrum master, who facilitates planning",
+      "The project sponsor",
+      "The developers who will do the work"
+    ],
+    "answer": 3,
+    "explanation": "The people doing the work are best positioned to estimate it, which also builds commitment to the estimates. The product owner clarifies the stories and acceptance criteria but does not estimate them. The scrum master facilitates estimation sessions but does not provide the estimates."
+  },
+  {
+    "id": "ppl-046",
+    "domain": "people",
+    "topic": "Servant leadership",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "Your project team is highly experienced, motivated, and has a strong record of delivering high-quality work. Which leadership approach is MOST appropriate?",
+    "options": [
+      "Directing, giving clear instructions and supervising work closely",
+      "Delegating, giving the team autonomy over how they work while remaining available for support",
+      "Coaching, providing close guidance on each task so the team's strong record is maintained and improved further",
+      "Transactional, linking each task to specific rewards and penalties"
+    ],
+    "answer": 1,
+    "explanation": "Situational leadership suggests delegating to high-competence, high-commitment teams. Coaching closely can feel supportive but is unnecessary for experts and may come across as micromanagement. Directing and transactional approaches suit less mature teams or very routine work."
+  },
+  {
+    "id": "ppl-047",
+    "domain": "people",
+    "topic": "Conflict management",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "Two members of your distributed agile team are having an increasingly heated exchange in the team chat channel, and others are uncomfortable. What should you do?",
+    "options": [
+      "Invite both members to a video call to discuss the issue directly, since text can amplify misunderstandings",
+      "Delete the messages to stop the argument",
+      "Post a public reminder of the team's communication rules in the channel so everyone, including the two members, sees the expected standard of conduct",
+      "Ignore the exchange and let the conversation run its course"
+    ],
+    "answer": 0,
+    "explanation": "Moving the conversation to a richer medium, such as video, reduces misinterpretation of tone and allows a constructive resolution. A public reminder may calm things temporarily but does not address the underlying disagreement. Deleting messages or ignoring the issue avoids the conflict rather than resolving it."
+  },
+  {
+    "id": "ppl-048",
+    "domain": "people",
+    "topic": "Building shared understanding",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "On a hybrid project, team members working in sprints say they do not understand how their work connects to the program's major milestones, and some feel their work is pointless. What should you do?",
+    "options": [
+      "Tell the team to trust that leadership has a plan",
+      "Give each team member a copy of the master schedule",
+      "Share the product vision and roadmap with the team and show how their increments contribute to the milestones",
+      "Ask the product owner to set more detailed sprint goals so each team member can see exactly what is expected of them in every sprint"
+    ],
+    "answer": 2,
+    "explanation": "A shared vision and roadmap that links increments to milestones gives the team purpose and context, which improves engagement and decision-making. Handing out the master schedule provides data but not the meaning team members are asking for. Asking for blind trust ignores a legitimate need."
+  },
+  {
+    "id": "ppl-049",
+    "domain": "people",
+    "topic": "Stakeholder engagement",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "A key stakeholder who must approve design documents has missed the last three review meetings and has not responded to emails. What should you do FIRST?",
+    "options": [
+      "Meet with the stakeholder to understand the reasons and agree on how they prefer to be engaged",
+      "Escalate the issue to the sponsor",
+      "Proceed with the design and treat silence as approval",
+      "Ask the stakeholder's manager to assign a replacement approver"
+    ],
+    "answer": 0,
+    "explanation": "The project manager should first seek to understand why the stakeholder is disengaged; the meetings may be poorly timed or the communication method may not suit them. Escalating to the sponsor may become necessary later, but it skips the direct conversation. Treating silence as approval creates serious risk."
+  },
+  {
+    "id": "ppl-050",
+    "domain": "people",
+    "topic": "Team performance",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "Your agile team has worked significant overtime for the last four sprints to meet stakeholder expectations. Quality is slipping and several members appear exhausted. As the scrum master, what should you do?",
+    "options": [
+      "Praise the team's dedication and ask them to keep going until the release, then plan a recovery period with lighter sprints afterward",
+      "Request additional developers to share the workload",
+      "Raise it in the retrospective, help the team commit to a sustainable pace, and work with the PO on expectations",
+      "Lengthen the sprints to give the team more time"
+    ],
+    "answer": 2,
+    "explanation": "Sustainable pace is an agile principle, and the scrum master should help the team address the cause while partnering with the product owner on scope and expectations. Adding developers may seem helpful, but it brings onboarding overhead and does not address the root cause. Praising unsustainable overtime reinforces the problem."
+  },
+  {
+    "id": "ppl-051",
+    "domain": "people",
+    "topic": "Mentoring & training",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "You notice that a junior analyst on your team consistently produces high-quality work and shows strong interest in requirements management. What is the BEST way to support her development?",
+    "options": [
+      "Keep her in her current role because she is performing so well",
+      "Offer her a stretch assignment in requirements management along with mentoring from a senior analyst",
+      "Recommend her for promotion immediately",
+      "Ask her to take on the senior analyst's workload for a few sprints to prove she is ready for a requirements management role"
+    ],
+    "answer": 1,
+    "explanation": "Stretch assignments with mentoring develop people while managing risk to the project. Keeping her in place because she performs well ignores her growth and may reduce engagement. Overloading her with someone else's workload sets her up for failure."
+  },
+  {
+    "id": "ppl-052",
+    "domain": "people",
+    "topic": "Building shared understanding",
+    "approach": "agile",
+    "difficulty": 1,
+    "stem": "Going into sprint planning, many of the top backlog items are vague and the developers struggle to estimate them. What is the BEST way to prevent this in the future?",
+    "options": [
+      "Have the product owner write detailed specifications for every story before sprint planning so the developers have everything they need to estimate",
+      "Allow the developers to skip estimating unclear stories",
+      "Make sprint planning twice as long",
+      "Hold regular backlog refinement with the product owner and developers to clarify stories and acceptance criteria"
+    ],
+    "answer": 3,
+    "explanation": "Ongoing backlog refinement builds shared understanding between the product owner and developers before planning. Detailed specifications written by the PO alone reduce collaboration and still may not create shared understanding. Longer planning sessions treat the symptom rather than the cause."
+  },
+  {
+    "id": "ppl-053",
+    "domain": "people",
+    "topic": "Conflict management",
+    "approach": "hybrid",
+    "difficulty": 3,
+    "stem": "On a hybrid project, the agile development team and a predictive quality assurance group clash repeatedly. QA requires extensive formal test documentation, while developers see it as slowing delivery. Regulatory compliance requires some documentation. What is the BEST action?",
+    "options": [
+      "Side with QA because regulatory compliance cannot be compromised, and require the full formal test documentation set for every iteration and every release",
+      "Bring both groups together to understand each other's needs and agree on a tailored approach that meets compliance and supports iterative delivery",
+      "Side with the developers to protect delivery speed",
+      "Escalate the dispute to the sponsor for a decision"
+    ],
+    "answer": 1,
+    "explanation": "A collaborative approach lets the groups find a tailored solution, such as lightweight, automated documentation that meets regulatory needs. Siding with QA respects compliance but ignores that the documentation method can be tailored. Escalation should come only if the parties cannot reach agreement."
+  },
+  {
+    "id": "ppl-054",
+    "domain": "people",
+    "topic": "Negotiation",
+    "approach": "predictive",
+    "difficulty": 3,
+    "stem": "You are negotiating acceptance criteria with a client representative who insists that a performance threshold must be met exactly as written in a draft. Meeting it would require costly hardware. What is the BEST approach?",
+    "options": [
+      "Agree to the threshold to preserve the client relationship",
+      "Reject the threshold as unrealistic and propose a lower one that the current hardware can meet, backed by your team's performance test data",
+      "Ask the sponsor to negotiate with the client directly",
+      "Explore the business need behind the threshold to find options that satisfy the client's underlying interest"
+    ],
+    "answer": 3,
+    "explanation": "Effective negotiation focuses on underlying interests rather than fixed positions, which often reveals creative options that meet the real need at lower cost. Simply agreeing preserves goodwill now but commits the project to an unnecessary cost. Rejecting the threshold outright creates a win-lose dynamic."
+  },
+  {
+    "id": "ppl-055",
+    "domain": "people",
+    "topic": "Virtual teams",
+    "approach": "hybrid",
+    "difficulty": 1,
+    "stem": "Your hybrid project team uses chat, email, two task trackers, and a wiki, and important information is often hard to find. What should you do?",
+    "options": [
+      "Choose a single tool yourself and require the team to use it",
+      "Add another tool that aggregates information from all the others",
+      "Work with the team to agree on a small set of tools and norms for what information goes where",
+      "Ask team members to copy important messages into every tool"
+    ],
+    "answer": 2,
+    "explanation": "Agreeing on tools and communication norms with the team creates clarity and buy-in. Choosing a tool alone may work technically but bypasses the team's input and can create resistance. Adding another tool or duplicating information increases the noise."
+  },
+  {
+    "id": "ppl-056",
+    "domain": "people",
+    "topic": "Emotional intelligence",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "During a project review meeting, a stakeholder angrily criticizes the project's progress and raises his voice at you in front of others. What should you do?",
+    "options": [
+      "Stay calm, acknowledge his concerns, and offer to discuss them in detail after the meeting",
+      "Respond firmly to defend the team's performance with data",
+      "End the meeting until the stakeholder calms down",
+      "Report the stakeholder's behavior to the sponsor"
+    ],
+    "answer": 0,
+    "explanation": "Remaining calm and acknowledging concerns demonstrates emotional intelligence and de-escalates the situation, while a follow-up allows a productive discussion. Defending the team with data in the moment can feel justified but often escalates the confrontation. Ending the meeting or reporting the stakeholder damages the relationship."
+  },
+  {
+    "id": "ppl-057",
+    "domain": "people",
+    "topic": "Agile roles",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "A department manager outside your agile team has started assigning work directly to individual developers, bypassing the product backlog. As the scrum master, what should you do?",
+    "options": [
+      "Tell the developers to ignore the manager's requests",
+      "Add the manager's requests to the current sprint to keep him satisfied, and ask the developers to work extra hours to protect the sprint goal",
+      "Coach the manager on how work flows through the product owner and backlog, and how direct assignments disrupt the team",
+      "Report the manager's behavior to the sponsor"
+    ],
+    "answer": 2,
+    "explanation": "A scrum master serves the organization by coaching stakeholders on agile ways of working and protecting the team from disruption. Telling developers to ignore the manager creates conflict without resolving the underlying misunderstanding. Reporting him to the sponsor skips the coaching conversation."
+  },
+  {
+    "id": "ppl-058",
+    "domain": "people",
+    "topic": "Team charter & ground rules",
+    "approach": "hybrid",
+    "difficulty": 2,
+    "stem": "On your hybrid project, team members are unsure which decisions they can make themselves and which must go to you or the change control board. As a result, small decisions are being delayed. What should you do?",
+    "options": [
+      "Clarify decision-making authority with the team and document it in the team charter",
+      "Require all decisions to be approved by you",
+      "Send all pending decisions to the change control board",
+      "Let team members make every decision without constraints, since self-organizing teams should not need approval from you or the board"
+    ],
+    "answer": 0,
+    "explanation": "Clearly defined decision rights empower the team to act quickly within agreed boundaries while routing baseline-affecting changes appropriately. Centralizing all decisions with the project manager creates a bottleneck and disempowers the team. Removing all constraints risks uncontrolled changes to baselines."
+  },
+  {
+    "id": "ppl-059",
+    "domain": "people",
+    "topic": "Servant leadership",
+    "approach": "predictive",
+    "difficulty": 2,
+    "stem": "Your engineers are spending several hours each week compiling detailed status reports, and they say this is cutting into their design work. What is the BEST action?",
+    "options": [
+      "Tell the engineers that status reporting is part of their job and that the stakeholders depend on the level of detail they provide",
+      "Stop all status reporting to the stakeholders",
+      "Ask the sponsor to approve overtime for reporting",
+      "Look for ways to streamline the reporting, such as automating data collection or consolidating reports yourself"
+    ],
+    "answer": 3,
+    "explanation": "A servant leader reduces non-value-adding burdens on the team so they can focus on delivery, while still meeting stakeholder information needs. Insisting reporting is just part of the job ignores a legitimate productivity concern. Stopping reporting entirely would breach the communications management plan."
+  },
+  {
+    "id": "ppl-060",
+    "domain": "people",
+    "topic": "Conflict management",
+    "approach": "agile",
+    "difficulty": 2,
+    "stem": "Your team agreed to try pair programming, but one experienced developer refuses to participate, and others are becoming frustrated. As the team facilitator, what should you do FIRST?",
+    "options": [
+      "Insist that he follow the team's decision",
+      "Talk with the developer privately to understand his concerns",
+      "Exempt him from pair programming to avoid further conflict",
+      "Raise his refusal in the next retrospective so the team can address it"
+    ],
+    "answer": 1,
+    "explanation": "Understanding the developer's concerns first may reveal valid issues, such as the type of work or pairing style, that the team can address. Bringing it to the retrospective is reasonable later, but doing so first risks putting him on the spot publicly. Forcing or exempting him without understanding the cause does not resolve the conflict."
+  }
+]

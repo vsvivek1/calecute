@@ -1,0 +1,25 @@
+{
+ "email": "parent@example.com",
+ "staff": [],
+ "classes": [],
+ "children": [
+  {
+   "id": "00000000-0000-4000-a000-0000000000a1",
+   "name": "Aditi Nair",
+   "class": "Grade 5 A",
+   "school": "Calecutech Demo School",
+   "roll_no": 4,
+   "class_id": "00000000-0000-4000-a000-0000000000c5",
+   "school_id": "00000000-0000-4000-a000-000000000001"
+  },
+  {
+   "id": "00000000-0000-4000-a000-0000000000a2",
+   "name": "Arjun Nair",
+   "class": "Grade 8 B",
+   "school": "Calecutech Demo School",
+   "roll_no": 11,
+   "class_id": "00000000-0000-4000-a000-0000000000c8",
+   "school_id": "00000000-0000-4000-a000-000000000001"
+  }
+ ]
+}

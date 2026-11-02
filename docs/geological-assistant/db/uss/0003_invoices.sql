@@ -25,8 +25,8 @@ create table geological_assistant.invoice_settings (
   support_email text not null,
   updated_at timestamptz not null default now()
 );
-insert into geological_assistant.invoice_settings (legal_name, address, state_code, support_email)
-values ('Calecute Technologies (OPC) Private Limited', 'Kerala, India', '32', 'info@calecutech.com');
+insert into geological_assistant.invoice_settings (legal_name, address, state_code, gstin, support_email)
+values ('Calecute Technologies (OPC) Private Limited', 'Kerala, India', '32', '32AAOCC1290K1ZK', 'info@calecutech.com');
 
 alter table geological_assistant.invoice_settings enable row level security;
 grant all on geological_assistant.invoice_settings to service_role;

@@ -10,11 +10,11 @@ import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { SignJWT, jwtVerify } from "jose";
 import { ApiError } from "../errors";
 import { env } from "../env";
-import type { ActorRole } from "@/db/rls";
+import type { UserRole } from "@/db/rls";
 
 export interface AccessClaims {
   sub: string;
-  role: Exclude<ActorRole, "PUBLIC">;
+  role: UserRole;
   /** Agent id, present only when the user has an agent record. */
   agt?: number;
   /** Token version, so a future revocation sweep can invalidate old shapes. */
@@ -29,7 +29,7 @@ function secret(): Uint8Array {
 
 export async function issueAccessToken(claims: {
   userId: number;
-  role: Exclude<ActorRole, "PUBLIC">;
+  role: UserRole;
   agentId?: number | null;
 }): Promise<{ token: string; expiresIn: number }> {
   const e = env();
