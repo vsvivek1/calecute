@@ -61,6 +61,10 @@
       "description": "Referral attribution and payments, called by product systems. First code wins, permanently."
     },
     {
+      "name": "invoices",
+      "description": "GST tax invoices and credit notes for every product, under one GSTIN and one number series."
+    },
+    {
       "name": "referral",
       "description": "Invite codes for every app user, the public leaderboard, QR and click logging."
     },
@@ -9307,6 +9311,1014 @@
           },
           "400": {
             "description": "Validation failed, or a geography id was not recognised.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded. See RateLimit-* and Retry-After headers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error. The requestId identifies it in the logs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoices": {
+      "post": {
+        "tags": [
+          "invoices"
+        ],
+        "summary": "Issue the GST tax invoice for a captured payment",
+        "description": "Every Calecute app sells under one GSTIN, so invoices are numbered here in one\nconsecutive series per financial year for all products (CT/2026-27/00001).\nPrices are GST-inclusive: `amountPaise` is split into taxable value and CGST +\nSGST (buyer in the seller's state, or state unknown) or IGST.\n\nIdempotent on `paymentRef` per product: a repeat returns the invoice already\nissued with 200. `pdfUrl` opens the PDF without a key; give it to the buyer.\n\n**Requires role:** API key (server only), or SUPER_ADMIN",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "paymentRef",
+                  "amountPaise",
+                  "paidAt"
+                ],
+                "properties": {
+                  "paymentRef": {
+                    "type": "string",
+                    "description": "The product's payment id (Razorpay pay_…, Play order id)."
+                  },
+                  "customerRef": {
+                    "type": "string",
+                    "description": "The product's own user id, for GET /invoices."
+                  },
+                  "amountPaise": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "What the buyer paid, GST included."
+                  },
+                  "paidAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Invoice line; defaults to the product name."
+                  },
+                  "buyer": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string",
+                        "format": "email"
+                      },
+                      "gstin": {
+                        "type": "string",
+                        "description": "Checked, including the check digit. Its state is the place of supply."
+                      },
+                      "stateCode": {
+                        "type": "string",
+                        "pattern": "^\\d{2}$",
+                        "description": "GST state code; the place of supply when there is no GSTIN."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Already issued for this paymentRef; the same invoice.",
+            "headers": {
+              "RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests allowed per window."
+              },
+              "RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests left in this window."
+              },
+              "RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the window resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "INVOICE",
+                        "CREDIT_NOTE"
+                      ]
+                    },
+                    "number": {
+                      "type": "string",
+                      "examples": [
+                        "CT/2026-27/00001",
+                        "CN/2026-27/00001"
+                      ]
+                    },
+                    "financialYear": {
+                      "type": "string",
+                      "examples": [
+                        "2026-27"
+                      ]
+                    },
+                    "issuedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "paymentRef": {
+                      "type": "string"
+                    },
+                    "refundRef": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "originalNumber": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Credit notes: the invoice credited."
+                    },
+                    "customerRef": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "seller": {
+                      "type": "object"
+                    },
+                    "buyer": {
+                      "type": "object"
+                    },
+                    "placeOfSupply": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "sac": {
+                      "type": "string"
+                    },
+                    "gstRateBps": {
+                      "type": "integer"
+                    },
+                    "taxablePaise": {
+                      "type": "integer"
+                    },
+                    "cgstPaise": {
+                      "type": "integer"
+                    },
+                    "sgstPaise": {
+                      "type": "integer"
+                    },
+                    "igstPaise": {
+                      "type": "integer"
+                    },
+                    "totalPaise": {
+                      "type": "integer"
+                    },
+                    "pdfUrl": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "Opens the PDF without a key."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Issued.",
+            "headers": {
+              "RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests allowed per window."
+              },
+              "RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests left in this window."
+              },
+              "RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the window resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "INVOICE",
+                        "CREDIT_NOTE"
+                      ]
+                    },
+                    "number": {
+                      "type": "string",
+                      "examples": [
+                        "CT/2026-27/00001",
+                        "CN/2026-27/00001"
+                      ]
+                    },
+                    "financialYear": {
+                      "type": "string",
+                      "examples": [
+                        "2026-27"
+                      ]
+                    },
+                    "issuedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "paymentRef": {
+                      "type": "string"
+                    },
+                    "refundRef": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "originalNumber": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Credit notes: the invoice credited."
+                    },
+                    "customerRef": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "seller": {
+                      "type": "object"
+                    },
+                    "buyer": {
+                      "type": "object"
+                    },
+                    "placeOfSupply": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "sac": {
+                      "type": "string"
+                    },
+                    "gstRateBps": {
+                      "type": "integer"
+                    },
+                    "taxablePaise": {
+                      "type": "integer"
+                    },
+                    "cgstPaise": {
+                      "type": "integer"
+                    },
+                    "sgstPaise": {
+                      "type": "integer"
+                    },
+                    "igstPaise": {
+                      "type": "integer"
+                    },
+                    "totalPaise": {
+                      "type": "integer"
+                    },
+                    "pdfUrl": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "Opens the PDF without a key."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed, or a geography id was not recognised.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed or expired access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not permitted, or outside district scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded. See RateLimit-* and Retry-After headers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error. The requestId identifies it in the logs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "invoices"
+        ],
+        "summary": "List one customer's invoices and credit notes",
+        "description": "Only this product's documents for `customerRef`, newest first.\n\n**Requires role:** API key (server only), or SUPER_ADMIN",
+        "parameters": [
+          {
+            "name": "customerRef",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The product's own user id."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "headers": {
+              "RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests allowed per window."
+              },
+              "RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests left in this window."
+              },
+              "RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the window resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "items"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "INVOICE",
+                              "CREDIT_NOTE"
+                            ]
+                          },
+                          "number": {
+                            "type": "string",
+                            "examples": [
+                              "CT/2026-27/00001",
+                              "CN/2026-27/00001"
+                            ]
+                          },
+                          "financialYear": {
+                            "type": "string",
+                            "examples": [
+                              "2026-27"
+                            ]
+                          },
+                          "issuedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "paymentRef": {
+                            "type": "string"
+                          },
+                          "refundRef": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "originalNumber": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Credit notes: the invoice credited."
+                          },
+                          "customerRef": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "seller": {
+                            "type": "object"
+                          },
+                          "buyer": {
+                            "type": "object"
+                          },
+                          "placeOfSupply": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "sac": {
+                            "type": "string"
+                          },
+                          "gstRateBps": {
+                            "type": "integer"
+                          },
+                          "taxablePaise": {
+                            "type": "integer"
+                          },
+                          "cgstPaise": {
+                            "type": "integer"
+                          },
+                          "sgstPaise": {
+                            "type": "integer"
+                          },
+                          "igstPaise": {
+                            "type": "integer"
+                          },
+                          "totalPaise": {
+                            "type": "integer"
+                          },
+                          "pdfUrl": {
+                            "type": "string",
+                            "format": "uri",
+                            "description": "Opens the PDF without a key."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed, or a geography id was not recognised.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed or expired access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not permitted, or outside district scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded. See RateLimit-* and Retry-After headers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error. The requestId identifies it in the logs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/credit-notes": {
+      "post": {
+        "tags": [
+          "invoices"
+        ],
+        "summary": "Issue a credit note for a refund",
+        "description": "Against the invoice for `paymentRef`, with the tax reversed in proportion.\nOwn series (CN/2026-27/00001). Idempotent on `refundRef`. Refunds can never add\nup to more than the invoice.\n\n**Requires role:** API key (server only), or SUPER_ADMIN",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "paymentRef",
+                  "refundRef",
+                  "amountPaise",
+                  "refundedAt"
+                ],
+                "properties": {
+                  "paymentRef": {
+                    "type": "string"
+                  },
+                  "refundRef": {
+                    "type": "string",
+                    "description": "The product's refund id."
+                  },
+                  "amountPaise": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "refundedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Already issued for this refundRef; the same credit note.",
+            "headers": {
+              "RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests allowed per window."
+              },
+              "RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests left in this window."
+              },
+              "RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the window resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "INVOICE",
+                        "CREDIT_NOTE"
+                      ]
+                    },
+                    "number": {
+                      "type": "string",
+                      "examples": [
+                        "CT/2026-27/00001",
+                        "CN/2026-27/00001"
+                      ]
+                    },
+                    "financialYear": {
+                      "type": "string",
+                      "examples": [
+                        "2026-27"
+                      ]
+                    },
+                    "issuedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "paymentRef": {
+                      "type": "string"
+                    },
+                    "refundRef": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "originalNumber": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Credit notes: the invoice credited."
+                    },
+                    "customerRef": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "seller": {
+                      "type": "object"
+                    },
+                    "buyer": {
+                      "type": "object"
+                    },
+                    "placeOfSupply": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "sac": {
+                      "type": "string"
+                    },
+                    "gstRateBps": {
+                      "type": "integer"
+                    },
+                    "taxablePaise": {
+                      "type": "integer"
+                    },
+                    "cgstPaise": {
+                      "type": "integer"
+                    },
+                    "sgstPaise": {
+                      "type": "integer"
+                    },
+                    "igstPaise": {
+                      "type": "integer"
+                    },
+                    "totalPaise": {
+                      "type": "integer"
+                    },
+                    "pdfUrl": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "Opens the PDF without a key."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Issued.",
+            "headers": {
+              "RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests allowed per window."
+              },
+              "RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Requests left in this window."
+              },
+              "RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the window resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "INVOICE",
+                        "CREDIT_NOTE"
+                      ]
+                    },
+                    "number": {
+                      "type": "string",
+                      "examples": [
+                        "CT/2026-27/00001",
+                        "CN/2026-27/00001"
+                      ]
+                    },
+                    "financialYear": {
+                      "type": "string",
+                      "examples": [
+                        "2026-27"
+                      ]
+                    },
+                    "issuedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "paymentRef": {
+                      "type": "string"
+                    },
+                    "refundRef": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "originalNumber": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "description": "Credit notes: the invoice credited."
+                    },
+                    "customerRef": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "seller": {
+                      "type": "object"
+                    },
+                    "buyer": {
+                      "type": "object"
+                    },
+                    "placeOfSupply": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "sac": {
+                      "type": "string"
+                    },
+                    "gstRateBps": {
+                      "type": "integer"
+                    },
+                    "taxablePaise": {
+                      "type": "integer"
+                    },
+                    "cgstPaise": {
+                      "type": "integer"
+                    },
+                    "sgstPaise": {
+                      "type": "integer"
+                    },
+                    "igstPaise": {
+                      "type": "integer"
+                    },
+                    "totalPaise": {
+                      "type": "integer"
+                    },
+                    "pdfUrl": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "Opens the PDF without a key."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed, or a geography id was not recognised.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, malformed or expired access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authenticated but not permitted, or outside district scope.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No invoice for that paymentRef (paid before invoicing started).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Refunds would exceed the invoice total.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded. See RateLimit-* and Retry-After headers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error. The requestId identifies it in the logs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invoices/{id}/pdf": {
+      "get": {
+        "tags": [
+          "invoices"
+        ],
+        "summary": "Invoice or credit note as a PDF",
+        "description": "Public, but only with the document's own `token` (from `pdfUrl`). Not cached, not indexed.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Invoice id."
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{32}$"
+            },
+            "description": "The view token from pdfUrl."
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "0",
+                "1"
+              ]
+            },
+            "description": "1 to download instead of opening."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The PDF.",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed, or a geography id was not recognised.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No document with that id and token.",
             "content": {
               "application/json": {
                 "schema": {

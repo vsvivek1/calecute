@@ -109,7 +109,6 @@ function route() {
   if (page === 'progress' && arg) return progress(arg);
   // Invoices stay readable after a refund, when the course itself is locked.
   if (page === 'invoices') return invoices();
-  if (page === 'invoice') return invoice(arg);
   if (!state.paid) return buy();
   // There is no unit or mode picker: old #/study/<unit> and #/quiz/<unit> links land on today's plan.
   if (page === 'today') return today();
@@ -1283,98 +1282,31 @@ function schedulePanel(cards, byId, attempts) {
 }
 
 // ---------- invoices ----------
-// Issued by the payment webhook (geological_assistant.issue_invoice); this page
-// only shows them. "Save as PDF" is the browser's print dialog.
+// Issued by the shared Calecute invoicing API when the payment webhook runs;
+// the webhook keeps each number and PDF link on the order, and this page lists them.
 async function invoices() {
-  const { data, error } = await sb.from('invoices').select('id,doc_type,invoice_no,issued_at,total_minor')
-    .order('issued_at', { ascending: false });
+  const { data, error } = await sb.from('payment_orders')
+    .select('created_at,amount_minor,invoice_no,invoice_pdf_url,credit_note_no,credit_note_pdf_url')
+    .not('invoice_no', 'is', null)
+    .order('created_at', { ascending: false });
   if (error) return show(errorBox('Could not load your invoices: ' + error.message));
+  const rows = data.flatMap((o) => [
+    { date: o.created_at, no: o.invoice_no, url: o.invoice_pdf_url, kind: 'Tax invoice' },
+    ...(o.credit_note_no ? [{ date: o.created_at, no: o.credit_note_no, url: o.credit_note_pdf_url, kind: 'Credit note' }] : []),
+  ]);
   show(
     h('div', { class: 'row' }, h('a', { href: 'study#/' }, '← My course')),
     h('h1', {}, 'My invoices'),
-    data.length ? h('table', { class: 'res' },
-      h('tr', {}, h('th', {}, 'Date'), h('th', {}, 'Number'), h('th', {}, 'Amount'), h('th', {}, '')),
-      data.map((r) => h('tr', {},
-        h('td', {}, dateIN(r.issued_at)),
-        h('td', {}, r.invoice_no, r.doc_type === 'credit_note' ? ' (credit note)' : ''),
-        h('td', {}, (r.doc_type === 'credit_note' ? '−' : '') + rupees2(r.total_minor)),
-        h('td', {}, h('a', { href: 'study#/invoice/' + r.id }, 'View / download')))))
-      : h('p', {}, 'No invoices yet. Your invoice appears here a few seconds after your payment is confirmed.'),
-  );
-}
-
-async function invoice(id) {
-  const { data: d, error } = await sb.from('invoices').select('*').eq('id', id).maybeSingle();
-  if (error || !d) return show(errorBox('Invoice not found.'));
-  const credit = d.doc_type === 'credit_note';
-  const taxed = !!d.seller_gstin;
-  const title = credit ? 'Credit Note' : taxed ? 'Tax Invoice' : 'Receipt';
-  const pct = (bp) => (bp / 100).toString() + '%';
-  const original = credit && d.original_invoice_id
-    ? (await sb.from('invoices').select('invoice_no,issued_at').eq('id', d.original_invoice_id).maybeSingle()).data
-    : null;
-  const taxRows = !taxed ? [] : d.igst_minor > 0
-    ? [['IGST @ ' + pct(d.gst_rate_bp), d.igst_minor]]
-    : [['CGST @ ' + pct(d.gst_rate_bp / 2), d.cgst_minor], ['SGST @ ' + pct(d.gst_rate_bp / 2), d.sgst_minor]];
-  const kv = (k, v) => v ? h('div', {}, h('span', { class: 'k' }, k), ' ', v) : null;
-
-  show(
-    h('div', { class: 'row noprint' },
-      h('a', { href: 'study#/invoices' }, '← My invoices'),
-      h('button', { class: 'btn sm', onclick: () => window.print() }, 'Download PDF / Print')),
-    h('article', { class: 'invoice' },
-      h('header', {},
-        h('div', {}, h('h1', {}, title),
-          kv(credit ? 'Credit note no.' : taxed ? 'Invoice no.' : 'Receipt no.', d.invoice_no),
-          kv('Date', dateIN(d.issued_at)),
-          original && kv('Against invoice', original.invoice_no + ' dated ' + dateIN(original.issued_at))),
-        h('div', { class: 'seller' }, h('strong', {}, d.seller_name), h('div', {}, d.seller_address),
-          kv('GSTIN', d.seller_gstin), kv('State', stateName(d.seller_state_code) + ' (' + d.seller_state_code + ')'))),
-      h('section', { class: 'parties' },
-        h('div', {}, h('div', { class: 'k' }, 'Billed to'),
-          h('strong', {}, d.buyer_name || d.buyer_email || 'Customer'),
-          d.buyer_name && d.buyer_email ? h('div', {}, d.buyer_email) : null,
-          kv('GSTIN', d.buyer_gstin)),
-        h('div', {},
-          kv('Place of supply', stateName(d.place_of_supply) + ' (' + d.place_of_supply + ')'),
-          taxed ? kv('Reverse charge', 'No') : null,
-          kv('Payment ref.', d.provider_payment_id))),
-      h('table', { class: 'lines' },
-        h('tr', {}, h('th', {}, 'Description'), h('th', {}, 'SAC'), h('th', {}, 'Qty'), h('th', { class: 'r' }, taxed ? 'Taxable value' : 'Amount')),
-        h('tr', {}, h('td', {}, d.description), h('td', {}, d.sac), h('td', {}, '1'), h('td', { class: 'r' }, rupees2(d.taxable_minor))),
-        taxRows.map(([k, v]) => h('tr', { class: 'sum' }, h('td', { colspan: 3 }, k), h('td', { class: 'r' }, rupees2(v)))),
-        h('tr', { class: 'sum total' }, h('td', { colspan: 3 }, credit ? 'Total credited' : 'Total paid'),
-          h('td', { class: 'r' }, rupees2(d.total_minor)))),
-      h('p', { class: 'small' }, 'Amount in words: ' + inWords(d.total_minor)),
-      !taxed ? h('p', { class: 'small' }, 'The seller is not registered under GST, so no GST is charged.') : null,
-      h('p', { class: 'small' }, 'This is a computer-generated ' + title.toLowerCase() +
-        ' and needs no signature. Questions: info@calecutech.com')),
-  );
+    rows.length ? h('table', { class: 'res' },
+      h('tr', {}, h('th', {}, 'Date'), h('th', {}, 'Number'), h('th', {}, '')),
+      rows.map((r) => h('tr', {},
+        h('td', {}, dateIN(r.date)),
+        h('td', {}, r.no, r.kind === 'Credit note' ? ' (credit note)' : ''),
+        h('td', {}, h('a', { href: r.url, target: '_blank', rel: 'noopener' }, 'PDF')))))
+      : h('p', {}, 'No invoices yet. Your invoice appears here a few seconds after your payment is confirmed.'));
 }
 
 function dateIN(t) { return new Date(t).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' }); }
-function rupees2(minor) { return '₹' + (minor / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-function stateName(code) { return STATES.find(([c]) => c === code)?.[1] ?? code; }
-
-// "Rupees Three Thousand Only", in the Indian system (lakh, crore).
-function inWords(minor) {
-  const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve',
-    'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-  const two = (n) => n < 20 ? ones[n] : tens[Math.floor(n / 10)] + (n % 10 ? ' ' + ones[n % 10] : '');
-  const three = (n) => [n >= 100 ? ones[Math.floor(n / 100)] + ' Hundred' : '', two(n % 100)].filter(Boolean).join(' ');
-  const words = (n) => {
-    if (!n) return 'Zero';
-    const parts = [];
-    for (const [size, name] of [[1e7, 'Crore'], [1e5, 'Lakh'], [1e3, 'Thousand']]) {
-      if (n >= size) { parts.push(words(Math.floor(n / size)) + ' ' + name); n %= size; }
-    }
-    if (n) parts.push(three(n));
-    return parts.join(' ');
-  };
-  const r = Math.floor(minor / 100), p = minor % 100;
-  return 'Rupees ' + words(r) + (p ? ' and ' + two(p) + ' Paise' : '') + ' Only';
-}
 
 const GSTIN = /^\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
 // GST state codes.

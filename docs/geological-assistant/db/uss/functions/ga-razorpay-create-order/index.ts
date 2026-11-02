@@ -102,16 +102,7 @@ Deno.serve(async (req) => {
     coupon = quote.code;
   }
 
-  // Prices are GST-inclusive unless invoice_settings says otherwise; GST is
-  // only added on top once the seller has a GSTIN.
-  const { data: tax } = await admin
-    .from('invoice_settings')
-    .select('gstin, gst_rate_bp, price_includes_gst')
-    .maybeSingle();
-  if (tax?.gstin && tax.price_includes_gst === false) {
-    amount = Math.round((amount * (10000 + tax.gst_rate_bp)) / 10000);
-  }
-
+  // Prices are GST-inclusive: the invoicing API splits out the tax.
   const currency = course.price_currency ?? 'INR';
   const orderResponse = await fetch('https://api.razorpay.com/v1/orders', {
     method: 'POST',

@@ -1860,6 +1860,141 @@
       ]
     },
     {
+      "name": "invoices",
+      "description": "GST tax invoices and credit notes for every product, under one GSTIN and one number series.",
+      "item": [
+        {
+          "name": "List one customer's invoices and credit notes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/invoices?customerRef=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "invoices"
+              ],
+              "query": [
+                {
+                  "key": "customerRef",
+                  "value": "",
+                  "description": "The product's own user id.",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Only this product's documents for `customerRef`, newest first.\n\n**Requires role:** API key (server only), or SUPER_ADMIN"
+          },
+          "response": []
+        },
+        {
+          "name": "Issue the GST tax invoice for a captured payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/invoices",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "invoices"
+              ],
+              "query": []
+            },
+            "description": "Every Calecute app sells under one GSTIN, so invoices are numbered here in one\nconsecutive series per financial year for all products (CT/2026-27/00001).\nPrices are GST-inclusive: `amountPaise` is split into taxable value and CGST +\nSGST (buyer in the seller's state, or state unknown) or IGST.\n\nIdempotent on `paymentRef` per product: a repeat returns the invoice already\nissued with 200. `pdfUrl` opens the PDF without a key; give it to the buyer.\n\n**Requires role:** API key (server only), or SUPER_ADMIN"
+          },
+          "response": []
+        },
+        {
+          "name": "Issue a credit note for a refund",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/credit-notes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "credit-notes"
+              ],
+              "query": []
+            },
+            "description": "Against the invoice for `paymentRef`, with the tax reversed in proportion.\nOwn series (CN/2026-27/00001). Idempotent on `refundRef`. Refunds can never add\nup to more than the invoice.\n\n**Requires role:** API key (server only), or SUPER_ADMIN"
+          },
+          "response": []
+        },
+        {
+          "name": "Invoice or credit note as a PDF",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/invoices/{id}/pdf?token=&download=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "invoices",
+                ":id",
+                "pdf"
+              ],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "description": "The view token from pdfUrl.",
+                  "disabled": false
+                },
+                {
+                  "key": "download",
+                  "value": "",
+                  "description": "1 to download instead of opening.",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Public, but only with the document's own `token` (from `pdfUrl`). Not cached, not indexed.",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "referral",
       "description": "Invite codes for every app user, the public leaderboard, QR and click logging.",
       "item": [

@@ -9,11 +9,6 @@ The course lives in its own schema, `geological_assistant`, inside the USS proje
 - `seed/seed_01..12.sql`: 1,854 cards, 1,212 questions, 3,602 question links.
   **Applied 11 Oct 2026** and checked row by row against the source. Safe to re-run.
 - `0002_payment_orders.sql`: Razorpay orders table. **Applied 11 Oct 2026.**
-- `0003_invoices.sql`: GST tax invoices and credit notes (`invoices`, `invoice_settings`,
-  `issue_invoice()`, `issue_credit_note()`). GSTIN 32AAOCC1290K1ZK, 18%, prices GST-inclusive.
-  The webhook issues one invoice per capture (`GA/26-27/0001`, new series each April) and one
-  credit note per refund (`GACN/26-27/0001`). Buyers see them under My invoices on the study page.
-  Change seller details with `update geological_assistant.invoice_settings set ...`.
 - `0004_coupons.sql`: coupons (admin codes 1% to 99% off, spin-wheel codes 10% to 30% off, one spin per
   account, valid 7 days), `quote_price()`, `spin_wheel()`, admin RPCs for the study page's `#/admin` screen.
   Admins are rows in `geological_assistant.admins` (email). Apply **before** deploying the new
@@ -22,6 +17,12 @@ The course lives in its own schema, `geological_assistant`, inside the USS proje
   for them), `admin_list_participants()` (who signed in, who paid, cards studied, tests taken),
   `admin_make_access_code()` (a one-use `FREE-…` code for one signed-in user) and
   `claim_access_code()` (the user unlocks the course free; writes a `provider = 'coupon'` subscription).
+- `0008_invoice_links.sql`: billing name/state/GSTIN on `payment_orders`, plus the invoice and
+  credit-note number and PDF link. Invoices themselves come from the shared Calecute invoicing API
+  (`apps/api`, one series `CT/2026-27/00001` for the whole GSTIN across every app). The webhook calls
+  it after each capture/refund when the secrets `CALECUTE_API_URL` and `CALECUTE_API_KEY` (a server
+  key for this product) are set; without them it skips invoicing and still grants access.
+  Apply **before** deploying the new create-order and webhook.
 - `functions/ga-razorpay-create-order`, `functions/ga-razorpay-webhook`: **deployed 11 Oct 2026**
   to the USS project. They use only this schema. Until the Razorpay secrets are set they answer
   503 and change nothing.

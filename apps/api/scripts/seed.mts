@@ -241,6 +241,15 @@ const PRODUCTS: SeedProduct[] = [
     // an INR fee is set by an administrator.
   },
   {
+    slug: "geological-assistant",
+    name: "Geological Assistant Prep",
+    summary:
+      "Kerala PSC Geological Assistant exam course: fact cards, MCQs, past-paper questions and mock tests.",
+    // Paid (Rs 3,000, lifetime). Fee left NULL for an administrator to set.
+    // Its server key issues GST invoices through POST /invoices.
+    webUrl: "https://calecutech.com/geological-assistant",
+  },
+  {
     slug: "pta",
     name: "PTA",
     summary: "Parent-teacher association management: members, meetings, notices, and collections.",
