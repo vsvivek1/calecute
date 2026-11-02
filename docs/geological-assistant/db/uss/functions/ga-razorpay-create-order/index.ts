@@ -19,6 +19,8 @@ const RAZORPAY_KEY_SECRET = Deno.env.get('RAZORPAY_KEY_SECRET');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
+const GSTIN = /^\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
+
 const cors = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-client-info',
@@ -47,12 +49,21 @@ Deno.serve(async (req) => {
 
   let courseId: string;
   let couponCode: string | undefined;
+  let billing: { name?: string; stateCode?: string; gstin?: string } | undefined;
   try {
-    ({ courseId, couponCode } = await req.json());
+    ({ courseId, couponCode, billing } = await req.json());
   } catch {
     return json({ error: 'Bad body' }, 400);
   }
   if (!courseId) return json({ error: 'courseId is required' }, 400);
+
+  // What the buyer wants on the GST invoice. All optional; the state decides
+  // CGST+SGST or IGST, and a GSTIN (for a business) overrides the state.
+  const billingName = String(billing?.name ?? '').trim().slice(0, 120) || null;
+  const billingState = String(billing?.stateCode ?? '').trim() || null;
+  const billingGstin = String(billing?.gstin ?? '').trim().toUpperCase() || null;
+  if (billingState && !/^\d{2}$/.test(billingState)) return json({ error: 'Pick your state from the list' }, 400);
+  if (billingGstin && !GSTIN.test(billingGstin)) return json({ error: 'That GSTIN does not look right' }, 400);
 
   const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, { db: { schema: SCHEMA } });
 
@@ -91,6 +102,7 @@ Deno.serve(async (req) => {
     coupon = quote.code;
   }
 
+  // Prices are GST-inclusive: the invoicing API splits out the tax.
   const currency = course.price_currency ?? 'INR';
   const orderResponse = await fetch('https://api.razorpay.com/v1/orders', {
     method: 'POST',
@@ -124,6 +136,9 @@ Deno.serve(async (req) => {
     coupon_code: coupon,
     currency,
     status: order.status ?? 'created',
+    billing_name: billingName,
+    billing_state_code: billingState,
+    billing_gstin: billingGstin,
   });
   if (insertError) console.error('could not record the order', insertError);
 

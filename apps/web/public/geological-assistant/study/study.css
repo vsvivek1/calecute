@@ -65,3 +65,8 @@ table.sched tr.now td { background: color-mix(in srgb, var(--ok) 10%, transparen
 .days-head{margin-bottom:4px;text-align:center}
 .days-head span{text-align:center}
 .day.pad{visibility:hidden}
+.bill{display:grid;gap:4px;margin:6px 0 14px;max-width:420px;font:15px system-ui,sans-serif}
+.bill label{font-weight:600;margin-top:6px}
+.bill input,.bill select{width:100%;box-sizing:border-box;min-width:0;font:16px system-ui,sans-serif;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
+.bill details{margin-top:8px}.bill summary{cursor:pointer;color:var(--acc)}
+.bill details label,.bill details input{display:block;width:100%;box-sizing:border-box}

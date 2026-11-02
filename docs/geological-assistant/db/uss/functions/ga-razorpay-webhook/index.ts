@@ -12,6 +12,13 @@
  * Deploy (USS project; Razorpay sends no Supabase JWT, the signature is the auth):
  *   supabase functions deploy ga-razorpay-webhook --no-verify-jwt
  *   supabase secrets set RAZORPAY_WEBHOOK_SECRET=...
+ * It also asks the shared Calecute billing service (repo vsvivek1/calecute-billing, one number
+ * series for the whole GSTIN) for the GST tax invoice on each capture and a
+ * credit note on each refund, and keeps the number and PDF link on the order.
+ * Both calls are idempotent, so a repeated delivery gets the same document.
+ *   supabase secrets set BILLING_API_URL=https://... BILLING_API_KEY=...
+ * Without those two secrets invoicing is skipped (logged), access still works.
+ *
  * Razorpay dashboard > Webhooks: URL .../functions/v1/ga-razorpay-webhook,
  * events payment.captured and refund.processed.
  */
@@ -21,6 +28,93 @@ const SCHEMA = 'geological_assistant';
 const WEBHOOK_SECRET = Deno.env.get('RAZORPAY_WEBHOOK_SECRET');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const INVOICE_API_URL = Deno.env.get('BILLING_API_URL')?.replace(/\/+$/, '');
+const INVOICE_API_KEY = Deno.env.get('BILLING_API_KEY');
+
+type Admin = ReturnType<typeof createClient>;
+
+const isoFromUnix = (seconds?: number) =>
+  new Date((seconds ?? Date.now() / 1000) * 1000).toISOString();
+
+/** POST to the invoicing API. Throws on anything but 200/201. */
+async function invoiceApi(path: string, body: unknown) {
+  const res = await fetch(`${INVOICE_API_URL}/api/v1${path}`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-api-key': INVOICE_API_KEY! },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(`${path} ${res.status}: ${await res.text()}`);
+  return await res.json() as { number: string; pdfUrl: string };
+}
+
+/**
+ * Invoice for a capture, credit note for a refund, through the shared API.
+ * The number and link are kept on the order so the study page can list them.
+ */
+async function issueDocument(
+  admin: Admin,
+  status: 'active' | 'refunded',
+  payment: Record<string, any>,
+  refund: Record<string, any> | undefined,
+  userId: string,
+) {
+  if (!INVOICE_API_URL || !INVOICE_API_KEY) {
+    console.warn('invoicing skipped: BILLING_API_URL / BILLING_API_KEY not set');
+    return;
+  }
+  const { data: order } = payment.order_id
+    ? await admin.from('payment_orders')
+      .select('billing_name, billing_state_code, billing_gstin')
+      .eq('provider_ref', payment.order_id).maybeSingle()
+    : { data: null };
+
+  if (status === 'active') {
+    let name = order?.billing_name || null;
+    if (!name) {
+      const { data } = await admin.auth.admin.getUserById(userId);
+      const meta = data?.user?.user_metadata ?? {};
+      name = meta.full_name || meta.name || null;
+    }
+    const doc = await invoiceApi('/invoices', {
+      paymentRef: payment.id,
+      customerRef: userId,
+      amountPaise: payment.amount,
+      paidAt: isoFromUnix(payment.created_at),
+      description: 'Kerala PSC Geological Assistant online course, lifetime access',
+      buyer: {
+        name,
+        email: payment.email || null,
+        gstin: order?.billing_gstin || null,
+        stateCode: order?.billing_state_code || null,
+      },
+    });
+    if (payment.order_id) {
+      await admin.from('payment_orders')
+        .update({ invoice_no: doc.number, invoice_pdf_url: doc.pdfUrl })
+        .eq('provider_ref', payment.order_id);
+    }
+    return;
+  }
+
+  if (!refund?.id) return;
+  try {
+    const doc = await invoiceApi('/credit-notes', {
+      paymentRef: payment.id,
+      refundRef: refund.id,
+      amountPaise: refund.amount,
+      refundedAt: isoFromUnix(refund.created_at),
+    });
+    if (payment.order_id) {
+      await admin.from('payment_orders')
+        .update({ credit_note_no: doc.number, credit_note_pdf_url: doc.pdfUrl })
+        .eq('provider_ref', payment.order_id);
+    }
+  } catch (e) {
+    // Paid before invoicing started: there is no invoice to credit.
+    if (String(e).includes(' 404:')) return;
+    throw e;
+  }
+}
 
 /** HMAC-SHA256 of the raw body, compared in constant time. */
 async function isSignatureValid(secret: string, raw: string, signature: string) {
@@ -111,6 +205,15 @@ Deno.serve(async (req) => {
       const { error: redeemError } = await admin.rpc('redeem_coupon', { p_code: code });
       if (redeemError) console.error('could not count the coupon use', redeemError);
     }
+  }
+
+  // Access is already granted above; an invoice failure only makes Razorpay
+  // retry, and the retry finds the subscription in place.
+  try {
+    await issueDocument(admin, status, payment, event.payload?.refund?.entity, userId);
+  } catch (e) {
+    console.error('could not issue the invoice', e);
+    return new Response('retry', { status: 500 });
   }
 
   return new Response('ok', { status: 200 });

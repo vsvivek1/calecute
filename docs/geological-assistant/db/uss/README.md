@@ -17,6 +17,12 @@ The course lives in its own schema, `geological_assistant`, inside the USS proje
   for them), `admin_list_participants()` (who signed in, who paid, cards studied, tests taken),
   `admin_make_access_code()` (a one-use `FREE-…` code for one signed-in user) and
   `claim_access_code()` (the user unlocks the course free; writes a `provider = 'coupon'` subscription).
+- `0008_invoice_links.sql`: billing name/state/GSTIN on `payment_orders`, plus the invoice and
+  credit-note number and PDF link. Invoices themselves come from the shared Calecute billing service
+  (repo `vsvivek1/calecute-billing`, one series `CT/2026-27/00001` for the whole GSTIN across every app). The webhook calls
+  it after each capture/refund when the secrets `BILLING_API_URL` and `BILLING_API_KEY` (that service's
+  key for this product) are set; without them it skips invoicing and still grants access.
+  Apply **before** deploying the new create-order and webhook.
 - `functions/ga-razorpay-create-order`, `functions/ga-razorpay-webhook`: **deployed 11 Oct 2026**
   to the USS project. They use only this schema. Until the Razorpay secrets are set they answer
   503 and change nothing.
