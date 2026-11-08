@@ -437,6 +437,8 @@ function referralAdmin() {
 }
 
 // ---------- admin: coupons ----------
+// Offer emails are sent from the QuizKerala admin (its own mail setup); ?coupon= fills in the code.
+const offersUrl = (code) => 'https://quiz.calecutech.com/admin/offers' + (code ? '?coupon=' + encodeURIComponent(code) : '');
 function adminLink() {
   const box = h('p', { class: 'small', hidden: true }, h('a', { href: 'study#/admin' }, 'Admin: participants and coupons'));
   sb.rpc('is_admin').then(({ data }) => { if (data === true) box.hidden = false; });
@@ -484,9 +486,9 @@ async function admin() {
       h('td', {}, `${c.used_count}${c.max_uses ? ' / ' + c.max_uses : ''}`),
       h('td', {}, date(c.expires_at)),
       h('td', {}, c.kind === 'admin' || c.kind === 'fixed'
-        ? h('button', { class: 'btn ghost sm', onclick: () => save({ p_code: c.code,
+        ? [h('a', { class: 'btn ghost sm', href: offersUrl(c.code), target: '_blank', rel: 'noopener' }, 'Email offer'), ' ', h('button', { class: 'btn ghost sm', onclick: () => save({ p_code: c.code,
             ...(c.kind === 'fixed' ? { p_price_minor: c.price_minor, p_access_days: c.access_days } : { p_percent_off: c.percent_off }),
-            p_max_uses: c.max_uses, p_expires_at: c.expires_at, p_note: c.note, p_active: !c.active }) }, c.active ? 'Turn off' : 'Turn on')
+            p_max_uses: c.max_uses, p_expires_at: c.expires_at, p_note: c.note, p_active: !c.active }) }, c.active ? 'Turn off' : 'Turn on')]
         : (c.active ? 'On' : 'Off'))));
     const n = (k) => data.filter((c) => c.kind === k).length;
     table.replaceChildren(
@@ -525,6 +527,9 @@ async function admin() {
         h('button', { class: 'btn', type: 'submit' }, 'Save coupon')),
       msg,
       h('p', { class: 'small' }, 'Share link: calecutech.com/geological-assistant/study?coupon=CODE')),
+    h('div', { class: 'panel' }, h('h2', {}, 'Email offers'),
+      h('p', { class: 'small' }, 'Email an offer to course sign-ins and to quiz sign-ups who asked for Geological Assistant. Opens the mail screen (sign in there as admin). Use "Email offer" on a coupon below to fill in its code.'),
+      h('a', { class: 'btn', href: offersUrl(), target: '_blank', rel: 'noopener' }, 'Email offers')),
     ref.el,
     h('div', { class: 'panel' }, h('h2', {}, 'All coupons'), table),
   );
