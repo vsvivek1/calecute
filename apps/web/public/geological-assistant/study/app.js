@@ -162,7 +162,8 @@ function buy() {
     priceBox.replaceChildren(...[
       off ? h('s', { class: 'was' }, rupees(list)) : null, off ? ' ' : null,
       quote.price_minor ? rupees(quote.price_minor) : 'Free',
-      h('span', { class: 'small' }, off ? `  ${off}% off with ${quote.code}` : '  one-time, lifetime access')].filter((x) => x != null));
+      h('span', { class: 'small' }, quote.access_days ? `  for ${quote.access_days} days of full access with ${quote.code}`
+        : off ? `  ${off}% off with ${quote.code}` : '  one-time, lifetime access')].filter((x) => x != null));
     button.textContent = quote.price_minor ? 'Pay ' + rupees(quote.price_minor) + ' by UPI, card or netbanking' : 'Unlock the course';
   }
 
@@ -182,7 +183,7 @@ function buy() {
     codeInput.value = q.code;
     saveCoupon(q.code);
     codeMsg.className = 'okmsg';
-    codeMsg.textContent = `${q.code} applied: ${q.percent_off}% off.` + (q.expires_at ? ` Valid till ${new Date(q.expires_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}.` : '');
+    codeMsg.textContent = (q.access_days ? `${q.code} applied: ${rupees(q.price_minor)} for ${q.access_days} days of access.` : `${q.code} applied: ${q.percent_off}% off.`) + (q.expires_at ? ` Valid till ${new Date(q.expires_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}.` : '');
     render();
     return true;
   }
@@ -201,7 +202,7 @@ function buy() {
       }
       new window.Razorpay({
         key: data.keyId, order_id: data.orderId, amount: data.amount, currency: data.currency,
-        name: 'Geological Assistant Prep', description: 'Lifetime access' + (data.coupon ? ` (${data.coupon})` : ''),
+        name: 'Geological Assistant Prep', description: (data.accessDays ? `${data.accessDays}-day access` : 'Lifetime access') + (data.coupon ? ` (${data.coupon})` : ''),
         prefill: { email: state.user.email, name: state.user.user_metadata?.full_name || '' },
         theme: { color: '#b4531f' },
         handler: () => { saveCoupon(''); waitForUnlock(msg); },
@@ -448,7 +449,10 @@ async function admin() {
   if (ok !== true) return show(h('h1', {}, 'Admins only'), h('p', {}, h('a', { href: 'study#/' }, '← Back')));
   const f = {
     code: h('input', { id: 'c-code', required: true, maxlength: 32, placeholder: 'PSC50', pattern: '[A-Za-z0-9\\-]{3,32}' }),
-    pct: h('input', { id: 'c-pct', type: 'number', min: 1, max: 99, required: true, placeholder: '50' }),
+    pct: h('input', { id: 'c-pct', type: 'number', min: 1, max: 99, placeholder: '50' }),
+    // Or a fixed price (₹) with access for a set number of days, e.g. ₹499 for 30 days.
+    fixed: h('input', { id: 'c-fixed', type: 'number', min: 1, placeholder: '499' }),
+    days: h('input', { id: 'c-days', type: 'number', min: 1, max: 3650, placeholder: 'Lifetime' }),
     max: h('input', { id: 'c-max', type: 'number', min: 1, placeholder: 'No limit' }),
     exp: h('input', { id: 'c-exp', type: 'date' }),
     note: h('input', { id: 'c-note', maxlength: 120, placeholder: 'Who it is for' }),
@@ -459,7 +463,8 @@ async function admin() {
   const peopleMsg = h('p', { class: 'small', 'aria-live': 'polite' });
   const field = (id, label, el) => h('label', { class: 'field', for: id }, h('span', { class: 'small' }, label), el);
   const save = async (args) => {
-    const { error } = await sb.rpc('admin_save_coupon', { p_course_id: COURSE, ...args });
+    const fixed = args.p_price_minor != null;
+    const { error } = await sb.rpc(fixed ? 'admin_save_fixed_coupon' : 'admin_save_coupon', { p_course_id: COURSE, ...args });
     if (error) { msg.className = 'err'; msg.textContent = error.message; return false; }
     msg.className = 'okmsg'; msg.textContent = `Saved ${args.p_code.toUpperCase()}.`;
     await load();
@@ -472,16 +477,20 @@ async function admin() {
     const date = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
     const rows = data.map((c) => h('tr', { class: c.active ? '' : 'off' },
       h('td', {}, h('strong', {}, c.code), c.note ? h('div', { class: 'small' }, c.note) : null),
-      h('td', {}, c.kind === 'spin' ? 'Spin' : c.kind === 'access' ? 'Free access' : 'Admin'),
-      h('td', {}, `${c.percent_off}%`, h('div', { class: 'small' }, c.kind === 'access' ? 'Free' : rupees(Math.max(100, Math.round(price * (100 - c.percent_off) / 100))))),
+      h('td', {}, c.kind === 'spin' ? 'Spin' : c.kind === 'access' ? 'Free access' : c.kind === 'fixed' ? 'Fixed price' : c.kind === 'referral' ? 'Referral' : 'Admin'),
+      c.kind === 'fixed'
+        ? h('td', {}, rupees(c.price_minor), h('div', { class: 'small' }, c.access_days ? `${c.access_days} days` : 'Lifetime'))
+        : h('td', {}, `${c.percent_off}%`, h('div', { class: 'small' }, c.kind === 'access' ? 'Free' : rupees(Math.max(100, Math.round(price * (100 - c.percent_off) / 100))))),
       h('td', {}, `${c.used_count}${c.max_uses ? ' / ' + c.max_uses : ''}`),
       h('td', {}, date(c.expires_at)),
-      h('td', {}, c.kind === 'admin'
-        ? h('button', { class: 'btn ghost sm', onclick: () => save({ p_code: c.code, p_percent_off: c.percent_off, p_max_uses: c.max_uses, p_expires_at: c.expires_at, p_note: c.note, p_active: !c.active }) }, c.active ? 'Turn off' : 'Turn on')
+      h('td', {}, c.kind === 'admin' || c.kind === 'fixed'
+        ? h('button', { class: 'btn ghost sm', onclick: () => save({ p_code: c.code,
+            ...(c.kind === 'fixed' ? { p_price_minor: c.price_minor, p_access_days: c.access_days } : { p_percent_off: c.percent_off }),
+            p_max_uses: c.max_uses, p_expires_at: c.expires_at, p_note: c.note, p_active: !c.active }) }, c.active ? 'Turn off' : 'Turn on')
         : (c.active ? 'On' : 'Off'))));
     const n = (k) => data.filter((c) => c.kind === k).length;
     table.replaceChildren(
-      h('p', { class: 'small' }, `${n('admin')} admin codes · ${n('spin')} spins · ${n('access')} free-access codes · ${data.reduce((t, c) => t + c.used_count, 0)} uses`),
+      h('p', { class: 'small' }, `${n('admin')} admin codes · ${n('fixed')} fixed-price codes · ${n('spin')} spins · ${n('access')} free-access codes · ${data.reduce((t, c) => t + c.used_count, 0)} uses`),
       h('div', { class: 'scroll' }, h('table', { class: 'res' },
         h('tr', {}, h('th', {}, 'Code'), h('th', {}, 'Type'), h('th', {}, 'Off'), h('th', {}, 'Used'), h('th', {}, 'Expires'), h('th', {}, '')),
         rows)));
@@ -496,16 +505,22 @@ async function admin() {
       peopleMsg, people),
     h('div', { class: 'panel' },
       h('h2', {}, 'Make a coupon'),
-      h('p', { class: 'small' }, 'Saving an existing code changes it. Spin-wheel codes are made by the wheel and cannot be edited here.'),
+      h('p', { class: 'small' }, 'Fill in either Discount % or Fixed price. A fixed price can give access for a set number of days (leave Days empty for lifetime). Saving an existing code changes it. Spin-wheel codes are made by the wheel and cannot be edited here.'),
       h('form', { class: 'grid', onsubmit: async (e) => {
         e.preventDefault();
+        if (!f.pct.value === !f.fixed.value) { msg.className = 'err'; msg.textContent = 'Fill in either Discount % or Fixed price, not both.'; return; }
         const ok = await save({
-          p_code: f.code.value.trim(), p_percent_off: Number(f.pct.value), p_max_uses: f.max.value ? Number(f.max.value) : null,
+          p_code: f.code.value.trim(),
+          ...(f.fixed.value
+            ? { p_price_minor: Math.round(Number(f.fixed.value) * 100), p_access_days: f.days.value ? Number(f.days.value) : null }
+            : { p_percent_off: Number(f.pct.value) }),
+          p_max_uses: f.max.value ? Number(f.max.value) : null,
           p_expires_at: f.exp.value ? new Date(f.exp.value + 'T23:59:59+05:30').toISOString() : null, p_note: f.note.value || null, p_active: true,
         });
         if (ok) e.target.reset();
       } },
-        field('c-code', 'Code', f.code), field('c-pct', 'Discount %', f.pct), field('c-max', 'Max uses', f.max),
+        field('c-code', 'Code', f.code), field('c-pct', 'Discount %', f.pct),
+        field('c-fixed', 'or Fixed price ₹', f.fixed), field('c-days', 'Days of access', f.days), field('c-max', 'Max uses', f.max),
         field('c-exp', 'Last day', f.exp), field('c-note', 'Note', f.note),
         h('button', { class: 'btn', type: 'submit' }, 'Save coupon')),
       msg,

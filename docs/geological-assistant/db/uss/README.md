@@ -24,6 +24,15 @@ The course lives in its own schema, `geological_assistant`, inside the USS proje
   app (`provider = 'google_play'`). **Not deployed yet.** Setup: `apps/geological-assistant-app/README.md`
   on the `claude/geological-assistant-app` branch.
 
+- `0010_fixed_price_coupons.sql` (needs 0009): coupon kind `fixed` = a set price plus optional days of
+  access (`coupons.price_minor`, `coupons.access_days`, `payment_orders.access_days`), `quote_price()` now
+  returns `access_days`, `admin_save_fixed_coupon()`. Adds **CRASH30**: ₹499 (49900 paise) for 30 days of
+  access, usable until 2 Dec 2026 23:59 IST. Apply **before** deploying the new create-order and webhook.
+  The webhook sets `current_period_end` = payment time + days; `has_active_subscription()` already ends
+  access then.
+- Offer emails live in the QuizKerala admin (Admin → Offer emails), not here. See QuizKerala
+  `docs/offer-emails.md`.
+
 To use it from apps:
 1. Dashboard > Project Settings > Data API > Exposed schemas: `geological_assistant` (done).
 2. supabase-js: `createClient(url, key, { db: { schema: 'geological_assistant' } })`.
