@@ -36,8 +36,6 @@ const nextConfig: NextConfig = {
       { source: "/geological-assistant", destination: "/geological-assistant/index.html" },
       { source: `/geological-assistant/:slug(${pages})`, destination: "/geological-assistant/:slug/index.html" },
       { source: "/geological-assistant/study", destination: "/geological-assistant/study/index.html" },
-      // Unsubscribe page linked from every offer email (any course).
-      { source: "/offers/unsubscribe", destination: "/offers/unsubscribe/index.html" },
       { source: "/jathakam", destination: "/jathakam/index.html" },
       { source: `/jathakam/:slug(${pages}|disclaimer)`, destination: "/jathakam/:slug.html" },
     ];

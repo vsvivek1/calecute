@@ -30,14 +30,8 @@ The course lives in its own schema, `geological_assistant`, inside the USS proje
   access, usable until 2 Dec 2026 23:59 IST. Apply **before** deploying the new create-order and webhook.
   The webhook sets `current_period_end` = payment time + days; `has_active_subscription()` already ends
   access then.
-- `0011_offer_emails.sql`: new schema `offers` (admins, contacts with unsubscribe tokens, campaigns,
-  sends). Not exposed in the Data API; only the functions below touch it.
-- `functions/offer-emails`: admin offer emails (study `#/admin` > "Send an offer by email"). Secrets:
-  `SMTP_USER`, `SMTP_PASS` (same mail account as QuizKerala; Gmail app password), optional `SMTP_HOST`, `SMTP_PORT` (465), `EMAIL_FROM`, `EMAIL_REPLY_TO`,
-  `QUIZKERALA_DATABASE_URL` (read-only connection string of the QuizKerala database, for sign-ups who
-  asked for Geological Assistant). Deploy: `supabase functions deploy offer-emails`.
-- `functions/offer-unsubscribe`: unsubscribe API behind calecutech.com/offers/unsubscribe and the
-  one-click List-Unsubscribe header. Deploy: `supabase functions deploy offer-unsubscribe --no-verify-jwt`.
+- Offer emails live in the QuizKerala admin (Admin → Offer emails), not here. See QuizKerala
+  `docs/offer-emails.md`.
 
 To use it from apps:
 1. Dashboard > Project Settings > Data API > Exposed schemas: `geological_assistant` (done).

@@ -436,112 +436,6 @@ function referralAdmin() {
   return ref;
 }
 
-// ---------- admin: offer emails ----------
-// Write an offer, send a test to yourself, then send to the chosen audiences.
-// Everything runs in the offer-emails edge function (admin checked there); it
-// skips unsubscribed people and never emails the same person twice per offer.
-async function offerCall(body) {
-  const { data, error } = await sb.functions.invoke('offer-emails', { body: { course: COURSE, ...body } });
-  if (error || data?.error) {
-    let detail = data?.error;
-    try { detail = detail || (await error?.context?.json())?.error; } catch { /* not JSON */ }
-    throw new Error(detail || error?.message || 'Something went wrong');
-  }
-  return data;
-}
-
-function offersAdmin() {
-  const field = (id, label, el) => h('label', { class: 'field', for: id }, h('span', { class: 'small' }, label), el);
-  const subject = h('input', { id: 'o-subject', maxlength: 150, placeholder: 'Crash course: ₹499 for 30 days till the exam' });
-  const body = h('textarea', { id: 'o-body', rows: 8, maxlength: 5000, style: 'width:100%',
-    placeholder: 'The Geological Assistant exam is on 2 December.\n\nGet the full course for ₹499: 30 days of fact cards, practice questions and mock tests.' });
-  const coupon = h('input', { id: 'o-coupon', maxlength: 32, placeholder: 'CRASH30', value: 'CRASH30' });
-  const skipPaid = h('input', { type: 'checkbox', checked: true });
-  const audBox = h('div', {}, h('p', { class: 'small' }, 'Loading audiences…'));
-  const msg = h('p', { class: 'small', 'aria-live': 'polite' });
-  const history = h('div');
-  const ok = (t) => { msg.className = 'okmsg'; msg.textContent = t; };
-  const bad = (t) => { msg.className = 'err'; msg.textContent = t; };
-  let picks = [];
-
-  async function load() {
-    try {
-      const d = await offerCall({ action: 'overview', skipPaid: skipPaid.checked });
-      picks = d.audiences.map((a) => {
-        const box = h('input', { type: 'checkbox', checked: a.count !== null, disabled: a.count === null, 'data-key': a.key });
-        return { box, el: h('label', { class: 'row', style: 'gap:8px;align-items:center' }, box,
-          `${a.label}: `, h('strong', {}, a.count === null ? 'not connected yet' : `${a.count} people`)) };
-      });
-      audBox.replaceChildren(...[...picks.map((p) => p.el),
-        d.mailReady ? null : h('p', { class: 'err' }, 'Email is not set up yet: add SMTP_USER and SMTP_PASS in Supabase.'),
-        d.quizKeralaReady ? null : h('p', { class: 'small' }, 'QuizKerala sign-ups need the QUIZKERALA_DATABASE_URL secret in Supabase.'),
-        h('p', { class: 'small' }, `${d.unsubscribed} people have unsubscribed and are always left out.`)].filter(Boolean));
-      history.replaceChildren(d.campaigns.length ? h('div', { class: 'scroll' }, h('table', { class: 'res' },
-        h('tr', {}, h('th', {}, 'Offer'), h('th', {}, 'Code'), h('th', {}, 'Sent'), h('th', {}, '')),
-        d.campaigns.map((c) => h('tr', {},
-          h('td', {}, c.subject, h('div', { class: 'small' }, new Date(c.created_at).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }))),
-          h('td', {}, c.coupon_code || ''),
-          h('td', {}, String(c.sent)),
-          h('td', {}, c.finished_at ? 'Done' : sendButton(c.id, 'Send the rest')))))) : h('p', { class: 'small' }, 'No offers sent yet.'));
-    } catch (e) { audBox.replaceChildren(errorBox('Could not load: ' + e.message)); }
-  }
-
-  function sendButton(id, label) {
-    const b = h('button', { class: 'btn ghost sm' }, label);
-    b.addEventListener('click', () => sendAll(id, b));
-    return b;
-  }
-
-  // Each call sends up to 300; keep calling until nobody is left.
-  async function sendAll(id, btn) {
-    if (btn) btn.disabled = true;
-    let total = 0;
-    try {
-      for (;;) {
-        const r = await offerCall({ action: 'send', campaignId: id });
-        total += r.sent;
-        ok(`Sent ${total}. ${r.remaining ? r.remaining + ' left…' : 'All done.'}`);
-        if (!r.remaining || !r.sent) break;
-      }
-    } catch (e) { bad(`Sent ${total}, then stopped: ${e.message}. Press "Send the rest" to carry on.`); }
-    load();
-  }
-
-  const form = () => ({ subject: subject.value.trim(), body: body.value.trim(), couponCode: coupon.value.trim() || null });
-  const testBtn = h('button', { class: 'btn ghost', type: 'button' }, 'Send me a test');
-  testBtn.addEventListener('click', async () => {
-    testBtn.disabled = true;
-    try { const r = await offerCall({ action: 'test', ...form() }); ok(`Test sent to ${r.to}. Check it, then send to everyone.`); }
-    catch (e) { bad(e.message); }
-    testBtn.disabled = false;
-  });
-  const sendBtn = h('button', { class: 'btn', type: 'button' }, 'Send to everyone');
-  sendBtn.addEventListener('click', async () => {
-    const keys = picks.filter((p) => p.box.checked && !p.box.disabled).map((p) => p.box.dataset.key);
-    if (!keys.length) return bad('Pick at least one audience.');
-    if (!confirm(`Send "${form().subject}" now? This cannot be undone.`)) return;
-    sendBtn.disabled = true;
-    try {
-      const { id } = await offerCall({ action: 'create', ...form(), audiences: keys, skipPaid: skipPaid.checked });
-      await sendAll(id);
-    } catch (e) { bad(e.message); }
-    sendBtn.disabled = false;
-  });
-  skipPaid.addEventListener('change', load);
-
-  load();
-  return h('div', { class: 'panel' },
-    h('h2', {}, 'Send an offer by email'),
-    h('p', { class: 'small' }, 'Each email gets the code, a button to the course and an unsubscribe link. Nobody gets the same offer twice.'),
-    h('div', { class: 'grid' }, field('o-subject', 'Subject', subject), field('o-coupon', 'Coupon code (optional)', coupon)),
-    field('o-body', 'Message (blank line = new paragraph)', body),
-    h('h3', {}, 'Who gets it'), audBox,
-    h('label', { class: 'row', style: 'gap:8px;align-items:center' }, skipPaid, 'Leave out people who already have access'),
-    h('div', { class: 'row', style: 'gap:8px;margin-top:12px' }, testBtn, sendBtn),
-    msg,
-    h('h3', {}, 'Sent offers'), history);
-}
-
 // ---------- admin: coupons ----------
 function adminLink() {
   const box = h('p', { class: 'small', hidden: true }, h('a', { href: 'study#/admin' }, 'Admin: participants and coupons'));
@@ -633,7 +527,6 @@ async function admin() {
       h('p', { class: 'small' }, 'Share link: calecutech.com/geological-assistant/study?coupon=CODE')),
     ref.el,
     h('div', { class: 'panel' }, h('h2', {}, 'All coupons'), table),
-    offersAdmin(),
   );
   load();
   loadPeople();
