@@ -2,7 +2,9 @@
  * Razorpay webhook for Geological Assistant: the only thing that grants access.
  *
  * Writes geological_assistant.subscriptions in the USS project. One-time
- * payment, lifetime access: current_period_end stays null. The browser's
+ * payment, lifetime access (current_period_end null), except an order made with
+ * a time-limited offer (payment_orders.access_days, e.g. CRASH30 = 30 days):
+ * then access ends that many days after the payment. The browser's
  * success callback grants nothing; only a payload signed with the webhook
  * secret does.
  *
@@ -77,6 +79,22 @@ Deno.serve(async (req) => {
   const { data: course } = await admin.from('courses').select('id').eq('id', courseId).maybeSingle();
   if (!course) return new Response('ignored', { status: 200 });
 
+  // Time-limited offer: access ends N days after the payment. Worked out from
+  // the payment's own time, so a repeated delivery gives the same end date.
+  let periodEnd: string | null = null;
+  if (payment.order_id) {
+    const { data: order } = await admin
+      .from('payment_orders')
+      .select('access_days')
+      .eq('provider_ref', payment.order_id)
+      .maybeSingle();
+    const days = Number(order?.access_days ?? notes.access_days) || 0;
+    if (days > 0) {
+      const paidAt = payment.created_at ? payment.created_at * 1000 : Date.now();
+      periodEnd = new Date(paidAt + days * 86400000).toISOString();
+    }
+  }
+
   // Upsert on provider_ref: webhooks are delivered more than once, and a
   // refund must update the same row the capture created.
   const { error } = await admin.from('subscriptions').upsert(
@@ -87,7 +105,7 @@ Deno.serve(async (req) => {
       provider_ref: payment.id,
       amount_minor: payment.amount ?? null,
       status,
-      current_period_end: null,
+      current_period_end: periodEnd,
     },
     { onConflict: 'provider_ref' },
   );

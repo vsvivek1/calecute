@@ -24,6 +24,21 @@ The course lives in its own schema, `geological_assistant`, inside the USS proje
   app (`provider = 'google_play'`). **Not deployed yet.** Setup: `apps/geological-assistant-app/README.md`
   on the `claude/geological-assistant-app` branch.
 
+- `0010_fixed_price_coupons.sql` (needs 0009): coupon kind `fixed` = a set price plus optional days of
+  access (`coupons.price_minor`, `coupons.access_days`, `payment_orders.access_days`), `quote_price()` now
+  returns `access_days`, `admin_save_fixed_coupon()`. Adds **CRASH30**: ₹499 (49900 paise) for 30 days of
+  access, usable until 2 Dec 2026 23:59 IST. Apply **before** deploying the new create-order and webhook.
+  The webhook sets `current_period_end` = payment time + days; `has_active_subscription()` already ends
+  access then.
+- `0011_offer_emails.sql`: new schema `offers` (admins, contacts with unsubscribe tokens, campaigns,
+  sends). Not exposed in the Data API; only the functions below touch it.
+- `functions/offer-emails`: admin offer emails (study `#/admin` > "Send an offer by email"). Secrets:
+  `RESEND_API_KEY`, `EMAIL_FROM` (a sender on a domain verified in Resend), optional `EMAIL_REPLY_TO`,
+  `QUIZKERALA_DATABASE_URL` (read-only connection string of the QuizKerala database, for sign-ups who
+  asked for Geological Assistant). Deploy: `supabase functions deploy offer-emails`.
+- `functions/offer-unsubscribe`: unsubscribe API behind calecutech.com/offers/unsubscribe and the
+  one-click List-Unsubscribe header. Deploy: `supabase functions deploy offer-unsubscribe --no-verify-jwt`.
+
 To use it from apps:
 1. Dashboard > Project Settings > Data API > Exposed schemas: `geological_assistant` (done).
 2. supabase-js: `createClient(url, key, { db: { schema: 'geological_assistant' } })`.
