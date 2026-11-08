@@ -473,7 +473,7 @@ function offersAdmin() {
           `${a.label}: `, h('strong', {}, a.count === null ? 'not connected yet' : `${a.count} people`)) };
       });
       audBox.replaceChildren(...[...picks.map((p) => p.el),
-        d.mailReady ? null : h('p', { class: 'err' }, 'Email is not set up yet: add RESEND_API_KEY and EMAIL_FROM in Supabase.'),
+        d.mailReady ? null : h('p', { class: 'err' }, 'Email is not set up yet: add SMTP_USER and SMTP_PASS in Supabase.'),
         d.quizKeralaReady ? null : h('p', { class: 'small' }, 'QuizKerala sign-ups need the QUIZKERALA_DATABASE_URL secret in Supabase.'),
         h('p', { class: 'small' }, `${d.unsubscribed} people have unsubscribed and are always left out.`)].filter(Boolean));
       history.replaceChildren(d.campaigns.length ? h('div', { class: 'scroll' }, h('table', { class: 'res' },

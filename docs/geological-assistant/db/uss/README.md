@@ -33,7 +33,7 @@ The course lives in its own schema, `geological_assistant`, inside the USS proje
 - `0011_offer_emails.sql`: new schema `offers` (admins, contacts with unsubscribe tokens, campaigns,
   sends). Not exposed in the Data API; only the functions below touch it.
 - `functions/offer-emails`: admin offer emails (study `#/admin` > "Send an offer by email"). Secrets:
-  `RESEND_API_KEY`, `EMAIL_FROM` (a sender on a domain verified in Resend), optional `EMAIL_REPLY_TO`,
+  `SMTP_USER`, `SMTP_PASS` (same mail account as QuizKerala; Gmail app password), optional `SMTP_HOST`, `SMTP_PORT` (465), `EMAIL_FROM`, `EMAIL_REPLY_TO`,
   `QUIZKERALA_DATABASE_URL` (read-only connection string of the QuizKerala database, for sign-ups who
   asked for Geological Assistant). Deploy: `supabase functions deploy offer-emails`.
 - `functions/offer-unsubscribe`: unsubscribe API behind calecutech.com/offers/unsubscribe and the

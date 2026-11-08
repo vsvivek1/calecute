@@ -3,7 +3,8 @@
  * picks who gets it, sends a test to themselves, then sends to everyone.
  *
  * Tables: schema `offers` (0011_offer_emails.sql), reached with SUPABASE_DB_URL.
- * Mail: Resend (RESEND_API_KEY, EMAIL_FROM). Every email carries an unsubscribe
+ * Mail: SMTP through Nodemailer, the same setup QuizKerala uses (SMTP_USER + SMTP_PASS,
+ * Gmail by default). Every email carries an unsubscribe
  * link (offers.contacts.token, page at calecutech.com/offers/unsubscribe) and a
  * one-click List-Unsubscribe header (offer-unsubscribe function).
  * A campaign never emails the same address twice (offers.sends primary key),
@@ -15,18 +16,29 @@
  * Deploy (USS project):
  *   supabase functions deploy offer-emails
  *   Secrets (owner adds them, never pasted in chat):
- *     RESEND_API_KEY, EMAIL_FROM (e.g. "Geological Assistant Prep <offers@calecutech.com>"),
+ *     SMTP_USER, SMTP_PASS (e.g. a Gmail app password; same values as QuizKerala),
+ *     optional SMTP_HOST (default smtp.gmail.com), SMTP_PORT (default 465; Supabase blocks 25 and 587),
+ *     optional EMAIL_FROM (default "<name> <SMTP_USER>"),
  *     QUIZKERALA_DATABASE_URL (read-only connection string of the QuizKerala database;
  *       without it the QuizKerala audience shows as "not connected").
  *
  * Body: { action: 'overview' | 'test' | 'create' | 'send', ... } with the admin's JWT.
  */
 import postgres from 'npm:postgres@3.4.5';
+import nodemailer from 'npm:nodemailer@6.9.16';
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
-const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
-const EMAIL_FROM = Deno.env.get('EMAIL_FROM');
+const SMTP_USER = Deno.env.get('SMTP_USER');
+const SMTP_PASS = Deno.env.get('SMTP_PASS');
+const SMTP_PORT = Number(Deno.env.get('SMTP_PORT') || 465);
+const EMAIL_FROM = Deno.env.get('EMAIL_FROM') || (SMTP_USER ? `Geological Assistant Prep <${SMTP_USER}>` : undefined);
+const smtp = SMTP_USER && SMTP_PASS
+  ? nodemailer.createTransport({
+      host: Deno.env.get('SMTP_HOST') || 'smtp.gmail.com', port: SMTP_PORT, secure: SMTP_PORT === 465,
+      auth: { user: SMTP_USER, pass: SMTP_PASS }, pool: true, maxConnections: 2,
+    })
+  : null;
 const EMAIL_REPLY_TO = Deno.env.get('EMAIL_REPLY_TO') || 'info@calecutech.com';
 const QK_URL = Deno.env.get('QUIZKERALA_DATABASE_URL');
 
@@ -36,8 +48,8 @@ const qk = QK_URL ? postgres(QK_URL, { ssl: 'require', prepare: false, max: 1 })
 const UNSUB_PAGE = 'https://calecutech.com/offers/unsubscribe';
 const UNSUB_ONE_CLICK = `${SUPABASE_URL}/functions/v1/offer-unsubscribe`;
 const SENDER = 'Calecute Technologies (OPC) Private Limited, Poolakadavu, Kozhikode, Kerala 673012';
-const PER_CALL = 300; // emails per 'send' call; the admin screen calls again until done
-const BATCH = 100; // Resend batch limit
+const PER_CALL = 60; // emails per 'send' call (edge functions time out); the admin screen calls again until done
+const BATCH = 10; // sent in parallel
 
 type Recipient = { email: string; audience: string };
 type Audience = {
@@ -154,15 +166,17 @@ ${paras}${couponBox}
   return { html, text, headers };
 }
 
-async function resendBatch(messages: Record<string, unknown>[]) {
-  const res = await fetch('https://api.resend.com/emails/batch', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify(messages),
-  });
-  const body = await res.text();
-  if (!res.ok) throw new Error(`Email service said ${res.status}: ${body.slice(0, 300)}`);
-  return (JSON.parse(body).data ?? []) as { id: string }[];
+type Mail = { from?: string; to: string[]; reply_to: string; subject: string; html: string; text: string; headers: Record<string, string> };
+
+/** Sends each message by SMTP; returns the error text for each one that failed (null = sent). */
+async function sendMails(messages: Mail[]) {
+  if (!smtp) throw new Error('Email is not set up yet (SMTP_USER, SMTP_PASS)');
+  return await Promise.all(messages.map(async (m) => {
+    try {
+      await smtp.sendMail({ from: m.from, to: m.to[0], replyTo: m.reply_to, subject: m.subject, text: m.text, html: m.html, headers: m.headers });
+      return null;
+    } catch (e) { return String((e as Error).message).slice(0, 300); }
+  }));
 }
 
 /** The unsubscribe token for each address (made on first use). */
@@ -201,7 +215,7 @@ Deno.serve(async (req) => {
   const courseId = String(input.course ?? 'geological-assistant');
   const course = COURSES[courseId];
   if (!course) return json({ error: 'Unknown course' }, 400);
-  const mailReady = !!(RESEND_API_KEY && EMAIL_FROM);
+  const mailReady = !!(smtp && EMAIL_FROM);
 
   try {
     if (input.action === 'overview') {
@@ -224,13 +238,14 @@ Deno.serve(async (req) => {
     const body = String(input.body ?? '').trim();
 
     if (input.action === 'test') {
-      if (!mailReady) return json({ error: 'Email is not set up yet (RESEND_API_KEY, EMAIL_FROM)' }, 503);
+      if (!mailReady) return json({ error: 'Email is not set up yet (SMTP_USER, SMTP_PASS)' }, 503);
       if (subject.length < 3 || body.length < 10) return json({ error: 'Write a subject and a message first' }, 400);
       const coupon = await checkCoupon(courseId, (input.couponCode as string) || null);
       const link = linkFor(course, coupon, 'test0000');
       const t = await tokens([me]);
       const m = render(course, { subject, body, coupon, link }, 'you are testing an offer as admin', t.get(me) ?? null);
-      await resendBatch([{ from: EMAIL_FROM, to: [me], reply_to: EMAIL_REPLY_TO, subject: '[TEST] ' + subject, ...m }]);
+      const [err] = await sendMails([{ from: EMAIL_FROM, to: [me], reply_to: EMAIL_REPLY_TO, subject: '[TEST] ' + subject, ...m }]);
+      if (err) return json({ error: 'The mail server said: ' + err }, 502);
       return json({ ok: true, to: me });
     }
 
@@ -247,7 +262,7 @@ Deno.serve(async (req) => {
     }
 
     if (input.action === 'send') {
-      if (!mailReady) return json({ error: 'Email is not set up yet (RESEND_API_KEY, EMAIL_FROM)' }, 503);
+      if (!mailReady) return json({ error: 'Email is not set up yet (SMTP_USER, SMTP_PASS)' }, 503);
       const [c] = await db`select * from offers.campaigns where id = ${String(input.campaignId ?? '')} and course = ${courseId}`;
       if (!c) return json({ error: 'No such offer' }, 404);
       const { list } = await recipients(course, c.audiences, c.skip_paid);
@@ -256,6 +271,7 @@ Deno.serve(async (req) => {
       const link = linkFor(course, c.coupon_code, c.id);
       const tok = await tokens(todo.map((r) => r.email));
       let sent = 0;
+      const failed: string[] = [];
       for (let i = 0; i < todo.length; i += BATCH) {
         // Claim the rows first, so a second click cannot send the same email twice.
         const claimed = await db`insert into offers.sends ${db(todo.slice(i, i + BATCH).map((r) => ({
@@ -267,23 +283,23 @@ Deno.serve(async (req) => {
           const m = render(course, { subject: c.subject, body: c.body, coupon: c.coupon_code, link }, why, tok.get(r.email) ?? null);
           return { from: EMAIL_FROM, to: [r.email], reply_to: EMAIL_REPLY_TO, subject: c.subject, ...m };
         });
-        try {
-          const ids = await resendBatch(messages);
-          for (let j = 0; j < claimed.length; j++) {
-            await db`update offers.sends set status = 'sent', error = null, provider_id = ${ids[j]?.id ?? null}, sent_at = now()
+        const errors = await sendMails(messages);
+        for (let j = 0; j < claimed.length; j++) {
+          if (errors[j]) {
+            // Not sent: free the row so the next click tries it again.
+            await db`delete from offers.sends where campaign_id = ${c.id} and email = ${claimed[j].email}`;
+            failed.push(errors[j]!);
+          } else {
+            await db`update offers.sends set status = 'sent', error = null, sent_at = now()
               where campaign_id = ${c.id} and email = ${claimed[j].email}`;
+            sent++;
           }
-          sent += claimed.length;
-        } catch (e) {
-          // Not sent: free the rows so the next click tries them again.
-          await db`delete from offers.sends where campaign_id = ${c.id} and email = any(${claimed.map((r) => r.email)})`;
-          return json({ error: (e as Error).message, sent }, 502);
         }
-        await new Promise((r) => setTimeout(r, 600)); // stay under Resend's 2 requests a second
+        if (failed.length >= BATCH) return json({ error: 'The mail server said: ' + failed[0], sent }, 502);
       }
       const remaining = list.filter((r) => !done.has(r.email)).length - sent;
-      if (remaining <= 0) await db`update offers.campaigns set finished_at = coalesce(finished_at, now()) where id = ${c.id}`;
-      return json({ sent, remaining: Math.max(0, remaining) });
+      if (remaining <= 0 && !failed.length) await db`update offers.campaigns set finished_at = coalesce(finished_at, now()) where id = ${c.id}`;
+      return json({ sent, remaining: Math.max(0, remaining), failed: failed.length });
     }
 
     return json({ error: 'Unknown action' }, 400);
