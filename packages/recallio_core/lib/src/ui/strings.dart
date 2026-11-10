@@ -127,10 +127,19 @@ class T {
   String buyFor(String price) => _('Unlock for $price', '$price-ന് തുറക്കുക');
   String get haveCoupon => _('I have a coupon code', 'എനിക്ക് കൂപ്പൺ കോഡ് ഉണ്ട്');
   String get couponCode => _('Coupon code', 'കൂപ്പൺ കോഡ്');
-  String get redeem => _('Unlock', 'തുറക്കുക');
+  String get apply => _('Apply', 'ഉപയോഗിക്കുക');
+  String couponOff(int pct, String code) => _('$code: $pct% off', '$code: $pct% കിഴിവ്');
+  String get removeCoupon => _('Remove', 'മാറ്റുക');
   String get couponDone => _('Coupon accepted. Papers unlocked.', 'കൂപ്പൺ സ്വീകരിച്ചു. പേപ്പറുകൾ തുറന്നു.');
   String get signInToUnlock => _('Sign in first, so the paper stays with your account on phone and web.', 'ആദ്യം സൈൻ ഇൻ ചെയ്യൂ, പേപ്പർ ഫോണിലും വെബിലും നിങ്ങളുടെ അക്കൗണ്ടിൽ ഉണ്ടാകും.');
-  String get buyOnAndroid => _('Buy in the Android app from Google Play, or use a coupon code here.', 'Google Play-യിലെ Android ആപ്പിൽ വാങ്ങാം, അല്ലെങ്കിൽ ഇവിടെ കൂപ്പൺ കോഡ് ഉപയോഗിക്കാം.');
+  String get buyOnAndroid => _('Checkout works in the Android app through Google Play. Papers you buy there open here too.', 'Google Play വഴി Android ആപ്പിലാണ് പണമടയ്ക്കേണ്ടത്. അവിടെ വാങ്ങുന്ന പേപ്പറുകൾ ഇവിടെയും തുറക്കും.');
+  String get cartTitle => _('Your cart', 'നിങ്ങളുടെ കാർട്ട്');
+  String get addToCart => _('Add to cart', 'കാർട്ടിൽ ചേർക്കുക');
+  String openCart(int n) => n == 0 ? _('Buy papers', 'പേപ്പറുകൾ വാങ്ങുക') : _('Cart ($n)', 'കാർട്ട് ($n)');
+  String get cartEmpty => _('Tick the papers you want to unlock.', 'തുറക്കേണ്ട പേപ്പറുകൾ തിരഞ്ഞെടുക്കൂ.');
+  String get total => _('Total', 'ആകെ');
+  String checkoutFor(String total) => _('Checkout · $total', 'പണമടയ്ക്കുക · $total');
+  String get checkoutNote => _('Each paper is paid through Google Play and opens as soon as its payment is confirmed.', 'ഓരോ പേപ്പറും Google Play വഴി പണമടച്ചാൽ ഉടൻ തുറക്കും.');
   String get working => _('Working…', 'ശ്രമിക്കുന്നു…');
 }
 

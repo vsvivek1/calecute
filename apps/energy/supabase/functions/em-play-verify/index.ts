@@ -2,7 +2,9 @@
 // the learner's ownership. Called by the Android app after a purchase and
 // when it restores past purchases.
 //
-// POST { productId: "paper_1".."paper_4", purchaseToken }  (user JWT required)
+// POST { productId: "paper_1".."paper_4" or "paper_N_offPP", purchaseToken }  (user JWT required)
+// paper_N_offPP is the same paper at PP% off (PP in 10,25,50,75,90,99); the
+// server accepts it only from a learner who applied a coupon of that tier.
 // -> { papers: number[] }
 //
 // Secrets: GOOGLE_PLAY_SA_JSON (Play Console service account key JSON).
@@ -10,7 +12,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 
 const PACKAGE = "com.calecutech.energyauditor";
-const PRODUCTS: Record<string, number> = { paper_1: 1, paper_2: 2, paper_3: 3, paper_4: 4 };
+const PRODUCT = /^paper_([1-4])(?:_off(10|25|50|75|90|99))?$/;
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -72,7 +74,9 @@ Deno.serve(async (req) => {
   } catch {
     return json({ error: "Bad request" }, 400);
   }
-  const section = PRODUCTS[body.productId ?? ""];
+  const m = PRODUCT.exec(body.productId ?? "");
+  const section = m ? Number(m[1]) : 0;
+  const pct = m && m[2] ? Number(m[2]) : 0;
   const token = body.purchaseToken ?? "";
   if (!section || token.length < 10 || token.length > 4096) return json({ error: "Bad request" }, 400);
 
@@ -108,8 +112,12 @@ Deno.serve(async (req) => {
     p_section: section,
     p_order: p.orderId ?? null,
     p_time: p.purchaseTimeMillis ? new Date(Number(p.purchaseTimeMillis)).toISOString() : null,
+    p_pct: pct,
   });
-  if (error) return json({ error: "Could not save purchase" }, 500);
+  if (error) {
+    // P0001 carries a readable reason (e.g. discount not applied to this account).
+    return json({ error: error.code === "P0001" ? error.message : "Could not save purchase" }, error.code === "P0001" ? 409 : 500);
+  }
 
   // Unacknowledged purchases are refunded by Google after 3 days.
   if (p.acknowledgementState === 0) {
