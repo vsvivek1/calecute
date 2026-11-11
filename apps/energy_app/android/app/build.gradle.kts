@@ -53,6 +53,14 @@ android {
 
     buildTypes {
         release {
+            // No R8 shrinking or renaming: shared_preferences and other
+            // plugins are called from Dart through JNI by class and method
+            // name. R8 cannot see those calls, renamed
+            // kotlin.coroutines.Continuation, and the release build then
+            // failed at startup with NoSuchMethodError (Play rejected 1.0.0+1
+            // for not opening).
+            isMinifyEnabled = false
+            isShrinkResources = false
             signingConfig = signingConfigs.findByName("release")
                 ?: signingConfigs.getByName("debug")
         }
