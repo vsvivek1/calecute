@@ -1,0 +1,48 @@
+/* Office stylesheet: its own Tailwind entry, so nothing from the marketing
+   site's globals.css applies here and the module can move with its folder. */
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-office-sans);
+  --font-mono: var(--font-office-mono);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background: #07070c;
+  color: #f3f3f6;
+  font-family: var(--font-office-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-white/10 bg-white/[0.035] p-4;
+  }
+  .field {
+    @apply w-full rounded-xl border border-white/15 bg-black/30 px-3 py-2.5 text-base text-white placeholder:text-white/35 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-400/40;
+  }
+  .label {
+    @apply grid gap-1.5 text-sm text-white/75;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-full bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:opacity-60;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center rounded-full border border-white/15 px-4 py-2 text-sm text-white/85 transition hover:bg-white/10 disabled:opacity-60;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center rounded-full border border-rose-400/40 px-4 py-2 text-sm text-rose-200 transition hover:bg-rose-500/15 disabled:opacity-60;
+  }
+  .h1 {
+    @apply text-2xl font-semibold tracking-tight sm:text-3xl;
+  }
+  .h2 {
+    @apply text-lg font-semibold tracking-tight;
+  }
+  .muted {
+    @apply text-sm text-white/55;
+  }
+}

@@ -21,6 +21,7 @@ const companyLinks = [
   { href: "/about", label: "About" },
   { href: "/careers", label: "Careers" },
   { href: "/contact", label: "Contact" },
+  { href: "/login", label: "Staff login" },
 ];
 
 export default function Footer() {
