@@ -15,6 +15,9 @@ import {
   REFRESH_MAX_AGE,
   baseCookie,
 } from "@/lib/session-cookies";
+// The staff office (/login, /office) uses its own Supabase session and has
+// nothing to do with the agent programme's tokens below.
+import { isOfficePath, officeProxy } from "@/office/proxy";
 
 interface Session {
   accessToken: string;
@@ -44,6 +47,8 @@ async function refresh(refreshToken: string): Promise<Session | null> {
 }
 
 export async function proxy(request: NextRequest) {
+  if (isOfficePath(request.nextUrl.pathname)) return officeProxy(request);
+
   if (request.cookies.get(ACCESS_COOKIE)?.value) return NextResponse.next();
 
   const refreshToken = request.cookies.get(REFRESH_COOKIE)?.value;
@@ -78,5 +83,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/agents/:path*"],
+  matcher: ["/admin/:path*", "/agents/:path*", "/login", "/login/:path*", "/office", "/office/:path*"],
 };
