@@ -83,6 +83,8 @@ export type AppEntry = {
   notCollected?: string[];
   /** App-specific terms. Apps without this simply have no terms page. */
   terms?: AppTerms;
+  /** Set for apps that get a /trader page (EU trader status declaration). */
+  trader?: { updated: string };
 };
 
 /**
@@ -1156,6 +1158,7 @@ export const APPS: AppEntry[] = [
     androidPackage: "com.calecutech.workforce",
     iosBundleId: "com.calecutech.workforce",
     isDemo: false,
+    trader: { updated: "15 November 2026" },
   },
 ];
 
