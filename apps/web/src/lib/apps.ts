@@ -835,7 +835,7 @@ const BASE: Omit<AppEntry, 'slug'|'name'|'androidPackage'|'iosBundleId'|'isDemo'
     audience:
       "Anyone looking for a local worker, and workers aged 18 or over who want to be found. Browsing needs no account; listing yourself needs a mobile number.",
     summary:
-      "Work Force is a directory of local workers. Workers list their skills, area and daily rate, and anyone who needs a job done can find them and call or WhatsApp them directly. We do not take a cut, arrange the work, or stand between the two of you.",
+      "Work Force Kerala is a directory of local workers. Workers list their skills, area and daily rate, and anyone who needs a job done can find them and call or WhatsApp them directly. We do not take a cut, arrange the work, or stand between the two of you.",
     collects: [
       {
         category: "Personal identifiers",
@@ -881,7 +881,7 @@ const BASE: Omit<AppEntry, 'slug'|'name'|'androidPackage'|'iosBundleId'|'isDemo'
       { src: "/workforce/screen-login.jpg", alt: "Sign-in screen asking for a mobile number to receive a one-time code" },
     ],
     availabilityNote:
-      "Work Force is in testing on Google Play and is not yet publicly listed. This page will carry the store link once it is live. The QR code above already points here, so anything printed now keeps working afterwards.",
+      "Work Force Kerala is in testing on Google Play and is not yet publicly listed. This page will carry the store link once it is live. The QR code above already points here, so anything printed now keeps working afterwards.",
     qr: {
       svg: "/workforce/qr.svg",
       png: "/workforce/qr.png",
@@ -895,7 +895,7 @@ const BASE: Omit<AppEntry, 'slug'|'name'|'androidPackage'|'iosBundleId'|'isDemo'
       "Remove your listing from inside the app at any time, and it is gone immediately.",
     ],
     policyUpdated: "October 5, 2026",
-    serviceName: "the Work Force service",
+    serviceName: "the Work Force Kerala service",
     lawfulBasis:
       "We process a worker's data because they asked us to publish it — that is what listing yourself means. You give consent when you create a listing, and you may withdraw it at any time by hiding or removing the listing, or by deleting your account.",
     signInHelp:
@@ -920,12 +920,12 @@ const BASE: Omit<AppEntry, 'slug'|'name'|'androidPackage'|'iosBundleId'|'isDemo'
     terms: {
       updated: "October 5, 2026",
       intro:
-        "These terms apply to the Work Force app. Where they differ from our general terms of service, these take precedence for Work Force.",
+        "These terms apply to the Work Force Kerala app. Where they differ from our general terms of service, these take precedence for Work Force Kerala.",
       sections: [
         {
           heading: "We are a directory, not an employer or agent",
           body: [
-            "Work Force shows listings that workers publish about themselves. We do not employ, recruit, vet, train, insure or supervise anyone listed, and we are not a party to any agreement between a worker and the person who calls them.",
+            "Work Force Kerala shows listings that workers publish about themselves. We do not employ, recruit, vet, train, insure or supervise anyone listed, and we are not a party to any agreement between a worker and the person who calls them.",
             "We do not check skills, qualifications, licences, identity beyond the mobile number, or past work. Satisfy yourself that a worker is right for the job before you engage them.",
             "Rates, timing, quality and payment are agreed directly between you. We take no commission and handle no money, and we cannot resolve a dispute about work done or not done.",
           ],
@@ -948,7 +948,7 @@ const BASE: Omit<AppEntry, 'slug'|'name'|'androidPackage'|'iosBundleId'|'isDemo'
         {
           heading: "Availability",
           body: [
-            "Work Force is provided as it is. We do not guarantee it will be available without interruption, that any listing is current, or that any worker will answer or take a job. We may change or withdraw features.",
+            "Work Force Kerala is provided as it is. We do not guarantee it will be available without interruption, that any listing is current, or that any worker will answer or take a job. We may change or withdraw features.",
           ],
         },
         {
@@ -1152,7 +1152,7 @@ export const APPS: AppEntry[] = [
   {
     ...BASE[WORKFORCE],
     slug: "workforce",
-    name: "Work Force",
+    name: "Work Force Kerala",
     androidPackage: "com.calecutech.workforce",
     iosBundleId: "com.calecutech.workforce",
     isDemo: false,
