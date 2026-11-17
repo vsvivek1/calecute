@@ -56,6 +56,22 @@ export function env(): Env {
   return cached;
 }
 
+/**
+ * Only the database URL, checked on its own.
+ *
+ * The db client is created when a route module loads, which `next build` does
+ * while collecting page data. Reading the full env there made the build need
+ * every secret (JWT, PII keys, Google OAuth), so Preview builds without them
+ * failed. The other secrets are still checked by env() on first request.
+ */
+export function databaseUrl(): string {
+  const parsed = schema.shape.DATABASE_URL.safeParse(process.env.DATABASE_URL);
+  if (!parsed.success) {
+    throw new Error("Invalid API environment configuration — DATABASE_URL is not set");
+  }
+  return parsed.data;
+}
+
 export function allowedOrigins(): string[] {
   return env()
     .CORS_ALLOWED_ORIGINS.split(",")
