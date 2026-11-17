@@ -6,7 +6,7 @@
  */
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { env } from "@/lib/env";
+import { databaseUrl } from "@/lib/env";
 import * as schema from "./schema";
 
 declare global {
@@ -17,7 +17,7 @@ declare global {
 
 function connection() {
   if (!globalThis.__calecuteSql) {
-    globalThis.__calecuteSql = postgres(env().DATABASE_URL, {
+    globalThis.__calecuteSql = postgres(databaseUrl(), {
       max: 5,
       idle_timeout: 20,
       connect_timeout: 10,
