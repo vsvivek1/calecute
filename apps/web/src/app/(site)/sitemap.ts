@@ -21,6 +21,11 @@ const PATHS: Array<{ path: string; priority: number; changeFrequency: "monthly" 
   { path: "/courses", priority: 0.7, changeFrequency: "monthly" },
   { path: "/products/dailydo", priority: 0.5, changeFrequency: "monthly" },
   { path: "/apps", priority: 0.5, changeFrequency: "monthly" },
+  // WhatsApp Business: Meta's app settings check these URLs resolve.
+  { path: "/whatsapp", priority: 0.4, changeFrequency: "yearly" },
+  { path: "/whatsapp/privacy-policy", priority: 0.4, changeFrequency: "yearly" },
+  { path: "/whatsapp/terms", priority: 0.4, changeFrequency: "yearly" },
+  { path: "/whatsapp/data-deletion", priority: 0.4, changeFrequency: "yearly" },
   // Recallio's own pages are listed explicitly: Google's OAuth review checks
   // that the homepage, privacy policy and terms on the consent screen resolve,
   // and a page in the sitemap is easier for it to trust.

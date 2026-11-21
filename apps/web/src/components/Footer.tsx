@@ -10,6 +10,9 @@ const legalLinks = [
   { href: "/terms", label: "Terms of Service" },
   { href: "/refund-policy", label: "Refund & Cancellation Policy" },
   { href: "/data-deletion", label: "Data Deletion" },
+  { href: "/whatsapp/privacy-policy", label: "WhatsApp Privacy Policy" },
+  { href: "/whatsapp/terms", label: "WhatsApp Terms" },
+  { href: "/whatsapp/data-deletion", label: "WhatsApp Data Deletion" },
   { href: "/report-unauthorized-transaction", label: "Report Unauthorized Transaction" },
 ];
 
@@ -18,6 +21,7 @@ const companyLinks = [
   { href: "/products", label: "Products" },
   { href: "/courses", label: "Courses" },
   { href: "/history-clock", label: "History Clock" },
+  { href: "/whatsapp", label: "WhatsApp" },
   { href: "/about", label: "About" },
   { href: "/careers", label: "Careers" },
   { href: "/contact", label: "Contact" },
