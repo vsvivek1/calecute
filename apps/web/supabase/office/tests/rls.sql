@@ -96,7 +96,7 @@ select pg_temp.check((select count(*) from public.office_task_steps) = 0, 'emplo
 select pg_temp.check((select count(*) from public.office_task_contacts) = 0, 'employee cannot read another employee''s contacts');
 select pg_temp.check((select count(*) from public.office_task_bottlenecks) = 0, 'employee cannot read another employee''s bottlenecks');
 select pg_temp.check((select count(*) from public.office_audit_log) = 0, 'employee cannot read the audit log');
-select pg_temp.check((select count(*) from public.office_people) = 4, 'employee sees the active staff list');
+select pg_temp.check((select count(*) from public.office_people) = 5, 'employee sees the staff list, including people switched off (names on old tasks)');
 
 select pg_temp.refused($$update public.office_tasks set title = 'mine now'
   where id = '00000000-0000-4000-9000-000000000001'$$, '42501', 'employee cannot rename their task');
