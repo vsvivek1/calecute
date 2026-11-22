@@ -74,6 +74,16 @@ Supabase project.
    ```sql
    select office_private.make_first_admin('owner@company.com', 'Owner Name');
    ```
+
+   On a Supabase project shared with other apps, the owner may already have a
+   login there that only uses Google. Skip "Add user" and give that login a
+   password in the same SQL editor:
+
+   ```sql
+   update auth.users
+   set encrypted_password = extensions.crypt('their-password', extensions.gen_salt('bf'))
+   where email = 'owner@company.com';
+   ```
 8. Sign in at `/login`, open Settings, and set the company name, logo and
    timezone. Add everyone else on the People page; each gets a temporary
    password shown once, and must choose their own on first sign-in.
