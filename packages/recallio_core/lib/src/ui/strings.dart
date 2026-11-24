@@ -73,6 +73,17 @@ class T {
 
   String get profile => _('Profile', 'പ്രൊഫൈൽ');
   String get examDate => _('Exam date', 'പരീക്ഷാ തീയതി');
+  String get studyPlan => _('Study plan', 'പഠന പദ്ധതി');
+  String planDays(int d) => _('$d days', '$d ദിവസം');
+  String get tillExam => _('Till exam', 'പരീക്ഷ വരെ');
+  String planFinish(String day, int perDay) => _(
+      'All new cards done by $day · about $perDay new cards a day',
+      'എല്ലാ പുതിയ കാർഡുകളും $day-നകം · ദിവസം ഏകദേശം $perDay പുതിയ കാർഡുകൾ');
+  String get planDone => _('All new cards seen. Revision continues till the exam.',
+      'എല്ലാ പുതിയ കാർഡുകളും കണ്ടു. പരീക്ഷ വരെ റിവിഷൻ തുടരും.');
+  String get planHint => _('More papers means more cards a day, not more days. Pick a longer plan if a day feels too heavy.',
+      'കൂടുതൽ പേപ്പറുകൾ എന്നാൽ ദിവസം കൂടുതൽ കാർഡുകൾ. ഒരു ദിവസം ഭാരമായി തോന്നിയാൽ നീണ്ട പദ്ധതി തിരഞ്ഞെടുക്കുക.');
+  String planDaysLeft(int d) => _('$d days left in your plan', 'പദ്ധതിയിൽ $d ദിവസം ബാക്കി');
   String get estimated => _('estimated', 'ഏകദേശം');
   String get official => _('official', 'ഔദ്യോഗികം');
   String get studyTimes => _('Study times', 'പഠന സമയങ്ങൾ');
@@ -111,7 +122,7 @@ class T {
   String get allowAlertsHint => _('A heads-up at each study time and one key fact at noon. Nothing at night.', 'ഓരോ പഠനസമയത്തും ഒരു അറിയിപ്പ്, ഉച്ചയ്ക്ക് ഒരു പ്രധാന വസ്തുത. രാത്രി ഒന്നുമില്ല.');
   String get batteryHint => _('On Xiaomi, Vivo, Oppo and similar phones, set battery to "No restrictions" for this app so alerts arrive on time.', 'Xiaomi, Vivo, Oppo പോലുള്ള ഫോണുകളിൽ അറിയിപ്പുകൾ സമയത്ത് കിട്ടാൻ ഈ ആപ്പിന് ബാറ്ററി "No restrictions" ആക്കുക.');
   String get letsGo => _("Let's start", 'തുടങ്ങാം');
-  String get howItWorks => _('The app plans every day for you: a few cards at a time, at your study times, until the exam.', 'ഓരോ ദിവസത്തെയും പഠനം ആപ്പ് തീരുമാനിക്കും: പഠനസമയങ്ങളിൽ കുറച്ച് കാർഡുകൾ വീതം, പരീക്ഷ വരെ.');
+  String get howItWorks => _('The app plans every day for you: a few cards at a time, at your study times. Every paper you pick is covered in 100 days, then revision runs till the exam. You can stretch the plan later in Profile.', 'ഓരോ ദിവസത്തെയും പഠനം ആപ്പ് തീരുമാനിക്കും: പഠനസമയങ്ങളിൽ കുറച്ച് കാർഡുകൾ വീതം. തിരഞ്ഞെടുക്കുന്ന ഓരോ പേപ്പറും 100 ദിവസത്തിൽ പൂർത്തിയാകും, പിന്നെ പരീക്ഷ വരെ റിവിഷൻ. പിന്നീട് പ്രൊഫൈലിൽ പദ്ധതി നീട്ടാം.');
 
   // Paid papers
   String get papersTitle => _('Your papers', 'നിങ്ങളുടെ പേപ്പറുകൾ');

@@ -151,6 +151,52 @@ void main() {
       expect(plan.minutesNeeded, lessThanOrEqualTo(3));
     });
 
+    test('a 100-day plan spreads new cards over 100 days, not to the exam', () {
+      final start = DateTime(2027, 1, 1, 7);
+      DailyPlan at(int papers, DateTime? finishBy) => Planner(sched()).plan(
+            now: start,
+            examDate: exam,
+            cards: [for (var i = 0; i < 100 * papers; i++) fact('g$i', section: i % papers + 1, order: i)],
+            progress: const {},
+            minutesPerDay: 600,
+            newIntroducedToday: 0,
+            doneToday: 0,
+            planStart: start,
+            finishBy: finishBy,
+          );
+      final hundred = DateTime(2027, 4, 11);
+      expect(at(1, hundred).newPerDay, 1);
+      expect(at(1, hundred).finishBy, hundred);
+      // Four papers on the same plan: four times the cards a day.
+      expect(at(4, hundred).newPerDay, 4);
+      expect(at(4, hundred).planDaysLeft(start), 100);
+      // Till the exam (no finish date) is lighter.
+      final toExam = at(4, null);
+      expect(toExam.finishBy, isNull);
+      expect(toExam.newPerDay, lessThan(4));
+      // A plan longer than the exam is the exam plan.
+      expect(at(4, DateTime(2028, 1, 1)).finishBy, isNull);
+    });
+
+    test('after the plan ends only reviews remain until revision', () {
+      final plan = Planner(sched()).plan(
+        now: DateTime(2027, 5, 1, 7),
+        examDate: exam,
+        cards: [fact('only', order: 0)],
+        progress: {
+          'only': CardProgress(cardId: 'only', due: DateTime.utc(2027, 6, 1), reps: 1, updatedAt: DateTime.utc(2027, 4, 1)),
+        },
+        minutesPerDay: 30,
+        newIntroducedToday: 0,
+        doneToday: 0,
+        planStart: DateTime(2027, 1, 1),
+        finishBy: DateTime(2027, 4, 11),
+      );
+      expect(plan.mode, DayMode.normal);
+      expect(plan.newLeft, 0);
+      expect(plan.newToday, isEmpty);
+    });
+
     test('cram mode two days out, exam day on the day', () {
       final p = Planner(sched());
       DayMode at(DateTime d) => p

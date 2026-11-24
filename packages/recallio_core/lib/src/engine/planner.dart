@@ -33,6 +33,8 @@ class DailyPlan {
     required this.doneToday,
     required this.behindPlan,
     required this.minutesNeeded,
+    this.finishBy,
+    this.newLeft = 0,
   });
 
   final DayMode mode;
@@ -53,6 +55,20 @@ class DailyPlan {
   /// another study time.
   final bool behindPlan;
   final int minutesNeeded;
+
+  /// The day every new card should have been seen, when the learner's plan
+  /// ends before the exam; null = the plan runs to the exam.
+  final DateTime? finishBy;
+
+  /// New cards not yet seen in the enrolled papers.
+  final int newLeft;
+
+  /// Days left in the learner's plan (to [finishBy], else to the exam).
+  int planDaysLeft(DateTime now) {
+    final end = finishBy;
+    if (end == null) return daysLeft;
+    return math.max(0, end.difference(DateTime(now.year, now.month, now.day)).inDays);
+  }
 
   int get left => math.max(0, quota - doneToday);
   bool get complete => doneToday >= quota;
@@ -80,6 +96,7 @@ class Planner {
     required int newIntroducedToday,
     required int doneToday,
     DateTime? planStart,
+    DateTime? finishBy,
   }) {
     final today = DateTime(now.year, now.month, now.day);
     final exam = DateTime(examDate.year, examDate.month, examDate.day);
@@ -121,7 +138,14 @@ class Planner {
     final unseen = _unseen(cards, progress);
     final newLeft = unseen.values.fold<int>(0, (n, l) => n + l.length);
 
-    final learnDays = math.max(1, daysLeft - revisionWindow - 2);
+    // New cards are spread to the end of the learner's plan (100 days by
+    // default), or to the revision window if the exam comes first. After the
+    // plan ends the days are reviews only, until the revision window.
+    final finish = finishBy == null ? null : DateTime(finishBy.year, finishBy.month, finishBy.day);
+    final toExam = daysLeft - revisionWindow - 2;
+    final planEnd = finish != null && finish.isBefore(exam) ? finish : null;
+    final toPlanEnd = planEnd?.difference(today).inDays;
+    final learnDays = math.max(1, toPlanEnd == null ? toExam : math.min(toPlanEnd, toExam));
     int newPerDay = switch (mode) {
       DayMode.normal => (newLeft + newIntroducedToday) == 0
           ? 0
@@ -178,6 +202,8 @@ class Planner {
       doneToday: doneToday,
       behindPlan: behind || seconds > budget,
       minutesNeeded: (seconds / 60).ceil(),
+      finishBy: planEnd,
+      newLeft: newLeft,
     );
   }
 

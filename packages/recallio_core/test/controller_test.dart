@@ -191,4 +191,30 @@ void main() {
     expect(c.lockedSections, isEmpty);
     expect(c.freeLeft(1), greaterThan(40));
   });
+
+  test('every learner starts on a 100-day plan and can stretch it', () async {
+    final store = await LocalStore.open('test');
+    final c = StudyController(
+      config: _config(DateTime(2027, 9, 24)),
+      library: CourseLibrary(_cards()),
+      store: store,
+      clock: () => now,
+    );
+    await c.start();
+    await c.finishOnboarding(LearnerSettings(sections: [1, 2]));
+    expect(c.settings.planDays, 100);
+    expect(c.finishBy, DateTime(2027, 2, 9));
+    expect(c.plan.finishBy, DateTime(2027, 2, 9));
+    // Two papers: the daily time grows to fit.
+    expect(c.settings.minutesPerDay, greaterThanOrEqualTo(30));
+    final hundred = c.plan.newPerDay;
+
+    now = DateTime(2026, 12, 1, 9);
+    await c.reschedule(200);
+    expect(c.finishBy, DateTime(2027, 6, 19));
+    expect(c.plan.newPerDay, lessThan(hundred));
+
+    await c.reschedule(0);
+    expect(c.finishBy, isNull);
+  });
 }
