@@ -3,15 +3,17 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import StudyTimes from '@/components/feed/StudyTimes';
+import ExamDatePicker from '@/components/plan/ExamDatePicker';
 import { IS_APP } from '@/lib/env';
 import { resetLoop, saveProfile, useLoop } from '@/lib/feed';
 import { askAlertPermission, downloadCalendar, exactAlarmStatus, openExactAlarmSetting } from '@/lib/platform/alerts';
-import { useLicense } from '@/lib/store';
+import { useBank, useLicense } from '@/lib/store';
 
 /** Profile: exam date, study times, alerts, account and privacy. */
 export default function Profile() {
   const s = useLoop();
   const license = useLicense();
+  const bank = useBank();
   const p = s.profile;
   const [exact, setExact] = useState<'granted' | 'denied' | 'na'>('na');
   const [saved, setSaved] = useState(false);
@@ -38,18 +40,14 @@ export default function Profile() {
         <section className="card">
           <h3>Exam date</h3>
           <p className="muted fine">The plan works back from this date. The last two days are cram mode.</p>
-          <div className="row">
-            <input
-              className="text"
-              style={{ maxWidth: 200 }}
-              type="date"
-              min={new Date().toISOString().slice(0, 10)}
-              value={p.examDate ?? ''}
-              onChange={(e) => e.target.value && set({ examDate: e.target.value })}
-            />
-            {p.examDate && <button className="btn btn-ghost btn-sm" onClick={() => set({ examDate: null })}>Not booked yet</button>}
-          </div>
-          {!p.examDate && <p className="fine">No date yet: planning for 8 weeks at a time.</p>}
+          <ExamDatePicker
+            examDate={p.examDate}
+            newLeft={(bank.full ? bank.questions : []).filter((q) => !s.cards[q.id] || s.cards[q.id].mem.reps === 0).length}
+            minutesPerDay={p.minutesPerDay}
+            onChange={(examDate) => set({ examDate })}
+          />
+          {!p.examDate && <p className="fine">No date yet: you are on the 100-day plan.</p>}
+          <Link href="/study/plan" className="btn btn-ghost btn-sm" style={{ marginTop: 10 }}>See my plan and calendar</Link>
         </section>
 
         <section className="card">

@@ -8,7 +8,7 @@
 import { useSyncExternalStore } from 'react';
 import { notify, read, subscribe } from './store';
 import { addDays, dayKey, fromSm2, isDueOn, isNew, newRec, review, type CardRec, type Rating, type Sm2State } from './engine/scheduler';
-import { dailyPlan, type Plan } from './engine/plan';
+import { buildCalendar, dailyPlan, planTarget, type CalendarDay, type Plan } from './engine/plan';
 import { buildSitting, MAX_SITTING, type FeedItem } from './engine/sitting';
 import {
   checkCards, focusSize, median, reportDue, retentionCards, type CheckResult, type LogKind, type LogRow, type MockResult,
@@ -35,6 +35,8 @@ export interface Profile {
   studyTimes: string[];
   minutesPerDay: number;
   onboarded: boolean;
+  /** Day the learner joined (YYYY-MM-DD): the 100-day plan starts here. */
+  planStart?: string;
 }
 
 export interface DayRec {
@@ -186,6 +188,8 @@ export function resetLoop() {
 export function saveProfile(patch: Partial<Profile>) {
   update((s) => {
     const profile = { ...s.profile, ...patch };
+    // The default 100-day plan counts from the day the learner joins.
+    if (profile.onboarded && !profile.planStart) profile.planStart = planStartOf(s);
     // A new exam date changes today's plan.
     const days = patch.examDate !== undefined && patch.examDate !== s.profile.examDate ? withoutToday(s.days) : s.days;
     return { ...s, profile, days };
@@ -201,6 +205,42 @@ const withoutToday = (days: Record<string, DayRec>) => {
 
 // ---- the day's plan ------------------------------------------------------
 
+/** When the plan began: the saved join day, else the first study day, else today. */
+export function planStartOf(s: LoopState, now = new Date()): string {
+  if (s.profile.planStart) return s.profile.planStart;
+  const first = s.log[0]?.at;
+  return first ? dayKey(new Date(first)) : dayKey(now);
+}
+
+/** The date the plan works back from: the exam, or day 100 of the default plan. */
+export const targetOf = (s: LoopState, now = new Date()) => planTarget(s.profile.examDate, planStartOf(s, now), now);
+
+/** The whole plan, day by day: done so far and planned ahead. */
+export function planCalendar(s: LoopState, bank: Question[], now = new Date()): CalendarDay[] {
+  const target = targetOf(s, now);
+  const doneByDay: Record<string, number> = {};
+  const newByDay: Record<string, number> = {};
+  for (const r of s.log) {
+    if (!r.rating) continue;
+    const k = dayKey(new Date(r.at));
+    doneByDay[k] = (doneByDay[k] ?? 0) + 1;
+    if (r.kind === 'learn') newByDay[k] = (newByDay[k] ?? 0) + 1;
+  }
+  const newLeft = bank.filter((q) => isNew(s.cards[q.id])).length;
+  return buildCalendar({
+    today: now,
+    start: planStartOf(s, now),
+    target: target.date,
+    booked: target.booked,
+    newLeft,
+    seen: bank.length - newLeft,
+    minutesPerDay: s.profile.minutesPerDay,
+    lastMockAt: s.mocks.at(-1)?.at ?? null,
+    doneByDay,
+    newByDay,
+  });
+}
+
 /** Today's record: the plan is fixed at the first open of the day. */
 export function ensureDay(s: LoopState, bank: Question[], now = new Date()): { s: LoopState; day: DayRec } {
   const k = dayKey(now);
@@ -208,7 +248,7 @@ export function ensureDay(s: LoopState, bank: Question[], now = new Date()): { s
   const prior = s.days[`_${k}`];
   const newLeft = bank.filter((q) => isNew(s.cards[q.id])).length;
   const dueToday = bank.filter((q) => s.cards[q.id] && isDueOn(s.cards[q.id], now)).length;
-  const plan = dailyPlan({ today: now, examDate: s.profile.examDate, newLeft, dueToday, minutesPerDay: s.profile.minutesPerDay });
+  const plan = dailyPlan({ today: now, examDate: targetOf(s, now).date, newLeft, dueToday, minutesPerDay: s.profile.minutesPerDay });
   const day: DayRec = {
     plan,
     newBudget: Math.max(0, plan.quota - plan.reviewsToday - (prior ? prior.done : 0)),
@@ -279,8 +319,11 @@ const bonusPool = (s: LoopState, bank: Question[], now: Date) =>
 
 /** Fix today's plan in storage (first open of the day). */
 export function touchDay(bank: Question[], now = new Date()) {
-  const s = snapshot();
-  if (!s.profile.onboarded || s.days[dayKey(now)] || !bank.length) return;
+  let s = snapshot();
+  if (!s.profile.onboarded || !bank.length) return;
+  // Learners from before the 100-day plan: fix their start day once.
+  if (!s.profile.planStart) s = { ...s, profile: { ...s.profile, planStart: planStartOf(s, now) } };
+  else if (s.days[dayKey(now)]) return;
   save(ensureDay(s, bank, now).s);
 }
 
@@ -485,20 +528,16 @@ export const slowFactor = (s: LoopState, now = new Date()) => (s.slowUntil && s.
 
 // ---- mocks ---------------------------------------------------------------
 
-/** A timed mock is offered weekly once there is enough seen to test. */
+/** The timed mock planned for today on the study calendar, if any. */
 export function mockOffer(s: LoopState, bank: Question[], now = new Date()): number | null {
   const phase = ensureDay(s, bank, now).day.plan.phase;
   if (phase === 'examDay' || phase === 'after') return null;
   if (s.mockSnooze === dayKey(now)) return null;
-  const seen = bank.filter((q) => !isNew(s.cards[q.id])).length;
-  const lastMock = s.mocks.at(-1);
-  const sinceLast = lastMock ? (now.getTime() - new Date(lastMock.at).getTime()) / 86_400_000 : Infinity;
-  if (phase === 'cram') {
-    // One mock on the morning of exam day − 2.
-    return ensureDay(s, bank, now).day.plan.daysLeft === 2 && sinceLast >= 1 && now.getHours() < 13 ? 60 : null;
-  }
-  if (seen < 40 || sinceLast < 7) return null;
-  return phase === 'revision' ? 180 : 60;
+  const today = planCalendar(s, bank, now).find((d) => d.today);
+  if (!today?.mock) return null;
+  // The pre-exam mock is a morning job, so the day after stays for revision.
+  if (phase === 'cram' && now.getHours() >= 13) return null;
+  return today.mock;
 }
 
 export const snoozeMock = () => update((s) => ({ ...s, mockSnooze: dayKey(new Date()) }));
