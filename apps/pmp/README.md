@@ -70,7 +70,9 @@ See `.env.example`. Server: `STRIPE_SECRET_KEY` (test key until launch),
 `PUBLIC_SITE_ORIGIN`, optional `STRIPE_PRICE_ID` / `PRICE_CENTS`, optional
 `ACCESS_CODES` (comma-separated codes that unlock without paying; typed into
 the licence-key box on /unlock), optional `TEST_PRICE_EMAILS` (Google accounts
-that pay `TEST_PRICE_CENTS`, default $1, for live checkout tests). Android
+that pay `TEST_PRICE_CENTS`, default $1, for live checkout tests), optional
+`FREE_ACCESS_EMAILS` (Google accounts that get full access free on sign-in at
+/unlock, e.g. the owner). Android
 build: `NEXT_PUBLIC_API_ORIGIN`, the deployed web origin.
 
 ## Running

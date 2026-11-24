@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { isAccessCode, issueLicense, verifyLicense } from './license.ts';
+import { isAccessCode, isFreeEmail, issueLicense, verifyLicense } from './license.ts';
 
 const KEY = 'test-secret-at-least-16-chars';
 const p = { sid: 'cs_test_abc', email: 'a@b.com', iat: 1 };
@@ -25,4 +25,11 @@ test('access codes match exactly and only when set', () => {
   assert.equal(isAccessCode('open-1234', 'Open-1234'), false);
   assert.equal(isAccessCode('Open-1234', ''), false);
   assert.equal(isAccessCode('', ','), false);
+});
+
+test('free-access emails match case-insensitively, and only listed ones', () => {
+  assert.equal(isFreeEmail('Owner@Example.com', 'x@y.com, owner@example.com'), true);
+  assert.equal(isFreeEmail('other@example.com', 'owner@example.com'), false);
+  assert.equal(isFreeEmail('', ','), false);
+  assert.equal(isFreeEmail('a@b.com', ''), false);
 });

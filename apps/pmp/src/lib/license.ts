@@ -65,3 +65,14 @@ export function isAccessCode(input: string | null | undefined, codes = process.e
       return want.length === given.length && timingSafeEqual(want, given);
     });
 }
+
+/**
+ * Google accounts listed in FREE_ACCESS_EMAILS (comma-separated, verified
+ * emails) get full access without paying, e.g. the owner. Kept in the
+ * environment so no address is in the source.
+ */
+export function isFreeEmail(email: string | null | undefined, list = process.env.FREE_ACCESS_EMAILS ?? ''): boolean {
+  const e = (email ?? '').trim().toLowerCase();
+  if (!e) return false;
+  return list.split(',').some((x) => x.trim().toLowerCase() === e);
+}
