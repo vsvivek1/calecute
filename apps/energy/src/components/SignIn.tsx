@@ -11,7 +11,14 @@ export default function SignIn({ refCode }: { refCode: string | null }) {
     setBusy(true);
     setError(null);
     const ref = refCode && /^[A-Za-z0-9-]{3,40}$/.test(refCode) ? `?ref=${encodeURIComponent(refCode)}` : '';
-    const { error } = await browserClient().auth.signInWithOAuth({
+    const supabase = browserClient();
+    // Drop any stale saved session first. If an old session's refresh fails
+    // while Google sign-in is starting, the client tears that session down and
+    // deletes the PKCE verifier cookie it has just written, so the callback
+    // fails with "PKCE code verifier not found in storage". Clearing it before
+    // the flow starts removes that race. Sign-in is only shown when signed out.
+    await supabase.auth.signOut({ scope: 'local' }).catch(() => undefined);
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: `${window.location.origin}/auth/callback${ref}` },
     });
