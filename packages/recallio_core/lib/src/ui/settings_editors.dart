@@ -72,6 +72,50 @@ class ExamDateField extends StatelessWidget {
   }
 }
 
+/// The plan length: 100 days by default, or longer, or till the exam.
+/// Picking one reschedules the remaining new cards from today.
+class StudyPlanPicker extends StatelessWidget {
+  const StudyPlanPicker({
+    super.key,
+    required this.days,
+    required this.finishBy,
+    required this.examDate,
+    required this.newLeft,
+    required this.newPerDay,
+    required this.onChanged,
+  });
+
+  /// The chosen length; 0 = till the exam.
+  final int days;
+
+  /// The day the plan ends; null = it runs to the exam.
+  final DateTime? finishBy;
+  final DateTime examDate;
+  final int newLeft;
+  final int newPerDay;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = T.of(context);
+    final muted = TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant);
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Wrap(spacing: 8, runSpacing: 8, children: [
+        for (final d in LearnerSettings.planChoices)
+          ChoiceChip(
+            label: Text(d == 0 ? t.tillExam : t.planDays(d)),
+            selected: days == d,
+            onSelected: (_) => onChanged(d),
+          ),
+      ]),
+      const SizedBox(height: 8),
+      Text(newLeft == 0 ? t.planDone : t.planFinish(formatDay(finishBy ?? examDate), newPerDay), style: muted),
+      const SizedBox(height: 4),
+      Text(t.planHint, style: muted.copyWith(fontSize: 12)),
+    ]);
+  }
+}
+
 class SectionPicker extends StatelessWidget {
   const SectionPicker({super.key, required this.config, required this.value, required this.onChanged});
   final CourseConfig config;

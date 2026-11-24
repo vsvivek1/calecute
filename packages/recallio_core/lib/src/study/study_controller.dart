@@ -89,6 +89,33 @@ class StudyController extends ChangeNotifier {
   bool get onboarded => settings.onboarded && settings.sections.isNotEmpty;
   DateTime get examDate => settings.examDate ?? config.exam.date;
   bool get examDateIsOfficial => settings.examDate == null && config.exam.official;
+
+  /// The day the learner's plan ends (100 days by default); null when the
+  /// plan runs to the exam. A plan that would end on or after the exam also
+  /// runs to the exam.
+  DateTime? get finishBy {
+    final days = settings.planDays;
+    if (days <= 0) return null;
+    final from = (settings.planFrom ?? store.planStart ?? clock()).toLocal();
+    final end = DateTime(from.year, from.month, from.day).add(Duration(days: days));
+    final exam = examDate;
+    return end.isBefore(DateTime(exam.year, exam.month, exam.day)) ? end : null;
+  }
+
+  /// Reschedules every remaining new card over [days] from today
+  /// (0 = until the exam).
+  Future<void> reschedule(int days) => updateSettings((s) {
+        final now = clock();
+        s.planDays = days;
+        s.planFrom = DateTime(now.year, now.month, now.day);
+      });
+
+  /// A daily time that fits the default plan: about 15 minutes per paper.
+  static int suggestedMinutes(int papers) {
+    const choices = [15, 30, 45, 60, 90];
+    final want = 15 * papers;
+    return choices.firstWhere((m) => m >= want, orElse: () => choices.last);
+  }
   SavedSitting? get sitting => store.sitting;
   CourseCard? get currentCard {
     final id = sitting?.current?.cardId;
@@ -109,6 +136,11 @@ class StudyController extends ChangeNotifier {
 
   Future<void> finishOnboarding(LearnerSettings s) async {
     s.onboarded = true;
+    // More papers means more cards a day on the same 100-day plan, so the
+    // daily time grows with the papers chosen.
+    s.minutesPerDay = math.max(s.minutesPerDay, suggestedMinutes(s.sections.length));
+    final now = clock();
+    s.planFrom ??= DateTime(now.year, now.month, now.day);
     store.settings = s;
     store.planStart ??= clock().toUtc();
     await store.saveSettings();
@@ -156,6 +188,7 @@ class StudyController extends ChangeNotifier {
       newIntroducedToday: d.newIntroduced,
       doneToday: d.done,
       planStart: store.planStart,
+      finishBy: finishBy,
     );
   }
 

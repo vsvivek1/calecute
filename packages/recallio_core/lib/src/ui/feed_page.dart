@@ -172,7 +172,9 @@ class _QuotaHeader extends StatelessWidget {
         child: Text(parts.join(' · '),
             style: TextStyle(fontWeight: FontWeight.w600, color: s.onSurface)),
       ),
-      if (plan.daysLeft >= 0)
+      if (plan.finishBy != null && plan.newLeft > 0)
+        Text(t.planDaysLeft(plan.planDaysLeft(DateTime.now())), style: TextStyle(fontSize: 12.5, color: s.onSurfaceVariant))
+      else if (plan.daysLeft >= 0)
         Text(t.daysLeft(plan.daysLeft), style: TextStyle(fontSize: 12.5, color: s.onSurfaceVariant)),
     ]);
   }

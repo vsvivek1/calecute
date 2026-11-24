@@ -39,9 +39,26 @@ class LearnerSettings {
     this.quietEnd = 6 * 60 + 30,
     this.reportToSelf = true,
     this.name,
+    this.planDays = defaultPlanDays,
+    this.planFrom,
   });
 
+  /// Every learner starts on a 100-day plan, whatever papers they take:
+  /// more papers means more cards a day, not more days.
+  static const defaultPlanDays = 100;
+
+  /// Lengths offered when the learner reschedules. 0 = until the exam.
+  static const planChoices = [100, 150, 200, 300, 0];
+
   bool onboarded;
+
+  /// Days to finish every new card in the enrolled papers, counted from
+  /// [planFrom]. 0 = spread them out until the exam.
+  int planDays;
+
+  /// The day the current plan length was chosen; null = the day the learner
+  /// started studying.
+  DateTime? planFrom;
 
   /// The learner's own exam date; null means use the official one.
   DateTime? examDate;
@@ -67,6 +84,8 @@ class LearnerSettings {
         'quietEnd': quietEnd,
         'reportToSelf': reportToSelf,
         if (name != null) 'name': name,
+        'planDays': planDays,
+        if (planFrom != null) 'planFrom': _day(planFrom!),
       };
 
   factory LearnerSettings.fromJson(Map<String, dynamic> j) => LearnerSettings(
@@ -80,6 +99,8 @@ class LearnerSettings {
         quietEnd: j['quietEnd'] as int? ?? 390,
         reportToSelf: j['reportToSelf'] as bool? ?? true,
         name: j['name'] as String?,
+        planDays: j['planDays'] as int? ?? defaultPlanDays,
+        planFrom: j['planFrom'] == null ? null : DateTime.parse(j['planFrom'] as String),
       );
 
   static String _day(DateTime d) =>

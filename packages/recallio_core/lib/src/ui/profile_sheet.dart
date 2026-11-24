@@ -83,6 +83,17 @@ class _Profile extends StatelessWidget {
           ),
         ),
         section(
+          t.studyPlan,
+          StudyPlanPicker(
+            days: s.planDays,
+            finishBy: c.finishBy,
+            examDate: c.examDate,
+            newLeft: c.plan.newLeft,
+            newPerDay: c.plan.newPerDay,
+            onChanged: c.reschedule,
+          ),
+        ),
+        section(
           t.papers,
           SectionPicker(
             config: c.config,
