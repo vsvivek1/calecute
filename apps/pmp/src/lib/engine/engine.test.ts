@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { addDays, capForExam, classify, dayKey, dueAt, fromSm2, isDueOn, newRec, recall, review, type CardRec, type Rating } from './scheduler.ts';
-import { dailyPlan } from './plan.ts';
+import { addDays, capForExam, classify, dayKey, parseDay, dueAt, fromSm2, isDueOn, newRec, recall, review, type CardRec, type Rating } from './scheduler.ts';
+import { buildCalendar, dailyPlan, dateWarning, daysBetween, planTarget } from './plan.ts';
 import { arrange, buildSitting, MAX_SITTING, orderNew } from './sitting.ts';
 import { focusSize, reportDue, weekKey, weeklyReport, type LogRow } from './report.ts';
 import { rateSeconds, readSeconds } from './timing.ts';
@@ -169,4 +169,50 @@ test('minimum times stay within bounds', () => {
   assert.equal(readSeconds(q), 16);
   assert.equal(rateSeconds(q), 11);
   assert.equal(readSeconds({ ...q, stem: 'x' }), 5);
+});
+
+test('new learner gets a 100-day plan; it never runs out', () => {
+  const t = planTarget(null, '2026-10-20', now);
+  assert.deepEqual(t, { date: '2027-01-27', booked: false });
+  // Past day 100 with no date booked: keeps two weeks ahead.
+  assert.equal(planTarget(null, '2026-01-01', now).date, '2026-11-03');
+  assert.deepEqual(planTarget('2026-12-20', '2026-10-20', now), { date: '2026-12-20', booked: true });
+});
+
+test('exam date warnings: too close, tight, far', () => {
+  assert.equal(dateWarning({ today: now, examDate: '2026-10-24', newLeft: 180, minutesPerDay: 30 })?.level, 'bad');
+  assert.equal(dateWarning({ today: now, examDate: '2026-11-10', newLeft: 180, minutesPerDay: 15 })?.level, 'warn');
+  assert.match(dateWarning({ today: now, examDate: '2027-08-01', newLeft: 180, minutesPerDay: 30 })!.text, /days away/);
+  assert.equal(dateWarning({ today: now, examDate: '2027-01-27', newLeft: 180, minutesPerDay: 30 }), null);
+});
+
+test('calendar spreads new cards, plans mocks and a revision run-up', () => {
+  const cal = buildCalendar({
+    today: now, start: '2026-10-20', target: '2026-12-20', booked: true, newLeft: 180, seen: 0,
+    minutesPerDay: 30, lastMockAt: null, doneByDay: {}, newByDay: {},
+  });
+  assert.equal(cal.length, 62);
+  assert.equal(cal[0].today, true);
+  assert.equal(cal.reduce((n, d) => n + d.newCards, 0), 180, 'every card planned');
+  assert.equal(cal.at(-1)!.kind, 'examDay');
+  assert.equal(cal.at(-3)!.kind, 'cram');
+  assert.ok(cal.some((d) => d.kind === 'revision'));
+  assert.ok(cal.filter((d) => d.kind === 'revision').every((d) => d.newCards === 0), 'no new cards in revision');
+  const mocks = cal.filter((d) => d.mock);
+  assert.ok(mocks.length >= 5, `mocks ${mocks.length}`);
+  assert.ok(mocks.some((d) => d.mock === 180 && d.kind === 'revision'), 'full mock in revision');
+  assert.equal(cal.at(-3)!.mock, 60, 'mock two days before the exam');
+  for (let k = 1; k < mocks.length; k++) assert.ok(daysBetween(parseDay(mocks[k - 1].date), parseDay(mocks[k].date)) >= 2);
+});
+
+test('calendar shows past study from the log', () => {
+  const cal = buildCalendar({
+    today: now, start: '2026-10-15', target: '2027-01-22', booked: false, newLeft: 170, seen: 10,
+    minutesPerDay: 30, lastMockAt: null, doneByDay: { '2026-10-16': 12 }, newByDay: { '2026-10-16': 10 },
+  });
+  assert.equal(cal.length, 100);
+  assert.equal(cal[1].done, 12);
+  assert.equal(cal[1].past, true);
+  assert.equal(cal[5].today, true);
+  assert.equal(cal.at(-1)!.kind, 'revision', 'no cram without a booked exam');
 });

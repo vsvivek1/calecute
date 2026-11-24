@@ -244,3 +244,19 @@ ul.tight { margin: 0; padding-left: 20px; }
   gap: 10px;
 }
 .btn-google:hover { background: #f8f9fa; }
+
+/* Study plan calendar */
+.plan-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.plan-dow { text-align: center; font-size: 0.75rem; color: var(--ink-3); padding-bottom: 2px; }
+.plan-day { border-radius: 8px; padding: 4px 5px; min-height: 46px; display: flex; flex-direction: column; justify-content: space-between; font-size: 0.75rem; border: 1.5px solid transparent; }
+.plan-date { color: var(--ink-3); font-weight: 600; }
+.plan-what { font-weight: 700; color: var(--ink-2); white-space: nowrap; overflow: hidden; }
+.k-learn { background: #eaf0fa; }
+.k-revision { background: var(--warn-bg); }
+.k-cram { background: var(--bad-bg); }
+.plan-day.past { opacity: 0.7; }
+.plan-day.past .plan-what { color: var(--good); }
+.plan-day.missed { opacity: 0.45; }
+.plan-day.today { border-color: var(--brand); opacity: 1; }
+.plan-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.plan-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; vertical-align: -1px; }

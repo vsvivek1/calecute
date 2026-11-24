@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import StudyTimes from './StudyTimes';
+import { dateWarning } from '@/lib/engine/plan';
 import { DEFAULT_TIMES, saveProfile, type Profile } from '@/lib/feed';
 import { IS_APP } from '@/lib/env';
 import { askAlertPermission, downloadCalendar } from '@/lib/platform/alerts';
@@ -26,9 +27,13 @@ export default function Onboarding({ onDone }: { onDone: () => void }) {
           <h2>When is your PMP exam?</h2>
           <p className="muted">Your daily plan works back from this date. The last two days switch to cram mode on their own.</p>
           <input className="text" type="date" min={today} value={examDate} disabled={noDate} onChange={(e) => setExamDate(e.target.value)} />
+          {examDate && !noDate && (() => {
+            const w = dateWarning({ today: new Date(), examDate, newLeft: 180, minutesPerDay: 30 });
+            return w ? <p className={`pill ${w.level}`} style={{ whiteSpace: 'normal', lineHeight: 1.4, marginTop: 10 }}>{w.text}</p> : null;
+          })()}
           <label className="check" style={{ marginTop: 12 }}>
             <input type="checkbox" checked={noDate} onChange={(e) => setNoDate(e.target.checked)} />
-            I haven’t booked it yet (plan for 8 weeks; change it any time)
+            I haven’t booked it yet (100-day plan; change it any time)
           </label>
           <div className="study-actions">
             <button className="btn btn-primary btn-block" disabled={!examDate && !noDate} onClick={() => setStep(1)}>Next</button>

@@ -108,7 +108,7 @@ export function studyCalendar(profile: Profile, now = new Date()): string {
   const pad = (n: number) => String(n).padStart(2, '0');
   const local = (d: Date) => `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
   const stamp = now.toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z';
-  const until = profile.examDate ? `;UNTIL=${profile.examDate.replace(/-/g, '')}T235959` : ';COUNT=90';
+  const until = profile.examDate ? `;UNTIL=${profile.examDate.replace(/-/g, '')}T235959` : ';COUNT=100';
   const events = profile.studyTimes.map((t, k) => {
     let start = at(now, t);
     if (start < now) start = addDays(start, 1);
