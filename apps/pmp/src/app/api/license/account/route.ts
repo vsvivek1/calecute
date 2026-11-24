@@ -1,4 +1,4 @@
-import { issueLicense } from '@/lib/license';
+import { isFreeEmail, issueLicense } from '@/lib/license';
 import { json, preflight } from '@/lib/cors';
 import { paidSession, stripe } from '@/lib/stripe';
 import { userFromRequest } from '@/lib/user';
@@ -11,6 +11,12 @@ export const OPTIONS = preflight;
 export async function POST(req: Request) {
   const user = await userFromRequest(req);
   if (!user) return json(req, { error: 'Please sign in again.' }, 401);
+
+  // Free accounts (FREE_ACCESS_EMAILS) unlock on sign-in, no checkout.
+  if (isFreeEmail(user.email)) {
+    const license = issueLicense({ sid: 'free-access', email: user.email, iat: Math.floor(Date.now() / 1000) });
+    return json(req, { email: user.email, license });
+  }
 
   const sessions = await stripe().checkout.sessions.list({
     customer_details: { email: user.email },
